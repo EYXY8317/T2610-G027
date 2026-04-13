@@ -1,0 +1,179 @@
+# ------------------------
+# PYTHON LIBRARIES
+# ------------------------
+
+# from flask import Flask creates the web app
+# render_template loads HTML files
+# request.form ges data from user input
+# redirect & url_for sends user to another page after a certain action
+from flask import Flask, render_template, request, redirect, url_for
+import json #To store and read data; be able to use functions like json.load and json.dump
+import os #For clear the screen; be able to use functions like os.system and os.path.exists
+from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
+
+app = Flask(__name__)
+
+# -----------
+# JSON
+#------------
+
+f_expense = "expenses.json"
+
+# ---------------
+# FUNCTIONS
+# ---------------
+
+#purpose is to pause the program
+#stop the program temporarily until user press enter
+#/n means enter a new line
+def pause():
+    input("\nPress Enter to continue...")
+
+#purpose is to load data from a file
+#file is to see if the file exists or not
+#default is a fake but valid data if the file does not exist
+def load_data(file, default):
+
+    #os.path.exists checks whether the file exists
+    #not means file does not exist
+    if not os.path.exists(file):
+
+        #go back to default
+        return default
+    
+    #With function is used to open a file and to make sure it is properly closed after finished
+    #If file exists, open the file and read (r)
+    #As f is a temporary variable to store the opened file
+    with open(file, "r") as f:
+
+        #json.load is to load the .json data from file
+        #converts the .json file to python
+        #.json.load is to read a file, .json loads is to read from a string
+        return json.load(f)
+
+#purpose is to save data to a file
+#file is the file to be saved
+#data is the data to be saved
+def save_data(file, data):
+
+    #"w" means write; if the file exists, it will be overwritten; if not, a new file will be created
+    with open(file, "w") as f:
+
+        #Dump means put the data into the file (converts python to .json)
+        #f is the file to write to
+        #Indent=4 means the json file will be 4 spaces indented(空四格)
+        json.dump(data, f, indent=4)
+
+#purpose is to check if date is valid
+#d is the date that enter by user
+def valid_date(d):
+
+    #try is to try to run the code, if error, run except
+    try:
+
+        #striptime is check if date in correct format
+        #%Y-%m-%d means year-month-day
+        datetime.strptime(d, "%Y-%m-%d")
+
+        #Means date is valid
+        return True
+    except:
+        #Means date is invalid
+        return False
+
+#purpose is to check if the casing of the value is valid
+#value is the value input by the user; allowed is the list of allowed values to be checked
+def valid_casing(value, allowed):
+    return (
+        value == value.lower() #makes value all lower case
+        or value == value.upper() #makes value all upper case
+        or value == value.capitalize() #makes value first letter capitalized
+    ) and value.lower() in allowed #check if value (in lower case) is in the allowed list
+
+# ----------------
+# ARRAYS
+# ----------------
+
+TYPES = ["expense", "income", "saving"]
+CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
+
+
+@app.route("/")
+def home():
+    return redirect(url_for("add_financial"))
+
+# ------------
+# FINANCE
+#-------------
+
+"""
+add function starts here
+"""
+
+@app.route("/add", methods=["GET", "POST"])
+def add_financial():
+    if request.method == "POST":
+
+        date = request.form["date"]
+
+        if not valid_date(date):
+            return "Invalid date"
+
+        t = request.form["type"]
+
+        if not valid_casing(t, TYPES):
+            return "Invalid type"
+
+        t = t.lower()
+
+        category = request.form.get("category", "-")
+        item = request.form.get("item", "-")
+
+        if t == "expense":
+            if not valid_casing(category, CATEGORIES):
+                return "Invalid category"
+            category = category.lower()
+
+        else:
+            category, item = "-", "-"
+
+        try:
+            amt = float(request.form["amount"])
+            if amt <= 0:
+                return "Invalid amount"
+        except:
+            return "Invalid amount"
+
+        records = load_data(f_expense, [])
+
+        records.append({
+            "date": date,
+            "type": t,
+            "category": category,
+            "item": item,
+            "amount": amt
+        })
+
+        save_data(f_expense, records)
+
+        return redirect(url_for("view_financial"))
+
+    return render_template("add.html")
+
+"""
+view finance starts here
+"""
+
+@app.route("/view")
+def view_financial():
+    records = load_data(f_expense, [])
+    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
+
+    return render_template("view.html", records=sorted_records)
+
+# ------------------------
+# RUN APP
+# ------------------------
+
+if __name__ == "__main__":
+    app.run(debug=True)
