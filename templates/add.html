@@ -1,10 +1,25 @@
+<!--
+    <form> means where does it start from
+    method="POST" sends data securely to server
+-->
 <form method="POST">
     Date: <input name="date"><br>
     Type: <input name="type"><br>
     Category: <input name="category"><br>
     Item: <input name="item"><br>
     Amount: <input name="amount"><br>
+
+    <!--
+        button creates a clickable button
+        type="submit" sends the form to flask when button is clicked
+        add is just a text shown on the webage
+    -->
     <button type="submit">Add</button>
 </form>
 <br>
+
+<!--
+    <a> is to let HTML know it is a link
+    href="/view" is the hyperlink for view section
+-->
 <a href="/view">View Records</a>
