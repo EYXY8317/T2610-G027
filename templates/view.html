@@ -1,3 +1,6 @@
+<!-- HTML comment (for html related commenting)-->
+{# Jinja comment (cannot be detected by browser) #}
+
 <h1>Financial Records</h1>
 <h2>Records</h2>
 
@@ -13,21 +16,23 @@
 </tr>
 
 <!-- loop through each item in records -->
-<!-- %...% is the logic, not a normal HTML -->
+{# %...% is the logic, not a normal HTML #}
 
 {% for r in records %}
 <tr>
 
-    <!--
-        {{ }} → show value
-        r → current record
-        .date → get date
-    -->
+    {#
+        r is the current record
+        .date is to get the date
+        {{}} is to display and show the value on the page
+    #}
     <td>{{ r.date }}</td>
     <td>{{ r.type }}</td>
     <td>{{ r.category }}</td>
     <td>{{ r.item }}</td>
     <td>{{ r.amount }}</td>
 </tr>
+
+<!-- ends the loop -->
 {% endfor %}
 </table>

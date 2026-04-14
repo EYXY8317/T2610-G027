@@ -1,8 +1,13 @@
+# Dictionary uses {}
+# Lists uses []
+# Tuple uses ()
+
+
 # ------------------------
 # PYTHON LIBRARIES
 # ------------------------
 
-# from flask import Flask creates the web app
+# from flask import Flask creates the web app; able to use functions like redirect() and app.route()
 # render_template loads HTML files
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
@@ -105,6 +110,11 @@ CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportat
 # ROUTES
 # ----------
 
+# "@" attaches this function to something
+# app.route is a flask function that defines a URL
+# "/" is the root URL
+# url_for("add_financial") is a flask helper function; helps find the URL of a function
+# redirect sends the user to the specific page
 @app.route("/")
 def home():
     return redirect(url_for("add_financial"))
@@ -162,7 +172,7 @@ def add_financial():
             category = category.lower()
 
         else:
-            category, item = "-", "-"
+            category = "-"
 
         try:
             amt = float(request.form["amount"])
