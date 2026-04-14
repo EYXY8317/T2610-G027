@@ -12,8 +12,17 @@
     <th>Amount</th>
 </tr>
 
+<!-- loop through each item in records -->
+<!-- %...% is the logic, not a normal HTML -->
+
 {% for r in records %}
 <tr>
+
+    <!--
+        {{ }} → show value
+        r → current record
+        .date → get date
+    -->
     <td>{{ r.date }}</td>
     <td>{{ r.type }}</td>
     <td>{{ r.category }}</td>
