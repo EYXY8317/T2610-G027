@@ -10,7 +10,9 @@ from datetime import datetime
 app = Flask(__name__)
 #Create a Flask application
 
-entries = []
+with open("journal.json", "r") as file:
+    entries = json.load(file)
+    #Load existing journal entries from a JSON file into a list
 #Create a list to store journal entries
 
 @app.route("/", methods=["GET", "POST"])
@@ -31,7 +33,12 @@ def home():
         #Add new entry to the list
             "content": content,
             #Store the journal entry content
+            "date": datetime.now().strftime("%Y-%m-%d")
+            #Store the date of the journal entry
         })
+        with open("journal.json", "w") as file:
+            json.dump(entries, file)
+            #Save the updated list of entries back to the JSON file
 
     current_date = datetime.now().strftime("%Y-%m-%d")
     #Get current date and format it as a string
