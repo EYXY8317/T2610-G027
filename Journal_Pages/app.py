@@ -1,6 +1,7 @@
 import json
 from flask import Flask, render_template, request
 from datetime import datetime
+import os
 #Import tools
 #Flask = Create the website
 #Render_template = Show HTML page
@@ -10,6 +11,10 @@ from datetime import datetime
 app = Flask(__name__)
 #Create a Flask application
 
+if not os.path.exists("journal.json"):
+            with open("journal.json", "w") as file:
+                json.dump([], file)
+                
 with open("journal.json", "r") as file:
     entries = json.load(file)
     #Load existing journal entries from a JSON file into a list
