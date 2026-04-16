@@ -219,6 +219,80 @@ def view_financial():
     # records=sorted_records sends the data from sorted_records to records for futher use
     return render_template("view.html", records=sorted_records)
 
+"""
+update finance starts here
+"""
+
+@app.route("/update/<int:idx>", methods=["GET", "POST"])
+def update_financial(idx):
+    records = load_data(f_expense, [])
+    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
+
+    if idx < 0 or idx >= len(sorted_records):
+        return "Invalid index"
+
+    selected = sorted_records[idx]
+    record = records[records.index(selected)]
+
+    if request.method == "POST":
+
+        # --- Date ---
+        d = request.form.get("date")
+        if d and valid_date(d):
+            record["date"] = d
+
+        # --- Type ---
+        t = request.form.get("type", "").lower()
+        if t in TYPES:
+            record["type"] = t
+
+        # --- Category + Item ---
+        if record["type"] == "expense":
+            print("Categories: food / other / rent / entertainment / education")
+    
+    c = input(f"Category ({record['category']}): ").lower()
+
+    if c:
+        record["category"] = c
+    else:
+        record["category"] = "-"
+
+        record["item"] = input(f"Item ({record['item']}): ") or record["item"]
+
+        # --- Amount ---
+        a = request.form.get("amount")
+        if a:
+            try:
+                amt = float(a)
+                if amt > 0:
+                    record["amount"] = amt
+            except:
+                pass
+
+        save_data(f_expense, records)
+
+        return redirect(url_for("view_financial"))
+
+    return render_template("update.html", record=record)
+
+"""
+delete finance starts here
+"""
+
+@app.route("/delete/<int:idx>")
+def delete_financial(idx):
+    records = load_data(f_expense, [])
+    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
+
+    if idx < 0 or idx >= len(sorted_records):
+        return "Invalid index"
+
+    # remove selected record
+    records.remove(sorted_records[idx])
+    save_data(f_expense, records)
+
+    return redirect(url_for("view_financial"))
+
 # ------------------------
 # RUN APP
 # ------------------------
