@@ -246,18 +246,16 @@ def update_financial(idx):
         if t in TYPES:
             record["type"] = t
 
-        # --- Category + Item ---
+        # --- Category ---
         if record["type"] == "expense":
-            print("Categories: food / other / rent / entertainment / education")
-    
-    c = input(f"Category ({record['category']}): ").lower()
+            c = request.form.get("category", "").lower()
+            if c:
+                record["category"] = c
+        else:
+            record["category"] = "-"
 
-    if c:
-        record["category"] = c
-    else:
-        record["category"] = "-"
-
-        record["item"] = input(f"Item ({record['item']}): ") or record["item"]
+        # --- Item (always allowed) ---
+        record["item"] = request.form.get("item") or record["item"]
 
         # --- Amount ---
         a = request.form.get("amount")
