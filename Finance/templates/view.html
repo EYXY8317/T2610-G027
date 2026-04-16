@@ -13,6 +13,7 @@
     <th>Category</th>
     <th>Item</th>
     <th>Amount</th>
+    <th>Actions</th>
 </tr>
 
 <!-- loop through each item in records -->
@@ -31,6 +32,11 @@
     <td>{{ r.category }}</td>
     <td>{{ r.item }}</td>
     <td>{{ r.amount }}</td>
+    <td>
+        <a href="/update/{{ loop.index0 }}">Update</a>
+        |
+        <a href="/delete/{{ loop.index0 }}">Delete</a>
+    </td>
 </tr>
 
 <!-- ends the loop -->
