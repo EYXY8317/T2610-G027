@@ -24,3 +24,4 @@ def is_valid_password(password):
 
 print(is_valid_password("abQc1as2"))
 print(is_valid_password("Abc12345"))
+print(is_valid_password("Abc1as2345"))
