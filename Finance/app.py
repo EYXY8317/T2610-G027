@@ -1,11 +1,25 @@
 # Dictionary uses {}
 # Lists uses []
 # Tuple uses ()
-
+# os.path finds the place, sys.path tells Python to search there
 
 # ------------------------
 # PYTHON LIBRARIES
 # ------------------------
+
+# import system lets is to be able to control how python run and behaves
+# be able to use functions like sys.path
+import sys
+
+#os.path helps python find and work with files
+#_file_ is this current file (app.py)
+# os.path.dirname (dirname means get folder name which is finance)
+# ".." means go back to previous folder
+# os.path.join(finance, "..") = combine paths
+# os.path.abspath (abspath means convert to full path (starting from c drive))
+# sys.path is the lists of folders python searches for modules
+# append means add to the list
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 # from flask import Flask creates the web app; able to use functions like redirect() and app.route()
 # render_template loads HTML files
@@ -15,6 +29,9 @@ from flask import Flask, render_template, request, redirect, url_for
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
 from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
+
+from password_system.password_hashing import hash_password
+from password_system.password_validation import is_valid_password
 
 # create a web app using this file
 # Flask is the framework, somewhat like the engine
@@ -55,10 +72,30 @@ def load_data(file, default):
     #As f is a temporary variable to store the opened file
     with open(file, "r") as f:
 
-        #json.load is to load the .json data from file
-        #converts the .json file to python
-        #.json.load is to read a file, .json loads is to read from a string
-        return json.load(f)
+        # try is a safe way to open files
+        try:
+
+            # reads the json file (f) and converts it to python
+            # python data stored in variable data
+            data = json.load(f)
+        
+        # if error occurs
+        except:
+
+            # return an empty list ( [ ] )
+            return default
+
+        # checks if it is a dictionary
+        # isinstance is a built-in python function; checks if something is a specific type
+        # data is the variable
+        # dictionary (dict) is the type to check
+        if isinstance(data, dict):
+
+            # return as {[ data ]}
+            return [data]
+
+        # returns data when everything is correct
+        return data
 
 #purpose is to save data to a file
 #file is the file to be saved
@@ -117,7 +154,129 @@ CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportat
 # redirect sends the user to the specific page
 @app.route("/")
 def home():
-    return redirect(url_for("add_financial"))
+    return redirect(url_for("login"))
+
+# ------------
+# REGISTER
+# ------------
+
+"""
+Register fuction starts here
+"""
+
+# @ tells flask to attach this function to a route
+# app.route defines a URL
+# /register is the page URL
+# methods= ["GET","POST"] are requests where "GET" opens the page and "POST" sends the data
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+
+        # BIG IDEA - take input from user
+        # the input by user from input field named "username" is stored in variable username
+        username = request.form["username"]
+        password = request.form["password"]
+        question = request.form["question"]
+        answer = request.form["answer"]
+
+        # checks if password is strong enough
+        # function from ZOEY (in password system folder -- password validation.py)
+        # not reverses the result
+        if not is_valid_password(password):
+            return "Weak password"
+
+        # the data is stored in variable user
+        users = load_data("users.json", [])
+
+        # prevent duplicate username
+        # user is a temporary variable for checking purposes
+        for user in users:
+
+            # user["username"] is getting the username from user.json
+            if user["username"] == username:
+                return "Username already exists"
+
+        # adds the data in the format and into the list users
+        users.append({
+            "username": username,
+            "password": hash_password(password),
+            "security_question": question,
+            "security_answer": hash_password(answer)
+        })
+
+        # saves updated list (users) to users.json
+        save_data("users.json", users)
+
+        # sends the user back to the login page
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+# ----------
+# LOGIN
+# ----------
+
+"""
+Login function starts here
+"""
+
+# @ tells flask to attach this function to a route
+# app.route defines a URL
+# /login is the page URL
+# methods= ["GET","POST"] are requests where "GET" opens the page and "POST" sends the data
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = hash_password(request.form["password"])
+
+        users = load_data("users.json", [])
+
+        for user in users:
+            if user["username"] == username and user["password"] == password:
+                return redirect(url_for("add_financial"))
+
+        return "Invalid username or password"
+
+    return render_template("login.html")
+
+# ------------------
+# RESET PASSWORD
+# ------------------
+
+"""
+Reset password function starts here
+"""
+
+# @ tells flask to attach this function to a route
+# app.route defines a URL
+# /forgot is the page URL
+# methods= ["GET","POST"] are requests where "GET" opens the page and "POST" sends the data
+@app.route("/forgot", methods=["GET", "POST"])
+def forgot():
+    if request.method == "POST":
+        username = request.form["username"]
+        answer = hash_password(request.form["answer"])
+        new_password = request.form["new_password"]
+
+        # 👇 LOAD HERE (same as login)
+        users = load_data("users.json", [])
+
+        for user in users:
+            if user["username"] == username:
+                if user["security_answer"] == answer:
+
+                    # 👇 UPDATE PASSWORD
+                    user["password"] = hash_password(new_password)
+
+                    # 👇 SAVE HERE (this is the second line)
+                    save_data("users.json", users)
+
+                    return redirect(url_for("login"))
+
+        return "Invalid details"
+
+    return render_template("forgot.html")
 
 # ------------
 # FINANCE
