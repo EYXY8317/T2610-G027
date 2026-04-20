@@ -30,17 +30,3 @@ def set_security_question():
     answer = input("Please enter your answer: ")
     hashed_answer = hash_password(answer)
     return question, hashed_answer
-
-user = {
-    "username": username,
-    "password": hashed,
-    "security_question": question,
-    "security_answer": hashed_answer
-}
-
-{
-    "username": "ABC",
-    "password": "Abc12.",
-    "security_question": "What is your nickname?",
-    "security_answer": "AB"
-}
