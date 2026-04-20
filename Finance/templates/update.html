@@ -1,14 +1,38 @@
+<p>Logged in as: {{session["user"] }}</p>
+
+<a href="/logout">Logout</a>
+
 <h2>Update Record</h2>
 
-<form method="POST">
+<form method= "POST">
 
-Date: <input name="date" value="{{ record.date }}"><br>
-Type: <input name="type" value="{{ record.type }}"><br>
-Category: <input name="category" value="{{ record.category }}"><br>
-Item: <input name="item" value="{{ record.item }}"><br>
-Amount: <input name="amount" value="{{ record.amount }}"><br>
+Date:
+<input type= "date" name= "date" value= "{{ record.date }}" required><br>
 
-<button type="submit">Update</button>
+Type:
+<select name= "type">
+    <option value="income" {% if record.type == "income" %}selected{% endif %}>Income</option>
+    <option value="expense" {% if record.type == "expense" %}selected{% endif %}>Expense</option>
+    <option value="savings" {% if record.type == "savings" %}selected{% endif %}>Savings</option>
+</select><br>
+
+Category:
+<select name= "category">
+    <option value="food" {% if record.category == "food" %}selected{% endif %}>Food </option>
+    <option value="transport" {% if record.category == "transport" %}selected{% endif %}>transport</option>
+    <option value="entertainment" {% if record.category == "entertainment" %}selected{% endif %}></option>
+    <option value="education" {% if record.category == "education" %}selected{% endif %}>Education</option>
+    <option value="rent" {% if record.category == "rent" %}selected{% endif %}></option>
+    <option value="other" {% if record.category == "other" %}selected{% endif %}>Other</option>
+</select><br>
+
+Item:
+<input name="item" value="{{ record.item }}"><br>
+
+Amount:
+RM <input type= "number" name= "amount" step= "0.01" value="{{ record.amount }}"><br>
+
+<button type= "submit">Update</button>
 
 </form>
 

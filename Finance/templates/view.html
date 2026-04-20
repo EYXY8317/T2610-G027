@@ -2,6 +2,11 @@
 {# Jinja comment (cannot be detected by browser) #}
 
 <h1>Financial Records</h1>
+
+<p>Logged in as: {{session["user"] }}</p>
+
+<a href="/logout">Logout</a>
+
 <h2>Records</h2>
 
 <a href="/add">Add New Record</a>
@@ -31,7 +36,7 @@
     <td>{{ r.type }}</td>
     <td>{{ r.category }}</td>
     <td>{{ r.item }}</td>
-    <td>{{ r.amount }}</td>
+    <td>RM {{ r.amount }}</td>
     <td>
         <a href="/update/{{ loop.index0 }}">Update</a>
         |
