@@ -10,6 +10,7 @@
 # import system lets is to be able to control how python run and behaves
 # be able to use functions like sys.path
 import sys
+import os
 
 #os.path helps python find and work with files
 #_file_ is this current file (app.py)
@@ -26,6 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for
+from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
 from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
@@ -39,6 +41,7 @@ from password_system.password_validation import is_valid_password
 # !without this, nothing runs!
 app = Flask(__name__)
 
+app.secret_key = "your_secret_key"
 # -----------
 # JSON
 #------------
@@ -234,6 +237,7 @@ def login():
 
         for user in users:
             if user["username"] == username and user["password"] == password:
+                session["user"] = username
                 return redirect(url_for("add_financial"))
 
         return "Invalid username or password"
@@ -295,6 +299,9 @@ add function starts here
 # functions run when /add is opened
 def add_financial():
 
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
     # request is data coming from browser
     # method is the type of request
     # "POST" means the form is submitted
@@ -343,6 +350,7 @@ def add_financial():
         records = load_data(f_expense, [])
 
         records.append({
+            "username": session["user"],
             "date": date,
             "type": t,
             "category": category,
@@ -365,7 +373,19 @@ view finance starts here
 
 @app.route("/view")
 def view_financial():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
     records = load_data(f_expense, [])
+
+    user= session.get("user")
+
+    records= [r for r in records if r["username"] == user]
+
+    sorted_records = sorted(records, key=lambda x:x["date"], reverse=True)
+
+    return render_template("view.html", records=sorted_records)
 
     # sorted rearranges the list
     # key= tells python what to compare
@@ -384,14 +404,24 @@ update finance starts here
 
 @app.route("/update/<int:idx>", methods=["GET", "POST"])
 def update_financial(idx):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
     records = load_data(f_expense, [])
-    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
+    
+    user= session.get("user")
+
+    user_records= [r for r in records if r["username"] == user]
+
+    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
     if idx < 0 or idx >= len(sorted_records):
         return "Invalid index"
 
     selected = sorted_records[idx]
-    record = records[records.index(selected)]
+
+    record = selected
 
     if request.method == "POST":
 
@@ -438,7 +468,12 @@ delete finance starts here
 
 @app.route("/delete/<int:idx>")
 def delete_financial(idx):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+    
     records = load_data(f_expense, [])
+    
     sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
 
     if idx < 0 or idx >= len(sorted_records):
@@ -449,6 +484,15 @@ def delete_financial(idx):
     save_data(f_expense, records)
 
     return redirect(url_for("view_financial"))
+
+# --------
+# LOG OUT
+# --------
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
 
 # ------------------------
 # RUN APP
