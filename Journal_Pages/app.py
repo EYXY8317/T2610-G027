@@ -11,15 +11,6 @@ import os
 app = Flask(__name__)
 #Create a Flask application
 
-if not os.path.exists("journal.json"):
-            with open("journal.json", "w") as file:
-                json.dump([], file)
-                
-with open("journal.json", "r") as file:
-    entries = json.load(file)
-    #Load existing journal entries from a JSON file into a list
-#Create a list to store journal entries
-
 @app.route("/", methods=["GET", "POST"])
 #app.route = Define the URL for the home page
 # / = Home page
