@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Pages</title>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <a href="/login">Login</a> |
+    <a href="/register">Sign Up</a>
+
+    <hr>
+
+    <h1>Life Pages</h1>
+    <p>Log in to organize every page of your life</p>
+
+    <!-- Login Form -->
+    <h3>Log in</h3>
+
+    <form method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username" required><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <!-- 🔥 Forgot Password -->
+    <br>
+    <button onclick="window.location.href='/forgot'">
+    Forgot Password
+    </button>
+
+    <!-- 🔥 ERROR MESSAGE -->
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <!-- 🔥 SUCCESS MESSAGE -->
+    {% if request.args.get("success") %}
+    <p style="color:green;">{{ request.args.get("success") }}</p>
+    {% endif %}
+
+</body>
+</html>

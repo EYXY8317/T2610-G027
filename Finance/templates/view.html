@@ -1,44 +1,64 @@
-<!-- HTML comment (for html related commenting)-->
-{# Jinja comment (cannot be detected by browser) #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Records</title>
+</head>
+<body>
 
 <h1>Financial Records</h1>
+
+<p>Logged in as: {{ session.get("user") }}</p>
+
+<a href="/logout">Logout</a>
+
 <h2>Records</h2>
 
-<a href="/add">Add New Record</a>
+<a href="/add">Add New Record</a><br><br>
 
+<!-- 🔥 SUCCESS MESSAGE -->
+{% if success %}
+<p style="color:green;">{{ success }}</p>
+{% endif %}
+
+<!-- 🔥 ERROR MESSAGE -->
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<!-- 🔥 EMPTY STATE -->
+{% if records|length == 0 %}
+<p>No records found</p>
+
+{% else %}
+
+<!-- 🔥 TABLE -->
 <table border="1">
-<tr>
-    <th>Date</th>
-    <th>Type</th>
-    <th>Category</th>
-    <th>Item</th>
-    <th>Amount</th>
-    <th>Actions</th>
-</tr>
+    <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Item</th>
+        <th>Amount (RM)</th>
+        <th>Actions</th>
+    </tr>
 
-<!-- loop through each item in records -->
-{# %...% is the logic, not a normal HTML #}
+    {% for r in records %}
+    <tr>
+        <td>{{ r.date }}</td>
+        <td>{{ r.type }}</td>
+        <td>{{ r.get('category', '-') }}</td>
+        <td>{{ r.get('item', '-') }}</td>
+        <td>{{ "%.2f"|format(r.amount) }}</td>
 
-{% for r in records %}
-<tr>
-
-    {#
-        r is the current record
-        .date is to get the date
-        {{}} is to display and show the value on the page
-    #}
-    <td>{{ r.date }}</td>
-    <td>{{ r.type }}</td>
-    <td>{{ r.category }}</td>
-    <td>{{ r.item }}</td>
-    <td>{{ r.amount }}</td>
-    <td>
-        <a href="/update/{{ loop.index0 }}">Update</a>
-        |
-        <a href="/delete/{{ loop.index0 }}">Delete</a>
-    </td>
-</tr>
-
-<!-- ends the loop -->
-{% endfor %}
+        <td>
+            <a href="/update/{{ loop.index0 }}">Edit</a> |
+            <a href="/delete/{{ loop.index0 }}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
 </table>
+
+{% endif %}
+
+</body>
+</html>
