@@ -1,13 +1,40 @@
+<p>Logged in as: {{session["user"] }}</p>
+
+<a href="/logout">Logout</a>
+
 <!--
     <form> means where does it start from
     method="POST" sends data securely to server
 -->
 <form method="POST">
-    Date: <input name="date"><br>
-    Type: <input name="type"><br>
-    Category: <input name="category"><br>
-    Item: <input name="item"><br>
-    Amount: <input name="amount"><br>
+    Date:
+    <input type= "date" name="date" required><br>
+
+    Type:
+    <select name="type">
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+        <option value="savings">Savings</option>
+    </select><br>
+
+    Category:
+    <select name="categoty">
+        <option value="">-- None --</option>
+
+        <option value="food">Food </option>
+        <option value="transport">Transport</option>
+        <option value="travel">Travel</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="education">Education</option>
+        <option value="rent">Rent</option>
+        <option value="other">Other</option>
+    </select><br>
+
+    Item:
+    <input name="item"><br>
+
+    Amount:
+    RM <input type="text" name="amount" inputmode="decimal" required><br>
 
     <!--
         button creates a clickable button
@@ -23,3 +50,11 @@
     href="/view" is the hyperlink for view section
 -->
 <a href="/view">View Records</a>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+{% if success %}
+<p style="color:green;">{{ success }}</p>
+{% endif %}
