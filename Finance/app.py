@@ -174,44 +174,31 @@ Register fuction starts here
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-
-        # BIG IDEA - take input from user
-        # the input by user from input field named "username" is stored in variable username
         username = request.form["username"]
         password = request.form["password"]
         question = request.form["question"]
         answer = request.form["answer"]
 
-        # checks if password is strong enough
-        # function from ZOEY (in password system folder -- password validation.py)
-        # not reverses the result
-        if not is_valid_password(password):
-            return "Weak password"
-
-        # the data is stored in variable user
         users = load_data("users.json", [])
 
-        # prevent duplicate username
-        # user is a temporary variable for checking purposes
         for user in users:
-
-            # user["username"] is getting the username from user.json
             if user["username"] == username:
-                return "Username already exists"
+                return render_template("register.html", error="Username already exists")
 
-        # adds the data in the format and into the list users
-        users.append({
+        if not is_valid_password(password):
+            return render_template("register.html", error="Weak password")
+
+        new_user = {
             "username": username,
             "password": hash_password(password),
             "security_question": question,
             "security_answer": hash_password(answer)
-        })
+        }
 
-        # saves updated list (users) to users.json
+        users.append(new_user)
         save_data("users.json", users)
 
-        # sends the user back to the login page
-        return redirect(url_for("login"))
+        return redirect(url_for("login", success="Account created! Please login"))
 
     return render_template("register.html")
 
@@ -238,18 +225,18 @@ def login():
         for user in users:
             if user["username"] == username and user["password"] == password:
                 session["user"] = username
-                return redirect(url_for("add_financial"))
+                return redirect(url_for("add_financial", success="Welcome back!"))
 
-        return "Invalid username or password"
+        return render_template("login.html", error="Invalid username or password")
 
     return render_template("login.html")
 
 # ------------------
-# RESET PASSWORD
+# FORGOT PASSWORD
 # ------------------
 
 """
-Reset password function starts here
+Forgot password function starts here
 """
 
 # @ tells flask to attach this function to a route
@@ -260,28 +247,55 @@ Reset password function starts here
 def forgot():
     if request.method == "POST":
         username = request.form["username"]
-        answer = hash_password(request.form["answer"])
-        new_password = request.form["new_password"]
+        question = request.form["question"]
+        answer = request.form["answer"]
 
-        # 👇 LOAD HERE (same as login)
         users = load_data("users.json", [])
 
         for user in users:
             if user["username"] == username:
-                if user["security_answer"] == answer:
 
-                    # 👇 UPDATE PASSWORD
-                    user["password"] = hash_password(new_password)
+                if (
+                    user["security_question"] == question
+                    and user["security_answer"] == hash_password(answer)
+                ):
+                    return redirect(url_for("reset_password", username=username))
 
-                    # 👇 SAVE HERE (this is the second line)
-                    save_data("users.json", users)
+                else:
+                    return render_template("forgot.html", error="Wrong question or answer")
 
-                    return redirect(url_for("login"))
-
-        return "Invalid details"
+        return render_template("forgot.html", error="User not found")
 
     return render_template("forgot.html")
 
+# -----------------
+# RESET PASSWORD
+# -----------------
+
+"""
+Reset password function starts here
+"""
+
+@app.route("/reset/<username>", methods=["GET", "POST"])
+def reset_password(username):
+    users = load_data("users.json", [])
+
+    if request.method == "POST":
+        new_password = request.form["password"]
+
+        if not is_valid_password(new_password):
+            return render_template("reset.html", username=username, error="Weak password")
+
+        for user in users:
+            if user["username"] == username:
+                user["password"] = hash_password(new_password)
+                break
+
+        save_data("users.json", users)
+
+        return redirect(url_for("login", success="Password reset successful!"))
+
+    return render_template("reset.html", username=username)
 # ------------
 # FINANCE
 #-------------
@@ -295,76 +309,57 @@ add function starts here
 # /add is the page URL
 # methods= ["GET","POST"] are requests where "GET" opens the page and "POST" sends the data
 @app.route("/add", methods=["GET", "POST"])
-
-# functions run when /add is opened
 def add_financial():
 
+    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
-    
-    # request is data coming from browser
-    # method is the type of request
-    # "POST" means the form is submitted
+
     if request.method == "POST":
+        date = request.form.get("date")
+        type_ = request.form.get("type")
+        category = request.form.get("category")
+        item = request.form.get("item")
+        amount = request.form.get("amount")
 
-        # request.form stores what the user inputs in a dictionary
-        # date is the input name in HTML
-        # save in variable date
-        date = request.form["date"]
+        # 🔥 BASIC REQUIRED
+        if not date or not type_ or not amount:
+            return render_template("add.html", error="Date, Type and Amount are required")
 
-        # checks if date is valid
-        if not valid_date(date):
-            return "Invalid date"
+        # 🔥 EXPENSE MUST HAVE CATEGORY + ITEM
+        if type_ == "expense":
+            if not category or not item:
+                return render_template("add.html", error="Category and Item required for expense")
 
-        # request.form is the dictionary of form inputs
-        # type is the input name in HTML
-        # save in variable t
-        t = request.form["type"]
-
-        if not valid_casing(t, TYPES):
-            return "Invalid type"
-
-        t = t.lower()
-
-        # request.form is the dictionary of form inputs
-        # .get() is to get the key value pair (category) if exists, else return default (-)
-        category = request.form.get("category", "-")
-        item = request.form.get("item", "-")
-
-        # only runs if t is equal to expense
-        if t == "expense":
-            if not valid_casing(category, CATEGORIES):
-                return "Invalid category"
-            category = category.lower()
-
-        else:
-            category = "-"
-
+        # 🔥 AMOUNT VALIDATION
         try:
-            amt = float(request.form["amount"])
-            if amt <= 0:
-                return "Invalid amount"
+            amount = float(amount)
         except:
-            return "Invalid amount"
+            return render_template("add.html", error="Invalid amount")
 
-        records = load_data(f_expense, [])
-
-        records.append({
+        record = {
             "username": session["user"],
             "date": date,
-            "type": t,
-            "category": category,
-            "item": item,
-            "amount": amt
-        })
+            "type": type_,
+            "category": category if category else "-",
+            "item": item if item else "-",
+            "amount": amount
+        }
 
+        # only include if filled
+        if category:
+            record["category"] = category
+
+        if item:
+            record["item"] = item
+
+        # 💾 SAVE
+        records = load_data(f_expense, [])
+        records.append(record)
         save_data(f_expense, records)
 
-        # url_for("view_financial") if to find route
-        # redirect is to send user to a specific page
-        return redirect(url_for("view_financial"))
+        return render_template("add.html", success="Record added!")
 
-    # show the add.html page to user
     return render_template("add.html")
 
 """
@@ -374,29 +369,28 @@ view finance starts here
 @app.route("/view")
 def view_financial():
 
+    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
-    
+
+    # 📥 Load all records
     records = load_data(f_expense, [])
 
-    user= session.get("user")
+    # 👤 Get current user
+    user = session.get("user")
 
-    records= [r for r in records if r["username"] == user]
+    # 🔍 Filter only this user's records
+    user_records = [r for r in records if r["username"] == user]
 
-    sorted_records = sorted(records, key=lambda x:x["date"], reverse=True)
+    # 🔄 Sort by date (newest first)
+    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    return render_template("view.html", records=sorted_records)
-
-    # sorted rearranges the list
-    # key= tells python what to compare
-    # lambda x: x["date"] -> x is each record and x["date"] is to get the date only
-    # reverse=true is to arrange the order in descending order (from new to old)
-    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
-
-    # render_template is a flask function that takes a HTML file and turn it into a real webpage
-    # then finds the file "view_html"
-    # records=sorted_records sends the data from sorted_records to records for futher use
-    return render_template("view.html", records=sorted_records)
+    # 📤 Send to HTML
+    return render_template(
+    "view.html",
+    records=sorted_records,
+    success=request.args.get("success")
+)
 
 """
 update finance starts here
@@ -405,60 +399,71 @@ update finance starts here
 @app.route("/update/<int:idx>", methods=["GET", "POST"])
 def update_financial(idx):
 
+    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
-    
+
     records = load_data(f_expense, [])
-    
-    user= session.get("user")
+    user = session.get("user")
 
-    user_records= [r for r in records if r["username"] == user]
+    # 👤 Filter user records
+    user_records = [r for r in records if r["username"] == user]
 
+    # 🔄 Sort
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
+    # ❌ Invalid index
     if idx < 0 or idx >= len(sorted_records):
-        return "Invalid index"
+        return render_template("view.html", records=sorted_records, error="Invalid record")
 
+    # 🎯 Get selected record
     selected = sorted_records[idx]
-
-    record = selected
+    real_index = records.index(selected)
+    record = records[real_index]
 
     if request.method == "POST":
 
-        # --- Date ---
-        d = request.form.get("date")
-        if d and valid_date(d):
-            record["date"] = d
+        date = request.form.get("date")
+        type_ = request.form.get("type")
+        category = request.form.get("category")
+        item = request.form.get("item")
+        amount = request.form.get("amount")
 
-        # --- Type ---
-        t = request.form.get("type", "").lower()
-        if t in TYPES:
-            record["type"] = t
+        # basic required
+        if not date or not type_ or not amount:
+            return render_template("update.html", record=record, error="Date, Type and Amount are required")
 
-        # --- Category ---
-        if record["type"] == "expense":
-            c = request.form.get("category", "").lower()
-            if c:
-                record["category"] = c
+        # expense must have category + item
+        if type_ == "expense":
+            if not category or not item:
+                return render_template("update.html", record=record, error="Category and Item required for expense")
+
+        try:
+            amount = float(amount)
+        except:
+            return render_template("update.html", record=record, error="Invalid amount")
+
+        # ✅ Update values
+        record["date"] = date
+        record["type"] = type_
+        
+        # category handling
+        if category:
+            record["category"] = category
         else:
-            record["category"] = "-"
+            record.pop("category", None)
 
-        # --- Item (always allowed) ---
-        record["item"] = request.form.get("item") or record["item"]
+        # item handling
+        if item:
+            record["item"] = item
+        else:
+            record.pop("item", None)
 
-        # --- Amount ---
-        a = request.form.get("amount")
-        if a:
-            try:
-                amt = float(a)
-                if amt > 0:
-                    record["amount"] = amt
-            except:
-                pass
+        record["amount"] = amount
 
         save_data(f_expense, records)
 
-        return redirect(url_for("view_financial"))
+        return redirect(url_for("view_financial", success="Updated successfully"))
 
     return render_template("update.html", record=record)
 
@@ -471,19 +476,32 @@ def delete_financial(idx):
 
     if "user" not in session:
         return redirect(url_for("login"))
-    
+
     records = load_data(f_expense, [])
-    
-    sorted_records = sorted(records, key=lambda x: x["date"], reverse=True)
+    user = session.get("user")
+
+    user_records = [r for r in records if r["username"] == user]
+
+    # 🚨 NEW LINE (IMPORTANT)
+    if len(user_records) == 0:
+        return render_template("view.html", records=[], error="No records to delete")
+
+    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
     if idx < 0 or idx >= len(sorted_records):
-        return "Invalid index"
+        return render_template("view.html", records=sorted_records, error="Invalid record")
 
-    # remove selected record
-    records.remove(sorted_records[idx])
+    selected = sorted_records[idx]
+    real_index = records.index(selected)
+
+    records.pop(real_index)
     save_data(f_expense, records)
 
-    return redirect(url_for("view_financial"))
+    # reload
+    user_records = [r for r in records if r["username"] == user]
+    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
+
+    return redirect(url_for("view_financial", success="Deleted successfully"))
 
 # --------
 # LOG OUT
@@ -492,7 +510,7 @@ def delete_financial(idx):
 @app.route("/logout")
 def logout():
     session.pop("user", None)
-    return redirect(url_for("login"))
+    return redirect(url_for("login", success="Logged out successfully"))
 
 # ------------------------
 # RUN APP
