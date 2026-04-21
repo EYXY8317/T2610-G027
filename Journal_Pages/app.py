@@ -1,12 +1,9 @@
-import json
 from flask import Flask, render_template, request
-from datetime import datetime
-import os
 #Import tools
 #Flask = Create the website
 #Render_template = Show HTML page
 #Request = Get user input
-#Datetime = Get current time
+from create_read import load_entries, add_entry
 
 app = Flask(__name__)
 #Create a Flask application
@@ -20,27 +17,16 @@ app = Flask(__name__)
 
 def home():
 #Define the function to handle the home page
+    entries = load_entries()
+
     if request.method == "POST":
-    #Check user submitted form
+    #User submits a new journal entry
         content = request.form["content"]
-        #Get text from form
+         #Get text from form
+        entries = add_entry(content)
+
+        return render_template("journal.html", entries = entries)
     
-        entries.append({
-        #Add new entry to the list
-            "content": content,
-            #Store the journal entry content
-            "date": datetime.now().strftime("%Y-%m-%d")
-            #Store the date of the journal entry
-        })
-        with open("journal.json", "w") as file:
-            json.dump(entries, file)
-            #Save the updated list of entries back to the JSON file
-
-    current_date = datetime.now().strftime("%Y-%m-%d")
-    #Get current date and format it as a string
-    return render_template("journal.html", entries=entries, current_date=current_date)
-    #Render the journal.html template and pass entries and
-
 if __name__ == "__main__":
 #Check if the script is run directly (not imported as a module)
     app.run(debug=True)
