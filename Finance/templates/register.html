@@ -11,13 +11,20 @@
     <li>Contain lowercase letter</li>
 </ul>
 
-    Question:
-    <select name="question">
-        <option>What is your nickname?</option>
-        <option>Where is your birth city?</option>
-    </select><br>
+    <!-- Security Question -->
+<label>Security Question:</label>
+<select name="question" required>
+    <option value="">-- Select Security Question --</option>
+    <option value="nickname">What is your nickname?</option>
+    <option value="birth_city">Where is your birth city?</option>
+    <option value="favourite_subject">What is your favourite subject?</option>
+    <option value="mother_name">What is your mother's name?</option>
+    <option value="best_friend">What is your best friend's name?</option>
+</select><br>
 
-    Answer: <input name="answer"><br>
+    <!-- Answer -->
+    <label>Answer:</label>
+    <input name="answer" required><br>
 
     <button type="submit">Register</button>
 </form>
