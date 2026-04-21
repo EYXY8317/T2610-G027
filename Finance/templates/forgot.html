@@ -1,9 +1,43 @@
-<h2>Reset Password</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Forgot Password</title>
+</head>
+<body>
+
+<h2>Forgot Password</h2>
 
 <form method="POST">
-    Username: <input name="username"><br>
-    Answer: <input name="answer"><br>
-    New Password: <input type="password" name="new_password"><br>
 
-    <button type="submit">Reset</button>
+    Username:<br>
+    <input name="username" required><br><br>
+
+    Security Question:<br>
+    <select name="question" required>
+        <option value="">-- Select Question --</option>
+        <option value="nickname">What is your nickname?</option>
+        <option value="birth_city">Where is your birth city?</option>
+        <option value="favourite_subject">What is your favourite subject?</option>
+        <option value="mother_name">What is your mother's name?</option>
+        <option value="best_friend">What is your best friend's name?</option>
+    </select><br><br>
+
+    Answer:<br>
+    <input name="answer" required><br><br>
+
+    <button type="submit">Verify</button>
+
 </form>
+
+<!-- 🔥 SHOW ERROR -->
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<!-- 🔥 SUCCESS -->
+{% if success %}
+<p style="color:green;">{{ success }}</p>
+{% endif %}
+
+</body>
+</html>

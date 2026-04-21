@@ -17,20 +17,23 @@ Type:
 </select><br>
 
 Category:
-<select name= "category">
-    <option value="food" {% if record.category == "food" %}selected{% endif %}>Food </option>
-    <option value="transport" {% if record.category == "transport" %}selected{% endif %}>transport</option>
-    <option value="entertainment" {% if record.category == "entertainment" %}selected{% endif %}></option>
-    <option value="education" {% if record.category == "education" %}selected{% endif %}>Education</option>
-    <option value="rent" {% if record.category == "rent" %}selected{% endif %}></option>
-    <option value="other" {% if record.category == "other" %}selected{% endif %}>Other</option>
+<select name="category">
+    <option value="">-- None --</option>
+
+    <option value="food" {% if record.get('category') == 'food' %}selected{% endif %}>Food</option>
+    <option value="transport" {% if record.get('category') == 'transport' %}selected{% endif %}>Transport</option>
+    <option value="travel" {% if record.get('category') == 'travel' %}selected{% endif %}>Travelt</option>
+    <option value="entertainment" {% if record.get('category') == 'entertainment' %}selected{% endif %}>Entertainment</option>
+    <option value="education" {% if record.get('category') == 'education' %}selected{% endif %}>Education</option>
+    <option value="rent" {% if record.get('category') == 'rent' %}selected{% endif %}>Rent</option>
+    <option value="other" {% if record.get('category') == 'other' %}selected{% endif %}>Other</option>
 </select><br>
 
 Item:
 <input name="item" value="{{ record.item }}"><br>
 
 Amount:
-RM <input type= "number" name= "amount" step= "0.01" value="{{ record.amount }}"><br>
+RM <input type= "text" name= "amount" inputmode="decimal" value="{{ record.amount }}"><br>
 
 <button type= "submit">Update</button>
 
@@ -38,3 +41,11 @@ RM <input type= "number" name= "amount" step= "0.01" value="{{ record.amount }}"
 
 <br>
 <a href="/view">Back</a>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+{% if success %}
+<p style="color:green;">{{ success }}</p>
+{% endif %}
