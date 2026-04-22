@@ -2,6 +2,7 @@
 <h1>My Journal</h1>
 
 <form method="POST">
+<!-- POST = send data to the server to create/update/delete a resource -->
     <textarea name="content" placeholder="Write your diary..."></textarea>
     <br>
     <!-- Submit button to save the journal entry -->
@@ -13,8 +14,20 @@
 <h2>Entries:</h2>
 
 {% for entry in entries %}
-    <div class="entry">
-        <!-- Display each journal entry content -->
-        <p>{{ entry.content }}</p>
-    </div>
+<!-- Loop through each journal entry and display it -->\
+<!--{% %} is a Jinja2 template syntax for control structures like loops and conditionals -->
+<!--For = loop through a list -->
+<!--Entry = individual journal entry -->
+<!--Entries = list of journal entries 所有Diary的集合-->
+
+<p>{{ entry.content }}</p>
+
+<form method="POST"></form>
+<!--Form = HTML form for submitting data 建立一个“提交资料”的区域 -->
+    <input type="hidden" name="delete_id" value="{{ entry.id }}">
+    #Hidden input field to specify the ID of the entry to delete
+    <button type="submit" onclick="return confirm('Delete this entry?')">
+        Delete
+    </button>
+</form>
 {% endfor %}
