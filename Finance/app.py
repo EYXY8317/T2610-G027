@@ -28,7 +28,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for
 from flask import session, redirect, url_for
-from Journal_Pages.create_read import load_entries, add_entry
+from Journal_Pages.create_read import load_entries, add_entry # import diary sction
 from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
