@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Pages</title>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <a href="/login">Login</a> |
+    <a href="/register">Register</a>
+
+    <hr>
+
+    <h1>Life Pages</h1>
+    <p>Recover your username</p>
+
+    <h3>Forgot Username</h3>
+
+    <form method="POST">
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <button type="submit">Find Username</button>
+    </form>
+
+    <br>
+    <a href="/login">Back to Login</a>
+
+    <!-- ERROR -->
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <!-- SUCCESS -->
+    {% if success %}
+    <p style="color:green;">{{ success }}</p>
+    {% endif %}
+
+</body>
+</html>
