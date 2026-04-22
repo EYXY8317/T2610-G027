@@ -21,11 +21,12 @@ def home():
 
     if request.method == "POST":
     #User submits a new journal entry
+    #Post = Send data to the server
         content = request.form["content"]
          #Get text from form
         entries = add_entry(content)
 
-        return render_template("journal.html", entries = entries)
+    return render_template("journal.html", entries = entries)
     
 if __name__ == "__main__":
 #Check if the script is run directly (not imported as a module)
