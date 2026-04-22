@@ -176,6 +176,7 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        email = request.form["email"]
         question = request.form["question"]
         answer = request.form["answer"]
 
@@ -191,6 +192,7 @@ def register():
         new_user = {
             "username": username,
             "password": hash_password(password),
+            "email": email,
             "security_question": question,
             "security_answer": hash_password(answer)
         }
@@ -267,6 +269,34 @@ def forgot():
         return render_template("forgot.html", error="User not found")
 
     return render_template("forgot.html")
+
+
+# ------------------
+# FORGOT USERNAME
+# ------------------
+
+"""
+Forgot username function starts here
+"""
+
+@app.route("/forgot_username", methods=["GET", "POST"])
+def forgot_username():
+
+    if request.method == "POST":
+        email = request.form.get("email")
+
+        users = load_data("users.json", [])
+
+        for user in users:
+            if user.get("email") == email:
+                return render_template(
+                    "forgot_username.html",
+                    success=f"Your username is: {user['username']}"
+                )
+
+        return render_template("forgot_username.html", error="Email not found")
+
+    return render_template("forgot_username.html")
 
 # -----------------
 # RESET PASSWORD
