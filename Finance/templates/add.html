@@ -9,40 +9,42 @@
 <p>Logged in as: {{session["user"] }}</p>
 
 <a href="/logout">Logout</a>
+<br><br>
+
+<h2>Add Record</h2>
 
 <!--
     <form> means where does it start from
     method="POST" sends data securely to server
 -->
 <form method="POST">
-    Date:
-    <input type= "date" name="date" required><br>
+    
+    <label>Date:</label><br>
+    <input type= "date" name="date" required>
+    <br><br>
 
-    Type:
-    <select name="type">
+    <label>Type:</label><br>
+    <select name="type" id="type" required>
+        <option value="">-- Select Type --</option>
         <option value="income">Income</option>
         <option value="expense">Expense</option>
-        <option value="savings">Savings</option>
-    </select><br>
+        <option value="saving">Saving</option>
+    </select>
+    <br><br>
 
-    Category:
-    <select name="categoty">
-        <option value="">-- None --</option>
+    <label>Category:</label><br>
+    <select name="category" id="category" required>
+        <option value="">-- Select Category --</option>
+    </select>
+    <br><br>
 
-        <option value="food">Food </option>
-        <option value="transport">Transport</option>
-        <option value="travel">Travel</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="education">Education</option>
-        <option value="rent">Rent</option>
-        <option value="other">Other</option>
-    </select><br>
+    <label>Item:</label><br>
+    <input name="item">
+    <br><br>
 
-    Item:
-    <input name="item"><br>
-
-    Amount:
-    RM <input type="text" name="amount" inputmode="decimal" required><br>
+    <label>Amount:</label><br>
+    RM <input type="text" name="amount" inputmode="decimal" required>
+    <br><br>
 
     <!--
         button creates a clickable button
@@ -58,6 +60,33 @@
     href="/view" is the hyperlink for view section
 -->
 <a href="/view">View Records</a>
+
+<script>
+const categories = {
+    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    saving: ["Savings", "Investment", "Emergency Fund"]
+};
+
+const typeSelect = document.getElementById("type");
+const categorySelect = document.getElementById("category");
+
+typeSelect.addEventListener("change", function () {
+    const selectedType = this.value;
+
+    // 🔥 AUTO CLEAR CATEGORY
+    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+    if (!categories[selectedType]) return;
+
+    categories[selectedType].forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.toLowerCase();
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+    });
+});
+</script>
 
 {% if error %}
 <p style="color:red;">{{ error }}</p>
