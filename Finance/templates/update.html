@@ -1,3 +1,11 @@
+<hr>
+
+<a href="/view">Finance</a> |
+<a href="/diary">Diary</a> |
+<a href="/logout">Logout</a>
+
+<hr>
+
 <p>Logged in as: {{session["user"] }}</p>
 
 <a href="/logout">Logout</a>
@@ -6,34 +14,31 @@
 
 <form method= "POST">
 
-Date:
-<input type= "date" name= "date" value= "{{ record.date }}" required><br>
+<label>Date:</label><br>
+<input type= "date" name= "date" value= "{{ record.date }}" required>
+<br><br>
 
-Type:
-<select name= "type">
+<label>Type:</label><br>
+<select name="type" id="type" required>
     <option value="income" {% if record.type == "income" %}selected{% endif %}>Income</option>
     <option value="expense" {% if record.type == "expense" %}selected{% endif %}>Expense</option>
-    <option value="savings" {% if record.type == "savings" %}selected{% endif %}>Savings</option>
-</select><br>
+    <option value="saving" {% if record.type == "saving" %}selected{% endif %}>Saving</option>
+</select>
+<br><br>
 
-Category:
-<select name="category">
-    <option value="">-- None --</option>
+<label>Category:</label><br>
+<select name="category" id="category" required>
+    <option value="">-- Select Category --</option>
+</select>
+<br><br>
 
-    <option value="food" {% if record.get('category') == 'food' %}selected{% endif %}>Food</option>
-    <option value="transport" {% if record.get('category') == 'transport' %}selected{% endif %}>Transport</option>
-    <option value="travel" {% if record.get('category') == 'travel' %}selected{% endif %}>Travelt</option>
-    <option value="entertainment" {% if record.get('category') == 'entertainment' %}selected{% endif %}>Entertainment</option>
-    <option value="education" {% if record.get('category') == 'education' %}selected{% endif %}>Education</option>
-    <option value="rent" {% if record.get('category') == 'rent' %}selected{% endif %}>Rent</option>
-    <option value="other" {% if record.get('category') == 'other' %}selected{% endif %}>Other</option>
-</select><br>
+<label>Item:</label><br>
+<input name="item" value="{{ record.item }}">
+<br><br>
 
-Item:
-<input name="item" value="{{ record.item }}"><br>
-
-Amount:
-RM <input type= "text" name= "amount" inputmode="decimal" value="{{ record.amount }}"><br>
+<label>Amount:</label><br>
+RM <input type= "text" name= "amount" inputmode="decimal" value="{{ record.amount }}">
+<br><br>
 
 <button type= "submit">Update</button>
 
@@ -41,6 +46,53 @@ RM <input type= "text" name= "amount" inputmode="decimal" value="{{ record.amoun
 
 <br>
 <a href="/view">Back</a>
+
+<script>
+const categories = {
+    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    saving: ["Savings", "Investment", "Emergency Fund"]
+};
+
+const typeSelect = document.getElementById("type");
+const categorySelect = document.getElementById("category");
+
+// 🔥 get current values from backend
+const currentType = "{{ record.type }}";
+const currentCategory = "{{ record.category }}";
+
+// function to load categories
+function loadCategories(type) {
+
+    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+    if (!categories[type]) return;
+
+    categories[type].forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.toLowerCase();
+        option.textContent = cat;
+
+        // 🔥 restore selected category
+        if (cat.toLowerCase() === currentCategory.toLowerCase()) {
+            option.selected = true;
+        }
+
+        categorySelect.appendChild(option);
+    });
+}
+
+// 🔥 when type changes → reset category properly
+typeSelect.addEventListener("change", function () {
+    loadCategories(this.value);
+});
+
+// 🔥 ON LOAD (CRITICAL)
+window.onload = function () {
+    typeSelect.value = currentType;   // restore type
+    loadCategories(currentType);      // load categories
+};
+</script>
 
 {% if error %}
 <p style="color:red;">{{ error }}</p>
