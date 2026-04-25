@@ -3,7 +3,7 @@ import os
 #Os = Sure file exists and handle file operations
 from datetime import datetime
 
-#Read function
+#Read function --------------------------------------
 def load_entries():
     #load_entries = Load existing journal entries from the JSON file
     if not os.path.exists("journal.json"):
@@ -15,12 +15,12 @@ def load_entries():
         return json.load(file)
         #JSON data to Python list
 
-#Add function
+#Add function --------------------------------------
 def add_entry(content):
     entries = load_entries()
-    #Entries = List
-    #Entry = List
-    
+    #Entries = list (all entries) 多个日记
+    #Entry = one dictionary (one record) 一条日记
+
     new_id = 1
     if entries:
         new_id = max(e["id"] for e in entries) + 1
@@ -33,15 +33,16 @@ def add_entry(content):
         
     entries.append({
         "id": new_id,
-        "content" : "content",
+        "content" : content,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
-    with open("json.json","w") as file:
+    with open("journal.json","w") as file:
         json.dump(entries, file, indent=4)
 
     return entries
 
+#Delete function --------------------------------------
 def delete_entry(entry_id):
     entries = load_entries()
 
@@ -55,6 +56,20 @@ def delete_entry(entry_id):
     
     with open("journal.json","w") as file:
     #Open the file and prepare to overwrite with new data
+        json.dump(entries, file, indent=4)
+
+    return entries
+
+#Update function --------------------------------------
+def update_entry(entry_id,new_content):
+# Define a function to update an existing entry
+    entries = load_entries()
+
+    for e in entries:
+        if str(e["id"]) == str(entry_id):
+            e["content"] = new_content
+
+    with open ("journal.json","w") as file:
         json.dump(entries, file, indent=4)
 
     return entries
