@@ -5,13 +5,13 @@ from datetime import datetime
 
 #Read function --------------------------------------
 def load_entries():
-    #load_entries = Load existing journal entries from the JSON file
-    if not os.path.exists("journal.json"):
-        with open("journal.json", "w") as file:
+    #load_entries = Load existing diary entries from the JSON file
+    if not os.path.exists("diary.json"):
+        with open("diary.json", "w") as file:
             json.dump([], file)
             #Empty list if file doesn't exist
              
-    with open("journal.json", "r") as file:
+    with open("diary.json", "r") as file:
         return json.load(file)
         #JSON data to Python list
 
@@ -37,7 +37,7 @@ def add_entry(content):
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
-    with open("journal.json","w") as file:
+    with open("diary.json","w") as file:
         json.dump(entries, file, indent=4)
 
     return entries
@@ -54,7 +54,7 @@ def delete_entry(entry_id):
     #Keep the entry if its id is NOT equal to the delete id
     #把“符合条件的”全部放进新 list
     
-    with open("journal.json","w") as file:
+    with open("diary.json","w") as file:
     #Open the file and prepare to overwrite with new data
         json.dump(entries, file, indent=4)
 
@@ -69,7 +69,7 @@ def update_entry(entry_id,new_content):
         if str(e["id"]) == str(entry_id):
             e["content"] = new_content
 
-    with open ("journal.json","w") as file:
+    with open ("diary.json","w") as file:
         json.dump(entries, file, indent=4)
 
     return entries
