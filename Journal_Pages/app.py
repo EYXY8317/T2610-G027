@@ -40,8 +40,8 @@ def home():
         
     entries = load_entries()
 
-    return render_template("journal.html",entries=entries)
-    # Render and display the journal.html page with data
+    return render_template("diary.html",entries=entries)
+    # Render and display the diary.html page with data
     # return = send response back to the browser
     # render_template(...) = load and display HTML page
 app.run(debug=True)
