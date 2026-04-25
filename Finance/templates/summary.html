@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Pages - Summary</title>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<hr>
+<a href="/view">Finance</a> |
+<a href="/summary">Summary</a> |
+<a href="/logout">Logout</a>
+<hr>
+
+<h1>Summary</h1>
+
+<!-- SUMMARY BOX -->
+<div style="border:1px solid black; padding:20px; width:350px;">
+
+    <!-- Monthly Overview -->
+    <h3>Monthly Overview</h3>
+    <p>Income: RM {{ income }}</p>
+    <p>Expense: RM {{ expense }}</p>
+    {% if balance < 0 %}
+    <p style="color:red;">
+    {% else %}
+    <p style="color:green;">
+    {% endif %}
+        <b>Balance: RM {{ balance }}</b>
+    </p>
+
+    <hr>
+
+    <!-- Daily Average -->
+    <h3>Daily Average</h3>
+    <p>RM {{ daily_avg }} / day</p>
+
+    <hr>
+
+    <!-- Top Category -->
+    <h3>Top Category</h3>
+    <p>{{ top_category }}</p>
+
+    <hr>
+
+    <!-- Smart Insight -->
+    <h3>Smart Insight</h3>
+    <p>{{ insight }}</p>
+
+</div>
+
+</body>
+</html>
