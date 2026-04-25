@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 #Render_template = Show HTML page (display page + send data) - output
 #Request = Get user input (from form) - input
 from crud import load_entries, add_entry, delete_entry, update_entry
+from datetime import datetime
 
 app = Flask(__name__)
 # __name__ = Python automatically gives the current file name
@@ -40,7 +41,9 @@ def home():
         
     entries = load_entries()
 
-    return render_template("diary.html",entries=entries)
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    
+    return render_template("diary.html", entries=entries, current_date=current_date)
     # Render and display the diary.html page with data
     # return = send response back to the browser
     # render_template(...) = load and display HTML page
