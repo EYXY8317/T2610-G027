@@ -28,7 +28,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for
 from flask import session, redirect, url_for
-from Journal_Pages.create_read import load_entries, add_entry # import diary sction
+from Journal_Pages.crud import load_entries, add_entry # import diary sction
 from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
@@ -353,8 +353,12 @@ def add_financial():
         category = request.form.get("category")
         item = request.form.get("item")
         amount = request.form.get("amount")
+        account = request.form.get("account")
 
         # 🔥 BASIC REQUIRED
+        if not account:
+            return render_template("add.html", error="Account required")
+
         if not date or not type_ or not amount:
             return render_template("add.html", error="Date, Type and Amount are required")
 
@@ -374,6 +378,7 @@ def add_financial():
             "date": date,
             "type": type_,
             "category": category if category else "-",
+            "account": account,
             "item": item if item else "-",
             "amount": amount
         }
@@ -390,9 +395,12 @@ def add_financial():
         records.append(record)
         save_data(f_expense, records)
 
+        accounts = load_data("accounts.json", [])
+        user_accounts = [a for a in accounts if a["username"] == session["user"]]
+
         return render_template("add.html", success="Record added!")
 
-    return render_template("add.html")
+    return render_template("add.html", accounts=user_accounts)
 
 """
 view finance starts here
@@ -414,6 +422,11 @@ def view_financial():
     # 🔍 Filter only this user's records
     user_records = [r for r in records if r["username"] == user]
 
+    selected_account = request.args.get("account")
+
+    if selected_account:
+        user_records = [r for r in user_records if r["account"] == selected_account]
+
     # 🔄 Sort by date (newest first)
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
@@ -421,7 +434,7 @@ def view_financial():
     return render_template(
     "view.html",
     records=sorted_records,
-    success=request.args.get("success")
+    selected_account=selected_account
 )
 
 """
@@ -535,6 +548,14 @@ def delete_financial(idx):
 
     return redirect(url_for("view_financial", success="Deleted successfully"))
 
+# ---------
+# SUMMARY
+# ---------
+
+"""
+Summary function starts here
+"""
+
 @app.route("/summary")
 def summary():
 
@@ -587,6 +608,36 @@ def summary():
         top_category=top_category,
         insight=insight
     )
+
+# ---------------
+# ADD ACCOUNTS
+# ---------------
+
+"""
+add account function starts here
+"""
+
+@app.route("/add_account", methods=["GET", "POST"])
+def add_account():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        name = request.form.get("account")
+
+        accounts = load_data("accounts.json", [])
+
+        accounts.append({
+            "username": session["user"],
+            "name": name
+        })
+
+        save_data("accounts.json", accounts)
+
+        return redirect(url_for("add_financial"))
+
+    return render_template("add_account.html")
 
 # -------------
 # DIARY ROUTE

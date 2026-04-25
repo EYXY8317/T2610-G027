@@ -38,7 +38,7 @@ def add_entry(content):
     })
 
     with open("json.json","w") as file:
-        json.dump(emtries, file, indent=4)
+        json.dump(entries, file, indent=4)
 
     return entries
 
