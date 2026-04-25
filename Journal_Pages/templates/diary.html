@@ -12,6 +12,23 @@
 <form method ="POST">
     <textarea name="content" placeholder="Write your diary..."></textarea>
     <br>
+
+    <label>Mood:</label>
+    <br>
+
+    <select name="mood" multiple>
+        <option value="happy">Happy</option>
+        <option value="calm">Calm</option>
+        <option value="confused">Confused</option>
+        <option value="bored">Bored</option>
+        <option value="sad">Sad</option>
+        <option value="angry">Angry</option>
+        <option value="stress">Stress</option>
+        <option value="anxious">Anxious</option>
+    </select>
+
+    <br><br>
+
     <button type="submit">Add</button>
 </form>
 
@@ -26,6 +43,14 @@
 
     <p>{{ entry.content }}</p>
     <!--Display the content of each entry-->
+
+    <!--Moods -->
+    <p>
+    Mood:
+    {% for m in entry.mood %}
+        {{m}}
+    {% endfor %}
+    </p>
 
     <!-- DELETE -->
     <form method="POST">

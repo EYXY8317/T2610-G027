@@ -16,7 +16,7 @@ def load_entries():
         #JSON data to Python list
 
 #Add function --------------------------------------
-def add_entry(content):
+def add_entry(content, moods):
     entries = load_entries()
     #Entries = list (all entries) 多个日记
     #Entry = one dictionary (one record) 一条日记
@@ -34,6 +34,7 @@ def add_entry(content):
     entries.append({
         "id": new_id,
         "content" : content,
+        "mood": moods,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
