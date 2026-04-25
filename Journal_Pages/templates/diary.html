@@ -13,6 +13,7 @@
     <textarea name="content" placeholder="Write your diary..."></textarea>
     <br>
 
+<!--Mood-->
     <label>Mood:</label>
     <br>
 
@@ -41,16 +42,13 @@
     <!--For loop-->
 <!--Curly = bracesOutput-->
 
-    <p>{{ entry.content }}</p>
-    <!--Display the content of each entry-->
+<p>{{ entry.content }}</p>
+<!--Display the content of each entry-->
 
-    <!--Moods -->
-    <p>
-    Mood:
-    {% for m in entry.mood %}
-        {{m}}
-    {% endfor %}
-    </p>
+<!--Moods -->
+<p>
+    Mood: {{ entry.mood | join(' | ') }}
+</p>
 
     <!-- DELETE -->
     <form method="POST">

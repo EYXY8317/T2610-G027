@@ -35,7 +35,7 @@ def add_entry(content, moods):
         "id": new_id,
         "content" : content,
         "mood": moods,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "timestamp": datetime.now().strftime("%D-%m-%y %H:%M:%S")
     })
 
     with open("diary.json","w") as file:
