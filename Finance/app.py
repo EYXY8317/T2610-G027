@@ -535,6 +535,59 @@ def delete_financial(idx):
 
     return redirect(url_for("view_financial", success="Deleted successfully"))
 
+@app.route("/summary")
+def summary():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    records = load_data(f_expense, [])
+    user = session.get("user")
+
+    # 👤 filter user
+    user_records = [r for r in records if r["username"] == user]
+
+    # 📅 current month
+    from datetime import datetime
+    now = datetime.now()
+    current_month = now.strftime("%Y-%m")
+
+    # 📊 filter this month
+    month_records = [r for r in user_records if r["date"].startswith(current_month)]
+
+    # 🔢 totals
+    income = sum(r["amount"] for r in month_records if r["type"] == "income")
+    expense = sum(r["amount"] for r in month_records if r["type"] == "expense")
+    balance = income - expense
+
+    # 📈 daily average
+    days = now.day if now.day != 0 else 1
+    daily_avg = expense / days if days else 0
+
+    # 🏆 top category
+    category_totals = {}
+    for r in month_records:
+        if r["type"] == "expense":
+            cat = r.get("category", "Other")
+            category_totals[cat] = category_totals.get(cat, 0) + r["amount"]
+
+    top_category = max(category_totals, key=category_totals.get) if category_totals else "None"
+
+    # 🧠 smart insight
+    insight = "No significant spending pattern yet."
+    if category_totals:
+        insight = f"You spent most on {top_category} this month."
+
+    return render_template(
+        "summary.html",
+        income=income,
+        expense=expense,
+        balance=balance,
+        daily_avg=round(daily_avg, 2),
+        top_category=top_category,
+        insight=insight
+    )
+
 # -------------
 # DIARY ROUTE
 # -------------
