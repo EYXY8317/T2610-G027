@@ -22,6 +22,8 @@ def home():
     #Check if the user submitted the form
     #If true, the program will process the user input
         
+        content = request.form.get("content")
+        moods = request.form.getlist("mood")
         delete_id = request.form.get("delete_id")
         edit_id = request.form.get("edit_id")
         new_content = request.form.get("new_content")
@@ -32,21 +34,16 @@ def home():
         elif edit_id and new_content:
             update_entry(edit_id, new_content)
 
-        else:
-            content = request.form.get("content")
-            #Request.form = data sent from the form 拿用户在 textarea/input 写的内容
-            if content:
-                add_entry(content)
+        elif content:     
+                add_entry(content, moods)
                 # Save user input only if it is not empty
         
     entries = load_entries()
 
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%D-%m-%Y")
     
     return render_template("diary.html", entries=entries, current_date=current_date)
     # Render and display the diary.html page with data
     # return = send response back to the browser
     # render_template(...) = load and display HTML page
 app.run(debug=True)
-
-
