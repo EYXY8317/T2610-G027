@@ -154,58 +154,24 @@ CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportat
 def home():
     return redirect(url_for("login"))
 
+@app.route("/add_account", methods=["GET", "POST"])
+def add_account():
 
-@app.route("/add", methods=["GET", "POST"])
-def add_financial():
-
-    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
     if request.method == "POST":
-        date = request.form.get("date")
-        type_ = request.form.get("type")
-        category = request.form.get("category")
-        item = request.form.get("item")
-        amount = request.form.get("amount")
-        account = request.form.get("account")
+        name = request.form.get("account")
 
-        # 🔥 BASIC REQUIRED
-        if not date or not type_ or not amount:
-            return render_template("add.html", error="Date, Type and Amount are required")
+        accounts = load_data("accounts.json", [])
 
-        # 🔥 EXPENSE MUST HAVE CATEGORY + ITEM
-        if type_ == "expense":
-            if not category or not item:
-                return render_template("add.html", error="Category and Item required for expense")
-
-        # 🔥 AMOUNT VALIDATION
-        try:
-            amount = float(amount)
-        except:
-            return render_template("add.html", error="Invalid amount")
-
-        record = {
+        accounts.append({
             "username": session["user"],
-            "date": date,
-            "type": type_,
-            "category": category if category else "-",
-            "item": item if item else "-",
-            "amount": amount
-        }
+            "name": name
+        })
 
-        # only include if filled
-        if category:
-            record["category"] = category
+        save_data("accounts.json", accounts)
 
-        if item:
-            record["item"] = item
+        return redirect(url_for("add_financial"))
 
-        # 💾 SAVE
-        records = load_data(f_expense, [])
-        records.append(record)
-        save_data(f_expense, records)
-
-        return render_template("add.html", success="Record added!")
-
-    return render_template("add.html")
+    return render_template("add_account.html")
