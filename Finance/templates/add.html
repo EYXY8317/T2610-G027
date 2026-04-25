@@ -42,6 +42,21 @@
     </select>
     <br><br>
 
+    <select name="account" required>
+
+        <option value="">-- Select Account --</option>
+
+        {% for acc in accounts %}
+        <option value="{{ acc.name }}">{{ acc.name }}</option>
+        {% endfor %}
+    </select>
+
+    </select>
+
+    <br>
+    <a href="/add_account">+ Add new account</a>
+    <br><br>
+
     <label>Item:</label><br>
     <input name="item">
     <br><br>
