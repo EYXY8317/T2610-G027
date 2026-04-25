@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 #Render_template = Show HTML page (display page + send data) - output
 #Request = Get user input (from form) - input
-from crud import load_entries, add_entry
+from crud import load_entries, add_entry, delete_entry, update_entry
 
 app = Flask(__name__)
 # __name__ = Python automatically gives the current file name
@@ -20,12 +20,23 @@ def home():
     if request.method == "POST":
     #Check if the user submitted the form
     #If true, the program will process the user input
-        content = request.form.get("content")
-        #Request.form = data sent from the form 拿用户在 textarea/input 写的内容
         
-        if content:
-            add_entry(content)
-            # Save user input only if it is not empty
+        delete_id = request.form.get("delete_id")
+        edit_id = request.form.get("edit_id")
+        new_content = request.form.get("new_content")
+
+        if delete_id:
+            delete_entry(delete_id)
+
+        elif edit_id and new_content:
+            update_entry(edit_id, new_content)
+
+        else:
+            content = request.form.get("content")
+            #Request.form = data sent from the form 拿用户在 textarea/input 写的内容
+            if content:
+                add_entry(content)
+                # Save user input only if it is not empty
         
     entries = load_entries()
 
