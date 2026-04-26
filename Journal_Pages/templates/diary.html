@@ -9,29 +9,25 @@
 <h2>Today: {{ current_date }}</h2>
 
 <!-- CREATE (ADD) -->
-<form method ="POST">
-    <textarea name="content" placeholder="Write your diary..."></textarea>
-    <br>
+<textarea id="diaryBox" name="content">{{ latest }}</textarea>    <br>
+<br><br>
 
 <!--Mood-->
-    <label>Mood:</label>
-    <br>
+<label>Mood:</label>
+<br>
 
-    <select name="mood" multiple>
-        <option value="happy">Happy</option>
-        <option value="calm">Calm</option>
-        <option value="confused">Confused</option>
-        <option value="bored">Bored</option>
-        <option value="sad">Sad</option>
-        <option value="angry">Angry</option>
-        <option value="stress">Stress</option>
-        <option value="anxious">Anxious</option>
-    </select>
+<select name="mood" multiple>
+    <option value="happy">Happy</option>
+    <option value="calm">Calm</option>
+    <option value="confused">Confused</option>
+    <option value="bored">Bored</option>
+    <option value="sad">Sad</option>
+    <option value="angry">Angry</option>
+    <option value="stress">Stress</option>
+    <option value="anxious">Anxious</option>
+</select>
 
     <br><br>
-
-    <button type="submit">Add</button>
-</form>
 
 <hr>
 
@@ -66,5 +62,7 @@
     <hr>
 
 {% endfor %}
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
