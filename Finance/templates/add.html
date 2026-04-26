@@ -1,112 +1,81 @@
-<hr>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Pages - Add Record</title>
+</head>
 
-<a href="/view">Finance</a> |
-<a href="/diary">Diary</a> |
+<body>
+
+<!-- NAVBAR -->
+<hr>
+<a href="/view">View</a> |
+<a href="/add">Add</a> |
+<a href="/summary">Summary</a> |
 <a href="/logout">Logout</a>
+<hr>
+
+<h1>Add Record</h1>
+<p>Logged in as: {{ session.user }}</p>
 
 <hr>
 
-<div style="margin-left:20px;">
-    <a href="/view">View</a> |
-    <a href="/add">Add</a> |
-    <a href="/summary">Summary</a>
-</div>
-<hr>
-
-<p>Logged in as: {{session["user"] }}</p>
-
-<h2>Add Record</h2>
-
-<!--
-    <form> means where does it start from
-    method="POST" sends data securely to server
--->
 <form method="POST">
-    
-    <label>Date:</label><br>
-    <input type= "date" name="date" required>
-    <br><br>
 
+    <!-- DATE -->
+    <label>Date:</label><br>
+    <input type="date" name="date" required><br><br>
+
+    <!-- TYPE -->
     <label>Type:</label><br>
-    <select name="type" id="type" required>
+    <select name="type" required>
         <option value="">-- Select Type --</option>
         <option value="income">Income</option>
         <option value="expense">Expense</option>
-        <option value="saving">Saving</option>
-    </select>
-    <br><br>
+    </select><br><br>
 
+    <!-- CATEGORY -->
     <label>Category:</label><br>
-    <select name="category" id="category" required>
+    <select name="category">
         <option value="">-- Select Category --</option>
-    </select>
-    <br><br>
+        <option value="food">Food</option>
+        <option value="transport">Transport</option>
+        <option value="salary">Salary</option>
+    </select><br><br>
 
-    <select name="account" required>
+    <!-- 🔥 ACCOUNT SECTION -->
+    <fieldset style="width:300px;">
+        <legend><b>Account</b></legend>
 
-        <option value="">-- Select Account --</option>
+        <!-- Existing accounts -->
+        <select name="account">
+            <option value="">-- Select Account --</option>
+            {% for acc in accounts %}
+            <option value="{{ acc.name }}">{{ acc.name }}</option>
+            {% endfor %}
+        </select>
 
-        {% for acc in accounts %}
-        <option value="{{ acc.name }}">{{ acc.name }}</option>
-        {% endfor %}
-    </select>
+        <br><br>
 
-    </select>
+        <!-- Create new -->
+        <input type="text" name="new_account" placeholder="Or create new account">
+
+    </fieldset>
 
     <br>
-    <a href="/add_account">+ Add new account</a>
-    <br><br>
 
+    <!-- ITEM -->
     <label>Item:</label><br>
-    <input name="item">
-    <br><br>
+    <input type="text" name="item"><br><br>
 
-    <label>Amount:</label><br>
-    RM <input type="text" name="amount" inputmode="decimal" required>
-    <br><br>
+    <!-- AMOUNT -->
+    <label>Amount (RM):</label><br>
+    <input type="text" name="amount" required><br><br>
 
-    <!--
-        button creates a clickable button
-        type="submit" sends the form to flask when button is clicked
-        add is just a text shown on the webage
-    -->
     <button type="submit">Add</button>
+
 </form>
-<br>
 
-<!--
-    <a> is to let HTML know it is a link
-    href="/view" is the hyperlink for view section
--->
-<a href="/view">View Records</a>
-
-<script>
-const categories = {
-    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    saving: ["Savings", "Investment", "Emergency Fund"]
-};
-
-const typeSelect = document.getElementById("type");
-const categorySelect = document.getElementById("category");
-
-typeSelect.addEventListener("change", function () {
-    const selectedType = this.value;
-
-    // 🔥 AUTO CLEAR CATEGORY
-    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
-
-    if (!categories[selectedType]) return;
-
-    categories[selectedType].forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat.toLowerCase();
-        option.textContent = cat;
-        categorySelect.appendChild(option);
-    });
-});
-</script>
-
+<!-- MESSAGES -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
@@ -114,3 +83,10 @@ typeSelect.addEventListener("change", function () {
 {% if success %}
 <p style="color:green;">{{ success }}</p>
 {% endif %}
+
+<br>
+
+<a href="/view">View Records</a>
+
+</body>
+</html>
