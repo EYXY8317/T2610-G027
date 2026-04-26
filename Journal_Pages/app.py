@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request
 #Render_template = Show HTML page (display page + send data) - output
 #Request = Get user input (from form) - input
-from crud import load_entries, add_entry
+from crud import load_entries, add_entry, delete_entry, update_entry
+from datetime import datetime
 
 app = Flask(__name__)
 # __name__ = Python automatically gives the current file name
 # Used by Flask to locate templates and project files
 
+#Home  --------------------------------------
 @app.route("/", methods=["GET", "POST"])
 #This defines the URL router for the home page
 #"/" mean the home page
@@ -16,23 +18,55 @@ app = Flask(__name__)
 # This allows the page to both display content and receive user input
 
 def home():
-    
+        
     if request.method == "POST":
     #Check if the user submitted the form
     #If true, the program will process the user input
-        content = request.form.get("content")
-        #Request.form = data sent from the form 拿用户在 textarea/input 写的内容
         
-        if content:
-            add_entry(content)
-            # Save user input only if it is not empty
+        content = request.form.get("content")
+        moods = request.form.getlist("mood")
+        delete_id = request.form.get("delete_id")
+        edit_id = request.form.get("edit_id")
+        new_content = request.form.get("new_content")
+
+        if delete_id:
+            delete_entry(delete_id)
+
+        elif edit_id and new_content:
+            update_entry(edit_id, new_content)
+
+        elif content:     
+                add_entry(content, moods)
+                # Save user input only if it is not empty
         
     entries = load_entries()
 
-    return render_template("journal.html",entries=entries)
-    # Render and display the journal.html page with data
-    # return = send response back to the browser
-    # render_template(...) = load and display HTML page
+    if entries:
+         latest = entries[-1]["content"]
+    else:
+         latest = ""
+
+    current_date = datetime.now().strftime("%d-%m-%Y")
+
+    return render_template(
+        "diary.html", 
+        entries=entries, 
+        current_date=current_date,
+        latest=latest
+    )
+
+#Autosave function --------------------------------------
+@app.route("/autosave",methods=["POST"])
+def autosave():
+    print("ROUTE HIT")
+
+    data = request.get_json()
+    print("DATA:", data)
+
+    content = data["content"]
+    print("AUTOSAVE:", content) 
+
+    add_entry(content, [])
+
+    return "OK"
 app.run(debug=True)
-
-
