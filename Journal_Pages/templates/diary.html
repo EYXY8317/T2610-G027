@@ -5,24 +5,28 @@
 </head>
 <body>
 
+<!-- TITLE SECTION 标题部分 ========================================================== -->
 <h1>Diary</h1>
 <h2>Today: {{ current_date }}</h2>
 
-<!-- CREATE (ADD) -->
-<textarea id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
+<!-- CREATE / EDIT SECTION 创建 + 编辑 ========================================================== -->
+<textarea 
+id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
 {{ latest }}
 </textarea>
-<!--empty → editable, has data → readonly
-    (id="diaryBox") = used by JS 
-    if empty → ""
-    if has data → "readonly"
-    latest = display content-->
+<!--
+1. empty → editable, has data → readonly
+2. (id="diaryBox") = used by JS 
+3. if empty → ""
+4. if has data → "readonly"
+5. latest = display content
+    -->
 
 <br><br>
 
 <button id="editBtn">Edit</button>
 
-<!--Mood-->
+<!-- MOOD SECTION 情绪选择 ========================================================== -->
 <label>Mood:</label>
 <br>
 
@@ -37,18 +41,19 @@
     <option value="anxious">Anxious</option>
 </select>
 
-    <br><br>
+<br><br>
 
 <hr>
 
-<!-- READ (VIEW) -->
+<!-- READ SECTION 查看全部日记 ========================================================== -->
 {% for entry in entries %}
-<!--Loop through all entries-->
-<!--Percentage = Jinja2 模板语法（template syntax）-->
-    <!--For loop-->
-<!--Curly = bracesOutput-->
+<!--
+1. loop through all entries
+2. percentage = Jinja2 模板语法（template syntax
+3. for loop Curly = bracesOutput
+-->
 
-    <!-- DELETE -->
+<!-- DELETE SECTION 删除 ========================================================== -->
     <form method="POST">
         <input type="hidden" name="delete_id" value="{{ entry.id }}">
         <button type="submit">Delete</button>
@@ -58,6 +63,8 @@
 
 {% endfor %}
 
+<!-- JS SCRIPT ========================================================== -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+
 </body>
 </html>
