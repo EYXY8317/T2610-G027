@@ -42,7 +42,7 @@ def home():
     entries = load_entries()
 
     if entries:
-         latest = entries[-1]["content"]
+         latest = entries[0]["content"]
     else:
          latest = ""
 
@@ -64,9 +64,18 @@ def autosave():
     print("DATA:", data)
 
     content = data["content"]
-    print("AUTOSAVE:", content) 
+    print("AUTOSAVE:", content)
 
-    add_entry(content, [])
+    entries = load_entries()
+    #get existing(已有) data
+
+    if entries:
+        update_entry(entries[0]["id"], content)
+        #update entry with id using new content
+        #entries[0] = get the first item
+
+    else:
+        add_entry(content,[]) 
 
     return "OK"
 app.run(debug=True)

@@ -14,7 +14,12 @@ let timeout = null;
 box.addEventListener("input", function() {
 //when user types in textarea, run this function
 //.addEventListener = listen for an event (in this case, "input" which means when the user types something in the textarea)
-    
+
+    if (box.hasAttribute("readonly")) {
+        return;
+    }
+    // if the textarea has the "readonly" attribute, do nothing (return)
+
     console.log(box.value);
 //print current text in console
 //console = browser debug tool
@@ -49,7 +54,7 @@ box.addEventListener("input", function() {
                 //box.value = the current text in the textarea (the value being sent to the server)
             })
         })
-        
+
         .then(response => response.text())
         .then(data => {
             console.log("SAVED:", data);
@@ -58,4 +63,18 @@ box.addEventListener("input", function() {
             console.error("ERROR:", error);
         });
     }, 2000);
+});
+
+//EDIT BUTTON (UNLOCK) =========================================
+const editBtn = document.getElementById("editBtn")
+//const = create a variable (cannot be changed)
+//editBtn = variable name
+    //the name of the edit button element in the HTML file
+//document = the whole webpage
+//.getElementById = find element with id "editBtn"
+editBtn.addEventListener("click", function() {
+//when user clicks the edit button, run this function
+    box.removeAttribute("readonly");
+    //remove the "readonly" attribute from the textarea, making it editable
+        //.removeAttribute("readonly") = remove the "readonly" attribute from the textarea element, allowing the user to edit the content
 });
