@@ -1,9 +1,10 @@
+# IMPORT  ===========================================================================
 import json
 import os
 #Os = Sure file exists and handle file operations
 from datetime import datetime
 
-#Read function --------------------------------------
+# LOAD (READ)  ===========================================================================
 def load_entries():
     #load_entries = Load existing diary entries from the JSON file
     if not os.path.exists("diary.json"):
@@ -15,7 +16,7 @@ def load_entries():
         return json.load(file)
         #JSON data to Python list
 
-#Add function --------------------------------------
+# CREATE (ADD)  ===========================================================================
 def add_entry(content, moods):
     entries = load_entries()
     #Entries = list (all entries) 多个日记
@@ -43,7 +44,7 @@ def add_entry(content, moods):
 
     return entries
 
-#Delete function --------------------------------------
+# DELETE  ===========================================================================
 def delete_entry(entry_id):
     entries = load_entries()
 
@@ -61,7 +62,7 @@ def delete_entry(entry_id):
 
     return entries
 
-#Update function --------------------------------------
+# UPDATE  ===========================================================================
 def update_entry(entry_id,new_content):
 # Define a function to update an existing entry
     entries = load_entries()
