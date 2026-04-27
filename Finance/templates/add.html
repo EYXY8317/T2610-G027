@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Life Pages - Add Record</title>
+    <title>Add Record</title>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
+    <hr>
+
+<a href="/view">Finance</a> |
+<a href="/diary">Diary</a> |
+<a href="/logout">Logout</a>
+
+<hr>
+
+
 <hr>
 <a href="/view">View</a> |
 <a href="/add">Add</a> |
@@ -15,9 +23,6 @@
 <hr>
 
 <h1>Add Record</h1>
-<p>Logged in as: {{ session.user }}</p>
-
-<hr>
 
 <form method="POST">
 
@@ -27,41 +32,29 @@
 
     <!-- TYPE -->
     <label>Type:</label><br>
-    <select name="type" required>
+    <select name="type" id="typeSelect" required>
         <option value="">-- Select Type --</option>
         <option value="income">Income</option>
         <option value="expense">Expense</option>
+        <option value="saving">Saving</option>
     </select><br><br>
 
     <!-- CATEGORY -->
     <label>Category:</label><br>
-    <select name="category">
+    <select name="category" id="categorySelect">
         <option value="">-- Select Category --</option>
-        <option value="food">Food</option>
-        <option value="transport">Transport</option>
-        <option value="salary">Salary</option>
     </select><br><br>
 
-    <!-- 🔥 ACCOUNT SECTION -->
-    <fieldset style="width:300px;">
-        <legend><b>Account</b></legend>
+    <!-- ACCOUNT -->
+    <label>Account:</label><br>
+    <select name="account">
+        <option value="">-- Select Account --</option>
+        {% for acc in accounts %}
+        <option value="{{ acc.name }}">{{ acc.name }}</option>
+        {% endfor %}
+    </select><br><br>
 
-        <!-- Existing accounts -->
-        <select name="account">
-            <option value="">-- Select Account --</option>
-            {% for acc in accounts %}
-            <option value="{{ acc.name }}">{{ acc.name }}</option>
-            {% endfor %}
-        </select>
-
-        <br><br>
-
-        <!-- Create new -->
-        <input type="text" name="new_account" placeholder="Or create new account">
-
-    </fieldset>
-
-    <br>
+    <input type="text" name="new_account" placeholder="Or create new account"><br><br>
 
     <!-- ITEM -->
     <label>Item:</label><br>
@@ -69,13 +62,13 @@
 
     <!-- AMOUNT -->
     <label>Amount (RM):</label><br>
-    <input type="text" name="amount" required><br><br>
+    <input type="text" id="amountInput" name="amount" value="0.00" readonly required>
 
+    <br><br>
     <button type="submit">Add</button>
 
 </form>
 
-<!-- MESSAGES -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
@@ -84,9 +77,46 @@
 <p style="color:green;">{{ success }}</p>
 {% endif %}
 
-<br>
+<script>
 
-<a href="/view">View Records</a>
+// CATEGORY MAP
+const categories = {
+    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    saving: ["Savings", "Investment", "Emergency Fund"]
+};
+
+// UPDATE CATEGORY
+document.getElementById("typeSelect").addEventListener("change", function() {
+    const type = this.value;
+    const categorySelect = document.getElementById("categorySelect");
+
+    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+    if (categories[type]) {
+        categories[type].forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+            categorySelect.appendChild(option);
+        });
+    }
+});
+
+// TNG INPUT
+let value = 0;
+
+document.addEventListener("keydown", function(e) {
+    if (e.key >= "0" && e.key <= "9") {
+        value = value * 10 + parseInt(e.key);
+    } else if (e.key === "Backspace") {
+        value = Math.floor(value / 10);
+    }
+
+    document.getElementById("amountInput").value = (value / 100).toFixed(2);
+});
+
+</script>
 
 </body>
 </html>
