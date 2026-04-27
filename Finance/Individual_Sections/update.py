@@ -179,48 +179,59 @@ def update_financial(idx):
     real_index = records.index(selected)
     record = records[real_index]
 
+    # 🔥 HANDLE UPDATE
     if request.method == "POST":
 
-        date = request.form.get("date")
-        type_ = request.form.get("type")
-        category = request.form.get("category")
-        item = request.form.get("item")
-        amount = request.form.get("amount")
+        # KEEP OLD VALUES IF USER DOESN’T CHANGE
+        date = request.form.get("date") or record["date"]
+        type_ = request.form.get("type") or record["type"]
+        category = request.form.get("category") or record.get("category", "-")
+        item = request.form.get("item") or record.get("item", "-")
+        account = request.form.get("account") or record.get("account", "Default")
+        amount = request.form.get("amount") or record["amount"]
 
-        # basic required
+        # HANDLE NEW ACCOUNT
+        new_account = request.form.get("new_account")
+        accounts = load_data("accounts.json", [])
+
+        if new_account:
+            account = new_account
+
+            if not any(a["name"] == account and a["username"] == user for a in accounts):
+                accounts.append({
+                    "username": user,
+                    "name": account
+                })
+                save_data("accounts.json", accounts)
+
+        # 🔥 VALIDATION
         if not date or not type_ or not amount:
-            return render_template("update.html", record=record, error="Date, Type and Amount are required")
+            return render_template("update.html", record=record, accounts=accounts, error="Date, Type and Amount are required")
 
-        # expense must have category + item
         if type_ == "expense":
             if not category or not item:
-                return render_template("update.html", record=record, error="Category and Item required for expense")
+                return render_template("update.html", record=record, accounts=accounts, error="Category and Item required for expense")
 
         try:
             amount = float(amount)
         except:
-            return render_template("update.html", record=record, error="Invalid amount")
+            return render_template("update.html", record=record, accounts=accounts, error="Invalid amount")
 
-        # ✅ Update values
+        # 🔥 UPDATE RECORD
         record["date"] = date
         record["type"] = type_
-        
-        # category handling
-        if category:
-            record["category"] = category
-        else:
-            record.pop("category", None)
-
-        # item handling
-        if item:
-            record["item"] = item
-        else:
-            record.pop("item", None)
-
+        record["category"] = category
+        record["item"] = item
+        record["account"] = account
         record["amount"] = amount
 
+        # 💾 SAVE
         save_data(f_expense, records)
 
         return redirect(url_for("view_financial", success="Updated successfully"))
 
-    return render_template("update.html", record=record)
+    # 🔥 GET REQUEST
+    accounts = load_data("accounts.json", [])
+    user_accounts = [a for a in accounts if a["username"] == user]
+
+    return render_template("update.html", record=record, accounts=user_accounts)
