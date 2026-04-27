@@ -1,104 +1,66 @@
-<hr>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Record</title>
+</head>
 
-<a href="/view">Finance</a> |
-<a href="/diary">Diary</a> |
+<body>
+
+<hr>
+<a href="/view">View</a> |
+<a href="/add">Add</a> |
+<a href="/summary">Summary</a> |
 <a href="/logout">Logout</a>
-
 <hr>
 
-<div style="margin-left:20px;">
-    <a href="/view">View</a> |
-    <a href="/add">Add</a> |
-    <a href="/summary">Summary</a>
-</div>
-<hr>
+<h1>Update Record</h1>
 
-<p>Logged in as: {{session["user"] }}</p>
+<form method="POST">
 
-<h2>Update Record</h2>
+    <!-- DATE -->
+    <label>Date:</label><br>
+    <input type="date" name="date" value="{{ record.date }}" required><br><br>
 
-<form method= "POST">
+    <!-- TYPE -->
+    <label>Type:</label><br>
+    <select name="type" id="typeSelect" required>
+        <option value="income" {% if record.type=="income" %}selected{% endif %}>Income</option>
+        <option value="expense" {% if record.type=="expense" %}selected{% endif %}>Expense</option>
+        <option value="saving" {% if record.type=="saving" %}selected{% endif %}>Saving</option>
+    </select><br><br>
 
-<label>Date:</label><br>
-<input type= "date" name= "date" value= "{{ record.date }}" required>
-<br><br>
+    <!-- CATEGORY -->
+    <label>Category:</label><br>
+    <select name="category" id="categorySelect"></select><br><br>
 
-<label>Type:</label><br>
-<select name="type" id="type" required>
-    <option value="income" {% if record.type == "income" %}selected{% endif %}>Income</option>
-    <option value="expense" {% if record.type == "expense" %}selected{% endif %}>Expense</option>
-    <option value="saving" {% if record.type == "saving" %}selected{% endif %}>Saving</option>
-</select>
-<br><br>
+    <!-- ACCOUNT -->
+    <label>Account:</label><br>
+    <select name="account">
+        <option value="">-- Select Account --</option>
+        {% for acc in accounts %}
+        <option value="{{ acc.name }}"
+        {% if record.account == acc.name %}selected{% endif %}>
+        {{ acc.name }}
+        </option>
+        {% endfor %}
+    </select><br><br>
 
-<label>Category:</label><br>
-<select name="category" id="category" required>
-    <option value="">-- Select Category --</option>
-</select>
-<br><br>
+    <input type="text" name="new_account" placeholder="Or create new account"><br><br>
 
-<label>Item:</label><br>
-<input name="item" value="{{ record.item }}">
-<br><br>
+    <!-- ITEM -->
+    <label>Item:</label><br>
+    <input type="text" name="item" value="{{ record.item }}"><br><br>
 
-<label>Amount:</label><br>
-RM <input type= "text" name= "amount" inputmode="decimal" value="{{ record.amount }}">
-<br><br>
+    <!-- AMOUNT -->
+    <label>Amount (RM):</label><br>
+    <input type="text" id="amountInput" name="amount" value="{{ record.amount }}" readonly required>
 
-<button type= "submit">Update</button>
+    <br><br>
+    <button type="submit">Update</button>
 
 </form>
 
-<br>
-<a href="/view">Back</a>
-
-<script>
-const categories = {
-    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    saving: ["Savings", "Investment", "Emergency Fund"]
-};
-
-const typeSelect = document.getElementById("type");
-const categorySelect = document.getElementById("category");
-
-// 🔥 get current values from backend
-const currentType = "{{ record.type }}";
-const currentCategory = "{{ record.category }}";
-
-// function to load categories
-function loadCategories(type) {
-
-    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
-
-    if (!categories[type]) return;
-
-    categories[type].forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat.toLowerCase();
-        option.textContent = cat;
-
-        // 🔥 restore selected category
-        if (cat.toLowerCase() === currentCategory.toLowerCase()) {
-            option.selected = true;
-        }
-
-        categorySelect.appendChild(option);
-    });
-}
-
-// 🔥 when type changes → reset category properly
-typeSelect.addEventListener("change", function () {
-    loadCategories(this.value);
-});
-
-// 🔥 ON LOAD (CRITICAL)
-window.onload = function () {
-    typeSelect.value = currentType;   // restore type
-    loadCategories(currentType);      // load categories
-};
-</script>
-
+<!-- MESSAGES -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
@@ -106,3 +68,62 @@ window.onload = function () {
 {% if success %}
 <p style="color:green;">{{ success }}</p>
 {% endif %}
+
+<br>
+<a href="/view">Back</a>
+
+<!-- 🔥 SCRIPT -->
+<script>
+
+// CATEGORY MAP
+const categories = {
+    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    saving: ["Savings", "Investment", "Emergency Fund"]
+};
+
+// LOAD CATEGORY + KEEP SELECTED
+function loadCategories() {
+    const type = document.getElementById("typeSelect").value;
+    const categorySelect = document.getElementById("categorySelect");
+
+    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+    if (categories[type]) {
+        categories[type].forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat;
+            option.textContent = cat;
+
+            if (cat === "{{ record.category }}") {
+                option.selected = true;
+            }
+
+            categorySelect.appendChild(option);
+        });
+    }
+}
+
+document.getElementById("typeSelect").addEventListener("change", loadCategories);
+
+// INITIAL LOAD
+loadCategories();
+
+
+// 🔥 TNG INPUT
+let value = Math.round(parseFloat("{{ record.amount }}") * 100);
+
+document.addEventListener("keydown", function(e) {
+    if (e.key >= "0" && e.key <= "9") {
+        value = value * 10 + parseInt(e.key);
+    } else if (e.key === "Backspace") {
+        value = Math.floor(value / 10);
+    }
+
+    document.getElementById("amountInput").value = (value / 100).toFixed(2);
+});
+
+</script>
+
+</body>
+</html>
