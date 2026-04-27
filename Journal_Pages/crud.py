@@ -1,84 +1,57 @@
-# IMPORT  ===========================================================================
 import json
-import os
-#Os = Sure file exists and handle file operations
-from datetime import datetime
 
-# LOAD (READ)  ===========================================================================
+FILE = "data/diary.json"
+
+# Read function ==========================================================================
 def load_entries():
-    #load_entries = Load existing diary entries from the JSON file
-    if not os.path.exists("diary.json"):
-        with open("diary.json", "w") as file:
-            json.dump([], file)
-            #Empty list if file doesn't exist
-             
-    with open("diary.json", "r") as file:
-        return json.load(file)
-        #JSON data to Python list
 
-# CREATE (ADD)  ===========================================================================
-def add_entry(content, moods):
-    entries = load_entries()
-    #Entries = list (all entries) 多个日记
-    #Entry = one dictionary (one record) 一条日记
-
-    new_id = 1
-    if entries:
-        new_id = max(e["id"] for e in entries) + 1
-        #Find largest id in existing entries and add 1 for new entry 找最大编号，再加1
-        # For e in entries = Loop through existing entries
-        #E["id"] = Get id of each entry
-        #(E["id"] for e in entries) = Become a id list
-        #Max() = Get highest id
-        #New_id = Highest id + 1 = Unique id for new entry
+    try:
+        with open(FILE,"r") as f:
+            return json.load(f)
+            #convert json to python list (or dictionary)
+            #[] is list, {} is dict
+            #list = a container that holds multiple items like fruits = ["apple", "banana", "orange"]
         
-    entries.append({
-        "id": new_id,
-        "content" : content,
-        "mood": moods,
-        "timestamp": datetime.now().strftime("%D-%m-%y %H:%M:%S")
-    })
+    except:
+        return[]
+        #empty list if file doesn't exist
 
-    with open("diary.json","w") as file:
-        json.dump(entries, file, indent=4)
+# Save function ==========================================================================
+def save_entries(entries):
+    with open(FILE, "w") as f:
+        json.dump(entries, f, indent=4)
+        #convert python list (or dictionary) to json
+        #indent=4 is for pretty printing, it adds indentation to make the json file more readable
 
-    return entries
+# Add function ==========================================================================
+def add_entry(entry):
+    #entry is a dictionary that contains the data for a single journal entry
+    entries = load_entries()
+    entries.append(entry)
+    #save the updated list of entries back to the file
+    #append() is a method that adds an item to the end of a list, in this case we are adding the new entry to the list of entries
+    save_entries(entries)
 
-# DELETE  ===========================================================================
-def delete_entry(entry_id):
+# Update function ==========================================================================
+def update_entry(new_entry):
     entries = load_entries()
 
-    entries = [e for e in entries if str(e["id"]) != str(entry_id)]
-    #Create a new list of entries
-    #For e in entries = loop through each entry
-    #E["id"] = get the id of each entry
-    #Str(e["id"]) != str(entry_id)
-    #Keep the entry if its id is NOT equal to the delete id
-    #把“符合条件的”全部放进新 list
-    
-    with open("diary.json","w") as file:
-    #Open the file and prepare to overwrite with new data
-        json.dump(entries, file, indent=4)
+    for i in range(len(entries)):
+    #from 0 to the number of entries in the list, we are iterating through the list of entries
+    #len() is the number of items in a list, in this case we are getting the number of entries in the list of entries
+        if entries[i]["id"] == new_entry["id"]:
+        #Find the entry with the same id as the new entry, we are comparing the id of each entry in the list of entries with the id of the new entry
+            entries[i] = new_entry
 
-    return entries
-
-# UPDATE  ===========================================================================
-def update_entry(entry_id, new_content=None, mood=None):
-    entries = load_entries()
-
-    for entry in entries:
-        if entry["id"] == entry_id:
-
-            if new_content is not None:
-                entry["content"] = new_content
-                # update content
-                # 更新内容
-
-            if mood is not None:
-                entry["mood"] = mood
-                # update mood
-                # 更新心情
+            break
 
     save_entries(entries)
 
-    return entries
+# Delete function ==========================================================================
+def delete_entry(entry_id):
+    entries = load_entries()
+    entries = [e for e in entries if e["id"] != entry_id]
+    #for e in entries = take one entry at a time from the list of entries
+    #e = diary entry, we are assigning the current entry to the variable e
+    #if e["id"] != entry_id = if the id of the current entry is not equal to the id of the entry we want to delete then we keep it in the list
+    save_entries(entries)
