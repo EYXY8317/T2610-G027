@@ -2,8 +2,36 @@
 <html>
 <head>
     <title>Financial Records</title>
+
+    <!-- 🔥 BADGE STYLE -->
+    <style>
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .income {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .expense {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .saving {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
 </head>
+
 <body>
+
 <hr>
 
 <a href="/view">Finance</a> |
@@ -17,6 +45,7 @@
     <a href="/add">Add</a> |
     <a href="/summary">Summary</a>
 </div>
+
 <hr>
 
 <h1>Financial Records</h1>
@@ -37,31 +66,33 @@
 <p style="color:red;">{{ error }}</p>
 {% endif %}
 
-<!-- 🔥 EMPTY STATE -->
 {% if records|length == 0 %}
 <p>No records found</p>
 
 {% else %}
 
+<!-- 🔥 FILTER -->
 <form method="GET">
-
-    <label>Filter by Account:</label>
-    <br><br>
+    <label>Filter by Account:</label><br><br>
 
     <select name="account">
-
         <option value="">All Accounts</option>
 
+        {% for acc in accounts %}
+        <option value="{{ acc.name }}"
+        {% if request.args.get('account') == acc.name %}selected{% endif %}>
+            {{ acc.name }}
+        </option>
+        {% endfor %}
     </select>
 
     <button type="submit">Filter</button>
-
 </form>
 
 <br>
 
 <!-- 🔥 TABLE -->
-<table border="1">
+<table border="1" cellpadding="6" cellspacing="0">
     <tr>
         <th>Date</th>
         <th>Type</th>
@@ -75,11 +106,25 @@
     {% for r in records %}
     <tr>
         <td>{{ r.date }}</td>
-        <td>{{ r.type }}</td>
+
+        <!-- TYPE BADGE -->
+        <td>
+            <span class="badge {{ r.type }}">
+                {{ r.type }}
+            </span>
+        </td>
+
         <td>{{ r.get('category', '-') }}</td>
+        <td>{{ r.get('account', '-') }}</td>
         <td>{{ r.get('item', '-') }}</td>
-        <th>Account</th>
-        <td>{{ "%.2f"|format(r.amount) }}</td>
+
+        <!-- AMOUNT BADGE -->
+        <td>
+            <span class="badge {{ r.type }}">
+                {% if r.type == 'income' %}+{% elif r.type == 'expense' %}-{% endif %}
+                RM {{ "%.2f"|format(r.amount) }}
+            </span>
+        </td>
 
         <td>
             <a href="/update/{{ loop.index0 }}">Edit</a> |

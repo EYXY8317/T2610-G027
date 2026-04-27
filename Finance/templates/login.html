@@ -22,8 +22,38 @@
         <label>Username:</label><br>
         <input type="text" name="username" required><br><br>
 
-        <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+<style>
+.input-container {
+    position: relative;
+    width: 250px;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 8px 35px 8px 8px; /* space for icon */
+    box-sizing: border-box;
+}
+
+.toggle-eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+}
+</style>
+
+
+<label>Password:</label><br>
+
+<div class="input-container">
+    <input type="password" id="password" name="password">
+
+    <span id="eye" class="toggle-eye" onclick="togglePassword()">
+        🙈
+    </span>
+</div><br>
 
         <button type="submit">Login</button>
     </form>
@@ -50,6 +80,21 @@
     {% if request.args.get("success") %}
     <p style="color:green;">{{ request.args.get("success") }}</p>
     {% endif %}
+
+<script>
+function togglePassword() {
+    const input = document.getElementById("password");
+    const eye = document.getElementById("eye");
+
+    if (input.type === "password") {
+        input.type = "text";
+        eye.textContent = "🙉";
+    } else {
+        input.type = "password";
+        eye.textContent = "🙈";
+    }
+}
+</script>
 
 </body>
 </html>

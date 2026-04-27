@@ -192,17 +192,43 @@ def summary():
 
     top_category = max(category_totals, key=category_totals.get) if category_totals else "None"
 
+    # 🔥 TOP 3 CATEGORIES
+    top_categories = sorted(
+    category_totals.items(),
+    key=lambda x: x[1],
+    reverse=True
+    )[:3]
+
+    total_expense = sum(category_totals.values())
+
+    top_categories_with_percent = [
+        (cat, amt, (amt / total_expense * 100) if total_expense > 0 else 0)
+        for cat, amt in top_categories
+    ]
+
+    total_expense = sum(
+    r["amount"] for r in user_records if r["type"] == "expense"
+    )
+
+    top_category_amount = category_totals[top_category] if top_category else 0
+
+    top_category_percent = (
+        (top_category_amount / total_expense * 100)
+        if total_expense > 0 else 0
+    )
+
     # 🧠 smart insight
     insight = "No significant spending pattern yet."
     if category_totals:
         insight = f"You spent most on {top_category} this month."
 
     return render_template(
-        "summary.html",
-        income=income,
-        expense=expense,
-        balance=balance,
-        daily_avg=round(daily_avg, 2),
-        top_category=top_category,
-        insight=insight
-    )
+    "summary.html",
+    income=income,
+    expense=expense,
+    balance=balance,
+    daily_avg=round(daily_avg, 2),
+    top_category=top_category,
+    insight=insight,
+    top_categories=top_categories_with_percent,
+)
