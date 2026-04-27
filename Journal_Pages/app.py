@@ -71,14 +71,17 @@ def home():
 def autosave():
 
 # DEBUG: check if route is working ---------------------------- 
-    print("ROUTE HIT")
+    print("ROUTE HIT", flush=True)
 
 # GET DATA ----------------------------------------------------------------
     data = request.get_json()
     print("DATA:", data)
 
+    if not data:
+        return "NO DATA"
+
 # Get content -----------------------------
-    content = data["content"]
+    content = data.get("content", "")
     print("AUTOSAVE:", content)
 
 # LOAD EXISTING DATA ----------------------------------------------------------------
@@ -100,4 +103,4 @@ def autosave():
     return "OK"
 
 # RUN APP  ===========================================================================
-app.run(debug=True)
+app.run(debug=True, use_reloader=False)

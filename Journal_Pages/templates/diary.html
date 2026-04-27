@@ -12,7 +12,7 @@
 <!-- CREATE / EDIT SECTION 创建 + 编辑 ========================================================== -->
 <textarea 
 id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
-{{ latest }}
+{{ latest.content if latest else '' }}
 </textarea>
 <!--
 1. empty → editable, has data → readonly
@@ -26,25 +26,6 @@ id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
 
 <button id="editBtn">Edit</button>
 
-<!-- MOOD SECTION 情绪选择 ========================================================== -->
-<label>Mood:</label>
-<br>
-
-<select name="mood" multiple>
-    <option value="happy">Happy</option>
-    <option value="calm">Calm</option>
-    <option value="confused">Confused</option>
-    <option value="bored">Bored</option>
-    <option value="sad">Sad</option>
-    <option value="angry">Angry</option>
-    <option value="stress">Stress</option>
-    <option value="anxious">Anxious</option>
-</select>
-
-<br><br>
-
-<hr>
-
 <!-- READ SECTION 查看全部日记 ========================================================== -->
 {% for entry in entries %}
 <!--
@@ -52,6 +33,23 @@ id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
 2. percentage = Jinja2 模板语法（template syntax
 3. for loop Curly = bracesOutput
 -->
+
+<div class="date-mood" data-id="{{ entry.id}}">
+<!--
+1.container for mood selection
+2. data-id = store entry id for JS use
+    -->
+    <span>{{ entry.date }}</span>
+    <!-- display date -->
+    <div class="mood-circle" onclick="openMoodPicker(this)">
+    <!-- 
+    1. clickable circle for mood selection 
+    2. onclick triggers a JavaScript function when user clicks
+    3. openMoodPicker() opens the mood selection UI   -->
+        {{ entry.mood if entry.mood else "no mood" }}
+        <!--display mood if it exists, otherwise show default text-->
+    </div>
+</div>
 
 <!-- DELETE SECTION 删除 ========================================================== -->
     <form method="POST">
@@ -65,6 +63,12 @@ id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
 
 <!-- JS SCRIPT ========================================================== -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<div id="moodPicker" style="display:none;">
+    <button onclick="selectMood('happy')">happy</button>
+    <button onclick="selectMood('sad')">sad</button>
+    <button onclick="selectMood('angry')">angry</button>
+</div>
 
 </body>
 </html>
