@@ -5,70 +5,30 @@
 </head>
 <body>
 
-<!-- TITLE SECTION 标题部分 ========================================================== -->
 <h1>Diary</h1>
 <h2>Today: {{ current_date }}</h2>
 
-<!-- CREATE / EDIT SECTION 创建 + 编辑 ========================================================== -->
 <textarea 
-id="diaryBox" name="content" {{ '' if not latest else 'readonly' }}>
+id="diaryBox"
+data-id="{{ latest.id if latest else '' }}"
+{{ '' if not latest else 'readonly' }}>
 {{ latest.content if latest else '' }}
 </textarea>
-<!--
-1. empty → editable, has data → readonly
-2. (id="diaryBox") = used by JS 
-3. if empty → ""
-4. if has data → "readonly"
-5. latest = display content
-    -->
 
 <br><br>
-
 <button id="editBtn">Edit</button>
 
-<!-- READ SECTION 查看全部日记 ========================================================== -->
+<hr>
+
 {% for entry in entries %}
-<!--
-1. loop through all entries
-2. percentage = Jinja2 模板语法（template syntax
-3. for loop Curly = bracesOutput
--->
-
-<div class="date-mood" data-id="{{ entry.id}}">
-<!--
-1.container for mood selection
-2. data-id = store entry id for JS use
-    -->
-    <span>{{ entry.date }}</span>
-    <!-- display date -->
-    <div class="mood-circle" onclick="openMoodPicker(this)">
-    <!-- 
-    1. clickable circle for mood selection 
-    2. onclick triggers a JavaScript function when user clicks
-    3. openMoodPicker() opens the mood selection UI   -->
-        {{ entry.mood if entry.mood else "no mood" }}
-        <!--display mood if it exists, otherwise show default text-->
-    </div>
-</div>
-
-<!-- DELETE SECTION 删除 ========================================================== -->
-    <form method="POST">
-        <input type="hidden" name="delete_id" value="{{ entry.id }}">
-        <button type="submit">Delete</button>
-    </form>
-
-    <hr>
-
+<form method="POST">
+    <input type="hidden" name="delete_id" value="{{ entry.id }}">
+    <button type="submit">Delete</button>
+</form>
+<hr>
 {% endfor %}
 
-<!-- JS SCRIPT ========================================================== -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-
-<div id="moodPicker" style="display:none;">
-    <button onclick="selectMood('happy')">happy</button>
-    <button onclick="selectMood('sad')">sad</button>
-    <button onclick="selectMood('angry')">angry</button>
-</div>
 
 </body>
 </html>
