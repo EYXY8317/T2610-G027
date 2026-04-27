@@ -154,76 +154,24 @@ CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportat
 def home():
     return redirect(url_for("login"))
 
+@app.route("/add_account", methods=["GET", "POST"])
+def add_account():
 
-@app.route("/add", methods=["GET", "POST"])
-def add_financial():
-
-    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # 🔥 ALWAYS load accounts first
-    accounts = load_data("accounts.json", [])
-    user_accounts = [a for a in accounts if a["username"] == session["user"]]
-
     if request.method == "POST":
+        name = request.form.get("account")
 
-        date = request.form.get("date")
-        type_ = request.form.get("type")
-        category = request.form.get("category")
-        item = request.form.get("item")
-        amount = request.form.get("amount")
+        accounts = load_data("accounts.json", [])
 
-        # 🔥 GET ACCOUNT INPUTS
-        new_account = request.form.get("new_account")
-        account = request.form.get("account")
-
-        # 🔥 IF USER TYPES NEW ACCOUNT
-        if new_account:
-            account = new_account
-
-            if not any(a["name"] == account and a["username"] == session["user"] for a in accounts):
-                accounts.append({
-                    "username": session["user"],
-                    "name": account
-                })
-                save_data("accounts.json", accounts)
-
-            # 🔥 refresh user_accounts after adding
-            user_accounts = [a for a in accounts if a["username"] == session["user"]]
-
-        # 🔥 VALIDATION
-        if not account:
-            return render_template("add.html", error="Select or create account", accounts=user_accounts)
-
-        if not date or not type_ or not amount:
-            return render_template("add.html", error="Date, Type and Amount are required", accounts=user_accounts)
-
-        if type_ == "expense" and (not category or not item):
-            return render_template("add.html", error="Category and Item required for expense", accounts=user_accounts)
-
-        try:
-            amount = float(amount)
-        except:
-            return render_template("add.html", error="Invalid amount", accounts=user_accounts)
-
-        # 🔥 CREATE RECORD
-        record = {
+        accounts.append({
             "username": session["user"],
-            "date": date,
-            "type": type_,
-            "category": category if category else "-",
-            "account": account,
-            "item": item if item else "-",
-            "amount": amount
-        }
+            "name": name
+        })
 
-        # 💾 SAVE
-        records = load_data(f_expense, [])
-        records.append(record)
-        save_data(f_expense, records)
+        save_data("accounts.json", accounts)
 
-        return render_template("add.html", success="Record added!", accounts=user_accounts)
+        return redirect(url_for("add_financial"))
 
-    # 🔥 GET request
-    return render_template("add.html", accounts=user_accounts)
+    return render_template("add_account.html")

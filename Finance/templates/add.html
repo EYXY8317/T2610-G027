@@ -1,64 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Life Pages - Add Record</title>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<hr>
+<a href="/view">View</a> |
+<a href="/add">Add</a> |
+<a href="/summary">Summary</a> |
+<a href="/logout">Logout</a>
 <hr>
 
-<a href="/view">Finance</a> |
-<a href="/diary">Diary</a> |
-<a href="/logout">Logout</a>
+<h1>Add Record</h1>
+<p>Logged in as: {{ session.user }}</p>
 
 <hr>
 
-<p>Logged in as: {{session["user"] }}</p>
-
-<a href="/logout">Logout</a>
-
-<!--
-    <form> means where does it start from
-    method="POST" sends data securely to server
--->
 <form method="POST">
-    Date:
-    <input type= "date" name="date" required><br>
 
-    Type:
-    <select name="type">
+    <!-- DATE -->
+    <label>Date:</label><br>
+    <input type="date" name="date" required><br><br>
+
+    <!-- TYPE -->
+    <label>Type:</label><br>
+    <select name="type" required>
+        <option value="">-- Select Type --</option>
         <option value="income">Income</option>
         <option value="expense">Expense</option>
-        <option value="savings">Savings</option>
-    </select><br>
+    </select><br><br>
 
-    Category:
-    <select name="categoty">
-        <option value="">-- None --</option>
-
-        <option value="food">Food </option>
+    <!-- CATEGORY -->
+    <label>Category:</label><br>
+    <select name="category">
+        <option value="">-- Select Category --</option>
+        <option value="food">Food</option>
         <option value="transport">Transport</option>
-        <option value="travel">Travel</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="education">Education</option>
-        <option value="rent">Rent</option>
-        <option value="other">Other</option>
-    </select><br>
+        <option value="salary">Salary</option>
+    </select><br><br>
 
-    Item:
-    <input name="item"><br>
+    <!-- 🔥 ACCOUNT SECTION -->
+    <fieldset style="width:300px;">
+        <legend><b>Account</b></legend>
 
-    Amount:
-    RM <input type="text" name="amount" inputmode="decimal" required><br>
+        <!-- Existing accounts -->
+        <select name="account">
+            <option value="">-- Select Account --</option>
+            {% for acc in accounts %}
+            <option value="{{ acc.name }}">{{ acc.name }}</option>
+            {% endfor %}
+        </select>
 
-    <!--
-        button creates a clickable button
-        type="submit" sends the form to flask when button is clicked
-        add is just a text shown on the webage
-    -->
+        <br><br>
+
+        <!-- Create new -->
+        <input type="text" name="new_account" placeholder="Or create new account">
+
+    </fieldset>
+
+    <br>
+
+    <!-- ITEM -->
+    <label>Item:</label><br>
+    <input type="text" name="item"><br><br>
+
+    <!-- AMOUNT -->
+    <label>Amount (RM):</label><br>
+    <input type="text" name="amount" required><br><br>
+
     <button type="submit">Add</button>
+
 </form>
-<br>
 
-<!--
-    <a> is to let HTML know it is a link
-    href="/view" is the hyperlink for view section
--->
-<a href="/view">View Records</a>
-
+<!-- MESSAGES -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
@@ -66,3 +83,10 @@
 {% if success %}
 <p style="color:green;">{{ success }}</p>
 {% endif %}
+
+<br>
+
+<a href="/view">View Records</a>
+
+</body>
+</html>
