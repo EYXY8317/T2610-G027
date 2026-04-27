@@ -1,0 +1,34 @@
+[
+    {
+        "username": "test",
+        "date": "2026-04-01",
+        "type": "income",
+        "category": "salary",
+        "item": "-",
+        "amount": 500.0
+    },
+    {
+        "username": "test",
+        "date": "2026-04-25",
+        "type": "expense",
+        "category": "food",
+        "item": "hotdog",
+        "amount": 10.0
+    },
+    {
+        "username": "test",
+        "date": "2026-04-02",
+        "type": "saving",
+        "category": "savings",
+        "item": "item",
+        "amount": 100.0
+    },
+    {
+        "username": "test",
+        "date": "2026-04-25",
+        "type": "expense",
+        "category": "transport",
+        "item": "train",
+        "amount": 10.0
+    }
+]

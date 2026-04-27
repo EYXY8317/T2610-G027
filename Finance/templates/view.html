@@ -12,11 +12,16 @@
 
 <hr>
 
+<div style="margin-left:20px;">
+    <a href="/view">View</a> |
+    <a href="/add">Add</a> |
+    <a href="/summary">Summary</a>
+</div>
+<hr>
+
 <h1>Financial Records</h1>
 
 <p>Logged in as: {{ session.get("user") }}</p>
-
-<a href="/logout">Logout</a>
 
 <h2>Records</h2>
 
@@ -38,12 +43,30 @@
 
 {% else %}
 
+<form method="GET">
+
+    <label>Filter by Account:</label>
+    <br><br>
+
+    <select name="account">
+
+        <option value="">All Accounts</option>
+
+    </select>
+
+    <button type="submit">Filter</button>
+
+</form>
+
+<br>
+
 <!-- 🔥 TABLE -->
 <table border="1">
     <tr>
         <th>Date</th>
         <th>Type</th>
         <th>Category</th>
+        <th>Account</th>
         <th>Item</th>
         <th>Amount (RM)</th>
         <th>Actions</th>
@@ -55,6 +78,7 @@
         <td>{{ r.type }}</td>
         <td>{{ r.get('category', '-') }}</td>
         <td>{{ r.get('item', '-') }}</td>
+        <th>Account</th>
         <td>{{ "%.2f"|format(r.amount) }}</td>
 
         <td>
