@@ -51,7 +51,7 @@
         .main {
             flex: 1;
             padding: 25px;   
-            background: color #f7f7f7;      
+            background-color: #f7f7f7;      
         }
 
         /* ===== Calendar Styles  ===== */
@@ -161,14 +161,14 @@
         <div class="menu-item">Today</div>
 
         <div class="section-title">To-Do Lists</div>
-        <div class="menu-item">Work Tasks</div>
-        <div class="menu-item">Shopping List</div>
-        <div class="menu-item">Study Plan</div>
-        <div class="menu-item">Personal Notes</div>
-        <div class="menu-item">Workout Plan</div>
+     <div class="menu-item" onclick="showPage('workPage')">Work Tasks</div>
+     <div class="menu-item">Shopping List</div>
+     <div class="menu-item">Study Plan</div>
+     <div class="menu-item">Personal Notes</div>
+     <div class="menu-item">Workout Plan</div>
 
         <div class="section-title">Calendar</div>
-        <div class="menu-item active">Calendar</div>
+        <div class="menu-item active" onclick="showCalendar()">Calendar</div>
 
         <div class="section-title">Special</div>
         <div class="menu-item">Countdown</div>
@@ -182,20 +182,20 @@
     <!-- ===== Main Content Area ===== -->
     <div class="main">
 
-    <!-- Top Bar -->
-    <div class="calendar-top">
+    <!--Calendar View -->
+   <div id="calendarView">
 
+    <div class="calendar-top">
         <div class="calendar-header">
-            <button onclick="prevMonth()">❮</button>
+            <button onclick="prevMonth()">‹</button>
             <h2 id="monthTitle"></h2>
-            <button onclick="nextMonth()">❯</button>
+            <button onclick="nextMonth()">›</button>
         </div>
 
         <div class="view-buttons">
             <button onclick="setView('month')">Month View</button>
             <button onclick="setView('year')">Year View</button>
         </div>
-
     </div>
 
     <div class="calendar">
@@ -218,9 +218,68 @@
         <h3>Year View (Coming Soon)</h3>
     </div>
 
+</div>
+
+    </div>
+
+    <!-- Task View -->
+    <div id="workPage" class="page" style="display:none;">
+
+        <h2>Work Tasks</h2>
+
+        <input id="taskText" placeholder="Enter task">
+        <input id="taskDate" type="date">
+
+        <button onclick="addTask('work')">Add</button>
+
+        <h3>Tasks</h3>
+        <div id="taskList"></div>
+
+        <h3>Completed</h3>
+        <div id="completedList"></div>
+
+        <h3>Trash</h3>
+        <div id="trashList"></div>
+
+    </div>
+
+  </div>
+
 </div>   
 <!-- ===== JavaScript File ===== -->
+<script src="tasks.js"></script> 
 <script src="calendar.js"></script>
+
+<script>
+function showPage(pageId) {
+
+    // Hide calendar
+   document.getElementById("calendarView").style.display = "none";
+
+    // Hide all pages
+    let pages = document.querySelectorAll(".page");
+    pages.forEach(p => p.style.display = "none");
+
+    // Show selected page
+    document.getElementById(pageId).style.display = "block";
+
+    // Load tasks
+    if (pageId === "workPage") {
+        renderTasks("work");
+    }
+}
+
+function showCalendar() {
+
+    // Show calendar
+    document.getElementById("calendarView").style.display = "block";
+
+    // Hide all task pages
+    let pages = document.querySelectorAll(".page");
+    pages.forEach(p => p.style.display = "none");
+}
+
+</script>
 
 </body>
 </html>
