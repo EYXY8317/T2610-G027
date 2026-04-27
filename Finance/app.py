@@ -436,17 +436,20 @@ def view_financial():
     selected_account = request.args.get("account")
 
     if selected_account:
-        user_records = [r for r in user_records if r["account"] == selected_account]
+        user_records = [r for r in user_records if r.get("account") == selected_account]
 
     # 🔄 Sort by date (newest first)
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    # 📤 Send to HTML
+    accounts = load_data("accounts.json", [])
+    user_accounts = [a for a in accounts if a["username"] == user]
+
     return render_template(
-    "view.html",
-    records=sorted_records,
-    selected_account=selected_account
-)
+        "view.html",
+        records=sorted_records,
+        selected_account=selected_account,
+        accounts=user_accounts   # 🔥 THIS LINE FIXES EVERYTHING
+    )
 
 """
 update finance starts here
