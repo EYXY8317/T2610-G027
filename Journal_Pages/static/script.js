@@ -1,40 +1,16 @@
-const box = document.getElementById("diaryBox");
+let box = document.getElementById("box");
 
-// 🔥 get id
-let currentId = box.dataset.id || null;
+box.addEventListener("input", function() {
 
-let timeout = null;
+    let data = new FormData();
+    data.append("content", box.value);
+    //content = key
+    //box.value = value
+    data.append("mood", "neutral");
 
-box.addEventListener("input", function () {
+    fetch("/autosave", {
+        method: "POST",
+        body: data
+    });
 
-    clearTimeout(timeout);
-
-    timeout = setTimeout(function () {
-
-        fetch("/autosave", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: currentId,
-                content: box.value
-            })
-        })
-
-        .then(res => res.text())
-        .then(data => {
-
-            // 🔥 first time save
-            if (!currentId && data) {
-                currentId = data;
-                box.dataset.id = data;
-            }
-        });
-
-    }, 2000);
 });
-
-document.getElementById("editBtn").onclick = () => {
-    box.removeAttribute("readonly");
-};

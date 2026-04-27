@@ -1,6 +1,6 @@
 import json
 
-FILE = "data/diary.json"
+FILE = "journal.json"
 
 # Read function ==========================================================================
 def load_entries():
@@ -27,9 +27,18 @@ def save_entries(entries):
 def add_entry(entry):
     #entry is a dictionary that contains the data for a single journal entry
     entries = load_entries()
-    entries.append(entry)
-    #save the updated list of entries back to the file
-    #append() is a method that adds an item to the end of a list, in this case we are adding the new entry to the list of entries
+    
+    found = False
+    
+    for i in range(len(entries)):
+        if entries[i]["date"] == entry["date"]:
+            entries[i] = entry
+            found = True
+            break
+
+    if not found:
+        entries.append(entry)
+
     save_entries(entries)
 
 # Update function ==========================================================================
