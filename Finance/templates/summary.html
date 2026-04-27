@@ -21,8 +21,18 @@
 
     <!-- Monthly Overview -->
     <h3>Monthly Overview</h3>
-    <p>Income: RM {{ income }}</p>
-    <p>Expense: RM {{ expense }}</p>
+
+    <h1>RM {{ "%.2f"|format(balance) }}</h1>
+
+    {% if balance >= 0 %}
+    <p style="color:green;">Positive Balance</p>
+    {% else %}
+    <p style="color:red;">Negative Balance</p>
+    {% endif %}
+
+    <p>Income: RM {{ "%.2f"|format(income) }}</p>
+    <p>Expense: RM {{ "%.2f"|format(expense) }}</p>
+
     {% if balance < 0 %}
     <p style="color:red;">
     {% else %}
@@ -35,13 +45,35 @@
 
     <!-- Daily Average -->
     <h3>Daily Average</h3>
-    <p>RM {{ daily_avg }} / day</p>
+    <p>
+    RM {{ "%.2f"|format(daily_avg) }} / day
+
+    {% if daily_avg < 5 %}
+    (low spending 👍)
+    {% elif daily_avg < 20 %}
+    (moderate)
+    {% else %}
+    (high spending ⚠️)
+    {% endif %}
+    </p>
 
     <hr>
 
     <!-- Top Category -->
     <h3>Top Category</h3>
-    <p>{{ top_category }}</p>
+    <h3>Top Categories</h3>
+
+    {% if top_categories %}
+    <ol>
+        {% for cat, amt, percent in top_categories %}
+        <li>
+            {{ cat }} ({{ "%.0f"|format(percent) }}%)
+        </li>
+        {% endfor %}
+    </ol>
+    {% else %}
+    <p>No data</p>
+    {% endif %}
 
     <hr>
 

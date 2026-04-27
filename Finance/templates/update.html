@@ -24,7 +24,6 @@
     <!-- TYPE -->
     <label>Type:</label><br>
     <select name="type" id="typeSelect" required>
-        <option value="">-- Select Type --</option>
         <option value="income" {% if record.type=="income" %}selected{% endif %}>Income</option>
         <option value="expense" {% if record.type=="expense" %}selected{% endif %}>Expense</option>
         <option value="saving" {% if record.type=="saving" %}selected{% endif %}>Saving</option>
@@ -61,6 +60,7 @@
 
 </form>
 
+<!-- MESSAGES -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
@@ -69,6 +69,10 @@
 <p style="color:green;">{{ success }}</p>
 {% endif %}
 
+<br>
+<a href="/view">Back</a>
+
+<!-- 🔥 SCRIPT -->
 <script>
 
 // CATEGORY MAP
@@ -78,7 +82,7 @@ const categories = {
     saving: ["Savings", "Investment", "Emergency Fund"]
 };
 
-// INIT CATEGORY
+// LOAD CATEGORY + KEEP SELECTED
 function loadCategories() {
     const type = document.getElementById("typeSelect").value;
     const categorySelect = document.getElementById("categorySelect");
@@ -100,13 +104,13 @@ function loadCategories() {
     }
 }
 
-// CHANGE EVENT
 document.getElementById("typeSelect").addEventListener("change", loadCategories);
 
-// INIT LOAD
+// INITIAL LOAD
 loadCategories();
 
-// TNG INPUT
+
+// 🔥 TNG INPUT
 let value = Math.round(parseFloat("{{ record.amount }}") * 100);
 
 document.addEventListener("keydown", function(e) {
