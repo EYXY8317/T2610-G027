@@ -63,15 +63,22 @@ def delete_entry(entry_id):
     return entries
 
 # UPDATE  ===========================================================================
-def update_entry(entry_id,new_content):
-# Define a function to update an existing entry
+def update_entry(entry_id, new_content=None, mood=None):
     entries = load_entries()
 
-    for e in entries:
-        if str(e["id"]) == str(entry_id):
-            e["content"] = new_content
+    for entry in entries:
+        if entry["id"] == entry_id:
 
-    with open ("diary.json","w") as file:
-        json.dump(entries, file, indent=4)
+            if new_content is not None:
+                entry["content"] = new_content
+                # update content
+                # 更新内容
+
+            if mood is not None:
+                entry["mood"] = mood
+                # update mood
+                # 更新心情
+
+    save_entries(entries)
 
     return entries

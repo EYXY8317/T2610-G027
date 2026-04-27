@@ -15,10 +15,6 @@ box.addEventListener("input", function() {
 //when user types in textarea, run this function
 //.addEventListener = listen for an event (in this case, "input" which means when the user types something in the textarea)
 
-    if (box.hasAttribute("readonly")) {
-        return;
-    }
-    // if the textarea has the "readonly" attribute, do nothing (return)
 
     console.log(box.value);
 //print current text in console
@@ -34,7 +30,7 @@ box.addEventListener("input", function() {
 
         console.log("SENDING...");
 
-        fetch("http://127.0.0.1:5000/autosave", {
+        fetch("/autosave", {
         //send a POST request to the server at the "/autosave" endpoint
             method:"POST",
             //send data to the server using the POST method
@@ -78,3 +74,54 @@ editBtn.addEventListener("click", function() {
     //remove the "readonly" attribute from the textarea, making it editable
         //.removeAttribute("readonly") = remove the "readonly" attribute from the textarea element, allowing the user to edit the content
 });
+
+//MOOD AUTO SAVE =========================================
+let currentEntry = null;
+//variable to store the currently selected diary entry
+// 必须记住用户点的是哪一条日记，不然不知道改谁
+
+function openMoodPicker(el) {
+//function runs when user clicks the mood area
+//function definition: open mood selection UI
+
+    currentEntry = el.closest(".date-mood");
+    //find the parent entry container
+
+    document.getElementById("moodPicker").style.display = "block";
+    //show the mood picker UI
+    //block" makes hidden element visible
+}
+
+function selectMood(mood) {
+   
+    let circle = currentEntry.querySelector(".mood-circle");
+    //find the mood display area inside current entry
+    //.querySelector(".mood-circle") = find the element with class "mood-circle" inside the current entry container
+    circle.innerText = mood;
+
+
+    fetch("/update-mood", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            id: currentEntry.dataset.id,
+          
+
+            mood: mood
+         
+        })
+    })
+
+    .then(response => response.text())
+    .then(data => {
+        console.log("MOOD SAVED:", data);
+    })
+
+    .catch(error => {
+        console.error("ERROR:", error);
+    });
+
+    document.getElementById("moodPicker").style.display = "none";
+}
