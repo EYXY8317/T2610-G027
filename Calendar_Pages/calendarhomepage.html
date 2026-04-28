@@ -145,6 +145,12 @@
            background-color: #ddd;
         }
 
+        #workPage {
+          margin-top: 20px;
+          width: 100%;
+          max-width: 500px;
+        }
+
     </style>
 </head>
 
@@ -253,19 +259,19 @@
 <script>
 function showPage(pageId) {
 
-    // Hide calendar
-   document.getElementById("calendarView").style.display = "none";
-
     // Hide all pages
     let pages = document.querySelectorAll(".page");
     pages.forEach(p => p.style.display = "none");
 
-    // Show selected page
-    document.getElementById(pageId).style.display = "block";
+    // Hide calendar
+    let calendar = document.getElementById("calendarView");
+    if (calendar) calendar.style.display = "none";
 
-    // Load tasks
-    if (pageId === "workPage") {
-        renderTasks("work");
+    // Show selected
+    if (pageId === "calendar") {
+        calendar.style.display = "block";
+    } else {
+        document.getElementById(pageId).style.display = "block";
     }
 }
 
