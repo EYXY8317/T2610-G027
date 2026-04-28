@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diary</title>
+</head>
+
+<body>
+<h1>Diary</h1>
+
+<!-- Display today's date -->
+<h2>{{ today }}</h2>
+
+<!-- Mood selection -->
+<label for="mood">Mood:</label>
+
+<select id="mood" {{ "disabled" if mode == "view" else "" }}>
+    <option value="">Select mood</option>
+    <option value="happy" {{ "selected" if entry and entry.mood == "happy" else "" }}>😊 Happy</option>
+    <option value="sad" {{ "selected" if entry and entry.mood == "sad" else "" }}>😢 Sad</option>
+    <option value="angry" {{ "selected" if entry and entry.mood == "angry" else "" }}>😡 Angry</option>
+</select>
+<br><br>
+
+<!-- Text area for diary entry -->
+<textarea id="box" 
+    placeholder="Write your diary here..."
+    {{ "readonly" if mode == "view" else "" }}>
+{{ entry.content if entry else "" }}</textarea>
+
+<!-- Save status message -->
+<p id="saveStatus"></p>
+
+<!-- Edit and Delete buttons -->
+<button id="editBtn">Edit</button>
+<button id="deleteBtn">Delete</button>
+
+<!-- Pass the mode variable to JavaScript -->
+ <script>
+    let mode = "{{ mode }}";
+</script>
+
+<!-- Build JavaScript -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
