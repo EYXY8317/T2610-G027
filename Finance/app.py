@@ -599,7 +599,10 @@ def summary():
     current_month = now.strftime("%Y-%m")
 
     # 📊 filter this month
-    month_records = [r for r in user_records if r["date"].startswith(current_month)]
+    month_records = [
+        r for r in user_records
+        if r["date"].startswith(current_month)
+    ]
 
     # 🔢 totals
     income = sum(r["amount"] for r in month_records if r["type"] == "income")
@@ -607,58 +610,62 @@ def summary():
     balance = income - expense
 
     # 📈 daily average
-    days = now.day if now.day != 0 else 1
+    days = now.day if now.day > 0 else 1
     daily_avg = expense / days if days else 0
 
-    # 🏆 top category
+    # 🏆 category totals (expense only)
     category_totals = {}
     for r in month_records:
         if r["type"] == "expense":
             cat = r.get("category", "Other")
             category_totals[cat] = category_totals.get(cat, 0) + r["amount"]
 
-    top_category = max(category_totals, key=category_totals.get) if category_totals else "None"
+    # 🥇 top category (SAFE)
+    if category_totals:
+        top_category = max(category_totals, key=category_totals.get)
+        top_category_amount = category_totals.get(top_category, 0)
+    else:
+        top_category = None
+        top_category_amount = 0
 
-    # 🔥 TOP 3 CATEGORIES
-    top_categories = sorted(
-    category_totals.items(),
-    key=lambda x: x[1],
-    reverse=True
-    )[:3]
-
+    # 📊 total expense (THIS MONTH ONLY)
     total_expense = sum(category_totals.values())
+
+    # 📈 percentage (SAFE)
+    top_category_percent = (
+        (top_category_amount / total_expense * 100)
+        if total_expense > 0 else 0
+    )
+
+    # 🔥 TOP 3 CATEGORIES (SAFE)
+    top_categories = sorted(
+        category_totals.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:3]
 
     top_categories_with_percent = [
         (cat, amt, (amt / total_expense * 100) if total_expense > 0 else 0)
         for cat, amt in top_categories
     ]
 
-    total_expense = sum(
-    r["amount"] for r in user_records if r["type"] == "expense"
-    )
-
-    top_category_amount = category_totals[top_category] if top_category else 0
-
-    top_category_percent = (
-        (top_category_amount / total_expense * 100)
-        if total_expense > 0 else 0
-    )
-
     # 🧠 smart insight
-    insight = "No significant spending pattern yet."
-    if category_totals:
+    if top_category:
         insight = f"You spent most on {top_category} this month."
+    else:
+        insight = "No spending data yet."
 
     return render_template(
-    "summary.html",
-    income=income,
-    expense=expense,
-    balance=balance,
-    daily_avg=round(daily_avg, 2),
-    top_category=top_category,
-    insight=insight,
-    top_categories=top_categories_with_percent,
-)
+        "summary.html",
+        income=income,
+        expense=expense,
+        balance=balance,
+        daily_avg=round(daily_avg, 2),
+        top_category=top_category,
+        top_category_percent=top_category_percent,
+        top_categories=top_categories_with_percent,
+        insight=insight
+    )
 
 # ---------------
 # ADD ACCOUNTS
