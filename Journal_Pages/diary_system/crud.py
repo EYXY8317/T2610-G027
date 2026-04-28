@@ -57,10 +57,7 @@ def update_entry(new_entry):
     save_entries(entries)
 
 # Delete function ==========================================================================
-def delete_entry(entry_id):
+def delete_entry(date):
     entries = load_entries()
-    entries = [e for e in entries if e["id"] != entry_id]
-    #for e in entries = take one entry at a time from the list of entries
-    #e = diary entry, we are assigning the current entry to the variable e
-    #if e["id"] != entry_id = if the id of the current entry is not equal to the id of the entry we want to delete then we keep it in the list
+    entries = [e for e in entries if e["date"] != date]
     save_entries(entries)

@@ -11,13 +11,22 @@
 <h2>{{ entry.date if entry else "" }}</h2>
 
 <!-- Text area for diary entry -->
-<textarea id="box">
+<textarea id="box" {{ "readonly" if mode == "view" else "" }}>
 {{ entry.content if entry else "" }}
 </textarea>
 
+<button id="editBtn">Edit</button>
+
+<button id="deleteBtn">Delete</button>
 </body>
 
+<!-- Pass the mode variable to JavaScript -->
+ <script>
+    let mode = "{{ mode }}";
+</script>
+
 <!-- Build JavaScript -->
+
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </html>
