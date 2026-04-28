@@ -49,11 +49,12 @@ def autosave():
     mood = request.form.get("mood")
 
     date = request.form.get("date")
-
+    topic = request.form.get("topic")
     new_data = {
         "date": date,
         "content": content,
-        "mood": mood
+        "mood": mood,
+        "topic": topic
     }
 
     add_entry(new_data)
@@ -84,12 +85,15 @@ def search():
     results = []
 
     for e in entries:
-        content = e["content"].lower().replace(" ", "")
 
-        if keyword in content:
+        content = (e.get("content") or "").lower().replace(" ", "")
+        topic = (e.get("topic") or "").lower().replace(" ", "")
+
+        if keyword in content or keyword in topic:
             results.append({
                 "date": e["date"],
-                "content": e["content"][:50]
+                "topic": e.get("topic", ""),
+                "content": (e.get("content") or "")[:50]
             })
 
     return {"results": results}
