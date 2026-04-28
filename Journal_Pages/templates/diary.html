@@ -3,22 +3,23 @@
 <head>
     <title>Diary</title>
 </head>
-<body>
 
+<body>
 <h1>Diary</h1>
 
-
-<h2>{{ entry.date if entry else "" }}</h2>
+<!-- Display today's date -->
+<h2>{{ today }}</h2>
 
 <!-- Text area for diary entry -->
-<textarea id="box" {{ "readonly" if mode == "view" else "" }}>
-{{ entry.content if entry else "" }}
-</textarea>
+<textarea id="box" 
+    placeholder="Write your diary here..."
+    {{ "readonly" if mode == "view" else "" }}>
+{{ entry.content if entry else "" }}</textarea>
+<br><br>
 
+<!-- Edit and Delete buttons -->
 <button id="editBtn">Edit</button>
-
 <button id="deleteBtn">Delete</button>
-</body>
 
 <!-- Pass the mode variable to JavaScript -->
  <script>
@@ -26,7 +27,7 @@
 </script>
 
 <!-- Build JavaScript -->
-
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
+</body>
 </html>
