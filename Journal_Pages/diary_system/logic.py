@@ -1,6 +1,6 @@
 from datetime import datetime
 from diary_system.crud import load_entries
-
+from flask import request
 
 #================================ get_today_entry() ================================
 def get_today_entry():
@@ -30,4 +30,3 @@ def get_entry_by_date(date):
             return e
 
     return None
-
