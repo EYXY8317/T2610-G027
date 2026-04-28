@@ -47,3 +47,15 @@ def autosave():
     add_entry(new_data)
 
     return "saved"
+
+# ===== delete API =====
+@diary_bp.route("/delete", methods=["POST"])
+def delete():
+    from datetime import datetime
+    from diary_system.crud import delete_entry
+
+    today = datetime.now().strftime("%d/%m/%Y")
+
+    delete_entry(today)
+
+    return "deleted"

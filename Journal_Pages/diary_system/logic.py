@@ -15,7 +15,7 @@ def get_today_entry():
 def get_mode():
     entry = get_today_entry()
 
-    if entry:
+    if entry and entry["content"].strip() != "":
         return "view"
     else:
         return "add"
