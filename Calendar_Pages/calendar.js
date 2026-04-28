@@ -72,37 +72,6 @@ function generateCalendar() {
         // Add date into day box
         day.appendChild(date);
 
-// ==================================================
-// TASK ↔ CALENDAR CONNECTION
-// This part links the calendar with the task system
-// It finds which tasks belong to each day box
-// ==================================================
-
-
-// Convert current loop date into "YYYY-MM-DD" format
-// This format must match the task.date format (important!)
-let monthStr = String(month + 1).padStart(2, "0"); // month is 0-based → +1
-let dayStr = String(i).padStart(2, "0");           // ensure 2 digits (01, 02, etc.)
-let fullDate = `${year}-${monthStr}-${dayStr}`;    // final date string
-
-
-// Get all tasks that match this date
-// Also exclude tasks in trash (only show active + completed)
-let tasksForDay = tasks.filter(t => 
-    t.date === fullDate && 
-    t.status !== "trash"
-);
-
-tasksForDay.forEach(task => {
-    let taskDiv = document.createElement("div");
-
-    taskDiv.style.fontSize = "12px";
-    taskDiv.style.marginTop = "2px";
-    taskDiv.innerText = task.text;
-
-    day.appendChild(taskDiv);
-});
-
     // ==================================================
     // STEP 4: Highlight today's date
     // ==================================================
