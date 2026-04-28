@@ -66,3 +66,40 @@ def delete():
     date = request.form.get("date")
     delete_entry(date)
     return "deleted"
+
+#================================ search API ================================
+@diary_bp.route("/search", methods=["POST"])
+def search():
+    from diary_system.crud import load_entries
+
+    keyword = request.form.get("keyword")
+
+    if not keyword:
+        return {"results": []}
+
+    keyword = keyword.lower().replace(" ", "")
+
+    entries = load_entries()
+
+    results = []
+
+    for e in entries:
+        content = e["content"].lower().replace(" ", "")
+
+        if keyword in content:
+            results.append({
+                "date": e["date"],
+                "content": e["content"][:50]
+            })
+
+    return {"results": results}
+
+#================================ get_entry() ================================
+@diary_bp.route("/get_entry", methods=["POST"])
+def get_entry():
+    from diary_system.logic import get_entry_by_date
+
+    date = request.form.get("date")
+    entry = get_entry_by_date(date)
+
+    return entry or {}
