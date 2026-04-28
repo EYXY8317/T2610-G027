@@ -12,6 +12,7 @@ let mood = document.getElementById("mood");
 let saveStatus = document.getElementById("saveStatus");
 
 let params = new URLSearchParams(window.location.search);
+let topic = document.getElementById("topic");
 
 // ======================== STATE ========================
 let results = [];
@@ -58,6 +59,7 @@ editBtn.addEventListener("click", function() {
     editing = true;
     box.removeAttribute("readonly");
     mood.removeAttribute("disabled");
+    topic.removeAttribute("readonly");
 });
 
 // ======================== DELETE BUTTON ========================
@@ -96,6 +98,7 @@ box.addEventListener("input", function() {
         //content = key
         //box.value = value
         data.append("mood", mood.value);
+        data.append("topic", topic.value);
         data.append("date", currentDate);
 
         fetch("/autosave", {
@@ -120,6 +123,7 @@ mood.addEventListener("change", function() {
     let data = new FormData();
     data.append("content", box.value);
     data.append("mood", mood.value);
+    data.append("topic", topic.value);
     data.append("date", currentDate);
 
     fetch("/autosave", {
@@ -186,6 +190,7 @@ searchBtn.addEventListener("click", function() {
 
             item.innerHTML = `
                 <b>${r.date}</b><br>
+                <i>${r.topic || ""}</i><br>
                 ${r.content}
                 <hr>
             `;
@@ -241,7 +246,7 @@ function goToResult(index) {
         mood.value = entry.mood || "";
 
         document.getElementById("dateDisplay").innerText = r.date;
-        
+
         // 更新 URL（不刷新）
         window.history.pushState({}, "", "/diary?date=" + r.date);
     });
@@ -282,5 +287,38 @@ document.addEventListener("DOMContentLoaded", function() {
             goToResult(currentIndex);
         });
     }
+
+});
+
+topic.addEventListener("input", function() {
+
+    // 限制 20 字
+    if (topic.value.length > 20) {
+        topic.value = topic.value.slice(0, 20);
+    }
+
+    // 去掉前面空格
+    topic.value = topic.value.trimStart();
+
+    clearTimeout(timer);
+    saveStatus.innerText = "";
+
+    timer = setTimeout(() => {
+
+        let data = new FormData();
+        data.append("content", box.value);
+        data.append("mood", mood.value);
+        data.append("topic", topic.value);
+        data.append("date", currentDate);
+
+        fetch("/autosave", {
+            method: "POST",
+            body: data
+        }).then(() => {
+            saveStatus.innerText = "Saved ✅";
+            saveStatus.style.color = "green";
+        });
+
+    }, 1000);
 
 });
