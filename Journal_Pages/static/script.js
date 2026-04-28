@@ -3,7 +3,15 @@ let editBtn = document.getElementById("editBtn");
 let deleteBtn = document.getElementById("deleteBtn");
 let mood = document.getElementById("mood");
 let saveStatus = document.getElementById("saveStatus");
-
+let datePicker = document.getElementById("datePicker");
+let params = new URLSearchParams(window.location.search);
+let currentDate = params.get("date");
+    if (!currentDate) {
+    let today = new Date();
+    let todayParts = today.toISOString().split("T")[0].split("-");
+    currentDate = todayParts[2] + "/" + todayParts[1] + "/" + todayParts[0];
+    }
+    
 let editing = false;
 
 let timer;
@@ -27,8 +35,12 @@ deleteBtn.addEventListener("click", function() {
 
     if (!confirmDelete) return;
 
+    let data = new FormData();
+    data.append("date", currentDate);
+
     fetch("/delete", {
-        method: "POST"
+        method: "POST",
+        body: data
     }).then(() => {
         location.reload();
     });
@@ -51,6 +63,7 @@ box.addEventListener("input", function() {
         //content = key
         //box.value = value
         data.append("mood", mood.value);
+        data.append("date", currentDate);
 
         fetch("/autosave", {
           method: "POST",
@@ -74,6 +87,7 @@ mood.addEventListener("change", function() {
     let data = new FormData();
     data.append("content", box.value);
     data.append("mood", mood.value);
+    data.append("date", currentDate);
 
     fetch("/autosave", {
         method: "POST",
@@ -84,3 +98,21 @@ mood.addEventListener("change", function() {
     });
 
 });
+
+//SET DATE PICKER TO TODAY'S DATE BY DEFAULT
+if (datePicker) {
+
+    let dateParts = currentDate.split("/");
+    datePicker.value = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+
+    datePicker.addEventListener("change", function() {
+
+        let selected = datePicker.value;
+
+        let selectedParts = selected.split("-");
+        let formatted = selectedParts[2] + "/" + selectedParts[1] + "/" + selectedParts[0];
+
+        window.location.href = "/diary?date=" + formatted;
+
+    });
+}

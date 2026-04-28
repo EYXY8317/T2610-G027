@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request
 from diary_system.crud import add_entry, delete_entry
 from diary_system.logic import get_today_entry, get_mode
-from datetime import datetime
+from datetime import date, datetime
 
 
 #================================ blueprint ================================
@@ -11,8 +11,19 @@ diary_bp = Blueprint("diary", __name__)
 #================================ route ================================
 @diary_bp.route("/diary")
 def diary():
-    entry = get_today_entry()
-    mode = get_mode()
+    date = request.args.get("date")
+
+    if not date:
+        date = datetime.now().strftime("%d/%m/%Y")
+
+    from diary_system.logic import get_entry_by_date
+
+    entry = get_entry_by_date(date)
+
+    if entry and entry["content"].strip() != "":
+        mode = "view"
+    else:
+        mode = "add"
 
     today = datetime.now().strftime("%d/%m/%Y")
 
@@ -20,7 +31,7 @@ def diary():
         "diary.html",
         entry=entry,
         mode=mode,
-        today=today
+        today=date
     )
 
 
@@ -37,12 +48,10 @@ def autosave():
     content = request.form.get("content")
     mood = request.form.get("mood")
 
-    today = datetime.now().strftime("%d/%m/%Y")
-
-    entry = get_today_entry()
+    date = request.form.get("date")
 
     new_data = {
-        "date": today,
+        "date": date,
         "content": content,
         "mood": mood
     }
@@ -54,8 +63,6 @@ def autosave():
 #================================ delete API ================================
 @diary_bp.route("/delete", methods=["POST"])
 def delete():
-    today = datetime.now().strftime("%d/%m/%Y")
-
-    delete_entry(today)
-
+    date = request.form.get("date")
+    delete_entry(date)
     return "deleted"
