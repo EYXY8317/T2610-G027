@@ -3,31 +3,43 @@
 <head>
     <title>Diary</title>
 </head>
+
 <body>
-
 <h1>Diary</h1>
-<h2>Today: {{ current_date }}</h2>
 
-<textarea 
-id="diaryBox"
-data-id="{{ latest.id if latest else '' }}"
-{{ '' if not latest else 'readonly' }}>
-{{ latest.content if latest else '' }}
-</textarea>
+<!-- Display today's date -->
+<h2>{{ today }}</h2>
 
+<!-- Mood selection -->
+<label for="mood">Mood:</label>
+
+<select id="mood" {{ "disabled" if mode == "view" else "" }}>
+    <option value="">Select mood</option>
+    <option value="happy" {{ "selected" if entry and entry.mood == "happy" else "" }}>😊 Happy</option>
+    <option value="sad" {{ "selected" if entry and entry.mood == "sad" else "" }}>😢 Sad</option>
+    <option value="angry" {{ "selected" if entry and entry.mood == "angry" else "" }}>😡 Angry</option>
+</select>
 <br><br>
+
+<!-- Text area for diary entry -->
+<textarea id="box" 
+    placeholder="Write your diary here..."
+    {{ "readonly" if mode == "view" else "" }}>
+{{ entry.content if entry else "" }}</textarea>
+
+<!-- Save status message -->
+<p id="saveStatus"></p>
+
+<!-- Edit and Delete buttons -->
 <button id="editBtn">Edit</button>
+<button id="deleteBtn">Delete</button>
 
-<hr>
+<!-- Pass the mode variable to JavaScript -->
+ <script>
+    let mode = "{{ mode }}";
+</script>
 
-{% for entry in entries %}
-<form method="POST">
-    <input type="hidden" name="delete_id" value="{{ entry.id }}">
-    <button type="submit">Delete</button>
-</form>
-<hr>
-{% endfor %}
-
+<!-- Build JavaScript -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
