@@ -145,6 +145,89 @@
            background-color: #ddd;
         }
 
+        /* ===== YEAR VIEW GRID ===== */
+        #yearGrid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 30px;
+          margin-top: 20px;
+        }
+
+         /* ===== 每个月的盒子 ===== */
+        .month-box {
+          border: 1px solid #ccc;
+          border-radius: 12px;
+          padding: 15px;
+          background: white;
+          cursor: pointer;
+          transition: 0.2s;
+        }
+
+        .month-box:hover {
+         background: #f5f5f5;
+        }
+
+        /* ===== 月份标题 ===== */
+        .month-title {
+          font-weight: bold;
+          font-size: 16px;
+          margin-bottom: 8px;
+        }
+
+       /* ===== 星期行 ===== */
+       .mini-weekdays {
+         display: grid;
+         grid-template-columns: repeat(7, 1fr);
+         font-size: 11px;
+         color: gray;
+         text-align: center;
+         margin-bottom: 5px;
+        }
+
+        /* ===== 日期 grid ===== */
+          .mini-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            font-size: 13px;
+            gap: 4px;
+        }
+
+        /* ===== 每一天 ===== */
+        .mini-day {
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+        }
+
+        .mini-day:hover {
+             background: #e3f2fd;
+        }
+
+        /* ===== 空白格 ===== */
+        .mini-empty {
+            visibility: hidden;
+        }
+
+         .year-header {
+           display: flex;
+           justify-content: center;
+           align-items: center;
+           gap: 20px;
+        }
+
+        .calendar-top {
+          position: relative;
+        }
+
+        .calendar-header {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+  
+         .view-buttons {
+          margin-left: auto;
+        }
     </style>
 </head>
 
@@ -185,18 +268,21 @@
     <!-- Top Bar -->
     <div class="calendar-top">
 
-        <div class="calendar-header">
-            <button onclick="prevMonth()">❮</button>
-            <h2 id="monthTitle"></h2>
-            <button onclick="nextMonth()">❯</button>
-        </div>
-
-        <div class="view-buttons">
-            <button onclick="setView('month')">Month View</button>
-            <button onclick="setView('year')">Year View</button>
-        </div>
-
+    <div class="calendar-header">
+        <button onclick="prevMonth()">❮</button>
+        <h2 id="monthTitle"></h2>
+        <button onclick="nextMonth()">❯</button>
     </div>
+
+    <div class="view-buttons">
+        <button onclick="setView('month')">Month View</button>
+        <button onclick="setView('year')">Year View</button>
+    </div>
+
+</div>
+
+<!-- Month View -->
+<div id="monthView">
 
     <div class="calendar">
 
@@ -214,9 +300,21 @@
 
     </div>
 
-    <div id="yearView" style="display:none;">
-        <h3>Year View (Coming Soon)</h3>
+</div>
+
+<!-- Year View -->
+<div id="yearView" style="display:none;">
+
+    <!-- Change Year -->
+    <div class="year-header">
+        <button onclick="prevYear()">❮</button>
+        <h2 id="yearTitle"></h2>
+        <button onclick="nextYear()">❯</button>
     </div>
+
+    <div id="yearGrid"></div>
+
+</div>
 
 </div>   
 <!-- ===== JavaScript File ===== -->

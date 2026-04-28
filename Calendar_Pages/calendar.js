@@ -95,18 +95,22 @@ function setView(view) {
     currentView = view;
 
     if (view === "month") {
-        // Show month calendar
-        document.querySelector(".calendar").style.display = "block";
 
-        // Hide year view
+        document.getElementById("monthView").style.display = "block";
         document.getElementById("yearView").style.display = "none";
 
-    } else {
-        // Hide month calendar
-        document.querySelector(".calendar").style.display = "none";
+        document.querySelector(".calendar-header").style.display = "flex"; // 👈 显示回来
 
-        // Show year view
+        generateCalendar();
+
+    } else {
+
+        document.getElementById("monthView").style.display = "none";
         document.getElementById("yearView").style.display = "block";
+
+        document.querySelector(".calendar-header").style.display = "none"; // 👈 隐藏！
+
+        generateYearView();
     }
 }
 
@@ -133,6 +137,86 @@ function setView(view) {
 
     generateCalendar();
 }
+
+function generateYearView() {
+
+    document.getElementById("yearTitle").innerText = currentYear;
+
+    let yearGrid = document.getElementById("yearGrid");
+    yearGrid.innerHTML = "";
+
+    let monthNames = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+    ];
+
+    let weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+    for (let m = 0; m < 12; m++) {
+
+        let box = document.createElement("div");
+        box.classList.add("month-box");
+
+        // ===== 标题 =====
+        let title = document.createElement("div");
+        title.classList.add("month-title");
+        title.innerText = monthNames[m];
+        box.appendChild(title);
+
+        // ===== 星期 =====
+        let weekRow = document.createElement("div");
+        weekRow.classList.add("mini-weekdays");
+
+        weekdays.forEach(day => {
+            let d = document.createElement("div");
+            d.innerText = day;
+            weekRow.appendChild(d);
+        });
+
+        box.appendChild(weekRow);
+
+        // ===== 日期 =====
+        let mini = document.createElement("div");
+        mini.classList.add("mini-calendar");
+
+        let firstDay = new Date(currentYear, m, 1).getDay();
+        let totalDays = new Date(currentYear, m + 1, 0).getDate();
+
+        // Space
+        for (let i = 0; i < firstDay; i++) {
+            let empty = document.createElement("div");
+            empty.classList.add("mini-empty");
+            mini.appendChild(empty);
+        }
+
+        // Date
+        for (let d = 1; d <= totalDays; d++) {
+            let day = document.createElement("div");
+            day.innerText = d;
+            day.classList.add("mini-day");
+            mini.appendChild(day);
+        }
+
+        box.appendChild(mini);
+
+        // Click and back to Month
+        box.onclick = function () {
+            currentMonth = m;
+            setView("month");
+        };
+
+        yearGrid.appendChild(box);
+    }
+}
+    function prevYear() {
+    currentYear--;
+    generateYearView();
+}
+
+    function nextYear() {
+    currentYear++;
+    generateYearView();
+}   
 
 // ==================================================
 // RUN FUNCTION (when page loads)
