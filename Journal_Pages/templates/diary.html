@@ -2,13 +2,35 @@
 <html>
 <head>
     <title>Diary</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 
 <body>
 <h1>Diary</h1>
 
+<!-- Search bar -->
+<input type="text" id="searchBox" placeholder="Search diary...">
+<button id="searchBtn">Search</button>
+
+<div id="searchResults"></div>
+
+<button id="prevBtn" style="display:none;">↑</button>
+<button id="nextBtn" style="display:none;">↓</button>
+<span id="resultCount"></span>
+<br><br>
+
 <!-- Display today's date -->
-<h2>{{ today }}</h2>
+<h2 id="dateDisplay" style="display:inline; cursor:pointer;">
+    {{ today }}
+</h2>
+<br><br>
+
+<!-- Topic input -->
+<input type="text" id="topic" maxlength="20"
+value="{{ entry.topic if entry else '' }}"
+placeholder="Enter topic (max 20)"
+{{ "readonly" if mode == "view" else "" }}>
+<br><br>
 
 <!-- Mood selection -->
 <label for="mood">Mood:</label>
@@ -40,7 +62,7 @@
 </script>
 
 <!-- Build JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
-
 </body>
 </html>
