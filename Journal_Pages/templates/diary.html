@@ -9,7 +9,7 @@
 <hr>
 
 <a href="/Calendar">Finance</a> |
-<a href="/Finance>Diary</a> |
+<a href="/diary">Diary</a> |
 <a href="/logout">Logout</a>
 
 <hr>
@@ -54,10 +54,11 @@ placeholder="Enter topic (max 20)"
 <br><br>
 
 <!-- Text area for diary entry -->
-<textarea id="box" 
-    placeholder="Write your diary here..."
-    {{ "readonly" if mode == "view" else "" }}>
-{{ entry.content if entry else "" }}</textarea>
+<div id="box" contenteditable="true">
+    {{ entry.content if entry else "" }}
+</div>
+
+<input type="file" id="uploadImg">
 
 <!-- Save status message -->
 <p id="saveStatus"></p>
@@ -77,6 +78,7 @@ placeholder="Enter topic (max 20)"
 <!-- Build JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='canvas.js') }}"></script>
 
 <div style="display:flex; justify-content:space-between; margin-top:20px;">
     <button id="prevDate">←</button>

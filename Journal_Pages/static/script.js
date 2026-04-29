@@ -62,7 +62,6 @@ if (mode === "view") {
 // ======================== EDIT BUTTON ========================
 editBtn.addEventListener("click", function() {
     editing = true;
-    box.removeAttribute("readonly");
     mood.style.pointerEvents = "auto";
     topic.removeAttribute("readonly");
 });
@@ -99,7 +98,7 @@ box.addEventListener("input", function() {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.value);
+        data.append("content", box.innerHTML);
         //content = key
         //box.value = value
         data.append("mood", mood.value);
@@ -110,9 +109,10 @@ box.addEventListener("input", function() {
           method: "POST",
           body: data
         })
-        .then(() => {
-            saveStatus.innerText = "Saved ✅";
-            document.getElementById("msg").innerText = res.message;
+        .then(res => res.json())
+        .then(res => {
+        saveStatus.innerText = "Saved ✅";
+        document.getElementById("msg").innerText = res.message;
         });
 
     },1000);
@@ -127,7 +127,7 @@ mood.addEventListener("change", function() {
     saveStatus.innerText = "";
 
     let data = new FormData();
-    data.append("content", box.value);
+    data.append("content", box.innerHTML);
     data.append("mood", mood.value);
     data.append("topic", topic.value);
     data.append("date", currentDate);
@@ -250,7 +250,7 @@ function goToResult(index) {
     .then(entry => {
 
         // 更新 textarea
-        box.value = entry.content || "";
+        box.innerHTML = entry.content || "";
 
         // 更新 mood
         mood.value = entry.mood || "";
@@ -316,7 +316,7 @@ topic.addEventListener("input", function() {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.value);
+        data.append("content", box.innerHTML);
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
@@ -324,11 +324,13 @@ topic.addEventListener("input", function() {
         fetch("/autosave", {
             method: "POST",
             body: data
-        }).then(() => {
+        })
+        .then(res => res.json())
+        .then(res => {
             saveStatus.innerText = "Saved ✅";
             saveStatus.style.color = "green";
 
-            document.getElementById("msg").innerText = res.message;
+        document.getElementById("msg").innerText = res.message;
         });
 
     }, 1000);
