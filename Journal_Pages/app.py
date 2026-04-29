@@ -1,6 +1,6 @@
 from flask import Flask
 from diary_system.routes import diary_bp
-
+from diary_system.encouragement_data import happy_list, sad_list, angry_list
 #================================ Create Flask App ================================
 app = Flask(__name__)
 
