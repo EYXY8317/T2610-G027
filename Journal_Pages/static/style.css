@@ -1,0 +1,25 @@
+#canvas {
+    position: relative;
+    border: 1px solid #ccc;
+    min-height: 400px;
+    width: 100%;
+    overflow: visible;
+}
+
+#box {
+    padding: 15px;
+    min-height: 100%;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+#canvas img {
+    position: absolute;
+    cursor: move;
+    user-select: none;
+    z-index: 5;   /* ⭐关键 */
+    image-rendering: crisp-edges;
+    transform-origin: center center;
+    backface-visibility: hidden;
+}

@@ -26,6 +26,12 @@ if (savedResults) {
     results = JSON.parse(savedResults);
 }
 
+if (mode === "view") {
+    box.setAttribute("contenteditable", "false");   // ⭐关键
+    mood.style.pointerEvents = "none";
+    topic.setAttribute("readonly", true);
+}
+
 // ======================== CURRENT DATE ========================
 let currentDate = params.get("date");
     if (!currentDate) {
@@ -62,6 +68,9 @@ if (mode === "view") {
 // ======================== EDIT BUTTON ========================
 editBtn.addEventListener("click", function() {
     editing = true;
+
+    // ⭐ 解锁全部
+    box.setAttribute("contenteditable", "true");
     mood.style.pointerEvents = "auto";
     topic.removeAttribute("readonly");
 });
@@ -87,10 +96,13 @@ deleteBtn.addEventListener("click", function() {
 });
 
 // ======================== AUTOSAVE TEXT========================
-box.addEventListener("input", function() {
+box.addEventListener("input", function(event) {
 
     if (!editing) return;
-    
+
+    // ❗关键：拖图片时不触发 autosave
+    if (event.target.tagName === "IMG") return;
+
     clearTimeout(timer);
 
     saveStatus.innerText = "";
@@ -99,23 +111,28 @@ box.addEventListener("input", function() {
 
         let data = new FormData();
         data.append("content", box.innerHTML);
-        //content = key
-        //box.value = value
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
 
         fetch("/autosave", {
-          method: "POST",
-          body: data
+            method: "POST",
+            body: data
         })
         .then(res => res.json())
         .then(res => {
-        saveStatus.innerText = "Saved ✅";
-        document.getElementById("msg").innerText = res.message;
-        });
+            console.log("SAVED OK");   // ⭐加这个
 
-    },1000);
+            saveStatus.innerText = "Saved ✅";
+            saveStatus.style.color = "green";
+
+            document.getElementById("msg").innerText = res.message;
+            })
+            .catch(err => {
+                console.log("ERROR", err);   // ⭐加这个
+            });
+
+    }, 1000);
 
 });
 
