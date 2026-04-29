@@ -334,3 +334,39 @@ topic.addEventListener("input", function() {
     }, 1000);
 
 });
+
+// ======================== DATE NAV ========================
+
+function changeDate(days) {
+    let parts = currentDate.split("/");
+    let d = new Date(parts[2], parts[1] - 1, parts[0]);
+
+    d.setDate(d.getDate() + days);
+
+    let newDate =
+        String(d.getDate()).padStart(2, '0') + "/" +
+        String(d.getMonth() + 1).padStart(2, '0') + "/" +
+        d.getFullYear();
+
+    window.location.href = "/diary?date=" + newDate;
+}
+
+// 等页面加载完才绑定（❗关键）
+document.addEventListener("DOMContentLoaded", function() {
+
+    let prev = document.getElementById("prevDate");
+    let next = document.getElementById("nextDate");
+
+    if (prev) {
+        prev.addEventListener("click", function() {
+            changeDate(-1);
+        });
+    }
+
+    if (next) {
+        next.addEventListener("click", function() {
+            changeDate(1);
+        });
+    }
+
+});
