@@ -3,6 +3,7 @@ from diary_system.crud import add_entry, delete_entry
 from diary_system.logic import get_today_entry, get_mode
 from datetime import date, datetime
 from diary_system.encouragement_data import happy_list, sad_list, angry_list
+import random  # ⭐ 添加这行
 
 
 #================================ blueprint ================================
@@ -57,18 +58,18 @@ def autosave():
 
     existing = get_entry_by_date(date)
     
-    if existing and existing.get("mood") == mood and existing.get("quote"):
-        message = existing["quote"]
-    else:
-
+    # ⭐ 只有 mood 改变时才生成新的 random quote
+    if mood and mood != existing.get("mood"):
         if mood == "Happy":
-           message = random.choice(happy_list)
+            message = random.choice(happy_list)
         elif mood == "Sad":
             message = random.choice(sad_list)
         elif mood == "Angry":
             message = random.choice(angry_list)
-        else:
-            message = ""
+    elif existing and existing.get("quote"):
+        message = existing.get("quote")
+    else:
+        message = ""
 
     new_data = {
         "date": date,
@@ -136,11 +137,11 @@ def get_entry():
 def get_message():
     mood = request.args.get("mood")
 
-    if mood == "happy":
-        return happy_list[0]
-    elif mood == "sad":
-        return sad_list[0]
-    elif mood == "angry":
-        return angry_list[0]
+    if mood == "Happy":
+        return random.choice(happy_list)
+    elif mood == "Sad":
+        return random.choice(sad_list)
+    elif mood == "Angry":
+        return random.choice(angry_list)
     else:
-        return "OK"
+        return ""  # ⭐ 没有 mood 时返回空

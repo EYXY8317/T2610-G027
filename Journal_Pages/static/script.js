@@ -385,7 +385,8 @@ function changeDate(days) {
 // 等页面加载完才绑定（❗关键）
 document.addEventListener("DOMContentLoaded", function() {
 
-    getMessage(mood.value); // ⭐这里
+    // ⭐ 删除这行：不再在页面加载时获取新 quote
+    // getMessage(mood.value);
 
     let prev = document.getElementById("prevDate");
     let next = document.getElementById("nextDate");
