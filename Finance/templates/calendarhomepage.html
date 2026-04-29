@@ -233,13 +233,20 @@
 
 <body>
 
+<hr>
+<a href="/view">Finance</a> |
+<a href="/diary">Diary</a> |
+<a href="/calendar">Calendar</a> |
+<a href="/logout">Logout</a>
+</hr>
+
 <div class="container">
 
     <!-- Sidebar -->
     <div class="sidebar">
 
-        <div class="logo">
-          <a href ="dashboard.html">Life Pages</a>
+    <div class="logo">
+        <a href="/">Life Pages</a>
     </div>
         <div class="menu-item">Today</div>
 
@@ -318,7 +325,7 @@
 
 </div>   
 <!-- ===== JavaScript File ===== -->
-<script src="calendar.js"></script>
+<script src="{{ url_for('static', filename='calendar.js') }}"></script>
 
 </body>
 </html>
