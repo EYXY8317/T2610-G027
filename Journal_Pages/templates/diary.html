@@ -35,11 +35,12 @@ placeholder="Enter topic (max 20)"
 <!-- Mood selection -->
 <label for="mood">Mood:</label>
 
-<select id="mood" {{ "disabled" if mode == "view" else "" }}>
+<select id="mood" name="mood"
+{{ "disabled" if mode == "view" else "" }}>
     <option value="">Select mood</option>
-    <option value="happy" {{ "selected" if entry and entry.mood == "happy" else "" }}>😊 Happy</option>
-    <option value="sad" {{ "selected" if entry and entry.mood == "sad" else "" }}>😢 Sad</option>
-    <option value="angry" {{ "selected" if entry and entry.mood == "angry" else "" }}>😡 Angry</option>
+    <option value="Happy" {{ "selected" if entry and entry.mood == "Happy" else "" }}>😊 Happy</option>
+    <option value="Sad" {{ "selected" if entry and entry.mood == "Sad" else "" }}>😢 Sad</option>
+    <option value="Angry" {{ "selected" if entry and entry.mood == "Angry" else "" }}>😡 Angry</option>
 </select>
 <br><br>
 
@@ -55,6 +56,12 @@ placeholder="Enter topic (max 20)"
 <!-- Edit and Delete buttons -->
 <button id="editBtn">Edit</button>
 <button id="deleteBtn">Delete</button>
+
+<!-- 3) 显示鼓励句（重点） -->
+<p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
+
+<!-- 4) 引入 JS（必须在最下面） -->
+<script src="/static/encouragement.js"></script>
 
 <!-- Pass the mode variable to JavaScript -->
  <script>
