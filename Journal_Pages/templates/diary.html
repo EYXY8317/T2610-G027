@@ -6,6 +6,15 @@
 </head>
 
 <body>
+<hr>
+
+<a href="/Calendar">Finance</a> |
+<a href="/Finance>Diary</a> |
+<a href="/logout">Logout</a>
+
+<hr>
+
+
 <h1>Diary</h1>
 
 <!-- Search bar -->
@@ -57,9 +66,6 @@ placeholder="Enter topic (max 20)"
 <button id="editBtn">Edit</button>
 <button id="deleteBtn">Delete</button>
 
-<!-- 3) 显示鼓励句（重点） -->
-<p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
-
 <!-- 4) 引入 JS（必须在最下面） -->
 <script src="/static/encouragement.js"></script>
 
@@ -71,5 +77,14 @@ placeholder="Enter topic (max 20)"
 <!-- Build JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<div style="display:flex; justify-content:space-between; margin-top:20px;">
+    <button id="prevDate">←</button>
+    <button id="nextDate">→</button>
+</div>
+
+<!-- 3) 显示鼓励句（重点） -->
+<p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
+
 </body>
 </html>
