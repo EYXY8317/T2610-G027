@@ -715,6 +715,17 @@ def diary():
 
     return render_template("diary.html", entries=entries)
 
+# ----------------
+# CALENDAR ROUTE
+# ----------------
+
+@app.route("/calendar")
+def calendar():
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("calendarhomepage.html")
+
 # --------
 # LOG OUT
 # --------
