@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request
 from diary_system.crud import add_entry, delete_entry
 from diary_system.logic import get_today_entry, get_mode
 from datetime import date, datetime
+from diary_system.encouragement_data import happy_list, sad_list, angry_list
 
 
 #================================ blueprint ================================
@@ -44,22 +45,45 @@ def home():
 #================================ autosave API ================================
 @diary_bp.route("/autosave", methods=["POST"])
 #url for the diary page, when user goes to /diary this function will be called
+
 def autosave():
     content = request.form.get("content")
     mood = request.form.get("mood")
-
     date = request.form.get("date")
     topic = request.form.get("topic")
+
+    import random
+    from diary_system.logic import get_entry_by_date
+
+    existing = get_entry_by_date(date)
+    
+    if existing and existing.get("mood") == mood and existing.get("quote"):
+        message = existing["quote"]
+    else:
+
+        if mood == "Happy":
+           message = random.choice(happy_list)
+        elif mood == "Sad":
+            message = random.choice(sad_list)
+        elif mood == "Angry":
+            message = random.choice(angry_list)
+        else:
+            message = ""
+
     new_data = {
         "date": date,
         "content": content,
         "mood": mood,
-        "topic": topic
+        "topic": topic,
+        "quote": message
     }
 
     add_entry(new_data)
 
-    return "saved"
+    return {"message": message} 
+
+
+
 
 #================================ delete API ================================
 @diary_bp.route("/delete", methods=["POST"])

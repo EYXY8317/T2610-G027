@@ -54,11 +54,16 @@ if (mode === "add") {
     editing = true;
 }
 
+if (mode === "view") {
+    mood.style.pointerEvents = "none";   
+    mood.style.opacity = "1";           
+}
+
 // ======================== EDIT BUTTON ========================
 editBtn.addEventListener("click", function() {
     editing = true;
     box.removeAttribute("readonly");
-    mood.removeAttribute("disabled");
+    mood.style.pointerEvents = "auto";
     topic.removeAttribute("readonly");
 });
 
@@ -66,7 +71,7 @@ editBtn.addEventListener("click", function() {
 //CLICKING THE DELETE BUTTON DELETES THE ENTRY
 deleteBtn.addEventListener("click", function() {
 
-    let confirmDelete = confirm("Are you sure you want to delete?");
+    let confirmDelete = confirm("Are you sure you want to delete everything?\nThis includes topic, mood, and diary.");
 
     if (!confirmDelete) return;
 
@@ -104,9 +109,10 @@ box.addEventListener("input", function() {
         fetch("/autosave", {
           method: "POST",
           body: data
-        }).then(() => {
+        })
+        .then(() => {
             saveStatus.innerText = "Saved ✅";
-            saveStatus.style.color = "green";
+            document.getElementById("msg").innerText = res.message;
         });
 
     },1000);
@@ -129,9 +135,13 @@ mood.addEventListener("change", function() {
     fetch("/autosave", {
         method: "POST",
         body: data
-    }).then(() => {
+    })
+    .then(res => res.json())
+    .then(res => {
         saveStatus.innerText = "Saved ✅";
         saveStatus.style.color = "green";
+
+        document.getElementById("msg").innerText = res.message;
     });
 
 });
@@ -317,6 +327,8 @@ topic.addEventListener("input", function() {
         }).then(() => {
             saveStatus.innerText = "Saved ✅";
             saveStatus.style.color = "green";
+
+            document.getElementById("msg").innerText = res.message;
         });
 
     }, 1000);
