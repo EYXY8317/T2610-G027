@@ -3,6 +3,7 @@
 <head>
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -54,8 +55,10 @@ placeholder="Enter topic (max 20)"
 <br><br>
 
 <!-- Text area for diary entry -->
-<div id="box" contenteditable="true">
-    {{ entry.content if entry else "" }}
+<div id="canvas">
+    <div id="box" contenteditable="{{ 'false' if mode == 'view' else 'true' }}">
+        {{ entry.content if entry else '' }}
+    </div>
 </div>
 
 <input type="file" id="uploadImg">
@@ -79,6 +82,7 @@ placeholder="Enter topic (max 20)"
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script src="{{ url_for('static', filename='canvas.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 
 <div style="display:flex; justify-content:space-between; margin-top:20px;">
     <button id="prevDate">←</button>
