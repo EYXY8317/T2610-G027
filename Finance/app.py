@@ -27,8 +27,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for
+from Journal_Pages.diary_system.routes import diary_bp # import diary sction
 from flask import session, redirect, url_for
-from Journal_Pages.diary_system.crud import load_entries, add_entry # import diary sction
 from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
@@ -42,6 +42,8 @@ from password_system.password_validation import is_valid_password
 # _name_ is the curent file name
 # !without this, nothing runs!
 app = Flask(__name__)
+
+app.register_blueprint(diary_bp)
 
 app.secret_key = "your_secret_key"
 # -----------
@@ -696,24 +698,6 @@ def add_account():
         return redirect(url_for("add_financial"))
 
     return render_template("add_account.html")
-
-# -------------
-# DIARY ROUTE
-# -------------
-
-@app.route("/diary", methods=["GET", "POST"])
-def diary():
-
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    entries = load_entries()
-
-    if request.method == "POST":
-        content = request.form["content"]
-        entries = add_entry(content)
-
-    return render_template("diary.html", entries=entries)
 
 # ----------------
 # CALENDAR ROUTE
