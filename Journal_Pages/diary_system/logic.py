@@ -30,4 +30,3 @@ def get_entry_by_date(date):
             return e
 
     return None
-

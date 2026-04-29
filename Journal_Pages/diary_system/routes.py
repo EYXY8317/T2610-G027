@@ -73,8 +73,8 @@ def autosave():
     new_data = {
         "date": date,
         "content": content,
-        "mood": mood,
-        "topic": topic,
+        "mood": mood if mood else (existing.get("mood") if existing else ""),
+        "topic": topic if topic else (existing.get("topic") if existing else ""),  # ⭐ 如果 topic 是空的，保留之前的
         "quote": message
     }
 
@@ -131,3 +131,16 @@ def get_entry():
     entry = get_entry_by_date(date)
 
     return entry or {}
+
+@diary_bp.route("/get_message")
+def get_message():
+    mood = request.args.get("mood")
+
+    if mood == "happy":
+        return happy_list[0]
+    elif mood == "sad":
+        return sad_list[0]
+    elif mood == "angry":
+        return angry_list[0]
+    else:
+        return "OK"

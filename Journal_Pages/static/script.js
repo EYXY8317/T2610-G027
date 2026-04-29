@@ -22,12 +22,21 @@ let currentIndex = 0;
 
 let savedResults = localStorage.getItem("searchResults");
 
+function getMessage(mood) {
+    fetch("/get_message?mood=" + mood)
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById("msg").innerText = data;
+    });
+}
+
 if (savedResults) {
     results = JSON.parse(savedResults);
 }
 
+// ⭐ view 模式时锁定内容
 if (mode === "view") {
-    box.setAttribute("contenteditable", "false");   // ⭐关键
+    box.setAttribute("contenteditable", "false");
     mood.style.pointerEvents = "none";
     topic.setAttribute("readonly", true);
 }
@@ -53,13 +62,14 @@ let currentDate = params.get("date");
 }
 
 // ======================== EDIT MODE ========================
-let editing = false;
+let editing = false;  // ⭐ 默认不允许编辑
 let timer;
 
 if (mode === "add") {
     editing = true;
 }
 
+// ⭐ view 模式时禁用 mood
 if (mode === "view") {
     mood.style.pointerEvents = "none";   
     mood.style.opacity = "1";           
@@ -72,6 +82,7 @@ editBtn.addEventListener("click", function() {
     // ⭐ 解锁全部
     box.setAttribute("contenteditable", "true");
     mood.style.pointerEvents = "auto";
+    mood.removeAttribute("disabled");  // ⭐ 移除 disabled 属性
     topic.removeAttribute("readonly");
 });
 
@@ -110,7 +121,7 @@ box.addEventListener("input", function(event) {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.innerHTML);
+        data.append("content", box.innerText);
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
@@ -144,7 +155,7 @@ mood.addEventListener("change", function() {
     saveStatus.innerText = "";
 
     let data = new FormData();
-    data.append("content", box.innerHTML);
+    data.append("content", box.innerText);
     data.append("mood", mood.value);
     data.append("topic", topic.value);
     data.append("date", currentDate);
@@ -159,6 +170,7 @@ mood.addEventListener("change", function() {
         saveStatus.style.color = "green";
 
         document.getElementById("msg").innerText = res.message;
+            getMessage(mood.value);
     });
 
 });
@@ -333,7 +345,7 @@ topic.addEventListener("input", function() {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.innerHTML);
+        data.append("content", box.innerText);
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
@@ -372,6 +384,8 @@ function changeDate(days) {
 
 // 等页面加载完才绑定（❗关键）
 document.addEventListener("DOMContentLoaded", function() {
+
+    getMessage(mood.value); // ⭐这里
 
     let prev = document.getElementById("prevDate");
     let next = document.getElementById("nextDate");
