@@ -248,7 +248,7 @@
     <div class="logo">
         <a href="/">Life Pages</a>
     </div>
-        <div class="menu-item">Today</div>
+        <div class="menu-item" onclick="showView('todayView', this)">Today</div>
 
         <div class="section-title">To-Do Lists</div>
         <div class="menu-item">Work Tasks</div>
@@ -258,7 +258,7 @@
         <div class="menu-item">Workout Plan</div>
 
         <div class="section-title">Calendar</div>
-        <div class="menu-item active">Calendar</div>
+        <div class="menu-item" onclick="showView('calendarView', this)">Calendar</div>
 
         <div class="section-title">Special</div>
         <div class="menu-item">Countdown</div>
@@ -271,6 +271,20 @@
 
     <!-- ===== Main Content Area ===== -->
     <div class="main">
+
+      <!-- ===== TODAY VIEW ===== -->
+      <div id="todayView">
+
+      <h2>Today</h2>
+
+       <div style="margin-top:20px;">
+        <p>📌 No tasks yet</p>
+        <p>✨ You can add your daily plan here</p>
+    </div>
+
+</div>
+
+<div id="calendarView" style="display:none;">
 
     <!-- Top Bar -->
     <div class="calendar-top">
@@ -326,6 +340,27 @@
 </div>   
 <!-- ===== JavaScript File ===== -->
 <script src="{{ url_for('static', filename='calendar.js') }}"></script>
+
+<script>
+function showView(view, element) {
+    // 隐藏全部
+    document.getElementById("todayView").style.display = "none";
+    document.getElementById("calendarView").style.display = "none";
+
+    // 显示当前
+    document.getElementById(view).style.display = "block";
+
+    // 切换 active
+    let items = document.querySelectorAll(".menu-item");
+    items.forEach(item => item.classList.remove("active"));
+    element.classList.add("active");
+}
+
+// 默认打开 Today
+window.onload = function() {
+    showView("todayView", document.querySelector(".menu-item"));
+};
+</script>
 
 </body>
 </html>
