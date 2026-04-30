@@ -27,7 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for
-from Journal_Pages.diary_system.routes import diary_bp # import diary sction
+from Finance.diary_system.routes import diary_bp # import diary sction
 from flask import session, redirect, url_for
 from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump

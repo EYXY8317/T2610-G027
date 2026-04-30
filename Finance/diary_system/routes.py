@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request
-from diary_system.crud import add_entry, delete_entry
-from diary_system.logic import get_today_entry, get_mode
+from Finance.diary_system.crud import add_entry, delete_entry
+from Finance.diary_system.logic import get_today_entry, get_mode
 from datetime import date, datetime
-from diary_system.encouragement_data import happy_list, sad_list, angry_list
+from Finance.diary_system.encouragement_data import happy_list, sad_list, angry_list
 import random  # ⭐ 添加这行
 
 
@@ -18,7 +18,7 @@ def diary():
     if not date:
         date = datetime.now().strftime("%d/%m/%Y")
 
-    from diary_system.logic import get_entry_by_date
+    from Finance.diary_system.logic import get_entry_by_date
 
     entry = get_entry_by_date(date)
 
@@ -36,13 +36,6 @@ def diary():
         today=date
     )
 
-
-#================================ home route ================================
-@diary_bp.route("/")
-def home():
-    return diary()
-
-
 #================================ autosave API ================================
 @diary_bp.route("/autosave", methods=["POST"])
 #url for the diary page, when user goes to /diary this function will be called
@@ -54,12 +47,12 @@ def autosave():
     topic = request.form.get("topic")
 
     import random
-    from diary_system.logic import get_entry_by_date
+    from Finance.diary_system.logic import get_entry_by_date
 
     existing = get_entry_by_date(date)
     
     # ⭐ 只有 mood 改变时才生成新的 random quote
-    if mood and mood != existing.get("mood"):
+    if existing and mood and mood != existing.get("mood"):
         if mood == "Happy":
             message = random.choice(happy_list)
         elif mood == "Sad":
@@ -96,7 +89,7 @@ def delete():
 #================================ search API ================================
 @diary_bp.route("/search", methods=["POST"])
 def search():
-    from diary_system.crud import load_entries
+    from Finance.diary_system.crud import load_entries
 
     keyword = request.form.get("keyword")
 
@@ -126,7 +119,7 @@ def search():
 #================================ get_entry() ================================
 @diary_bp.route("/get_entry", methods=["POST"])
 def get_entry():
-    from diary_system.logic import get_entry_by_date
+    from Finance.diary_system.logic import get_entry_by_date
 
     date = request.form.get("date")
     entry = get_entry_by_date(date)
