@@ -72,6 +72,43 @@ function generateCalendar() {
         // Add date into day box
         day.appendChild(date);
 
+    for (let i = 1; i <= totalDays; i++) {
+
+        let day = document.createElement("div");
+        day.classList.add("day");
+
+        let date = document.createElement("div");
+        date.classList.add("date");
+        date.innerText = i;
+
+        day.appendChild(date);
+
+        // 🔥 MAKE DAY CLICKABLE
+        day.style.cursor = "pointer";
+
+        day.addEventListener("click", function () {
+
+            let selectedDay = String(i).padStart(2, '0');
+            let selectedMonth = String(currentMonth + 1).padStart(2, '0');
+            let selectedYear = currentYear;
+
+            let formattedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
+
+            window.location.href = "/diary?date=" + formattedDate;
+        });
+
+        // ✅ EXISTING TODAY HIGHLIGHT (KEEP THIS)
+        if (
+            i === today.getDate() &&
+            month === today.getMonth() &&
+            year === today.getFullYear()
+        ) {
+            day.classList.add("today");
+        }
+
+        calendar.appendChild(day);
+    }
+    
     // ==================================================
     // STEP 4: Highlight today's date
     // ==================================================
