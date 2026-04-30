@@ -121,7 +121,7 @@ box.addEventListener("input", function(event) {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.innerText);
+        data.append("content", box.innerHTML);
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
@@ -155,7 +155,7 @@ mood.addEventListener("change", function() {
     saveStatus.innerText = "";
 
     let data = new FormData();
-    data.append("content", box.innerText);
+    data.append("content", box.innerHTML);
     data.append("mood", mood.value);
     data.append("topic", topic.value);
     data.append("date", currentDate);
@@ -345,7 +345,7 @@ topic.addEventListener("input", function() {
     timer = setTimeout(() => {
 
         let data = new FormData();
-        data.append("content", box.innerText);
+        data.append("content", box.innerHTML);
         data.append("mood", mood.value);
         data.append("topic", topic.value);
         data.append("date", currentDate);
