@@ -272,7 +272,7 @@
     <!-- ===== Main Content Area ===== -->
     <div class="main">
 
-      <!-- ===== TODAY VIEW ===== -->
+        <!-- ===== TODAY VIEW ===== -->
       <div id="todayView">
 
       <h2>Today</h2>
@@ -283,8 +283,8 @@
     </div>
 
 </div>
-
-<div id="calendarView" style="display:none;">
+   
+    <div id="calendarView" style="display:none;">
 
     <!-- Top Bar -->
     <div class="calendar-top">
@@ -350,13 +350,13 @@ function showView(view, element) {
     // 显示当前
     document.getElementById(view).style.display = "block";
 
-    // 切换 active
+    // active 切换
     let items = document.querySelectorAll(".menu-item");
     items.forEach(item => item.classList.remove("active"));
     element.classList.add("active");
 }
 
-// 默认打开 Today
+// 默认显示 Today
 window.onload = function() {
     showView("todayView", document.querySelector(".menu-item"));
 };
