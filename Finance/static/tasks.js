@@ -137,3 +137,42 @@ function renderTasks() {
         completedSection.style.display = "none";
     }
 }
+
+// ==================================================
+// COMPLETE TASK
+// Move task from active → completed
+// ==================================================
+
+function completeTask(id) {
+
+    // Find the task by ID
+    let t = tasks.find(x => x.id === id);
+
+    if (t) {
+        t.status = "completed";
+    }
+
+    // Clear selected task (close detail panel)
+    selectedTaskId = null;
+    document.getElementById("taskDetailPanel").style.display = "none";
+
+    // Re-render UI
+    renderTasks();
+}
+
+// ==================================================
+// TOGGLE COMPLETED SECTION (Hide / Show)
+// ==================================================
+
+function toggleCompleted() {
+
+    // Switch boolean state
+    hideCompleted = !hideCompleted;
+
+    // Update button text
+    let btn = document.getElementById("toggleCompletedBtn");
+    btn.innerText = hideCompleted ? "Show Completed" : "Hide Completed";
+
+    // Re-render UI
+    renderTasks();
+}
