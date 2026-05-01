@@ -37,5 +37,35 @@ function openList(list, element) {
     renderTasks();
 }
 
+// ==================================================
+// ADD TASK
+// Create a new task under current list
+// ==================================================
 
+function addTask() {
+
+    // Get user input
+    let input = document.getElementById("taskInput");
+    let text = input.value;
+
+    // Prevent empty task
+    if (text === "") return;
+
+    // Create task object
+    let task = {
+        id: Date.now(),          // Unique ID
+        text: text,              // Task content
+        status: "active",        // active / completed
+        category: currentList    // Which list it belongs to
+    };
+
+    // Add to global task array
+    tasks.push(task);
+
+    // Clear input
+    input.value = "";
+
+    // Re-render UI
+    renderTasks();
+}
    
