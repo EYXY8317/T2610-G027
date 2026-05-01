@@ -283,7 +283,50 @@
     </div>
 
 </div>
-   
+
+    <!-- ===== TASK VIEW ===== -->
+    <div id="taskView" class="view" style="display:none;">
+
+
+    <!-- 左边 Task Section -->
+    <div style="width: 60%; float:left;">
+
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2 id="listTitle">Study Plan</h2>
+
+            <!-- Toggle Completed -->
+            <button id="toggleCompletedBtn" onclick="toggleCompleted()">
+                隐藏已完成
+            </button>
+        </div>
+      
+             <!-- Add Task -->
+        <div style="margin:10px 0;">
+            <input id="taskInput" placeholder="Add a task..." style="width:70%;">
+            <button onclick="addTask()">Add</button>
+        </div>
+
+        <!-- Active Tasks -->
+        <div id="taskList"></div>
+
+         <!-- Completed Section -->
+        <div id="completedSection" style="margin-top:20px;">
+            <h4>已完成 (<span id="completedCount">0</span>)</h4>
+            <div id="completedList"></div>
+        </div>
+
+    </div>
+
+    <!-- 右边 Detail Panel -->
+     <div id="taskDetailPanel" style="width:35%; float:right; display:none; border-left:1px solid #ccc; padding-left:20px;">
+        <h3 id="detailTitle"></h3>
+        <p id="detailDate"></p>
+        <p id="detailTime"></p>
+    </div>
+
+</div>
+
     <div id="calendarView" style="display:none;">
 
     <!-- Top Bar -->
