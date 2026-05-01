@@ -69,3 +69,71 @@ function addTask() {
     renderTasks();
 }
    
+// ==================================================
+// RENDER TASKS (CORE FUNCTION 🔥)
+// Controls all UI updates
+// ==================================================
+
+function renderTasks() {
+
+    // Get HTML containers
+    let taskList = document.getElementById("taskList");
+    let completedList = document.getElementById("completedList");
+    let completedSection = document.getElementById("completedSection");
+    let completedCount = document.getElementById("completedCount");
+
+    // Clear previous UI
+    taskList.innerHTML = "";
+    completedList.innerHTML = "";
+
+    // Filter tasks based on current list
+    let active = tasks.filter(t => t.status === "active" && t.category === currentList);
+    let completed = tasks.filter(t => t.status === "completed" && t.category === currentList);
+
+    // =========================
+    // RENDER ACTIVE TASKS
+    // =========================
+
+    active.forEach(t => {
+
+        let div = document.createElement("div");
+
+        div.innerHTML = `
+            <!-- Checkbox: mark task as completed -->
+            <input type="checkbox" onclick="completeTask(${t.id})">
+
+            <!-- Click text to open detail panel -->
+            <span onclick="selectTask(${t.id})">${t.text}</span>
+        `;
+
+        taskList.appendChild(div);
+    });
+
+// =========================
+// RENDER COMPLETED TASKS
+// =========================
+
+    // Update completed count
+    completedCount.innerText = completed.length;
+
+    // Show or hide completed section
+    if (!hideCompleted && completed.length > 0) {
+
+        completedSection.style.display = "block";
+
+        completed.forEach(t => {
+
+            let div = document.createElement("div");
+
+            div.innerHTML = `
+                ✔ <span onclick="selectTask(${t.id})">${t.text}</span>
+            `;
+
+            completedList.appendChild(div);
+        });
+
+    } else {
+        // Hide entire completed section
+        completedSection.style.display = "none";
+    }
+}
