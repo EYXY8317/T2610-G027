@@ -60,71 +60,41 @@ function generateCalendar() {
 
     for (let i = 1; i <= totalDays; i++) {
 
-        // Create one day box
-        let day = document.createElement("div");
-        day.classList.add("day");
+    let day = document.createElement("div");
+    day.classList.add("day");
 
-         // Create date label (top-left number)
-        let date = document.createElement("div");
-        date.classList.add("date");
-        date.innerText = i;
+    let date = document.createElement("div");
+    date.classList.add("date");
+    date.innerText = i;
 
-        // Add date into day box
-        day.appendChild(date);
+    day.appendChild(date);
 
-    for (let i = 1; i <= totalDays; i++) {
+    day.style.cursor = "pointer";
 
-        let day = document.createElement("div");
-        day.classList.add("day");
+    day.addEventListener("click", function () {
 
-        let date = document.createElement("div");
-        date.classList.add("date");
-        date.innerText = i;
+        let selectedDay = String(i).padStart(2, '0');
+        let selectedMonth = String(currentMonth + 1).padStart(2, '0');
+        let selectedYear = currentYear;
 
-        day.appendChild(date);
+        let formattedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
 
-        // 🔥 MAKE DAY CLICKABLE
-        day.style.cursor = "pointer";
+        window.location.href = "/diary?date=" + formattedDate;
+    });
 
-        day.addEventListener("click", function () {
-
-            let selectedDay = String(i).padStart(2, '0');
-            let selectedMonth = String(currentMonth + 1).padStart(2, '0');
-            let selectedYear = currentYear;
-
-            let formattedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
-
-            window.location.href = "/diary?date=" + formattedDate;
-        });
-
-        // ✅ EXISTING TODAY HIGHLIGHT (KEEP THIS)
-        if (
-            i === today.getDate() &&
-            month === today.getMonth() &&
-            year === today.getFullYear()
-        ) {
-            day.classList.add("today");
-        }
-
-        calendar.appendChild(day);
-    }
-    
-    // ==================================================
+     // ==================================================
     // STEP 4: Highlight today's date
     // ==================================================
-
     if (
-            i === today.getDate() &&          // same day
-            month === today.getMonth() &&    // same month
-            year === today.getFullYear()     // same year
-        ) {
-            day.classList.add("today"); // apply highlight style
-        }
-     // Add day box into calendar
-        calendar.appendChild(day);
+        i === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear()
+    ) {
+        day.classList.add("today");
     }
-}
 
+    calendar.appendChild(day);
+}
 // ==================================================
 // VIEW SWITCH FUNCTION
 // ==================================================
