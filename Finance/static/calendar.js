@@ -60,15 +60,30 @@ function generateCalendar() {
 
     for (let i = 1; i <= totalDays; i++) {
 
+    // Create one day box
     let day = document.createElement("div");
     day.classList.add("day");
 
+    // Create date label (top-left number)
     let date = document.createElement("div");
     date.classList.add("date");
     date.innerText = i;
 
+    // Add date into day box
     day.appendChild(date);
 
+    for (let i = 1; i <= totalDays; i++) {
+
+    let day = document.createElement("div");
+    day.classList.add("day");
+  
+    let date = document.createElement("div");
+    date.classList.add("date");
+    date.innerText = i;
+ 
+    day.appendChild(date);
+    
+    // MAKE DAY CLICKABLE
     day.style.cursor = "pointer";
 
     day.addEventListener("click", function () {
@@ -81,6 +96,18 @@ function generateCalendar() {
 
         window.location.href = "/diary?date=" + formattedDate;
     });
+
+    // EXISTING TODAY HIGHLIGHT (KEEP THIS)
+     if (
+        i === today.getDate() &&
+        month === today.getMonth() &&
+        year === today.getFullYear()
+    ) {
+        day.classList.add("today");
+    }
+
+    calendar.appendChild(day);
+    }
 
      // ==================================================
     // STEP 4: Highlight today's date
@@ -95,6 +122,7 @@ function generateCalendar() {
 
     calendar.appendChild(day);
 }
+
 // ==================================================
 // VIEW SWITCH FUNCTION
 // ==================================================
