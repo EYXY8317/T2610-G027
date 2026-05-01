@@ -176,3 +176,30 @@ function toggleCompleted() {
     // Re-render UI
     renderTasks();
 }
+
+// ==================================================
+// SELECT TASK (Open Right Detail Panel)
+// ==================================================
+
+function selectTask(id) {
+
+    // Save selected task ID
+    selectedTaskId = id;
+
+    // Find task data
+    let t = tasks.find(x => x.id === id);
+
+    if (!t) return;
+
+    let panel = document.getElementById("taskDetailPanel");
+
+    // Update detail panel content
+    document.getElementById("detailTitle").innerText = t.text;
+
+    // (Future: replace with real date/time)
+    document.getElementById("detailDate").innerText = "No date";
+    document.getElementById("detailTime").innerText = "No time";
+
+    // Show panel
+    panel.style.display = "block";
+}
