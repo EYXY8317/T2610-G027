@@ -186,3 +186,88 @@ function nextMonth() {
     generateCalendar();
 }
 
+// ==================================================
+// YEAR VIEW
+// ==================================================
+function generateYearView() {
+
+    document.getElementById("yearTitle").innerText = currentYear;
+
+    let yearGrid = document.getElementById("yearGrid");
+    yearGrid.innerHTML = "";
+
+    let monthNames = [
+        "January","February","March","April","May","June",
+        "July","August","September","October","November","December"
+    ];
+
+    let weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+    let today = new Date();
+    let currentDay = today.getDate();
+    let currentMonthNum = today.getMonth();
+    let currentYearNum = today.getFullYear();
+
+    for (let m = 0; m < 12; m++) {
+
+        let box = document.createElement("div");
+        box.classList.add("month-box");
+
+        // 标题
+        let title = document.createElement("div");
+        title.classList.add("month-title");
+        title.innerText = monthNames[m];
+        box.appendChild(title);
+
+        // 星期
+        let weekRow = document.createElement("div");
+        weekRow.classList.add("mini-weekdays");
+
+        weekdays.forEach(day => {
+            let d = document.createElement("div");
+            d.innerText = day;
+            weekRow.appendChild(d);
+        });
+
+        box.appendChild(weekRow);
+
+        // 日期
+        let mini = document.createElement("div");
+        mini.classList.add("mini-calendar");
+
+        let firstDay = new Date(currentYear, m, 1).getDay();
+        let totalDays = new Date(currentYear, m + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+            let empty = document.createElement("div");
+            empty.classList.add("mini-empty");
+            mini.appendChild(empty);
+        }
+
+        for (let d = 1; d <= totalDays; d++) {
+            let day = document.createElement("div");
+            day.innerText = d;
+            day.classList.add("mini-day");
+
+            // 高亮今天
+            if (m === currentMonthNum && 
+                d === currentDay && 
+                currentYear === currentYearNum) {
+                day.classList.add("today");
+            }
+
+            mini.appendChild(day);
+        }
+
+        box.appendChild(mini);
+
+        // 点击 → 回到 month view
+        box.onclick = function () {
+            currentMonth = m;
+            setView("month");
+        };
+
+        yearGrid.appendChild(box);
+    }
+}
+

@@ -271,6 +271,7 @@ function generateYearView() {
         yearGrid.appendChild(box);
     }
 }
+
 // ==================================================
 // YEAR NAVIGATION
 // ==================================================
