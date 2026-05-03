@@ -15,13 +15,14 @@ function showPage(pageId, element) {
     if (pageId === "trash") renderTrash();
     if (pageId === "today") renderToday();
     if (pageId === "calendar") {
-    setTimeout(generateCalendar, 50);
+    generateCalendar();
 }
 }
 
 // ===============================
 // GLOBAL STATE
 // ===============================
+let today = new Date();
 let selectedDate = "";
 let selectedStart = "";
 let selectedEnd = "";
@@ -196,11 +197,11 @@ function renderToday() {
 
     container.innerHTML = "";
 
-    const todayStr = new Date().toISOString().split("T")[0];   // 改成 todayStr
+    let today = new Date().toISOString().split("T")[0];
 
     Object.keys(taskData).forEach(list => {
         let tasks = taskData[list].filter(t =>
-            t.status === "active" && t.date === todayStr   // 使用 todayStr
+            t.status === "active" && t.date === today
         );
 
         tasks.forEach(task => {
@@ -310,23 +311,23 @@ function setPriority(icon, e) {
         e.target.style.fontWeight = "bold";
     }
 }
-// ApplyDate
+
+// Apply Date
 function applyDate() {
     let dateInput = document.getElementById("popupDate");
-    let dateValue = dateInput.value.trim();
+    let startInput = document.getElementById("startTime");
+    let endInput = document.getElementById("endTime");
+    let reminderInput = document.getElementById("reminder");
 
-    if (!dateValue) {
-        alert("Please enter a date (YYYY-MM-DD)");
-        return;
-    }
+    selectedDate = dateInput.value;
+    selectedStart = startInput.value;
+    selectedEnd = endInput.value;
+    selectedReminder = reminderInput.value;
 
-    selectedDate = dateValue;
-    selectedStart = document.getElementById("startTime").value;
-    selectedEnd = document.getElementById("endTime").value;
-    selectedReminder = document.getElementById("reminder").value;
-
+    // 关闭 popup
     closeCalendar();
 }
+
 document.addEventListener("DOMContentLoaded", function() {
 
     let reminder = document.getElementById("reminder");
@@ -359,6 +360,26 @@ function loadTasks() {
     const saved = localStorage.getItem("taskData");
     if (saved) taskData = JSON.parse(saved);
 }
+
+function getPriorityColor(priority) {
+    if (priority === "red") return "#ef4444";
+    if (priority === "orange") return "#f59e0b";
+    if (priority === "blue") return "#3b82f6";
+    return "#6b7280";
+}
+
+// Load data when page loads
+document.addEventListener("DOMContentLoaded", () => {
+    loadTasks();
+    
+    // 重要：加载后重新渲染所有列表
+    renderToday();
+    
+    // 渲染所有任务列表
+    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
+        renderTasks(list);
+    });
+});
 
 // Auto save after changes
 const originalCompleteTask = completeTask;
