@@ -69,81 +69,48 @@ function generateCalendar() {
     }
 }
 
-    // ==================================================
-    // STEP 1: Calculate important values
-    // ==================================================
+// ==================================================
+// DAY TASKS MODAL
+// ==================================================
+function showDayTasks(dateStr) {
+    let html = `<h3>Tasks on ${dateStr}</h3><div style="max-height:400px; overflow-y:auto;">`;
 
-    // Get the first day of the month (0 = Sunday, 6 = Saturday)
-    let firstDay = new Date(year, month, 1).getDay();
-
-     // Get total number of days in this month
-    let totalDays = new Date(year, month + 1, 0).getDate();
-
-    // ==================================================
-    // STEP 2: Create empty cells (for alignment)
-    // Example: if first day is Friday → add 5 empty boxes
-    // ==================================================
-
-    for (let i = 0; i < firstDay; i++) {
-        let empty = document.createElement("div");
-        empty.classList.add("empty"); // style for blank cell
-        calendar.appendChild(empty);
-    }
-
-     // ==================================================
-    // STEP 3: Create actual day cells (1 → 30/31)
-    // ==================================================
-
-    for (let i = 1; i <= totalDays; i++) {
-
-    // Create one day box
-    let day = document.createElement("div");
-    day.classList.add("day");
-
-    // Create date label (top-left number)
-    let date = document.createElement("div");
-    date.classList.add("date");
-    date.innerText = i;
-
-    // Add date into day box
-    day.appendChild(date);
-
-    for (let i = 1; i <= totalDays; i++) {
-
-    let day = document.createElement("div");
-    day.classList.add("day");
-  
-    let date = document.createElement("div");
-    date.classList.add("date");
-    date.innerText = i;
- 
-    day.appendChild(date);
-    
-    // MAKE DAY CLICKABLE
-    day.style.cursor = "pointer";
-
-    day.addEventListener("click", function () {
-
-        let selectedDay = String(i).padStart(2, '0');
-        let selectedMonth = String(currentMonth + 1).padStart(2, '0');
-        let selectedYear = currentYear;
-
-        let formattedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
-
-        window.location.href = "/diary?date=" + formattedDate;
+    let hasTasks = false;
+    Object.keys(taskData).forEach(list => {
+        const tasks = taskData[list].filter(t => t.status === "active" && t.date === dateStr);
+        tasks.forEach(task => {
+            hasTasks = true;
+            const color = getPriorityColor(task.priority);
+            html += `
+                <div style="padding:10px; margin:8px 0; border-left:4px solid ${color}; background:#f9fafb;">
+                    <strong>[${list}]</strong> ${task.text}
+                    <button onclick="completeTask('${list}', ${task.id}); closeDayModal()" style="margin-left:15px; color:green;">✔ Complete</button>
+                    <button onclick="deleteTask('${list}', ${task.id}); closeDayModal()" style="margin-left:8px; color:red;">🗑 Delete</button>
+                </div>`;
+        });
     });
 
-    // EXISTING TODAY HIGHLIGHT (KEEP THIS)
-     if (
-        i === today.getDate() &&
-        month === today.getMonth() &&
-        year === today.getFullYear()
-    ) {
-        day.classList.add("today");
-    }
+    if (!hasTasks) html += "<p>No tasks on this day.</p>";
 
-    calendar.appendChild(day);
+    html += `</div><button onclick="closeDayModal()" style="margin-top:15px; padding:8px 16px;">Close</button>`;
+
+    let modal = document.getElementById("dayModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "dayModal";
+        modal.style = "position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:2px solid #333; border-radius:8px; z-index:10000; min-width:350px; max-width:500px;";
+        document.body.appendChild(modal);
     }
+    modal.innerHTML = html;
+    modal.style.display = "block";
+}
+
+function closeDayModal() {
+    const modal = document.getElementById("dayModal");
+    if (modal) modal.style.display = "none";
+    generateCalendar();
+}
+
 
      // ==================================================
     // STEP 4: Highlight today's date
@@ -155,9 +122,6 @@ function generateCalendar() {
     ) {
         day.classList.add("today");
     }
-
-    calendar.appendChild(day);
-}
 
 // ==================================================
 // VIEW SWITCH FUNCTION
