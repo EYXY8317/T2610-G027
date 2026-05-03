@@ -54,48 +54,169 @@
             <h3>Today Tasks</h3>
             <ul id="todayTasks"></ul>
 
-    <!-- ===== TASK VIEW ===== -->
-    <div id="taskView" class="view" style="display:none;">
+        <!-- Work -->
+        <div id="work" class="page">
+            <h2>Work Tasks</h2>
 
+            <div class="task-input">
+                <input type="text" id="workTaskText">
 
-    <!-- 左边 Task Section -->
-    <div style="width: 60%; float:left;">
+       <!-- 📅 -->
+       <button onclick="toggleCalendar(this, event)">
+       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+        </svg>
+    </button>
 
-        <!-- Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 id="listTitle">Study Plan</h2>
+       <!-- ⋯ -->
+       <button onclick="toggleExtra(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+    </button>
 
-            <!-- Toggle Completed -->
-            <button id="toggleCompletedBtn" onclick="toggleCompleted()">
-                隐藏已完成
-            </button>
+                <button onclick="addTask('work')">Add</button>
+            </div>
+
+            <div id="workEmptyMsg" class="empty">No tasks yet</div>
+            <div id="workTaskList"></div>
         </div>
-      
-             <!-- Add Task -->
-        <div style="margin:10px 0;">
-            <input id="taskInput" placeholder="Add a task..." style="width:70%;">
-            <button onclick="addTask()">Add</button>
+
+        <!-- Shopping -->
+        <div id="shopping" class="page">
+            <h2>Shopping List</h2>
+
+            <div class="task-input">
+                <input type="text" id="shoppingTaskText">
+
+        <!-- 📅 -->
+        <button onclick="toggleCalendar(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+        </svg>
+    </button>
+
+        <!-- ⋯ -->
+        <button onclick="toggleExtra(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+    </button>    
+
+                <button onclick="addTask('shopping')">Add</button>
+            </div>
+
+            <div id="shoppingEmptyMsg" class="empty">No tasks yet</div>
+            <div id="shoppingTaskList"></div>
         </div>
 
-        <!-- Active Tasks -->
-        <div id="taskList"></div>
+        <!-- Study -->
+        <div id="study" class="page">
+            <h2>Study Plan</h2>
 
-         <!-- Completed Section -->
-        <div id="completedSection" style="margin-top:20px;">
-            <h4>已完成 (<span id="completedCount">0</span>)</h4>
-            <div id="completedList"></div>
+            <div class="task-input">
+                <input type="text" id="studyTaskText">
+
+        <!-- 📅 -->
+        <button onclick="toggleCalendar(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+        </svg>
+    </button>
+
+        <!-- ⋯ -->
+        <button onclick="toggleExtra(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+    </button>
+
+                <button onclick="addTask('study')">Add</button>
+            </div>
+
+            <div id="studyEmptyMsg" class="empty">No tasks yet</div>
+            <div id="studyTaskList"></div>
         </div>
 
-    </div>
+        <!-- Personal -->
+        <div id="personal" class="page">
+            <h2>Personal Memos</h2>
 
-    <!-- 右边 Detail Panel -->
-     <div id="taskDetailPanel" style="width:35%; float:right; display:none; border-left:1px solid #ccc; padding-left:20px;">
-        <h3 id="detailTitle"></h3>
-        <p id="detailDate"></p>
-        <p id="detailTime"></p>
-    </div>
+            <div class="task-input">
+                <input type="text" id="personalTaskText">
 
-</div>
+        <!-- 📅 -->
+        <button onclick="toggleCalendar(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+        </svg>
+    </button>
+
+        <!-- ⋯ -->
+       <button onclick="toggleExtra(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+    </button>
+
+                <button onclick="addTask('personal')">Add</button>
+            </div>
+
+            <div id="personalEmptyMsg" class="empty">No tasks yet</div>
+            <div id="personalTaskList"></div>
+        </div>
+
+        <!-- Workout -->
+        <div id="workout" class="page">
+            <h2>Workout Plan</h2>
+
+            <div class="task-input">
+                <input type="text" id="workoutTaskText">
+
+        <!-- 📅 -->
+        <button onclick="toggleCalendar(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+        </svg>
+    </button>
+
+        <!-- ⋯ -->
+        <button onclick="toggleExtra(this, event)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+            <circle cx="5" cy="12" r="2"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+            <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+    </button>
+                <button onclick="addTask('workout')">Add</button>
+            </div>
+
+            <div id="workoutEmptyMsg" class="empty">No tasks yet</div>
+            <div id="workoutTaskList"></div>
+        </div>
 
     <div id="calendarView" style="display:none;">
 
