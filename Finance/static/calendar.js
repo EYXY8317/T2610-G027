@@ -128,3 +128,61 @@ function setView(view) {
         generateYearView();
     }
 }
+
+// ==================================================
+// NAVIGATION (HEADER BUTTONS)
+// ==================================================
+function goPrev() {
+    if (currentView === "month") {
+        prevMonth();
+    } else {
+        prevYear();
+    }
+}
+
+function goNext() {
+    if (currentView === "month") {
+        nextMonth();
+    } else {
+        nextYear();
+    }
+}
+
+function goToday() {
+    let now = new Date();
+    currentMonth = now.getMonth();
+    currentYear = now.getFullYear();
+
+    if (currentView === "month") {
+        generateCalendar();
+    } else {
+        generateYearView();
+    }
+}
+
+
+// ==================================================
+// MONTH NAVIGATION
+// ==================================================
+function prevMonth() {
+    currentMonth--;
+
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+
+    generateCalendar();
+}
+
+function nextMonth() {
+    currentMonth++;
+
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+
+    generateCalendar();
+}
+
