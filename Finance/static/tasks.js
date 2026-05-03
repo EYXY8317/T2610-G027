@@ -235,4 +235,97 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// ToggleCalendar
+function toggleCalendar(btn, e) {
+    if (e) e.stopPropagation(); 
 
+    let popup = document.getElementById("calendarPopup");
+
+    document.body.appendChild(popup);
+
+    let extra = document.getElementById("extraPopup");
+    if (extra) extra.style.display = "none";
+
+    let rect = btn.getBoundingClientRect();
+
+    popup.style.position = "absolute";
+    popup.style.top = rect.bottom + window.scrollY + "px";
+    popup.style.left = rect.left + window.scrollX + "px";
+
+    popup.style.display =
+        popup.style.display === "block" ? "none" : "block";
+}
+
+// ToggleCalendar
+function toggleExtra(btn, e) {
+    if (e) e.stopPropagation(); 
+
+    let popup = document.getElementById("extraPopup");
+
+    document.body.appendChild(popup);
+
+    let cal = document.getElementById("calendarPopup");
+    if (cal) cal.style.display = "none";
+
+    let rect = btn.getBoundingClientRect();
+
+    popup.style.position = "absolute";
+    popup.style.top = rect.bottom + window.scrollY + "px";
+    popup.style.left = rect.right + window.scrollX - 200 + "px";
+
+    popup.style.display =
+        popup.style.display === "block" ? "none" : "block";
+}
+
+// Close
+function closeCalendar() {
+    document.getElementById("calendarPopup").style.display = "none";
+}
+
+function closeExtra() {
+    document.getElementById("extraPopup").style.display = "none";
+}
+
+// GetPriorityDot
+function getPriorityDot(priority) {
+    if (priority === "red") return "🔴";
+    if (priority === "orange") return "🟠";
+    if (priority === "blue") return "🔵";
+    if (priority === "gray") return "⚫";
+    return "";
+}
+
+function setPriority(icon, e) {
+    selectedPriority = icon;
+
+    // reset all
+    let all = document.querySelectorAll(".priority-box span");
+    all.forEach(el => {
+        el.style.opacity = "0.5";
+        el.style.fontWeight = "normal";
+    });
+
+    // highlight selected
+    if (e) {
+        e.target.style.opacity = "1";
+        e.target.style.fontWeight = "bold";
+    }
+}
+
+// ApplyDate
+function applyDate() {
+    let dateInput = document.getElementById("popupDate");
+    let dateValue = dateInput.value.trim();
+
+    if (!dateValue) {
+        alert("Please enter a date (YYYY-MM-DD)");
+        return;
+    }
+
+    selectedDate = dateValue;
+    selectedStart = document.getElementById("startTime").value;
+    selectedEnd = document.getElementById("endTime").value;
+    selectedReminder = document.getElementById("reminder").value;
+
+    closeCalendar();
+}
