@@ -271,3 +271,15 @@ function generateYearView() {
     }
 }
 
+// ==================================================
+// YEAR NAVIGATION
+// ==================================================
+function prevYear() {
+    currentYear--;
+    generateYearView();
+}
+
+function nextYear() {
+    currentYear++;
+    generateYearView();
+}
