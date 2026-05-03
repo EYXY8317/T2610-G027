@@ -329,3 +329,30 @@ function applyDate() {
 
     closeCalendar();
 }
+
+// ===============================
+// PERSISTENCE - localStorage
+// ===============================
+function saveTasks() {
+    localStorage.setItem("taskData", JSON.stringify(taskData));
+}
+
+function loadTasks() {
+    const saved = localStorage.getItem("taskData");
+    if (saved) taskData = JSON.parse(saved);
+}
+
+// Auto save after changes
+const originalCompleteTask = completeTask;
+completeTask = function(listType, id) {
+    originalCompleteTask.call(this, listType, id);
+    saveTasks();
+    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
+};
+
+const originalDeleteTask = deleteTask;
+deleteTask = function(listType, id) {
+    originalDeleteTask.call(this, listType, id);
+    saveTasks();
+    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
+};
