@@ -134,3 +134,105 @@ function renderTasks(listType) {
     });
 }
 
+// Render Completed
+function renderCompleted() {
+    let container = document.getElementById("completedList");
+
+    container.innerHTML = "";
+
+    Object.keys(taskData).forEach(list => {
+        let completedTasks = taskData[list].filter(t => t.status === "completed");
+
+        completedTasks.forEach(task => {
+            let div = document.createElement("div");
+
+            div.innerHTML = `
+                <span>✔ ${task.text}</span>
+                <button onclick="deleteTask('${list}', ${task.id})">🗑</button>
+            `;
+
+            container.appendChild(div);
+        });
+    });
+}
+
+// Render Trash
+function renderTrash() {
+    let container = document.getElementById("trashList");
+
+    container.innerHTML = "";
+
+    Object.keys(taskData).forEach(list => {
+        let trashTasks = taskData[list].filter(t => t.status === "trash");
+
+        trashTasks.forEach(task => {
+            let div = document.createElement("div");
+
+            div.innerHTML = `
+                <span>🗑 ${task.text}</span>
+                <button onclick="restoreTask('${list}', ${task.id})">↩ Restore</button>
+            `;
+
+            container.appendChild(div);
+        });
+    });
+}
+
+// Restore Task
+function restoreTask(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+
+    task.status = "active";
+
+    renderTrash();
+    renderTasks(listType);
+    renderToday();
+}
+
+// Render Today
+function renderToday() {
+    let container = document.getElementById("todayTasks");
+
+    container.innerHTML = "";
+
+    const todayStr = new Date().toISOString().split("T")[0];   // 改成 todayStr
+
+    Object.keys(taskData).forEach(list => {
+        let tasks = taskData[list].filter(t =>
+            t.status === "active" && t.date === todayStr   // 使用 todayStr
+        );
+
+        tasks.forEach(task => {
+            let li = document.createElement("li");
+
+            li.innerHTML = `[${list}] ${task.text} ${getPriorityDot(task.priority)}`;
+
+            container.appendChild(li);
+        });
+    });
+
+    // 没任务时提示
+    if (container.innerHTML === "") {
+        container.innerHTML = "<li>No tasks for today</li>";
+    }
+}
+
+// ===============================
+// ENTER KEY SUPPORT
+// ===============================
+document.addEventListener("DOMContentLoaded", function () {
+    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
+        let input = document.getElementById(list + "TaskText");
+
+        if (input) {
+            input.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    addTask(list);
+                }
+            });
+        }
+    });
+});
+
+
