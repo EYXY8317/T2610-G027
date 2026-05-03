@@ -35,17 +35,25 @@
 
     <!-- ACCOUNT -->
     <label>Account:</label><br>
-    <select name="account">
+    <select id="account" name="account">
         <option value="">-- Select Account --</option>
-        {% for acc in accounts %}
-        <option value="{{ acc.name }}"
-        {% if record.account == acc.name %}selected{% endif %}>
-        {{ acc.name }}
-        </option>
-        {% endfor %}
-    </select><br><br>
 
-    <input type="text" name="new_account" placeholder="Or create new account"><br><br>
+        {% for acc in accounts %}
+            <option value="{{ acc.name }}"
+            {{ "selected" if record.account == acc.name else "" }}>
+                {{ acc.name }}
+            </option>
+        {% endfor %}
+
+    <option value="__new__">➕ Create New Account</option>
+</select>
+
+<br><br>
+
+<!-- 🔥 Hidden input -->
+<input type="text" id="new_account" name="new_account"
+placeholder="Enter new account"
+style="display:none;">
 
     <!-- ITEM -->
     <label>Item:</label><br>
@@ -123,6 +131,26 @@ document.addEventListener("keydown", function(e) {
     document.getElementById("amountInput").value = (value / 100).toFixed(2);
 });
 
+</script>
+
+<script>
+    const accountSelect = document.getElementById("account");
+    const newAccountInput = document.getElementById("new_account");
+
+    function toggleNewAccount() {
+        if (accountSelect.value === "__new__") {
+            newAccountInput.style.display = "block";
+        } else {
+            newAccountInput.style.display = "none";
+            newAccountInput.value = ""; // prevent accidental data
+        }
+    }
+
+    // run on change
+    accountSelect.addEventListener("change", toggleNewAccount);
+
+    // run on page load (important for edit mode)
+    toggleNewAccount();
 </script>
 
 </body>
