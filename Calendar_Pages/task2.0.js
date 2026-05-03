@@ -294,7 +294,6 @@ function getPriorityDot(priority) {
     if (priority === "gray") return "⚫";
     return "";
 }
-
 function setPriority(icon, e) {
     selectedPriority = icon;
 
@@ -328,7 +327,6 @@ function applyDate() {
 
     closeCalendar();
 }
-
 document.addEventListener("DOMContentLoaded", function() {
 
     let reminder = document.getElementById("reminder");
