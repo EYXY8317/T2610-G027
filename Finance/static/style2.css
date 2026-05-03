@@ -104,3 +104,63 @@ body{
 .today {
     background-color: #e3f2fd;
 }
+
+/* ===== CALENDAR HEADER ===== */
+.calendar-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+/* 左：标题 */
+.calendar-title {
+    flex: 1;
+}
+
+.calendar-title h2 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* 中：View 按钮 */
+.view-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex: 1;
+}
+
+.view-buttons button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #eee;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.view-buttons button:hover {
+    background-color: #ddd;
+}
+
+/* 右：操作按钮 */
+.calendar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.calendar-actions button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #eee;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.calendar-actions button:hover {
+    background-color: #ddd;
+}
