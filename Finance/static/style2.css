@@ -53,4 +53,54 @@ body{
 
 .page.active {
     display: block;
-}    
+}
+
+/* ===== Calendar Styles ===== */
+.calendar {
+    margin-top: 20px;
+}
+
+/* Weekday header row */
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+/* Grid container for days */
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+
+/* Empty cells + day cells */
+.day, .empty {
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    min-height: 120px;
+    padding: 8px;
+    background-color: #fff;
+}
+
+/* Each day layout */
+.day {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+}
+
+/* Date (top-left) */
+.date {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Today highlight */
+.today {
+    background-color: #e3f2fd;
+}
