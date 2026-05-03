@@ -22,6 +22,7 @@ function showPage(pageId, element) {
 // ===============================
 // GLOBAL STATE
 // ===============================
+let today = new Date();
 let selectedDate = "";
 let selectedStart = "";
 let selectedEnd = "";
