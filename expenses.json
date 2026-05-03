@@ -1,0 +1,11 @@
+[
+    {
+        "username": "test",
+        "date": "2026-05-03",
+        "type": "income",
+        "category": "Business",
+        "account": "TnG",
+        "item": "-",
+        "amount": 1100.0
+    }
+]

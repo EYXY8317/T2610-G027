@@ -345,11 +345,11 @@ add function starts here
 @app.route("/add", methods=["GET", "POST"])
 def add_financial():
 
-    # 🔒 Check login
+    # Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # 🔥 ALWAYS load accounts first
+    # ALWAYS load accounts first
     accounts = load_data("accounts.json", [])
     user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
@@ -361,11 +361,11 @@ def add_financial():
         item = request.form.get("item")
         amount = request.form.get("amount")
 
-        # 🔥 GET ACCOUNT INPUTS
+        # GET ACCOUNT INPUTS
         new_account = request.form.get("new_account")
         account = request.form.get("account")
 
-        # 🔥 IF USER TYPES NEW ACCOUNT
+        # IF USER TYPES NEW ACCOUNT
         if new_account:
             account = new_account
 
@@ -376,10 +376,10 @@ def add_financial():
                 })
                 save_data("accounts.json", accounts)
 
-            # 🔥 refresh user_accounts after adding
+            # refresh user_accounts after adding
             user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
-        # 🔥 VALIDATION
+        # VALIDATION
         if not account:
             return render_template("add.html", error="Select or create account", accounts=user_accounts)
 
@@ -394,7 +394,7 @@ def add_financial():
         except:
             return render_template("add.html", error="Invalid amount", accounts=user_accounts)
 
-        # 🔥 CREATE RECORD
+        # CREATE RECORD
         record = {
             "username": session["user"],
             "date": date,
@@ -405,14 +405,14 @@ def add_financial():
             "amount": amount
         }
 
-        # 💾 SAVE
+        # SAVE
         records = load_data(f_expense, [])
         records.append(record)
         save_data(f_expense, records)
 
         return render_template("add.html", success="Record added!", accounts=user_accounts)
 
-    # 🔥 GET request
+    # GET request
     return render_template("add.html", accounts=user_accounts)
 
 """
@@ -422,17 +422,17 @@ view finance starts here
 @app.route("/view")
 def view_financial():
 
-    # 🔒 Check login
+    # Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # 📥 Load all records
+    # Load all records
     records = load_data(f_expense, [])
 
-    # 👤 Get current user
+    # Get current user
     user = session.get("user")
 
-    # 🔍 Filter only this user's records
+    # Filter only this user's records
     user_records = [r for r in records if r["username"] == user]
 
     selected_account = request.args.get("account")
@@ -440,7 +440,7 @@ def view_financial():
     if selected_account:
         user_records = [r for r in user_records if r.get("account") == selected_account]
 
-    # 🔄 Sort by date (newest first)
+    # Sort by date (newest first)
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
     accounts = load_data("accounts.json", [])
@@ -450,7 +450,7 @@ def view_financial():
         "view.html",
         records=sorted_records,
         selected_account=selected_account,
-        accounts=user_accounts   # 🔥 THIS LINE FIXES EVERYTHING
+        accounts=user_accounts
     )
 
 """
@@ -460,29 +460,29 @@ update finance starts here
 @app.route("/update/<int:idx>", methods=["GET", "POST"])
 def update_financial(idx):
 
-    # 🔒 Check login
+    # Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
     records = load_data(f_expense, [])
     user = session.get("user")
 
-    # 👤 Filter user records
+    # Filter user records
     user_records = [r for r in records if r["username"] == user]
 
-    # 🔄 Sort
+    # Sort
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    # ❌ Invalid index
+    # Invalid index
     if idx < 0 or idx >= len(sorted_records):
         return render_template("view.html", records=sorted_records, error="Invalid record")
 
-    # 🎯 Get selected record
+    # Get selected record
     selected = sorted_records[idx]
     real_index = records.index(selected)
     record = records[real_index]
 
-    # 🔥 HANDLE UPDATE
+    # HANDLE UPDATE
     if request.method == "POST":
 
         # KEEP OLD VALUES IF USER DOESN’T CHANGE
@@ -493,10 +493,13 @@ def update_financial(idx):
         account = request.form.get("account") or record.get("account", "Default")
         amount = request.form.get("amount") or record["amount"]
 
-        # HANDLE NEW ACCOUNT
-        new_account = request.form.get("new_account")
-        accounts = load_data("accounts.json", [])
+        # HANDLE ACCOUNT
+    account = request.form.get("account")
+    new_account = request.form.get("new_account")
 
+    accounts = load_data("accounts.json", [])
+
+    if account == "__new__":
         if new_account:
             account = new_account
 
@@ -506,6 +509,13 @@ def update_financial(idx):
                     "name": account
                 })
                 save_data("accounts.json", accounts)
+        else:
+            return render_template(
+                "update.html",
+                record=record,
+                accounts=[a for a in accounts if a["username"] == user],
+                error="Please enter new account name"
+            )
 
         # 🔥 VALIDATION
         if not date or not type_ or not amount:
