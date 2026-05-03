@@ -186,6 +186,7 @@ function nextMonth() {
     generateCalendar();
 }
 
+
 // ==================================================
 // YEAR VIEW
 // ==================================================
@@ -270,7 +271,6 @@ function generateYearView() {
         yearGrid.appendChild(box);
     }
 }
-
 // ==================================================
 // YEAR NAVIGATION
 // ==================================================
@@ -283,3 +283,4 @@ function nextYear() {
     currentYear++;
     generateYearView();
 }
+
