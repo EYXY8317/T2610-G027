@@ -1,37 +1,73 @@
 // ==================================================
 // CALENDAR SYSTEM
-// This function generates a full monthly calendar
 // ==================================================
-
-// ===== CURRENT STATE =====
-let today = new Date();
 let currentMonth = today.getMonth();
 let currentYear = today.getFullYear();
-
-// ===== VIEW STATE（control month / year）====
 let currentView = "month";
 
+// ==================================================
+// GENERATE MONTH VIEW WITH TASK BADGES
+// ==================================================
 function generateCalendar() {
+    const calendar = document.getElementById("calendarDays");
+    const title = document.getElementById("monthTitle");
 
- // Get HTML elements
-    let calendar = document.getElementById("calendarDays");
-    let title = document.getElementById("monthTitle");
+    if (!calendar || !title) return;
 
- // Clear previous calendar content
     calendar.innerHTML = "";
 
-     // Get current date information
-    let month = currentMonth;  
-    let year = currentYear;
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    title.innerText = monthNames[currentMonth] + " " + currentYear;
 
-     // List of month names
-    let monthNames = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-    ];
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    // Display month and year on top
-    title.innerText = monthNames[month] + " " + year;
+    // Empty cells
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement("div");
+        empty.classList.add("empty");
+        calendar.appendChild(empty);
+    }
+
+    // Days
+    for (let day = 1; day <= totalDays; day++) {
+        const dayEl = document.createElement("div");
+        dayEl.classList.add("day");
+
+        const dateEl = document.createElement("div");
+        dateEl.classList.add("date");
+        dateEl.textContent = day;
+        dayEl.appendChild(dateEl);
+
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        // Highlight today
+        const now = new Date();
+        if (day === now.getDate() && currentMonth === now.getMonth() && currentYear === now.getFullYear()) {
+            dayEl.classList.add("today");
+        }
+
+        // Count tasks
+        let taskCount = 0;
+        Object.keys(taskData).forEach(list => {
+            taskCount += taskData[list].filter(t => t.status === "active" && t.date === dateStr).length;
+        });
+
+        // Task badge
+        if (taskCount > 0) {
+            const badge = document.createElement("div");
+            badge.className = "task-badge";
+            badge.textContent = taskCount > 9 ? "9+" : taskCount;
+            dayEl.appendChild(badge);
+        }
+
+        // Click to show tasks modal
+        dayEl.style.cursor = "pointer";
+        dayEl.addEventListener("click", () => showDayTasks(dateStr));
+
+        calendar.appendChild(dayEl);
+    }
+}
 
     // ==================================================
     // STEP 1: Calculate important values
