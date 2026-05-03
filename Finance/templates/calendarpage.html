@@ -279,33 +279,111 @@
 
 </div>
 
+<div id="calendarPopup" style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc; width:260px;">
+
+    <!-- Header -->
+    <div>
+        <span>Schedule</span>
+        <button onclick="closeCalendar()">✕</button>
+    </div>
+
+    <!-- Date -->
+    <div>
+        <label>Date</label><br>
+        <input type="date" id="popupDate">
+    </div>
+
+    <!-- Time -->
+    <div>
+        <label>Time</label><br>
+        <input type="time" id="startTime">
+        →
+        <input type="time" id="endTime">
+    </div>
+
+    <!-- Reminder -->
+    <div>
+        <label>Reminder</label><br>
+        <select id="reminder">
+            <option value="none">None</option>
+            <option value="1day">1 day before</option>
+            <option value="1hour">1 hour before</option>
+            <option value="30min">30 min before</option>
+            <option value="10min">10 min before</option>
+            <option value="custom">Custom</option>
+        </select>
+
+        <div id="customReminderBox" style="display:none;">
+            <input type="number" id="reminderMinutes" placeholder="10">
+            minutes before
+        </div>
+    </div>
+
+    <!-- Repeat -->
+    <div>
+        <label>Repeat</label><br>
+        <select id="repeat">
+            <option value="none">None</option>
+            <option value="daily">Every day</option>
+            <option value="weekly">Every week</option>
+            <option value="monthly">Every month</option>
+            <option value="yearly">Every year</option>
+            <option value="custom">Custom</option>
+        </select>
+
+        <div id="customRepeatBox" style="display:none;">
+            <input type="number" id="repeatInterval" placeholder="1">
+            days
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div>
+        <button onclick="closeCalendar()">Cancel</button>
+        <button onclick="applyDate()">Save</button>
+    </div>
+
+</div>
+
+<!-- ^ Extra Popup -->
+<div id="extraPopup" 
+     onclick="event.stopPropagation()" 
+     style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc;">
+
+    <h4>Options</h4>
+
+    <!-- Priority -->
+    <div class="popup-section">
+       <label>Priority</label>
+         <div class="priority-box">
+           <span onclick="setPriority('red', event)">🔴 Must</span>
+           <span onclick="setPriority('orange', event)">🟠 Should</span>
+           <span onclick="setPriority('blue', event)">🔵 Nice</span>
+           <span onclick="setPriority('gray', event)">⚫ Ignore</span>
+    </div>
+</div>
+
+    <!-- Tag -->
+    <div class="popup-section">
+        <label>Tag</label>
+        <input type="text" id="taskTag">
+    </div>
+
+    <!-- Attachment -->
+    <div class="popup-section">
+        <label>Attachment</label>
+        <input type="file" id="taskFile">
+    </div>
+
+    <button onclick="closeExtra()">Done</button>
+
+</div>
 
 
 </div>   
 <!-- ===== JavaScript File ===== -->
 <script src="{{ url_for('static', filename='calendar.js') }}"></script>
 <script src="{{ url_for('static', filename='task.js') }}"></script>
-
-<script>
-function showView(view, element) {
-    // 隐藏全部
-    document.getElementById("todayView").style.display = "none";
-    document.getElementById("calendarView").style.display = "none";
-
-    // 显示当前
-    document.getElementById(view).style.display = "block";
-
-    // active 切换
-    let items = document.querySelectorAll(".menu-item");
-    items.forEach(item => item.classList.remove("active"));
-    element.classList.add("active");
-}
-
-// 默认显示 Today
-window.onload = function() {
-    showView("todayView", document.querySelector(".menu-item"));
-};
-</script>
 
 </body>
 </html>
