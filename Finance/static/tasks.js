@@ -15,7 +15,7 @@ function showPage(pageId, element) {
     if (pageId === "trash") renderTrash();
     if (pageId === "today") renderToday();
     if (pageId === "calendar") {
-    setTimeout(generateCalendar, 50);
+    generateCalendar()
 }
 }
 
