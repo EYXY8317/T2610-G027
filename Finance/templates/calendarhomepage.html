@@ -54,7 +54,7 @@
             <h3>Today Tasks</h3>
             <ul id="todayTasks"></ul>
         </div>
-        
+
         <!-- Work -->
         <div id="work" class="page">
             <h2>Work Tasks</h2>
@@ -204,9 +204,9 @@
         </svg>
     </button>
 
-        <!-- ⋯ -->
-        <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+         <!-- ⋯ -->
+         <button onclick="toggleExtra(this, event)">
+         <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
             <circle cx="5" cy="12" r="2"></circle>
             <circle cx="12" cy="12" r="2"></circle>
             <circle cx="19" cy="12" r="2"></circle>
@@ -219,8 +219,8 @@
             <div id="workoutTaskList"></div>
         </div>
 
-    <!-- Calendar -->
-    <div id="calendar" class="page">
+      <!-- Calendar -->
+<div id="calendar" class="page">
 
     <!-- Header（两个视图都显示） -->
     <div class="calendar-top">
@@ -280,7 +280,7 @@
 
 </div>
 
-<div id="calendarPopup" style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc; width:260px;">
+    <div id="calendarPopup" style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc; width:260px;">
 
     <!-- Header -->
     <div>
@@ -379,7 +379,6 @@
     <button onclick="closeExtra()">Done</button>
 
 </div>
- 
 <!-- ===== JavaScript File ===== -->
 <script src="{{ url_for('static', filename='calendar.js') }}"></script>
 <script src="{{ url_for('static', filename='task.js') }}"></script>
