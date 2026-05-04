@@ -1,4 +1,13 @@
-<h1>Summary</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Summary</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h1>📊 Financial Summary</h1>
 
 {% if income == 0 and expense == 0 %}
 
@@ -16,41 +25,45 @@
 
 {% else %}
 
-<!-- 📊 NORMAL SUMMARY -->
 <div style="border:1px solid #ccc; padding:20px; width:500px;">
 
-    <!-- Monthly Overview -->
-    <h3>Monthly Overview</h3>
+    <!-- ================= OVERVIEW ================= -->
+    <h2>📊 Monthly Overview</h2>
 
     <h1>RM {{ "%.2f"|format(balance) }}</h1>
 
     {% if balance >= 0 %}
-        <p style="color:green;">Positive Balance</p>
+        <p style="color:green;">✔ Positive Balance</p>
     {% else %}
-        <p style="color:red;">Negative Balance</p>
+        <p style="color:red;">❌ Negative Balance</p>
     {% endif %}
 
-    <p>Income: RM {{ "%.2f"|format(income) }}</p>
-    <p>Expense: RM {{ "%.2f"|format(expense) }}</p>
+    <p><strong>Income:</strong> RM {{ "%.2f"|format(income) }}</p>
+    <p><strong>Expense:</strong> RM {{ "%.2f"|format(expense) }}</p>
 
-    <hr>
-
-    <!-- Daily Average -->
-    <h3>Daily Average</h3>
-
-    <p>
-        RM {{ "%.2f"|format(daily_avg) }} / day
-
-        {% if daily_avg < 5 %}
-            (low spending 👍)
-        {% elif daily_avg < 20 %}
-            (moderate)
-        {% else %}
-            (high ⚠️)
-        {% endif %}
+    <!-- 🔥 COMPARISON -->
+    <p style="margin-top:10px; font-style:italic;">
+        {{ comparison }}
     </p>
 
     <hr>
+
+    <!-- ================= SPENDING BEHAVIOR ================= -->
+    <h2>📈 Spending Behavior</h2>
+
+    <!-- Daily Average -->
+    <p>
+        <strong>Daily Average:</strong>
+        RM {{ "%.2f"|format(daily_avg) }}
+
+        {% if daily_avg < 5 %}
+            <span style="color:green;">(Low 👍)</span>
+        {% elif daily_avg < 20 %}
+            <span style="color:orange;">(Moderate)</span>
+        {% else %}
+            <span style="color:red;">(High ⚠️)</span>
+        {% endif %}
+    </p>
 
     <!-- Top Categories -->
     <h3>Top Categories</h3>
@@ -58,19 +71,95 @@
     {% if top_categories %}
         <ol>
             {% for cat, amt, percent in top_categories %}
-                <li>{{ cat }} ({{ "%.0f"|format(percent) }}%)</li>
+                <li>
+                    {{ cat }} — {{ "%.0f"|format(percent) }}%
+                </li>
             {% endfor %}
         </ol>
+
+        <!-- 🔥 PIE CHART -->
+        <canvas id="pieChart" width="300" height="300"></canvas>
+
     {% else %}
         <p>No category data</p>
     {% endif %}
 
+    <!-- Insight -->
+    <h3>🧠 Insight</h3>
+    <p>{{ insight }}</p>
+
     <hr>
 
-    <!-- Smart Insight -->
-    <h3>Smart Insight</h3>
-    <p>{{ insight }}</p>
+    <!-- ================= BUDGET ================= -->
+    <h2>💸 Budget Tracking</h2>
+
+    <p style="color:gray;">
+        Budget feature coming soon...
+    </p>
 
 </div>
 
 {% endif %}
+
+
+<!-- 🔥 PIE CHART SCRIPT -->
+{% if top_categories %}
+<script>
+    const rawData = JSON.parse('{{ top_categories | tojson | safe }}');
+
+    const categories = rawData.map(item => item[0]);
+    const amounts = rawData.map(item => item[1]);
+
+    const total = amounts.reduce((a, b) => a + b, 0);
+
+    const ctx = document.getElementById('pieChart');
+
+    new Chart(ctx, {
+        type: 'doughnut', // 🔥 upgraded
+        data: {
+            labels: categories,
+            datasets: [{
+                data: amounts,
+                backgroundColor: [
+                    '#6366F1', // indigo
+                    '#10B981', // green
+                    '#F59E0B', // amber
+                    '#EF4444', // red
+                    '#8B5CF6'  // purple
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '60%', // 🔥 donut thickness
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: RM${value} (${percent}%)`;
+                        }
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                duration: 1000
+            }
+        }
+    });
+</script>
+{% endif %}
+
+</body>
+</html>

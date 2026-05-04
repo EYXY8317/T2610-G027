@@ -602,54 +602,72 @@ def summary():
     records = load_data(f_expense, [])
     user = session.get("user")
 
-    # 👤 filter user
+    # 👤 Filter user records
     user_records = [r for r in records if r["username"] == user]
 
-    # 📅 current month
-    from datetime import datetime
+    from datetime import datetime, timedelta
     now = datetime.now()
+
     current_month = now.strftime("%Y-%m")
 
-    # 📊 filter this month
+    # 📅 Previous month
+    first_day_this_month = now.replace(day=1)
+    last_month_date = first_day_this_month - timedelta(days=1)
+    last_month = last_month_date.strftime("%Y-%m")
+
+    # 📊 Filter records
     month_records = [
-        r for r in user_records
-        if r["date"].startswith(current_month)
+        r for r in user_records if r["date"].startswith(current_month)
     ]
 
-    # 🔢 totals
+    last_month_records = [
+        r for r in user_records if r["date"].startswith(last_month)
+    ]
+
+    # 🔢 Totals (THIS MONTH)
     income = sum(r["amount"] for r in month_records if r["type"] == "income")
     expense = sum(r["amount"] for r in month_records if r["type"] == "expense")
     balance = income - expense
 
-    # 📈 daily average
-    days = now.day if now.day > 0 else 1
-    daily_avg = expense / days if days else 0
+    # 🔢 Last month expense
+    last_month_expense = sum(
+        r["amount"] for r in last_month_records if r["type"] == "expense"
+    )
 
-    # 🏆 category totals (expense only)
+    # 📈 Comparison
+    difference = expense - last_month_expense
+
+    if last_month_expense == 0 and expense > 0:
+        comparison = "This is your first recorded spending month."
+    elif difference > 0:
+        comparison = f"Your spending increased by RM{difference:.2f} compared to last month."
+    elif difference < 0:
+        comparison = f"Your spending decreased by RM{abs(difference):.2f} compared to last month."
+    else:
+        comparison = "Your spending remained the same as last month."
+
+    # 📈 Daily average
+    days = max(now.day, 1)
+    daily_avg = expense / days
+
+    # 🏆 Category totals
     category_totals = {}
     for r in month_records:
         if r["type"] == "expense":
             cat = r.get("category", "Other")
             category_totals[cat] = category_totals.get(cat, 0) + r["amount"]
 
-    # 🥇 top category (SAFE)
+    total_expense = sum(category_totals.values())
+
+    # 🥇 Top category
     if category_totals:
         top_category = max(category_totals, key=category_totals.get)
-        top_category_amount = category_totals.get(top_category, 0)
+        top_category_amount = category_totals[top_category]
     else:
         top_category = None
         top_category_amount = 0
 
-    # 📊 total expense (THIS MONTH ONLY)
-    total_expense = sum(category_totals.values())
-
-    # 📈 percentage (SAFE)
-    top_category_percent = (
-        (top_category_amount / total_expense * 100)
-        if total_expense > 0 else 0
-    )
-
-    # 🔥 TOP 3 CATEGORIES (SAFE)
+    # 📊 Top 3 categories
     top_categories = sorted(
         category_totals.items(),
         key=lambda x: x[1],
@@ -661,11 +679,22 @@ def summary():
         for cat, amt in top_categories
     ]
 
-    # 🧠 smart insight
-    if top_category:
-        insight = f"You spent most on {top_category} this month."
+    # 📈 Top category %
+    top_category_percent = (
+        (top_category_amount / total_expense * 100)
+        if total_expense > 0 else 0
+    )
+
+    # 🧠 Insight
+    if total_expense == 0:
+        insight = "No financial data recorded for this month."
+    elif top_category:
+        insight = (
+            f"You spent most on {top_category}, "
+            f"accounting for {top_category_percent:.1f}% of your expenses."
+        )
     else:
-        insight = "No spending data yet."
+        insight = "No significant spending pattern detected."
 
     return render_template(
         "summary.html",
@@ -676,7 +705,8 @@ def summary():
         top_category=top_category,
         top_category_percent=top_category_percent,
         top_categories=top_categories_with_percent,
-        insight=insight
+        insight=insight,
+        comparison=comparison
     )
 
 # ---------------
