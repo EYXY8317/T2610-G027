@@ -43,5 +43,14 @@
         "account": "TnG",
         "item": "grab",
         "amount": 10.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-04",
+        "type": "expense",
+        "category": "Rent",
+        "account": "TnG",
+        "item": "hosue",
+        "amount": 450.0
     }
 ]

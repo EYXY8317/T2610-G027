@@ -26,10 +26,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # render_template loads HTML files
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from Finance.diary_system.routes import diary_bp # import diary sction
-from flask import session, redirect, url_for
-from flask import session
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
 from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
@@ -51,10 +49,51 @@ app.secret_key = "your_secret_key"
 #------------
 
 f_expense = "expenses.json"
+f_budget = "budgets.json"
 
 # ---------------
 # FUNCTIONS
 # ---------------
+
+def load_budgets():
+    if not os.path.exists(f_budget):
+        with open(f_budget, "w") as f:
+            json.dump([], f)
+        return []
+
+    try:
+        with open(f_budget, "r") as f:
+            return json.load(f)
+    except:
+        return []
+
+def save_budgets(data):
+    with open(f_budget, "w") as f:
+        json.dump(data, f, indent=4)
+
+def set_budget(username, category, amount):
+    budgets = load_budgets()
+
+    found = False
+
+    for b in budgets:
+        if b["username"] == username and b["category"] == category:
+            b["amount"] = amount
+            found = True
+            break
+
+    if not found:
+        budgets.append({
+            "username": username,
+            "category": category,
+            "amount": amount
+        })
+
+    save_budgets(budgets)
+
+def get_user_budgets(username):
+    budgets = load_budgets()
+    return [b for b in budgets if b["username"] == username]
 
 #purpose is to pause the program
 #stop the program temporarily until user press enter
@@ -149,7 +188,11 @@ def valid_casing(value, allowed):
 
 TYPES = ["expense", "income", "saving"]
 CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
-
+CATEGORY_MAP = {
+    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    "saving": ["Savings", "Investment", "Emergency Fund"]
+}
 # ----------
 # ROUTES
 # ----------
@@ -345,11 +388,9 @@ add function starts here
 @app.route("/add", methods=["GET", "POST"])
 def add_financial():
 
-    # Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # ALWAYS load accounts first
     accounts = load_data("accounts.json", [])
     user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
@@ -361,11 +402,10 @@ def add_financial():
         item = request.form.get("item")
         amount = request.form.get("amount")
 
-        # GET ACCOUNT INPUTS
         new_account = request.form.get("new_account")
         account = request.form.get("account")
 
-        # IF USER TYPES NEW ACCOUNT
+        # NEW ACCOUNT
         if new_account:
             account = new_account
 
@@ -376,23 +416,43 @@ def add_financial():
                 })
                 save_data("accounts.json", accounts)
 
-            # refresh user_accounts after adding
             user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
         # VALIDATION
         if not account:
-            return render_template("add.html", error="Select or create account", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Select or create account",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         if not date or not type_ or not amount:
-            return render_template("add.html", error="Date, Type and Amount are required", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Date, Type and Amount are required",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         if type_ == "expense" and (not category or not item):
-            return render_template("add.html", error="Category and Item required for expense", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Category and Item required for expense",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         try:
             amount = float(amount)
         except:
-            return render_template("add.html", error="Invalid amount", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Invalid amount",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP,
+                form_data=request.form
+            )
 
         # CREATE RECORD
         record = {
@@ -405,15 +465,28 @@ def add_financial():
             "amount": amount
         }
 
-        # SAVE
         records = load_data(f_expense, [])
         records.append(record)
         save_data(f_expense, records)
 
-        return render_template("add.html", success="Record added!", accounts=user_accounts)
+        return render_template(
+            "add.html",
+            accounts=user_accounts,
+            categories=CATEGORY_MAP,
+            success="Record added successfully",
+            form_data=request.form
+        )
 
-    # GET request
-    return render_template("add.html", accounts=user_accounts)
+    return render_template(
+        "add.html",
+        accounts=user_accounts,
+        categories=CATEGORY_MAP,
+        form_data=request.form
+    )
+
+# -------
+# VIEW
+# -------
 
 """
 view finance starts here
@@ -494,8 +567,8 @@ def update_financial(idx):
         amount = request.form.get("amount") or record["amount"]
 
         # HANDLE ACCOUNT
-    account = request.form.get("account")
-    new_account = request.form.get("new_account")
+        account = request.form.get("account")
+        new_account = request.form.get("new_account")
 
     accounts = load_data("accounts.json", [])
 
@@ -659,6 +732,32 @@ def summary():
 
     total_expense = sum(category_totals.values())
 
+    # ================= 💸 BUDGET SYSTEM =================
+    budgets = load_budgets()
+
+    # filter user budgets
+    user_budgets = [b for b in budgets if b["username"] == user]
+
+    # convert to dict for easy lookup
+    budget_map = {b["category"]: b["amount"] for b in user_budgets}
+
+    budget_data = []
+
+    for cat, spent in category_totals.items():
+        budget = budget_map.get(cat)
+
+        if budget:
+            percent = (spent / budget) * 100 if budget > 0 else 0
+        else:
+            percent = None
+
+        budget_data.append({
+            "category": cat,
+            "spent": spent,
+            "budget": budget,
+            "percent": percent
+        })
+
     # 🥇 Top category
     if category_totals:
         top_category = max(category_totals, key=category_totals.get)
@@ -696,6 +795,36 @@ def summary():
     else:
         insight = "No significant spending pattern detected."
 
+    # ================= BUDGET USAGE =================
+    budgets = load_data("budget.json", [])
+    user_budgets = [b for b in budgets if b["username"] == user]
+
+    budget_usage = []
+
+    for b in user_budgets:
+        cat = b["category"]
+        limit_amt = b["amount"]
+
+        spent = category_totals.get(cat, 0)
+
+        percent = (spent / limit_amt * 100) if limit_amt > 0 else 0
+
+        # status flag (for UI)
+        if percent >= 100:
+            status = "over"
+        elif percent >= 80:
+            status = "warning"
+        else:
+            status = "safe"
+
+        budget_usage.append({
+            "category": cat,
+            "spent": spent,
+            "limit": limit_amt,
+            "percent": percent,
+            "status": status
+        })
+
     return render_template(
         "summary.html",
         income=income,
@@ -706,9 +835,76 @@ def summary():
         top_category_percent=top_category_percent,
         top_categories=top_categories_with_percent,
         insight=insight,
-        comparison=comparison
+        comparison=comparison,
+        budget_data=budget_data,
+        budget_usage=budget_usage
     )
 
+# ---------
+# BUDGET
+# ---------
+
+"""
+Budget function starts here
+"""
+
+@app.route("/budget", methods=["GET", "POST"])
+def budget():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session.get("user")
+
+    # load budgets
+    budgets = load_budgets()
+    user_budgets = [b for b in budgets if b["username"] == user]
+
+    if request.method == "POST":
+        category = request.form.get("category")
+        amount = request.form.get("amount")
+
+        # validation
+        if not category or not amount:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                error="Category and amount required"
+            )
+
+        try:
+            amount = float(amount)
+        except:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                error="Invalid amount"
+            )
+
+        # 🔥 update or add
+        found = False
+
+        for b in budgets:
+            if b["username"] == user and b["category"] == category:
+                b["amount"] = amount
+                found = True
+                break
+
+        if not found:
+            budgets.append({
+                "username": user,
+                "category": category,
+                "amount": amount
+            })
+
+        # save
+        with open(f_budget, "w") as f:
+            json.dump(budgets, f, indent=4)
+
+        return redirect(url_for("budget"))
+
+    return render_template("budget.html", budgets=user_budgets, categories=CATEGORY_MAP["expense"])
+    
 # ---------------
 # ADD ACCOUNTS
 # ---------------
