@@ -49,7 +49,7 @@ app.secret_key = "your_secret_key"
 #------------
 
 f_expense = "expenses.json"
-f_budget = "budgets.json"
+f_budget = "budget.json"
 
 # ---------------
 # FUNCTIONS
