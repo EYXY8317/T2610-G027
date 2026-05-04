@@ -1,0 +1,89 @@
+<h1>Set Budget</h1>
+
+<hr>
+<a href="/view">Finance</a> |
+<a href="/calendar">Calendar</a> |
+<a href="/diary">Diary</a> |
+<a href="/logout">Logout</a>
+<hr>
+
+
+<hr>
+<a href="/view">View</a> |
+<a href="/add">Add</a> |
+<a href="/summary">Summary</a> |
+<a href="/budget">Budget</a>
+<hr>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+
+    <!-- Category -->
+    <label>Category:</label><br>
+    <select name="category" required>
+        <option value="">-- Select Category --</option>
+
+        {% for cat in categories %}
+            <option value="{{ cat }}">{{ cat }}</option>
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <!-- Amount -->
+    <label>Budget Amount (RM):</label><br>
+    <input type="text" id="amountInput" name="amount" value="0.00" readonly>
+
+    <br><br>
+
+    <button type="submit">Save Budget</button>
+
+</form>
+
+<hr>
+
+<h2>Your Budgets</h2>
+
+{% if budgets %}
+    <ul>
+        {% for b in budgets %}
+            <li>{{ b.category }} — RM {{ "%.2f"|format(b.amount) }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No budgets set</p>
+{% endif %}
+
+<script>
+let value = 0;
+let active = false;
+
+const amountInput = document.getElementById("amountInput");
+
+// focus control
+amountInput.addEventListener("focus", () => active = true);
+amountInput.addEventListener("blur", () => active = false);
+
+document.addEventListener("keydown", function(e) {
+
+    if (!active) return;
+
+    if (e.key >= "0" && e.key <= "9") {
+        value = value * 10 + parseInt(e.key);
+    } 
+    else if (e.key === "Backspace") {
+        value = Math.floor(value / 10);
+    } 
+    else {
+        return;
+    }
+
+    e.preventDefault();
+
+    amountInput.value = (value / 100).toFixed(2);
+});
+</script>
