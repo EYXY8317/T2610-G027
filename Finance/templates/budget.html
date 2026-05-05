@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Set Budget</title>
+</head>
+
+<body>
+
 <h1>Set Budget</h1>
 
 <hr>
@@ -6,7 +14,6 @@
 <a href="/diary">Diary</a> |
 <a href="/logout">Logout</a>
 <hr>
-
 
 <hr>
 <a href="/view">View</a> |
@@ -21,20 +28,19 @@
 
 <form method="POST">
 
-    <!-- Category -->
+    <!-- CATEGORY -->
     <label>Category:</label><br>
     <select name="category" required>
         <option value="">-- Select Category --</option>
 
-        {% for cat in categories %}
+        {% for cat in categories|default([]) %}
             <option value="{{ cat }}">{{ cat }}</option>
         {% endfor %}
-
     </select>
 
     <br><br>
 
-    <!-- Amount -->
+    <!-- AMOUNT -->
     <label>Budget Amount (RM):</label><br>
     <input type="text" id="amountInput" name="amount" value="0.00" readonly>
 
@@ -59,31 +65,42 @@
 {% endif %}
 
 <script>
-let value = 0;
-let active = false;
+document.addEventListener("DOMContentLoaded", function () {
 
-const amountInput = document.getElementById("amountInput");
+    let value = 0;
+    let active = false;
 
-// focus control
-amountInput.addEventListener("focus", () => active = true);
-amountInput.addEventListener("blur", () => active = false);
+    const amountInput = document.getElementById("amountInput");
 
-document.addEventListener("keydown", function(e) {
+    // initialize safely
+    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
 
-    if (!active) return;
+    amountInput.addEventListener("focus", () => active = true);
+    amountInput.addEventListener("blur", () => active = false);
 
-    if (e.key >= "0" && e.key <= "9") {
-        value = value * 10 + parseInt(e.key);
-    } 
-    else if (e.key === "Backspace") {
-        value = Math.floor(value / 10);
-    } 
-    else {
-        return;
-    }
+    document.addEventListener("keydown", function(e) {
 
-    e.preventDefault();
+        if (!active) return;
 
-    amountInput.value = (value / 100).toFixed(2);
+        if (e.key >= "0" && e.key <= "9") {
+            value = value * 10 + parseInt(e.key);
+        } 
+        else if (e.key === "Backspace") {
+            value = Math.floor(value / 10);
+        } 
+        else {
+            return;
+        }
+
+        e.preventDefault();
+        amountInput.value = (value / 100).toFixed(2);
+    });
+
+    // optional UX
+    amountInput.focus();
+
 });
 </script>
+
+</body>
+</html>

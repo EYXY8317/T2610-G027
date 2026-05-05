@@ -140,6 +140,11 @@ def valid_casing(value, allowed):
 
 TYPES = ["expense", "income", "saving"]
 CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
+CATEGORY_MAP = {
+    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    "saving": ["Savings", "Investment", "Emergency Fund"]
+}
 
 # ----------
 # ROUTES
@@ -158,11 +163,9 @@ def home():
 @app.route("/add", methods=["GET", "POST"])
 def add_financial():
 
-    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # 🔥 ALWAYS load accounts first
     accounts = load_data("accounts.json", [])
     user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
@@ -174,11 +177,10 @@ def add_financial():
         item = request.form.get("item")
         amount = request.form.get("amount")
 
-        # 🔥 GET ACCOUNT INPUTS
         new_account = request.form.get("new_account")
         account = request.form.get("account")
 
-        # 🔥 IF USER TYPES NEW ACCOUNT
+        # NEW ACCOUNT
         if new_account:
             account = new_account
 
@@ -189,25 +191,45 @@ def add_financial():
                 })
                 save_data("accounts.json", accounts)
 
-            # 🔥 refresh user_accounts after adding
             user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
-        # 🔥 VALIDATION
+        # VALIDATION
         if not account:
-            return render_template("add.html", error="Select or create account", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Select or create account",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         if not date or not type_ or not amount:
-            return render_template("add.html", error="Date, Type and Amount are required", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Date, Type and Amount are required",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         if type_ == "expense" and (not category or not item):
-            return render_template("add.html", error="Category and Item required for expense", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Category and Item required for expense",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP
+            )
 
         try:
             amount = float(amount)
         except:
-            return render_template("add.html", error="Invalid amount", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Invalid amount",
+                accounts=user_accounts,
+                categories=CATEGORY_MAP,
+                form_data=request.form
+            )
 
-        # 🔥 CREATE RECORD
+        # CREATE RECORD
         record = {
             "username": session["user"],
             "date": date,
@@ -218,12 +240,21 @@ def add_financial():
             "amount": amount
         }
 
-        # 💾 SAVE
         records = load_data(f_expense, [])
         records.append(record)
         save_data(f_expense, records)
 
-        return render_template("add.html", success="Record added!", accounts=user_accounts)
+        return render_template(
+            "add.html",
+            accounts=user_accounts,
+            categories=CATEGORY_MAP,
+            success="Record added successfully",
+            form_data=request.form
+        )
 
-    # 🔥 GET request
-    return render_template("add.html", accounts=user_accounts)
+    return render_template(
+        "add.html",
+        accounts=user_accounts,
+        categories=CATEGORY_MAP,
+        form_data=request.form
+    )

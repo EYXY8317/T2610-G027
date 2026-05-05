@@ -2,6 +2,11 @@
 <html>
 <head>
     <title>Summary</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+
+    <!-- Chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -25,7 +30,7 @@
 
 {% if income == 0 and expense == 0 %}
 
-<div style="border:1px solid #ccc; padding:20px; width:500px;">
+<div class="summary-card">
     <h2>📭 No Summary Yet</h2>
     <p>You haven’t added any financial records this month.</p>
     <a href="/add"><button>Add Your First Record</button></a>
@@ -33,7 +38,7 @@
 
 {% else %}
 
-<div style="border:1px solid #ccc; padding:20px; width:500px;">
+<div class="summary-card">
 
     <!-- OVERVIEW -->
     <h2>📊 Monthly Overview</h2>
@@ -79,7 +84,6 @@
         </ol>
 
         <canvas id="pieChart" width="300" height="300"></canvas>
-
     {% else %}
         <p>No category data</p>
     {% endif %}
@@ -94,15 +98,10 @@
 
     {% if budget_usage %}
         <ul style="list-style:none; padding-left:0;">
+
         {% for b in budget_usage %}
 
-            {% if b.status == "over" %}
-                {% set color = "red" %}
-            {% elif b.status == "warning" %}
-                {% set color = "orange" %}
-            {% else %}
-                {% set color = "green" %}
-            {% endif %}
+            {% set percent = 100 if b.percent > 100 else b.percent %}
 
             <li style="margin-bottom:15px;">
 
@@ -110,13 +109,10 @@
 
                 RM {{ "%.2f"|format(b.spent) }} / RM {{ "%.2f"|format(b.limit) }}
 
-                <div style="background:#eee; height:10px; border-radius:5px; margin-top:5px;">
-                    <div style="
-                        width: {{ b.percent }}%;
-                        height:10px;
-                        border-radius:5px;
-                        background: {{ color }};
-                    "></div>
+                <div class="progress-container">
+                    <div class="progress-bar {{ b.status }}"
+                         style="--width: {{ percent }}%;">
+                    </div>
                 </div>
 
                 <small>
@@ -132,8 +128,10 @@
                 </small>
 
             </li>
+
         {% endfor %}
         </ul>
+
     {% else %}
         <p>No budgets set yet</p>
     {% endif %}
@@ -142,46 +140,60 @@
 
 {% endif %}
 
-<!-- SAFE PIE CHART -->
+<!-- CHART -->
 {% if top_categories %}
 <script id="chart-data" type="application/json">
     {{ top_categories | tojson }}
 </script>
 
 <script>
-const rawData = JSON.parse(
-    document.getElementById("chart-data").textContent
-);
+document.addEventListener("DOMContentLoaded", function () {
 
-const categories = rawData.map(x => x[0]);
-const amounts = rawData.map(x => x[1]);
+    let rawData = [];
 
-const total = amounts.reduce((a, b) => a + b, 0);
+    try {
+        rawData = JSON.parse(
+            document.getElementById("chart-data").textContent
+        );
+    } catch {
+        return;
+    }
 
-new Chart(document.getElementById("pieChart"), {
-    type: 'doughnut',
-    data: {
-        labels: categories,
-        datasets: [{
-            data: amounts,
-            backgroundColor: ['#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6']
-        }]
-    },
-    options: {
-        cutout: '60%',
-        plugins: {
-            legend: { position: 'bottom' },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const value = context.raw;
-                        const percent = ((value / total) * 100).toFixed(1);
-                        return `${context.label}: RM${value} (${percent}%)`;
+    if (!rawData.length) return;
+
+    const categories = rawData.map(x => x[0]);
+    const amounts = rawData.map(x => x[1]);
+
+    const total = amounts.reduce((a, b) => a + b, 0);
+
+    new Chart(document.getElementById("pieChart"), {
+        type: 'doughnut',
+        data: {
+            labels: categories,
+            datasets: [{
+                data: amounts,
+                backgroundColor: [
+                    '#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6'
+                ]
+            }]
+        },
+        options: {
+            cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return context.label + ": RM" + value + " (" + percent + "%)";
+                        }
                     }
                 }
             }
         }
-    }
+    });
+
 });
 </script>
 {% endif %}
