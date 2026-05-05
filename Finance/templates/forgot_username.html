@@ -6,36 +6,39 @@
 
 <body>
 
-    <!-- Top Navigation -->
-    <a href="/login">Login</a> |
-    <a href="/register">Register</a>
+<!-- NAV -->
+<a href="/login">Login</a> |
+<a href="/register">Register</a>
 
-    <hr>
+<hr>
 
-    <h1>Life Pages</h1>
-    <p>Recover your username</p>
+<h1>Life Pages</h1>
+<p>Recover your username</p>
 
-    <h3>Forgot Username</h3>
+<h3>Forgot Username</h3>
 
-    <form method="POST">
-        <label>Email:</label><br>
-        <input type="email" name="email" required><br><br>
+<form method="POST">
 
-        <button type="submit">Find Username</button>
-    </form>
+    <!-- EMAIL -->
+    <label>Email:</label><br>
+    <input type="email" name="email" required autocomplete="email"><br><br>
 
-    <br>
-    <a href="/login">Back to Login</a>
+    <button type="submit">Find Username</button>
 
-    <!-- ERROR -->
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
+</form>
 
-    <!-- SUCCESS -->
-    {% if success %}
-    <p style="color:green;">{{ success }}</p>
-    {% endif %}
+<br>
+<a href="/login">Back to Login</a>
+
+<!-- ERROR -->
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<!-- SUCCESS -->
+{% if success %}
+<p style="color:green;">{{ success }}</p>
+{% endif %}
 
 </body>
 </html>

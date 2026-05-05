@@ -46,15 +46,15 @@
             </option>
         {% endfor %}
 
-    <option value="__new__">➕ Create New Account</option>
-</select>
+        <option value="__new__">➕ Create New Account</option>
+    </select>
 
-<br><br>
+    <br><br>
 
-<!-- 🔥 Hidden input -->
-<input type="text" id="new_account" name="new_account"
-placeholder="Enter new account"
-style="display:none;">
+    <!-- NEW ACCOUNT -->
+    <input type="text" id="new_account" name="new_account"
+    placeholder="Enter new account"
+    style="display:none;">
 
     <!-- ITEM -->
     <label>Item:</label><br>
@@ -62,7 +62,8 @@ style="display:none;">
 
     <!-- AMOUNT -->
     <label>Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount" value="{{ record.amount }}" readonly required>
+    <input type="text" id="amountInput" name="amount"
+        value="{{ record.amount }}" readonly required>
 
     <br><br>
     <button type="submit">Update</button>
@@ -81,60 +82,47 @@ style="display:none;">
 <br>
 <a href="/view">Back</a>
 
-<!-- 🔥 SCRIPT -->
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-// CATEGORY MAP
-const categories = {
-    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    saving: ["Savings", "Investment", "Emergency Fund"]
-};
+    // ================= CATEGORY =================
+    const categories = {
+        income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+        expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+        saving: ["Savings", "Investment", "Emergency Fund"]
+    };
 
-// LOAD CATEGORY + KEEP SELECTED
-function loadCategories() {
-    const type = document.getElementById("typeSelect").value;
+    const typeSelect = document.getElementById("typeSelect");
     const categorySelect = document.getElementById("categorySelect");
 
-    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+    const selectedCategory = "{{ record.category or '' }}";
 
-    if (categories[type]) {
-        categories[type].forEach(cat => {
-            const option = document.createElement("option");
-            option.value = cat;
-            option.textContent = cat;
+    function loadCategories() {
+        const type = typeSelect.value;
 
-            if (cat === "{{ record.category }}") {
-                option.selected = true;
-            }
+        categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
 
-            categorySelect.appendChild(option);
-        });
-    }
-}
+        if (categories[type]) {
+            categories[type].forEach(cat => {
+                const option = document.createElement("option");
+                option.value = cat;
+                option.textContent = cat;
 
-document.getElementById("typeSelect").addEventListener("change", loadCategories);
+                if (cat === selectedCategory) {
+                    option.selected = true;
+                }
 
-// INITIAL LOAD
-loadCategories();
-
-
-// 🔥 TNG INPUT
-let value = Math.round(parseFloat("{{ record.amount }}") * 100);
-
-document.addEventListener("keydown", function(e) {
-    if (e.key >= "0" && e.key <= "9") {
-        value = value * 10 + parseInt(e.key);
-    } else if (e.key === "Backspace") {
-        value = Math.floor(value / 10);
+                categorySelect.appendChild(option);
+            });
+        }
     }
 
-    document.getElementById("amountInput").value = (value / 100).toFixed(2);
-});
+    typeSelect.addEventListener("change", loadCategories);
 
-</script>
+    loadCategories();
 
-<script>
+
+    // ================= ACCOUNT TOGGLE =================
     const accountSelect = document.getElementById("account");
     const newAccountInput = document.getElementById("new_account");
 
@@ -143,15 +131,42 @@ document.addEventListener("keydown", function(e) {
             newAccountInput.style.display = "block";
         } else {
             newAccountInput.style.display = "none";
-            newAccountInput.value = ""; // prevent accidental data
+            newAccountInput.value = "";
         }
     }
 
-    // run on change
     accountSelect.addEventListener("change", toggleNewAccount);
-
-    // run on page load (important for edit mode)
     toggleNewAccount();
+
+
+    // ================= TNG INPUT =================
+    let value = Math.round(parseFloat("{{ record.amount or 0 }}") * 100) || 0;
+    let active = false;
+
+    const amountInput = document.getElementById("amountInput");
+
+    amountInput.addEventListener("focus", () => active = true);
+    amountInput.addEventListener("blur", () => active = false);
+
+    document.addEventListener("keydown", function(e) {
+
+        if (!active) return;
+
+        if (e.key >= "0" && e.key <= "9") {
+            value = value * 10 + parseInt(e.key);
+        } 
+        else if (e.key === "Backspace") {
+            value = Math.floor(value / 10);
+        } 
+        else {
+            return;
+        }
+
+        e.preventDefault();
+        amountInput.value = (value / 100).toFixed(2);
+    });
+
+});
 </script>
 
 </body>

@@ -26,7 +26,8 @@
 
     <!-- DATE -->
     <label>Date:</label><br>
-    <input type="date" name="date" value="{{ form_data.date if form_data else '' }}" required><br><br>
+    <input type="date" name="date"
+        value="{{ form_data.date if form_data else '' }}" required><br><br>
 
     <!-- TYPE -->
     <label>Type:</label><br>
@@ -83,35 +84,40 @@
 <p style="color:green;">{{ success }}</p>
 {% endif %}
 
-<!-- SAFE JSON FROM BACKEND -->
+<!-- SAFE JSON -->
 <script id="categories-data" type="application/json">
-    {{ categories | tojson }}
+    {{ categories | tojson if categories else '{}' }}
 </script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const categories = JSON.parse(
-        document.getElementById("categories-data").textContent
-    );
+    // ================= CATEGORY =================
+    let categories = {};
+    try {
+        categories = JSON.parse(
+            document.getElementById("categories-data").textContent
+        );
+    } catch {
+        categories = {};
+    }
 
     const typeSelect = document.getElementById("typeSelect");
     const categorySelect = document.getElementById("categorySelect");
 
-    const selectedCategory = categorySelect.getAttribute("data-selected");
+    let selectedCategory = categorySelect.getAttribute("data-selected") || "";
 
     function updateCategory() {
         const type = typeSelect.value;
 
         categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
 
-        if (categories && categories[type]) {
+        if (categories[type]) {
             categories[type].forEach(cat => {
                 const option = document.createElement("option");
                 option.value = cat;
                 option.textContent = cat;
 
-                // 🔥 RESTORE SELECTED VALUE
                 if (cat === selectedCategory) {
                     option.selected = true;
                 }
@@ -122,8 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     typeSelect.addEventListener("change", function () {
-        // reset selected when user changes type
-        categorySelect.setAttribute("data-selected", "");
+        selectedCategory = ""; // reset when user changes type
         updateCategory();
     });
 
@@ -136,8 +141,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const amountInput = document.getElementById("amountInput");
 
-    // initialize from existing value
-    value = Math.round(parseFloat(amountInput.value || "0") * 100);
+    // initialize safely
+    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
 
     amountInput.addEventListener("focus", () => active = true);
     amountInput.addEventListener("blur", () => active = false);
@@ -160,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
         amountInput.value = (value / 100).toFixed(2);
     });
 
+    // optional focus
     amountInput.focus();
 
 });

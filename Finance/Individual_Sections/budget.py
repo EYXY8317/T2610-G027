@@ -140,6 +140,11 @@ def valid_casing(value, allowed):
 
 TYPES = ["expense", "income", "saving"]
 CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
+CATEGORY_MAP = {
+    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    "saving": ["Savings", "Investment", "Emergency Fund"]
+}
 
 # ----------
 # ROUTES
@@ -157,49 +162,60 @@ def home():
 FILE = "budgets.json"
 
 
-# ================= LOAD =================
-def load_budgets():
-    if not os.path.exists(FILE):
-        with open(FILE, "w") as f:
-            json.dump([], f)
-        return []
+@app.route("/budget", methods=["GET", "POST"])
+def budget():
 
-    try:
-        with open(FILE, "r") as f:
-            return json.load(f)
-    except:
-        return []
+    if "user" not in session:
+        return redirect(url_for("login"))
 
+    user = session.get("user")
 
-# ================= SAVE =================
-def save_budgets(data):
-    with open(FILE, "w") as f:
-        json.dump(data, f, indent=4)
+    budgets = load_data("budget.json", [])
+    user_budgets = [b for b in budgets if b["username"] == user]
 
+    if request.method == "POST":
+        category = request.form.get("category")
+        amount = request.form.get("amount")
 
-# ================= SET / UPDATE BUDGET =================
-def set_budget(username, category, amount):
-    budgets = load_budgets()
+        if not category or not amount:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Category and amount required"
+            )
 
-    found = False
+        try:
+            amount = float(amount)
+        except:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Invalid amount"
+            )
 
-    for b in budgets:
-        if b["username"] == username and b["category"] == category:
-            b["amount"] = amount
-            found = True
-            break
+        found = False
 
-    if not found:
-        budgets.append({
-            "username": username,
-            "category": category,
-            "amount": amount
-        })
+        for b in budgets:
+            if b["username"] == user and b["category"] == category:
+                b["amount"] = amount
+                found = True
+                break
 
-    save_budgets(budgets)
+        if not found:
+            budgets.append({
+                "username": user,
+                "category": category,
+                "amount": amount
+            })
 
+        save_data("budget.json", budgets)
 
-# ================= GET USER BUDGETS =================
-def get_user_budgets(username):
-    budgets = load_budgets()
-    return [b for b in budgets if b["username"] == username]
+        return redirect(url_for("budget"))
+
+    return render_template(
+        "budget.html",
+        budgets=user_budgets,
+        categories=CATEGORY_MAP["expense"]
+    )
