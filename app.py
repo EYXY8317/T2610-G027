@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
 from Journal_Pages.diary_system.routes import diary_bp
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
@@ -44,6 +44,13 @@ def save_data(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
+# =============== ARRAYS ==================
+CATEGORY_MAP = {
+    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    "saving": ["Savings", "Investment", "Emergency Fund"]
+}
+
 # ================= AUTH =================
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -68,7 +75,7 @@ def register():
         })
 
         save_data(f_users, users)
-        return redirect(url_for("login"))
+        return redirect(url_for("login", success="Account created successfully"))
 
     return render_template("register.html")
 
@@ -114,35 +121,58 @@ def forgot_username():
     return render_template("forgot_username.html")
 
 
-@app.route("/forgot_password", methods=["GET", "POST"])
+@app.route("/forgot", methods=["GET", "POST"])
 def forgot_password():
+
     if request.method == "POST":
-        username = request.form["username"]
+        username = request.form.get("username")
+        question = request.form.get("question")
+        answer = request.form.get("answer")
+
         users = load_data(f_users, [])
 
         for u in users:
             if u["username"] == username:
-                return render_template("reset_password.html", username=username)
 
-        return render_template("forgot_password.html", error="User not found")
+                if (
+                    u.get("security_question") == question and
+                    u.get("security_answer") == hash_password(answer)
+                ):
+                    session["reset_user"] = username
+                    return redirect(url_for("reset_password"))
 
-    return render_template("forgot_password.html")
+                else:
+                    return render_template("forgot.html", error="Wrong question or answer")
+
+        return render_template("forgot.html", error="User not found")
+
+    return render_template("forgot.html")
 
 
-@app.route("/reset_password/<username>", methods=["GET", "POST"])
-def reset_password(username):
+@app.route("/reset", methods=["GET", "POST"])
+def reset_password():
+
+    if "reset_user" not in session:
+        return redirect(url_for("forgot_password"))
+
+    username = session["reset_user"]
+
     if request.method == "POST":
+        new_password = request.form.get("password")
+
         users = load_data(f_users, [])
-        new_pass = request.form["password"]
 
         for u in users:
             if u["username"] == username:
-                u["password"] = hash_password(new_pass)
+                u["password"] = hash_password(new_password)
 
         save_data(f_users, users)
-        return redirect(url_for("login"))
 
-    return render_template("reset_password.html", username=username)
+        session.pop("reset_user", None)
+
+        return redirect(url_for("login", success="Password reset successful"))
+
+    return render_template("reset.html", username=username)
 
 
 # ================= ADD =================
@@ -190,7 +220,11 @@ def add_financial():
 
         return redirect(url_for("view_financial"))
 
-    return render_template("add.html", accounts=user_accounts)
+    return render_template(
+    "add.html",
+    accounts=user_accounts,
+    categories=CATEGORY_MAP
+    )
 
 
 # ================= VIEW =================
@@ -335,7 +369,11 @@ def budget():
 
     user_budgets = [b for b in budgets if b["username"] == user]
 
-    return render_template("budget.html", budgets=user_budgets)
+    return render_template(
+    "budget.html",
+    budgets=user_budgets,
+    categories=CATEGORY_MAP["expense"]
+)
 
 
 # ================= SUMMARY =================
@@ -407,10 +445,28 @@ def summary():
 
 
 # ================= CALENDAR =================
+@app.route('/calendar_static/<path:filename>')
+def calendar_static(filename):
+    return send_from_directory(
+        os.path.join('Calendar_Pages', 'static'),
+        filename
+    )
+
 @app.route("/calendar")
 def calendar():
     return render_template("calendarhomepage.html")
 
+# ================= DIARY ===================
+@app.route('/diary_static/<path:filename>')
+def diary_static(filename):
+    return send_from_directory(
+        os.path.join('Journal_Pages', 'static'),
+        filename
+    )
+
+@app.route("/diary")
+def diary():
+    return render_template("diary.html")
 
 # ================= RUN =================
 if __name__ == "__main__":
