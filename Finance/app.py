@@ -27,7 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 # request.form ges data from user input
 # redirect & url_for sends user to another page after a certain action
 from flask import Flask, render_template, request, redirect, url_for, session
-from Finance.diary_system.routes import diary_bp # import diary sction
+from Journal_Pages.diary_system.routes import diary_bp # import diary sction
 import json #To store and read data; be able to use functions like json.load and json.dump
 import os #For clear the screen; be able to use functions like os.system and os.path.exists
 from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
@@ -659,8 +659,74 @@ def delete_financial(idx):
     return redirect(url_for("view_financial", success="Deleted successfully"))
 
 # ---------
-# SUMMARY
+# BUDGET
 # ---------
+
+"""
+Budget functions starts here
+"""
+
+@app.route("/budget", methods=["GET", "POST"])
+def budget():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session.get("user")
+
+    budgets = load_data("budget.json", [])
+    user_budgets = [b for b in budgets if b["username"] == user]
+
+    if request.method == "POST":
+        category = request.form.get("category")
+        amount = request.form.get("amount")
+
+        if not category or not amount:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Category and amount required"
+            )
+
+        try:
+            amount = float(amount)
+        except:
+            return render_template(
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Invalid amount"
+            )
+
+        found = False
+
+        for b in budgets:
+            if b["username"] == user and b["category"] == category:
+                b["amount"] = amount
+                found = True
+                break
+
+        if not found:
+            budgets.append({
+                "username": user,
+                "category": category,
+                "amount": amount
+            })
+
+        save_data("budget.json", budgets)
+
+        return redirect(url_for("budget"))
+
+    return render_template(
+        "budget.html",
+        budgets=user_budgets,
+        categories=CATEGORY_MAP["expense"]
+    )
+
+# -------------
+# SUMMARY
+# -------------
 
 """
 Summary function starts here
@@ -672,42 +738,32 @@ def summary():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    records = load_data(f_expense, [])
     user = session.get("user")
 
-    # 👤 Filter user records
+    records = load_data(f_expense, [])
     user_records = [r for r in records if r["username"] == user]
 
     from datetime import datetime, timedelta
     now = datetime.now()
-
     current_month = now.strftime("%Y-%m")
 
-    # 📅 Previous month
     first_day_this_month = now.replace(day=1)
     last_month_date = first_day_this_month - timedelta(days=1)
     last_month = last_month_date.strftime("%Y-%m")
 
-    # 📊 Filter records
-    month_records = [
-        r for r in user_records if r["date"].startswith(current_month)
-    ]
+    # ================= FILTER =================
+    month_records = [r for r in user_records if r["date"].startswith(current_month)]
+    last_month_records = [r for r in user_records if r["date"].startswith(last_month)]
 
-    last_month_records = [
-        r for r in user_records if r["date"].startswith(last_month)
-    ]
-
-    # 🔢 Totals (THIS MONTH)
+    # ================= TOTALS =================
     income = sum(r["amount"] for r in month_records if r["type"] == "income")
     expense = sum(r["amount"] for r in month_records if r["type"] == "expense")
     balance = income - expense
 
-    # 🔢 Last month expense
     last_month_expense = sum(
         r["amount"] for r in last_month_records if r["type"] == "expense"
     )
 
-    # 📈 Comparison
     difference = expense - last_month_expense
 
     if last_month_expense == 0 and expense > 0:
@@ -719,11 +775,10 @@ def summary():
     else:
         comparison = "Your spending remained the same as last month."
 
-    # 📈 Daily average
     days = max(now.day, 1)
     daily_avg = expense / days
 
-    # 🏆 Category totals
+    # ================= CATEGORY TOTALS =================
     category_totals = {}
     for r in month_records:
         if r["type"] == "expense":
@@ -732,41 +787,7 @@ def summary():
 
     total_expense = sum(category_totals.values())
 
-    # ================= 💸 BUDGET SYSTEM =================
-    budgets = load_budgets()
-
-    # filter user budgets
-    user_budgets = [b for b in budgets if b["username"] == user]
-
-    # convert to dict for easy lookup
-    budget_map = {b["category"]: b["amount"] for b in user_budgets}
-
-    budget_data = []
-
-    for cat, spent in category_totals.items():
-        budget = budget_map.get(cat)
-
-        if budget:
-            percent = (spent / budget) * 100 if budget > 0 else 0
-        else:
-            percent = None
-
-        budget_data.append({
-            "category": cat,
-            "spent": spent,
-            "budget": budget,
-            "percent": percent
-        })
-
-    # 🥇 Top category
-    if category_totals:
-        top_category = max(category_totals, key=category_totals.get)
-        top_category_amount = category_totals[top_category]
-    else:
-        top_category = None
-        top_category_amount = 0
-
-    # 📊 Top 3 categories
+    # ================= TOP CATEGORIES =================
     top_categories = sorted(
         category_totals.items(),
         key=lambda x: x[1],
@@ -778,22 +799,13 @@ def summary():
         for cat, amt in top_categories
     ]
 
-    # 📈 Top category %
-    top_category_percent = (
-        (top_category_amount / total_expense * 100)
-        if total_expense > 0 else 0
-    )
-
-    # 🧠 Insight
+    # ================= INSIGHT =================
     if total_expense == 0:
         insight = "No financial data recorded for this month."
-    elif top_category:
-        insight = (
-            f"You spent most on {top_category}, "
-            f"accounting for {top_category_percent:.1f}% of your expenses."
-        )
     else:
-        insight = "No significant spending pattern detected."
+        top_category = max(category_totals, key=category_totals.get)
+        percent = (category_totals[top_category] / total_expense) * 100
+        insight = f"You spent most on {top_category}, accounting for {percent:.1f}%."
 
     # ================= BUDGET USAGE =================
     budgets = load_data("budget.json", [])
@@ -809,7 +821,6 @@ def summary():
 
         percent = (spent / limit_amt * 100) if limit_amt > 0 else 0
 
-        # status flag (for UI)
         if percent >= 100:
             status = "over"
         elif percent >= 80:
@@ -831,79 +842,11 @@ def summary():
         expense=expense,
         balance=balance,
         daily_avg=round(daily_avg, 2),
-        top_category=top_category,
-        top_category_percent=top_category_percent,
         top_categories=top_categories_with_percent,
         insight=insight,
         comparison=comparison,
-        budget_data=budget_data,
         budget_usage=budget_usage
     )
-
-# ---------
-# BUDGET
-# ---------
-
-"""
-Budget function starts here
-"""
-
-@app.route("/budget", methods=["GET", "POST"])
-def budget():
-
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user = session.get("user")
-
-    # load budgets
-    budgets = load_budgets()
-    user_budgets = [b for b in budgets if b["username"] == user]
-
-    if request.method == "POST":
-        category = request.form.get("category")
-        amount = request.form.get("amount")
-
-        # validation
-        if not category or not amount:
-            return render_template(
-                "budget.html",
-                budgets=user_budgets,
-                error="Category and amount required"
-            )
-
-        try:
-            amount = float(amount)
-        except:
-            return render_template(
-                "budget.html",
-                budgets=user_budgets,
-                error="Invalid amount"
-            )
-
-        # 🔥 update or add
-        found = False
-
-        for b in budgets:
-            if b["username"] == user and b["category"] == category:
-                b["amount"] = amount
-                found = True
-                break
-
-        if not found:
-            budgets.append({
-                "username": user,
-                "category": category,
-                "amount": amount
-            })
-
-        # save
-        with open(f_budget, "w") as f:
-            json.dump(budgets, f, indent=4)
-
-        return redirect(url_for("budget"))
-
-    return render_template("budget.html", budgets=user_budgets, categories=CATEGORY_MAP["expense"])
     
 # ---------------
 # ADD ACCOUNTS

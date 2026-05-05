@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request
-from Finance.diary_system.crud import add_entry, delete_entry
-from Finance.diary_system.logic import get_today_entry, get_mode
+from Journal_Pages.diary_system.crud import add_entry, delete_entry
+from Journal_Pages.diary_system.logic import get_today_entry, get_mode
 from datetime import date, datetime
-from Finance.diary_system.encouragement_data import happy_list, sad_list, angry_list
+from Journal_Pages.diary_system.encouragement_data import happy_list, sad_list, angry_list
 import random  # ⭐ 添加这行
 
 
@@ -18,7 +18,7 @@ def diary():
     if not date:
         date = datetime.now().strftime("%d/%m/%Y")
 
-    from Finance.diary_system.logic import get_entry_by_date
+    from Journal_Pages.diary_system.logic import get_entry_by_date
 
     entry = get_entry_by_date(date)
 
@@ -47,7 +47,7 @@ def autosave():
     topic = request.form.get("topic")
 
     import random
-    from Finance.diary_system.logic import get_entry_by_date
+    from Journal_Pages.diary_system.logic import get_entry_by_date
 
     existing = get_entry_by_date(date)
     
@@ -89,7 +89,7 @@ def delete():
 #================================ search API ================================
 @diary_bp.route("/search", methods=["POST"])
 def search():
-    from Finance.diary_system.crud import load_entries
+    from Journal_Pages.diary_system.crud import load_entries
 
     keyword = request.form.get("keyword")
 
@@ -119,7 +119,7 @@ def search():
 #================================ get_entry() ================================
 @diary_bp.route("/get_entry", methods=["POST"])
 def get_entry():
-    from Finance.diary_system.logic import get_entry_by_date
+    from Journal_Pages.diary_system.logic import get_entry_by_date
 
     date = request.form.get("date")
     entry = get_entry_by_date(date)
