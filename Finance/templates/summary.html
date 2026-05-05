@@ -25,23 +25,17 @@
 
 {% if income == 0 and expense == 0 %}
 
-<!-- 💤 EMPTY STATE -->
 <div style="border:1px solid #ccc; padding:20px; width:500px;">
-
     <h2>📭 No Summary Yet</h2>
     <p>You haven’t added any financial records this month.</p>
-
-    <a href="/add">
-        <button>Add Your First Record</button>
-    </a>
-
+    <a href="/add"><button>Add Your First Record</button></a>
 </div>
 
 {% else %}
 
 <div style="border:1px solid #ccc; padding:20px; width:500px;">
 
-    <!-- ================= OVERVIEW ================= -->
+    <!-- OVERVIEW -->
     <h2>📊 Monthly Overview</h2>
 
     <h1>RM {{ "%.2f"|format(balance) }}</h1>
@@ -55,17 +49,13 @@
     <p><strong>Income:</strong> RM {{ "%.2f"|format(income) }}</p>
     <p><strong>Expense:</strong> RM {{ "%.2f"|format(expense) }}</p>
 
-    <!-- 🔥 COMPARISON -->
-    <p style="margin-top:10px; font-style:italic;">
-        {{ comparison }}
-    </p>
+    <p style="font-style:italic;">{{ comparison }}</p>
 
     <hr>
 
-    <!-- ================= SPENDING BEHAVIOR ================= -->
+    <!-- SPENDING -->
     <h2>📈 Spending Behavior</h2>
 
-    <!-- Daily Average -->
     <p>
         <strong>Daily Average:</strong>
         RM {{ "%.2f"|format(daily_avg) }}
@@ -79,117 +69,120 @@
         {% endif %}
     </p>
 
-    <!-- Top Categories -->
     <h3>Top Categories</h3>
 
     {% if top_categories %}
         <ol>
             {% for cat, amt, percent in top_categories %}
-                <li>
-                    {{ cat }} — {{ "%.0f"|format(percent) }}%
-                </li>
+                <li>{{ cat }} — {{ "%.0f"|format(percent) }}%</li>
             {% endfor %}
         </ol>
 
-        <!-- 🔥 PIE CHART -->
         <canvas id="pieChart" width="300" height="300"></canvas>
 
     {% else %}
         <p>No category data</p>
     {% endif %}
 
-    <!-- Insight -->
     <h3>🧠 Insight</h3>
     <p>{{ insight }}</p>
 
     <hr>
 
-    <!-- ================= BUDGET ================= -->
+    <!-- BUDGET -->
     <h2>💸 Budget Tracking</h2>
 
     {% if budget_usage %}
-    <ul>
+        <ul style="list-style:none; padding-left:0;">
         {% for b in budget_usage %}
-            <li>
-                <strong>{{ b.category }}</strong> — 
-                RM {{ "%.2f"|format(b.spent) }} / RM {{ "%.2f"|format(b.limit) }}
-                ({{ "%.0f"|format(b.percent) }}%)
 
-                {% if b.status == "over" %}
-                    <span style="color:red;">🚨 Over budget</span>
-                {% elif b.status == "warning" %}
-                    <span style="color:orange;">⚠ Almost full</span>
-                {% else %}
-                    <span style="color:green;">✔ OK</span>
-                {% endif %}
+            {% if b.status == "over" %}
+                {% set color = "red" %}
+            {% elif b.status == "warning" %}
+                {% set color = "orange" %}
+            {% else %}
+                {% set color = "green" %}
+            {% endif %}
+
+            <li style="margin-bottom:15px;">
+
+                <strong>{{ b.category }}</strong><br>
+
+                RM {{ "%.2f"|format(b.spent) }} / RM {{ "%.2f"|format(b.limit) }}
+
+                <div style="background:#eee; height:10px; border-radius:5px; margin-top:5px;">
+                    <div style="
+                        width: {{ b.percent }}%;
+                        height:10px;
+                        border-radius:5px;
+                        background: {{ color }};
+                    "></div>
+                </div>
+
+                <small>
+                    {{ "%.0f"|format(b.percent) }}%
+
+                    {% if b.status == "over" %}
+                        🚨 Over budget
+                    {% elif b.status == "warning" %}
+                        ⚠ Almost full
+                    {% else %}
+                        ✔ OK
+                    {% endif %}
+                </small>
+
             </li>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>No budgets set yet</p>
-{% endif %}
+        </ul>
+    {% else %}
+        <p>No budgets set yet</p>
+    {% endif %}
 
 </div>
 
 {% endif %}
 
-
-<!-- 🔥 PIE CHART SCRIPT -->
+<!-- SAFE PIE CHART -->
 {% if top_categories %}
+<script id="chart-data" type="application/json">
+    {{ top_categories | tojson }}
+</script>
+
 <script>
-    const rawData = JSON.parse('{{ top_categories | tojson | safe }}');
+const rawData = JSON.parse(
+    document.getElementById("chart-data").textContent
+);
 
-    const categories = rawData.map(item => item[0]);
-    const amounts = rawData.map(item => item[1]);
+const categories = rawData.map(x => x[0]);
+const amounts = rawData.map(x => x[1]);
 
-    const total = amounts.reduce((a, b) => a + b, 0);
+const total = amounts.reduce((a, b) => a + b, 0);
 
-    const ctx = document.getElementById('pieChart');
-
-    new Chart(ctx, {
-        type: 'doughnut', // 🔥 upgraded
-        data: {
-            labels: categories,
-            datasets: [{
-                data: amounts,
-                backgroundColor: [
-                    '#6366F1', // indigo
-                    '#10B981', // green
-                    '#F59E0B', // amber
-                    '#EF4444', // red
-                    '#8B5CF6'  // purple
-                ],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            cutout: '60%', // 🔥 donut thickness
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const value = context.raw;
-                            const percent = ((value / total) * 100).toFixed(1);
-                            return `${context.label}: RM${value} (${percent}%)`;
-                        }
+new Chart(document.getElementById("pieChart"), {
+    type: 'doughnut',
+    data: {
+        labels: categories,
+        datasets: [{
+            data: amounts,
+            backgroundColor: ['#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6']
+        }]
+    },
+    options: {
+        cutout: '60%',
+        plugins: {
+            legend: { position: 'bottom' },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const value = context.raw;
+                        const percent = ((value / total) * 100).toFixed(1);
+                        return `${context.label}: RM${value} (${percent}%)`;
                     }
                 }
-            },
-            animation: {
-                animateRotate: true,
-                duration: 1000
             }
         }
-    });
+    }
+});
 </script>
 {% endif %}
 
