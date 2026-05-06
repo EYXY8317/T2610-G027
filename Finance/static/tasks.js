@@ -1,205 +1,397 @@
-// ==================================================
-// TASK SYSTEM (Multi-Category To-Do)
-// This file handles all task logic
-// ==================================================
+// ===============================
+// PAGE SWITCH (Sidebar Navigation)
+// ===============================
+function showPage(pageId, element) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
 
-// ==================================================
-// GLOBAL STATE (Single Source of Truth)
-// ==================================================
+    // Update active menu item
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+    element.classList.add('active');
 
-let tasks = [];                // Stores all tasks (all lists)
-let currentList = "study";     // Current active list
-let selectedTaskId = null;     // Currently selected task (for detail panel)
-let hideCompleted = false;     // Toggle: hide/show completed tasks
-
-// ==================================================
-// SWITCH LIST (Sidebar Interaction)
-// ==================================================
-
-function openList(list, element) {
-
-    // Update current active list
-    currentList = list;
-
-    // Hide other views
-    document.getElementById("todayView").style.display = "none";
-    document.getElementById("calendarView").style.display = "none";
-
-    // Show task view
-    document.getElementById("taskView").style.display = "block";
-
-    // Update sidebar active highlight
-    let items = document.querySelectorAll(".menu-item");
-    items.forEach(i => i.classList.remove("active"));
-    element.classList.add("active");
-
-    // Render tasks for this list
-    renderTasks();
+    // Render specific pages
+    if (pageId === "completed") renderCompleted();
+    if (pageId === "trash") renderTrash();
+    if (pageId === "today") renderToday();
+    if (pageId === "calendar") {
+    generateCalendar();
+}
 }
 
-// ==================================================
-// ADD TASK
-// Create a new task under current list
-// ==================================================
+// ===============================
+// GLOBAL STATE
+// ===============================
+let today = new Date();
+let selectedDate = "";
+let selectedStart = "";
+let selectedEnd = "";
+let selectedReminder = "";
+let selectedRepeat = "";
+let selectedPriority = "";
+let selectedTag = "";
 
-function addTask() {
+let taskData = {
+    work: [], shopping: [], study: [], personal: [], workout: []
+};
 
-    // Get user input
-    let input = document.getElementById("taskInput");
-    let text = input.value;
+// ===============================
+// TASK MANAGEMENT
+// ===============================
+function addTask(listType) {
+    let text = document.getElementById(listType + "TaskText").value.trim();
+    if (!text) return;
+    if (!selectedDate) {
+        alert("Please select a date first");
+        return;
+    }
 
-    // Prevent empty task
-    if (text === "") return;
-
-    // Create task object
     let task = {
-        id: Date.now(),          // Unique ID
-        text: text,              // Task content
-        status: "active",        // active / completed
-        category: currentList    // Which list it belongs to
+        id: Date.now(),
+        text: text,
+        date: selectedDate,
+        startTime: selectedStart,
+        endTime: selectedEnd,
+        reminder: selectedReminder,
+        priority: selectedPriority,
+        tag: selectedTag || "",
+        status: "active"
     };
 
-    // Add to global task array
-    tasks.push(task);
+    taskData[listType].push(task);
+
+    renderTasks(listType);
+    renderToday();
+    saveTasks();
+
+    if (document.getElementById("calendar").classList.contains("active")) {
+        generateCalendar();
+    }
 
     // Clear input
-    input.value = "";
-
-    // Re-render UI
-    renderTasks();
+    document.getElementById(listType + "TaskText").value = "";
+    selectedDate = selectedStart = selectedEnd = selectedReminder = selectedPriority = selectedTag = "";
 }
-   
-// ==================================================
-// RENDER TASKS (CORE FUNCTION 🔥)
-// Controls all UI updates
-// ==================================================
 
-function renderTasks() {
 
-    // Get HTML containers
-    let taskList = document.getElementById("taskList");
-    let completedList = document.getElementById("completedList");
-    let completedSection = document.getElementById("completedSection");
-    let completedCount = document.getElementById("completedCount");
+// CompleteTask
+function completeTask(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
 
-    // Clear previous UI
+    task.status = "completed";
+
+    renderTasks(listType);
+    renderCompleted(); 
+    renderToday(); 
+}
+
+// Delete Task
+function deleteTask(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+
+    task.status = "trash";
+
+    renderTasks(listType);
+    renderCompleted();   
+    renderToday(); 
+}
+
+// Render Tasks
+function renderTasks(listType) {
+    let taskList = document.getElementById(listType + "TaskList");
+    let emptyMsg = document.getElementById(listType + "EmptyMsg");
+
+    if (!taskList || !emptyMsg) return;
+
     taskList.innerHTML = "";
-    completedList.innerHTML = "";
 
-    // Filter tasks based on current list
-    let active = tasks.filter(t => t.status === "active" && t.category === currentList);
-    let completed = tasks.filter(t => t.status === "completed" && t.category === currentList);
+    let activeTasks = taskData[listType].filter(t => t.status === "active");
 
-    // =========================
-    // RENDER ACTIVE TASKS
-    // =========================
+    // show / hide empty message
+    emptyMsg.style.display = activeTasks.length === 0 ? "block" : "none";
 
-    active.forEach(t => {
-
+    activeTasks.forEach(task => {
         let div = document.createElement("div");
+        div.className = "task-item";
 
         div.innerHTML = `
-            <!-- Checkbox: mark task as completed -->
-            <input type="checkbox" onclick="completeTask(${t.id})">
+            <span>
+                <input type="checkbox" onchange="completeTask('${listType}', ${task.id})">
+                ${task.text}
+            </span>
 
-            <!-- Click text to open detail panel -->
-            <span onclick="selectTask(${t.id})">${t.text}</span>
+            <span>
+               📅 ${task.date || "No date"} 
+               ⏰ ${task.startTime ? `${task.startTime}` : ""}${task.endTime ? ` - ${task.endTime}` : ""}
+               ${getPriorityDot(task.priority)}
+               ${task.tag ? `#${task.tag}` : ""}
+               <button onclick="deleteTask('${listType}', ${task.id})">🗑</button>
+            </span>
         `;
 
         taskList.appendChild(div);
     });
+}
 
-// =========================
-// RENDER COMPLETED TASKS
-// =========================
+// Render Completed
+function renderCompleted() {
+    let container = document.getElementById("completedList");
 
-    // Update completed count
-    completedCount.innerText = completed.length;
+    container.innerHTML = "";
 
-    // Show or hide completed section
-    if (!hideCompleted && completed.length > 0) {
+    Object.keys(taskData).forEach(list => {
+        let completedTasks = taskData[list].filter(t => t.status === "completed");
 
-        completedSection.style.display = "block";
-
-        completed.forEach(t => {
-
+        completedTasks.forEach(task => {
             let div = document.createElement("div");
 
             div.innerHTML = `
-                ✔ <span onclick="selectTask(${t.id})">${t.text}</span>
+                <span>✔ ${task.text}</span>
+                <button onclick="deleteTask('${list}', ${task.id})">🗑</button>
             `;
 
-            completedList.appendChild(div);
+            container.appendChild(div);
         });
+    });
+}
 
-    } else {
-        // Hide entire completed section
-        completedSection.style.display = "none";
+// Render Trash
+function renderTrash() {
+    let container = document.getElementById("trashList");
+
+    container.innerHTML = "";
+
+    Object.keys(taskData).forEach(list => {
+        let trashTasks = taskData[list].filter(t => t.status === "trash");
+
+        trashTasks.forEach(task => {
+            let div = document.createElement("div");
+
+            div.innerHTML = `
+                <span>🗑 ${task.text}</span>
+                <button onclick="restoreTask('${list}', ${task.id})">↩ Restore</button>
+            `;
+
+            container.appendChild(div);
+        });
+    });
+}
+
+// Restore Task
+function restoreTask(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+
+    task.status = "active";
+
+    renderTrash();
+    renderTasks(listType);
+    renderToday();
+}
+
+// Render Today
+function renderToday() {
+    let container = document.getElementById("todayTasks");
+
+    container.innerHTML = "";
+
+    let today = new Date().toISOString().split("T")[0];
+
+    Object.keys(taskData).forEach(list => {
+        let tasks = taskData[list].filter(t =>
+            t.status === "active" && t.date === today
+        );
+
+        tasks.forEach(task => {
+            let li = document.createElement("li");
+
+            li.innerHTML = `[${list}] ${task.text} ${getPriorityDot(task.priority)}`;
+
+            container.appendChild(li);
+        });
+    });
+
+    // 没任务时提示
+    if (container.innerHTML === "") {
+        container.innerHTML = "<li>No tasks for today</li>";
     }
 }
 
-// ==================================================
-// COMPLETE TASK
-// Move task from active → completed
-// ==================================================
+// ===============================
+// ENTER KEY SUPPORT
+// ===============================
+document.addEventListener("DOMContentLoaded", function () {
+    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
+        let input = document.getElementById(list + "TaskText");
 
-function completeTask(id) {
+        if (input) {
+            input.addEventListener("keypress", function (e) {
+                if (e.key === "Enter") {
+                    addTask(list);
+                }
+            });
+        }
+    });
+});
 
-    // Find the task by ID
-    let t = tasks.find(x => x.id === id);
+// ToggleCalendar
+function toggleCalendar(btn, e) {
+    if (e) e.stopPropagation(); 
 
-    if (t) {
-        t.status = "completed";
+    let popup = document.getElementById("calendarPopup");
+
+    document.body.appendChild(popup);
+
+    let extra = document.getElementById("extraPopup");
+    if (extra) extra.style.display = "none";
+
+    let rect = btn.getBoundingClientRect();
+
+    popup.style.position = "absolute";
+    popup.style.top = rect.bottom + window.scrollY + "px";
+    popup.style.left = rect.left + window.scrollX + "px";
+
+    popup.style.display =
+        popup.style.display === "block" ? "none" : "block";
+}
+
+// ToggleCalendar
+function toggleExtra(btn, e) {
+    if (e) e.stopPropagation(); 
+
+    let popup = document.getElementById("extraPopup");
+
+    document.body.appendChild(popup);
+
+    let cal = document.getElementById("calendarPopup");
+    if (cal) cal.style.display = "none";
+
+    let rect = btn.getBoundingClientRect();
+
+    popup.style.position = "absolute";
+    popup.style.top = rect.bottom + window.scrollY + "px";
+    popup.style.left = rect.right + window.scrollX - 200 + "px";
+
+    popup.style.display =
+        popup.style.display === "block" ? "none" : "block";
+}
+
+// Close
+function closeCalendar() {
+    document.getElementById("calendarPopup").style.display = "none";
+}
+
+function closeExtra() {
+    document.getElementById("extraPopup").style.display = "none";
+}
+
+// GetPriorityDot
+function getPriorityDot(priority) {
+    if (priority === "red") return "🔴";
+    if (priority === "orange") return "🟠";
+    if (priority === "blue") return "🔵";
+    if (priority === "gray") return "⚫";
+    return "";
+}
+function setPriority(icon, e) {
+    selectedPriority = icon;
+
+    // reset all
+    let all = document.querySelectorAll(".priority-box span");
+    all.forEach(el => {
+        el.style.opacity = "0.5";
+        el.style.fontWeight = "normal";
+    });
+
+    // highlight selected
+    if (e) {
+        e.target.style.opacity = "1";
+        e.target.style.fontWeight = "bold";
+    }
+}
+
+// Apply Date
+function applyDate() {
+    let dateInput = document.getElementById("popupDate");
+    let startInput = document.getElementById("startTime");
+    let endInput = document.getElementById("endTime");
+    let reminderInput = document.getElementById("reminder");
+
+    selectedDate = dateInput.value;
+    selectedStart = startInput.value;
+    selectedEnd = endInput.value;
+    selectedReminder = reminderInput.value;
+
+    // 关闭 popup
+    closeCalendar();
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    let reminder = document.getElementById("reminder");
+    let repeat = document.getElementById("repeat");
+
+    if (reminder) {
+        reminder.addEventListener("change", function() {
+            let box = document.getElementById("customReminderBox");
+            box.style.display = this.value === "custom" ? "flex" : "none";
+        });
     }
 
-    // Clear selected task (close detail panel)
-    selectedTaskId = null;
-    document.getElementById("taskDetailPanel").style.display = "none";
+    if (repeat) {
+        repeat.addEventListener("change", function() {
+            let box = document.getElementById("customRepeatBox");
+            box.style.display = this.value === "custom" ? "flex" : "none";
+        });
+    }
 
-    // Re-render UI
-    renderTasks();
+});
+
+// ===============================
+// PERSISTENCE - localStorage
+// ===============================
+function saveTasks() {
+    localStorage.setItem("taskData", JSON.stringify(taskData));
 }
 
-// ==================================================
-// TOGGLE COMPLETED SECTION (Hide / Show)
-// ==================================================
-
-function toggleCompleted() {
-
-    // Switch boolean state
-    hideCompleted = !hideCompleted;
-
-    // Update button text
-    let btn = document.getElementById("toggleCompletedBtn");
-    btn.innerText = hideCompleted ? "Show Completed" : "Hide Completed";
-
-    // Re-render UI
-    renderTasks();
+function loadTasks() {
+    const saved = localStorage.getItem("taskData");
+    if (saved) taskData = JSON.parse(saved);
 }
 
-// ==================================================
-// SELECT TASK (Open Right Detail Panel)
-// ==================================================
-
-function selectTask(id) {
-
-    // Save selected task ID
-    selectedTaskId = id;
-
-    // Find task data
-    let t = tasks.find(x => x.id === id);
-
-    if (!t) return;
-
-    let panel = document.getElementById("taskDetailPanel");
-
-    // Update detail panel content
-    document.getElementById("detailTitle").innerText = t.text;
-
-    // (Future: replace with real date/time)
-    document.getElementById("detailDate").innerText = "No date";
-    document.getElementById("detailTime").innerText = "No time";
-
-    // Show panel
-    panel.style.display = "block";
+function getPriorityColor(priority) {
+    if (priority === "red") return "#ef4444";
+    if (priority === "orange") return "#f59e0b";
+    if (priority === "blue") return "#3b82f6";
+    return "#6b7280";
 }
+
+// Load data when page loads
+document.addEventListener("DOMContentLoaded", () => {
+    loadTasks();
+    
+    // 重要：加载后重新渲染所有列表
+    renderToday();
+    
+    // 渲染所有任务列表
+    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
+        renderTasks(list);
+    });
+});
+
+// Auto save after changes
+const originalCompleteTask = completeTask;
+completeTask = function(listType, id) {
+    originalCompleteTask.call(this, listType, id);
+    saveTasks();
+    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
+};
+
+const originalDeleteTask = deleteTask;
+deleteTask = function(listType, id) {
+    originalDeleteTask.call(this, listType, id);
+    saveTasks();
+    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
+};

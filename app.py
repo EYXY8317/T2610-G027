@@ -11,8 +11,10 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 # ================= BASE =================
 BASE_DIR = os.path.dirname(__file__)
 
-app = Flask(__name__)
-app.secret_key = "your_secret_key"
+app = Flask(
+    __name__,
+    static_folder=os.path.join(BASE_DIR, "Finance", "static")
+)
 
 # ================= TEMPLATE LOADER =================
 app.jinja_loader = ChoiceLoader([
