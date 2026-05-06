@@ -159,102 +159,63 @@ CATEGORY_MAP = {
 def home():
     return redirect(url_for("login"))
 
+FILE = "budgets.json"
 
-@app.route("/add", methods=["GET", "POST"])
-def add_financial():
+
+@app.route("/budget", methods=["GET", "POST"])
+def budget():
 
     if "user" not in session:
         return redirect(url_for("login"))
 
-    accounts = load_data("accounts.json", [])
-    user_accounts = [a for a in accounts if a["username"] == session["user"]]
+    user = session.get("user")
+
+    budgets = load_data("budget.json", [])
+    user_budgets = [b for b in budgets if b["username"] == user]
 
     if request.method == "POST":
-
-        date = request.form.get("date")
-        type_ = request.form.get("type")
         category = request.form.get("category")
-        item = request.form.get("item")
         amount = request.form.get("amount")
 
-        new_account = request.form.get("new_account")
-        account = request.form.get("account")
-
-        # NEW ACCOUNT
-        if new_account:
-            account = new_account
-
-            if not any(a["name"] == account and a["username"] == session["user"] for a in accounts):
-                accounts.append({
-                    "username": session["user"],
-                    "name": account
-                })
-                save_data("accounts.json", accounts)
-
-            user_accounts = [a for a in accounts if a["username"] == session["user"]]
-
-        # VALIDATION
-        if not account:
+        if not category or not amount:
             return render_template(
-                "add.html",
-                error="Select or create account",
-                accounts=user_accounts,
-                categories=CATEGORY_MAP
-            )
-
-        if not date or not type_ or not amount:
-            return render_template(
-                "add.html",
-                error="Date, Type and Amount are required",
-                accounts=user_accounts,
-                categories=CATEGORY_MAP
-            )
-
-        if type_ == "expense" and (not category or not item):
-            return render_template(
-                "add.html",
-                error="Category and Item required for expense",
-                accounts=user_accounts,
-                categories=CATEGORY_MAP
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Category and amount required"
             )
 
         try:
             amount = float(amount)
         except:
             return render_template(
-                "add.html",
-                error="Invalid amount",
-                accounts=user_accounts,
-                categories=CATEGORY_MAP,
-                form_data=request.form
+                "budget.html",
+                budgets=user_budgets,
+                categories=CATEGORY_MAP["expense"],
+                error="Invalid amount"
             )
 
-        # CREATE RECORD
-        record = {
-            "username": session["user"],
-            "date": date,
-            "type": type_,
-            "category": category if category else "-",
-            "account": account,
-            "item": item if item else "-",
-            "amount": amount
-        }
+        found = False
 
-        records = load_data(f_expense, [])
-        records.append(record)
-        save_data(f_expense, records)
+        for b in budgets:
+            if b["username"] == user and b["category"] == category:
+                b["amount"] = amount
+                found = True
+                break
 
-        return render_template(
-            "add.html",
-            accounts=user_accounts,
-            categories=CATEGORY_MAP,
-            success="Record added successfully",
-            form_data=request.form
-        )
+        if not found:
+            budgets.append({
+                "username": user,
+                "category": category,
+                "amount": amount
+            })
+
+        save_data("budget.json", budgets)
+
+        return redirect(url_for("budget"))
 
     return render_template(
-        "add.html",
-        accounts=user_accounts,
-        categories=CATEGORY_MAP,
-        form_data=request.form
+        "budget.html",
+        budgets=user_budgets,
+        categories=CATEGORY_MAP["expense"]
     )

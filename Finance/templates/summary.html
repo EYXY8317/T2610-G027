@@ -1,76 +1,202 @@
-<h1>Summary</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Summary</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+
+    <!-- Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h1>📊 Financial Summary</h1>
+
+<hr>
+<a href="/view">Finance</a> |
+<a href="/calendar">Calendar</a> |
+<a href="/diary">Diary</a> |
+<a href="/logout">Logout</a>
+<hr>
+
+<hr>
+<a href="/view">View</a> |
+<a href="/add">Add</a> |
+<a href="/summary">Summary</a> |
+<a href="/budget">Budget</a>
+<hr>
 
 {% if income == 0 and expense == 0 %}
 
-<!-- 💤 EMPTY STATE -->
-<div style="border:1px solid #ccc; padding:20px; width:500px;">
-
+<div class="summary-card">
     <h2>📭 No Summary Yet</h2>
     <p>You haven’t added any financial records this month.</p>
-
-    <a href="/add">
-        <button>Add Your First Record</button>
-    </a>
-
+    <a href="/add"><button>Add Your First Record</button></a>
 </div>
 
 {% else %}
 
-<!-- 📊 NORMAL SUMMARY -->
-<div style="border:1px solid #ccc; padding:20px; width:500px;">
+<div class="summary-card">
 
-    <!-- Monthly Overview -->
-    <h3>Monthly Overview</h3>
+    <!-- OVERVIEW -->
+    <h2>📊 Monthly Overview</h2>
 
     <h1>RM {{ "%.2f"|format(balance) }}</h1>
 
     {% if balance >= 0 %}
-        <p style="color:green;">Positive Balance</p>
+        <p style="color:green;">✔ Positive Balance</p>
     {% else %}
-        <p style="color:red;">Negative Balance</p>
+        <p style="color:red;">❌ Negative Balance</p>
     {% endif %}
 
-    <p>Income: RM {{ "%.2f"|format(income) }}</p>
-    <p>Expense: RM {{ "%.2f"|format(expense) }}</p>
+    <p><strong>Income:</strong> RM {{ "%.2f"|format(income) }}</p>
+    <p><strong>Expense:</strong> RM {{ "%.2f"|format(expense) }}</p>
+
+    <p style="font-style:italic;">{{ comparison }}</p>
 
     <hr>
 
-    <!-- Daily Average -->
-    <h3>Daily Average</h3>
+    <!-- SPENDING -->
+    <h2>📈 Spending Behavior</h2>
 
     <p>
-        RM {{ "%.2f"|format(daily_avg) }} / day
+        <strong>Daily Average:</strong>
+        RM {{ "%.2f"|format(daily_avg) }}
 
         {% if daily_avg < 5 %}
-            (low spending 👍)
+            <span style="color:green;">(Low 👍)</span>
         {% elif daily_avg < 20 %}
-            (moderate)
+            <span style="color:orange;">(Moderate)</span>
         {% else %}
-            (high ⚠️)
+            <span style="color:red;">(High ⚠️)</span>
         {% endif %}
     </p>
 
-    <hr>
-
-    <!-- Top Categories -->
     <h3>Top Categories</h3>
 
     {% if top_categories %}
         <ol>
             {% for cat, amt, percent in top_categories %}
-                <li>{{ cat }} ({{ "%.0f"|format(percent) }}%)</li>
+                <li>{{ cat }} — {{ "%.0f"|format(percent) }}%</li>
             {% endfor %}
         </ol>
+
+        <canvas id="pieChart" width="300" height="300"></canvas>
     {% else %}
         <p>No category data</p>
     {% endif %}
 
+    <h3>🧠 Insight</h3>
+    <p>{{ insight }}</p>
+
     <hr>
 
-    <!-- Smart Insight -->
-    <h3>Smart Insight</h3>
-    <p>{{ insight }}</p>
+    <!-- BUDGET -->
+    <h2>💸 Budget Tracking</h2>
+
+    {% if budget_usage %}
+        <ul style="list-style:none; padding-left:0;">
+
+        {% for b in budget_usage %}
+
+            {% set percent = 100 if b.percent > 100 else b.percent %}
+
+            <li style="margin-bottom:15px;">
+
+                <strong>{{ b.category }}</strong><br>
+
+                RM {{ "%.2f"|format(b.spent) }} / RM {{ "%.2f"|format(b.limit) }}
+
+                <div class="progress-container">
+                    <div class="progress-bar {{ b.status }}"
+                         style="--width: {{ percent }}%;">
+                    </div>
+                </div>
+
+                <small>
+                    {{ "%.0f"|format(b.percent) }}%
+
+                    {% if b.status == "over" %}
+                        🚨 Over budget
+                    {% elif b.status == "warning" %}
+                        ⚠ Almost full
+                    {% else %}
+                        ✔ OK
+                    {% endif %}
+                </small>
+
+            </li>
+
+        {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>No budgets set yet</p>
+    {% endif %}
 
 </div>
 
 {% endif %}
+
+<!-- CHART -->
+{% if top_categories %}
+<script id="chart-data" type="application/json">
+    {{ top_categories | tojson }}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let rawData = [];
+
+    try {
+        rawData = JSON.parse(
+            document.getElementById("chart-data").textContent
+        );
+    } catch {
+        return;
+    }
+
+    if (!rawData.length) return;
+
+    const categories = rawData.map(x => x[0]);
+    const amounts = rawData.map(x => x[1]);
+
+    const total = amounts.reduce((a, b) => a + b, 0);
+
+    new Chart(document.getElementById("pieChart"), {
+        type: 'doughnut',
+        data: {
+            labels: categories,
+            datasets: [{
+                data: amounts,
+                backgroundColor: [
+                    '#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6'
+                ]
+            }]
+        },
+        options: {
+            cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const percent = ((value / total) * 100).toFixed(1);
+                            return context.label + ": RM" + value + " (" + percent + "%)";
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+});
+</script>
+{% endif %}
+
+</body>
+</html>

@@ -140,6 +140,11 @@ def valid_casing(value, allowed):
 
 TYPES = ["expense", "income", "saving"]
 CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
+CATEGORY_MAP = {
+    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
+    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
+    "saving": ["Savings", "Investment", "Emergency Fund"]
+}
 
 # ----------
 # ROUTES
@@ -160,75 +165,113 @@ def summary():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    records = load_data(f_expense, [])
     user = session.get("user")
 
-    # 👤 filter user
+    records = load_data(f_expense, [])
     user_records = [r for r in records if r["username"] == user]
 
-    # 📅 current month
-    from datetime import datetime
+    from datetime import datetime, timedelta
     now = datetime.now()
     current_month = now.strftime("%Y-%m")
 
-    # 📊 filter this month
-    month_records = [r for r in user_records if r["date"].startswith(current_month)]
+    first_day_this_month = now.replace(day=1)
+    last_month_date = first_day_this_month - timedelta(days=1)
+    last_month = last_month_date.strftime("%Y-%m")
 
-    # 🔢 totals
+    # ================= FILTER =================
+    month_records = [r for r in user_records if r["date"].startswith(current_month)]
+    last_month_records = [r for r in user_records if r["date"].startswith(last_month)]
+
+    # ================= TOTALS =================
     income = sum(r["amount"] for r in month_records if r["type"] == "income")
     expense = sum(r["amount"] for r in month_records if r["type"] == "expense")
     balance = income - expense
 
-    # 📈 daily average
-    days = now.day if now.day != 0 else 1
-    daily_avg = expense / days if days else 0
+    last_month_expense = sum(
+        r["amount"] for r in last_month_records if r["type"] == "expense"
+    )
 
-    # 🏆 top category
+    difference = expense - last_month_expense
+
+    if last_month_expense == 0 and expense > 0:
+        comparison = "This is your first recorded spending month."
+    elif difference > 0:
+        comparison = f"Your spending increased by RM{difference:.2f} compared to last month."
+    elif difference < 0:
+        comparison = f"Your spending decreased by RM{abs(difference):.2f} compared to last month."
+    else:
+        comparison = "Your spending remained the same as last month."
+
+    days = max(now.day, 1)
+    daily_avg = expense / days
+
+    # ================= CATEGORY TOTALS =================
     category_totals = {}
     for r in month_records:
         if r["type"] == "expense":
             cat = r.get("category", "Other")
             category_totals[cat] = category_totals.get(cat, 0) + r["amount"]
 
-    top_category = max(category_totals, key=category_totals.get) if category_totals else "None"
-
-    # 🔥 TOP 3 CATEGORIES
-    top_categories = sorted(
-    category_totals.items(),
-    key=lambda x: x[1],
-    reverse=True
-    )[:3]
-
     total_expense = sum(category_totals.values())
+
+    # ================= TOP CATEGORIES =================
+    top_categories = sorted(
+        category_totals.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:3]
 
     top_categories_with_percent = [
         (cat, amt, (amt / total_expense * 100) if total_expense > 0 else 0)
         for cat, amt in top_categories
     ]
 
-    total_expense = sum(
-    r["amount"] for r in user_records if r["type"] == "expense"
-    )
+    # ================= INSIGHT =================
+    if total_expense == 0:
+        insight = "No financial data recorded for this month."
+    else:
+        top_category = max(category_totals, key=category_totals.get)
+        percent = (category_totals[top_category] / total_expense) * 100
+        insight = f"You spent most on {top_category}, accounting for {percent:.1f}%."
 
-    top_category_amount = category_totals[top_category] if top_category else 0
+    # ================= BUDGET USAGE =================
+    budgets = load_data("budget.json", [])
+    user_budgets = [b for b in budgets if b["username"] == user]
 
-    top_category_percent = (
-        (top_category_amount / total_expense * 100)
-        if total_expense > 0 else 0
-    )
+    budget_usage = []
 
-    # 🧠 smart insight
-    insight = "No significant spending pattern yet."
-    if category_totals:
-        insight = f"You spent most on {top_category} this month."
+    for b in user_budgets:
+        cat = b["category"]
+        limit_amt = b["amount"]
+
+        spent = category_totals.get(cat, 0)
+
+        percent = (spent / limit_amt * 100) if limit_amt > 0 else 0
+
+        if percent >= 100:
+            status = "over"
+        elif percent >= 80:
+            status = "warning"
+        else:
+            status = "safe"
+
+        budget_usage.append({
+            "category": cat,
+            "spent": spent,
+            "limit": limit_amt,
+            "percent": percent,
+            "status": status
+        })
 
     return render_template(
-    "summary.html",
-    income=income,
-    expense=expense,
-    balance=balance,
-    daily_avg=round(daily_avg, 2),
-    top_category=top_category,
-    insight=insight,
-    top_categories=top_categories_with_percent,
-)
+        "summary.html",
+        income=income,
+        expense=expense,
+        balance=balance,
+        daily_avg=round(daily_avg, 2),
+        top_categories=top_categories_with_percent,
+        insight=insight,
+        comparison=comparison,
+        budget_usage=budget_usage
+    )
+    

@@ -3,26 +3,36 @@
 <head>
     <title>Reset Password</title>
 </head>
+
 <body>
+
+<!-- NAV -->
+<a href="/login">Login</a> |
+<a href="/register">Register</a>
+
+<hr>
 
 <h2>Reset Password</h2>
 
 <form method="POST">
 
-    <!-- optional: show username -->
+    <!-- USER DISPLAY -->
     <p>User: <b>{{ username }}</b></p>
 
-    New Password:<br>
-    <input type="password" name="password" required><br><br>
+    <!-- NEW PASSWORD -->
+    <label>New Password:</label><br>
+    <input type="password" name="password" required autocomplete="new-password"><br><br>
 
     <button type="submit">Reset Password</button>
 
 </form>
 
+<!-- ERROR -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
 
+<!-- SUCCESS -->
 {% if success %}
 <p style="color:green;">{{ success }}</p>
 {% endif %}
