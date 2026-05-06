@@ -8,6 +8,8 @@ import os
 from datetime import datetime, timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 
+from Profile_Pages.profile_routes import register_profile_routes
+
 # ================= BASE =================
 BASE_DIR = os.path.dirname(__file__)
 
@@ -18,11 +20,14 @@ app = Flask(
 
 app.secret_key = "my_secret_key"
 
+register_profile_routes(app)
+
 # ================= TEMPLATE LOADER =================
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader(os.path.join(BASE_DIR, "Finance", "templates")),
     FileSystemLoader(os.path.join(BASE_DIR, "Calendar_Pages", "templates")),
     FileSystemLoader(os.path.join(BASE_DIR, "Journal_Pages", "templates")),
+    FileSystemLoader(os.path.join(BASE_DIR, "Profile_Pages", "templates")),
 ])
 
 # ================= BLUEPRINT =================
@@ -465,6 +470,13 @@ def calendar():
 def diary_static(filename):
     return send_from_directory(
         os.path.join('Journal_Pages', 'static'),
+        filename
+    )
+
+@app.route('/profile_static/<path:filename>')
+def profile_static(filename):
+    return send_from_directory(
+        os.path.join('Profile_Pages', 'static'),
         filename
     )
 

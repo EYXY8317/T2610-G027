@@ -1,0 +1,129 @@
+from flask import render_template, session, request, redirect
+from password_system.password_hashing import hash_password
+import json
+import os
+
+def register_profile_routes(app):
+
+    @app.route("/profile")
+    def profile():
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        current_user = None
+
+        for user in users:
+            if user["username"] == session["user"]:
+                current_user = user
+                break
+
+        return render_template(
+            "profile.html",
+            user=current_user
+        )
+
+    @app.route("/verify_profile", methods=["GET", "POST"])
+    def verify_profile():
+
+        if request.method == "POST":
+
+            password = hash_password(request.form.get("password", ""))
+
+            with open("users.json", "r") as f:
+                users = json.load(f)
+
+            for user in users:
+
+                if (
+                    user["username"] == session["user"]
+                    and user["password"] == password
+                ):
+
+                    return redirect("/edit_profile")
+
+        return render_template("verify_profile.html")
+
+    @app.route("/upload_profile_picture", methods=["POST"])
+    def upload_profile_picture():
+
+        profile_picture = request.files["profile_picture"]
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        for user in users:
+
+            if user["username"] == session["user"]:
+
+                if profile_picture.filename != "":
+
+                    filename = profile_picture.filename
+
+                    save_path = os.path.join(
+                        "Profile_Pages",
+                        "static",
+                        "profile_pictures",
+                        filename
+                    )
+
+                    profile_picture.save(save_path)
+
+                    user["profile_picture"] = filename
+
+                break
+
+        with open("users.json", "w") as f:
+            json.dump(users, f, indent=4)
+
+        return redirect("/profile")
+
+    @app.route("/edit_profile", methods=["GET", "POST"])
+    def edit_profile():
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        if request.method == "POST":
+
+            new_username = request.form["username"]
+            new_email = request.form["email"]
+            profile_picture = request.files["profile_picture"]
+
+            for user in users:
+
+                if user["username"] == session["user"]:
+
+                    user["username"] = new_username
+                    user["email"] = new_email
+
+                    if profile_picture.filename != "":
+
+                        filename = profile_picture.filename
+
+                        save_path = os.path.join(
+                            "Profile_Pages",
+                            "static",
+                            "profile_pictures",
+                            filename
+                        )
+
+                        profile_picture.save(save_path)
+
+                        user["profile_picture"] = filename
+                    break
+
+            with open("users.json", "w") as f:
+                json.dump(users, f, indent=4)
+
+        current_user = None
+
+        for user in users:
+            if user["username"] == session["user"]:
+                current_user = user
+                break
+
+        return render_template(
+            "edit_profile.html",
+            user=current_user
+        )

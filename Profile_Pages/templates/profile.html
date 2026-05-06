@@ -1,0 +1,37 @@
+<h1>User Profile</h1>
+
+{% if user.profile_picture %}
+
+<img
+    src="/profile_static/profile_pictures/{{ user.profile_picture }}"    
+    width="150"
+>
+
+{% else %}
+
+<img
+    src="https://via.placeholder.com/150"
+    width="150"
+>
+
+{% endif %}
+
+<h2>Username</h2>
+<p>{{ user.username }}</p>
+
+<h2>Email</h2>
+<p>{{ user.email }}</p>
+
+<form method="POST" action="/upload_profile_picture" enctype="multipart/form-data">
+
+    <input type="file" name="profile_picture">
+
+    <button type="submit">
+        Upload Profile Picture
+    </button>
+
+</form>
+
+<a href="/verify_profile">
+    <button>Edit Profile</button>
+</a>
