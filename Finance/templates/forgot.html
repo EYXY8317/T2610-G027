@@ -3,16 +3,25 @@
 <head>
     <title>Forgot Password</title>
 </head>
+
 <body>
+
+<!-- NAV -->
+<a href="/login">Login</a> |
+<a href="/register">Sign Up</a>
+
+<hr>
 
 <h2>Forgot Password</h2>
 
 <form method="POST">
 
-    Username:<br>
-    <input name="username" required><br><br>
+    <!-- USERNAME -->
+    <label>Username:</label><br>
+    <input type="text" name="username" required autocomplete="username"><br><br>
 
-    Security Question:<br>
+    <!-- SECURITY QUESTION -->
+    <label>Security Question:</label><br>
     <select name="question" required>
         <option value="">-- Select Question --</option>
         <option value="nickname">What is your nickname?</option>
@@ -22,19 +31,20 @@
         <option value="best_friend">What is your best friend's name?</option>
     </select><br><br>
 
-    Answer:<br>
-    <input name="answer" required><br><br>
+    <!-- ANSWER -->
+    <label>Answer:</label><br>
+    <input type="text" name="answer" required><br><br>
 
     <button type="submit">Verify</button>
 
 </form>
 
-<!-- 🔥 SHOW ERROR -->
+<!-- ERROR -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
 
-<!-- 🔥 SUCCESS -->
+<!-- SUCCESS -->
 {% if success %}
 <p style="color:green;">{{ success }}</p>
 {% endif %}

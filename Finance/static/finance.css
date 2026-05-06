@@ -1,0 +1,37 @@
+/* ===== Layout (optional but clean) ===== */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* ===== Card Container ===== */
+.summary-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 500px;
+}
+
+/* ===== Progress Bar ===== */
+.progress-container {
+    background: #eee;
+    height: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    height: 10px;
+    border-radius: 5px;
+    width: var(--width); /* 🔥 key fix */
+}
+
+.safe {
+    background: green;
+}
+
+.warning {
+    background: orange;
+}
+
+.over {
+    background: red;
+}

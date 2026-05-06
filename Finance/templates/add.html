@@ -13,11 +13,11 @@
 <a href="/logout">Logout</a>
 <hr>
 
-
 <hr>
 <a href="/view">View</a> |
 <a href="/add">Add</a> |
 <a href="/summary">Summary</a> |
+<a href="/budget">Budget</a>
 <hr>
 
 <h1>Add Record</h1>
@@ -26,20 +26,22 @@
 
     <!-- DATE -->
     <label>Date:</label><br>
-    <input type="date" name="date" required><br><br>
+    <input type="date" name="date"
+        value="{{ form_data.date if form_data else '' }}" required><br><br>
 
     <!-- TYPE -->
     <label>Type:</label><br>
     <select name="type" id="typeSelect" required>
         <option value="">-- Select Type --</option>
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
-        <option value="saving">Saving</option>
+        <option value="income" {{ 'selected' if form_data and form_data.type == 'income' else '' }}>Income</option>
+        <option value="expense" {{ 'selected' if form_data and form_data.type == 'expense' else '' }}>Expense</option>
+        <option value="saving" {{ 'selected' if form_data and form_data.type == 'saving' else '' }}>Saving</option>
     </select><br><br>
 
     <!-- CATEGORY -->
     <label>Category:</label><br>
-    <select name="category" id="categorySelect">
+    <select name="category" id="categorySelect" required
+        data-selected="{{ form_data.category if form_data else '' }}">
         <option value="">-- Select Category --</option>
     </select><br><br>
 
@@ -48,19 +50,26 @@
     <select name="account">
         <option value="">-- Select Account --</option>
         {% for acc in accounts %}
-        <option value="{{ acc.name }}">{{ acc.name }}</option>
+        <option value="{{ acc.name }}"
+            {% if form_data and form_data.account == acc.name %}selected{% endif %}>
+            {{ acc.name }}
+        </option>
         {% endfor %}
     </select><br><br>
 
-    <input type="text" name="new_account" placeholder="Or create new account"><br><br>
+    <input type="text" name="new_account"
+        value="{{ form_data.new_account if form_data else '' }}"
+        placeholder="Or create new account"><br><br>
 
     <!-- ITEM -->
     <label>Item:</label><br>
-    <input type="text" name="item"><br><br>
+    <input type="text" name="item"
+        value="{{ form_data.item if form_data else '' }}"><br><br>
 
     <!-- AMOUNT -->
     <label>Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount" value="0.00" readonly required>
+    <input type="text" id="amountInput" name="amount"
+        value="{{ form_data.amount if form_data else '0.00' }}" readonly>
 
     <br><br>
     <button type="submit">Add</button>
@@ -75,45 +84,91 @@
 <p style="color:green;">{{ success }}</p>
 {% endif %}
 
+<!-- SAFE JSON -->
+<script id="categories-data" type="application/json">
+    {{ categories | tojson if categories else '{}' }}
+</script>
+
 <script>
+document.addEventListener("DOMContentLoaded", function () {
 
-// CATEGORY MAP
-const categories = {
-    income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    saving: ["Savings", "Investment", "Emergency Fund"]
-};
+    // ================= CATEGORY =================
+    let categories = {};
+    try {
+        categories = JSON.parse(
+            document.getElementById("categories-data").textContent
+        );
+    } catch {
+        categories = {};
+    }
 
-// UPDATE CATEGORY
-document.getElementById("typeSelect").addEventListener("change", function() {
-    const type = this.value;
+    const typeSelect = document.getElementById("typeSelect");
     const categorySelect = document.getElementById("categorySelect");
 
-    categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+    let selectedCategory = categorySelect.getAttribute("data-selected") || "";
 
-    if (categories[type]) {
-        categories[type].forEach(cat => {
-            const option = document.createElement("option");
-            option.value = cat;
-            option.textContent = cat;
-            categorySelect.appendChild(option);
-        });
+    function updateCategory() {
+        const type = typeSelect.value;
+
+        categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+
+        if (categories[type]) {
+            categories[type].forEach(cat => {
+                const option = document.createElement("option");
+                option.value = cat;
+                option.textContent = cat;
+
+                if (cat === selectedCategory) {
+                    option.selected = true;
+                }
+
+                categorySelect.appendChild(option);
+            });
+        }
     }
+
+    typeSelect.addEventListener("change", function () {
+        selectedCategory = ""; // reset when user changes type
+        updateCategory();
+    });
+
+    updateCategory();
+
+
+    // ================= TNG INPUT =================
+    let value = 0;
+    let active = false;
+
+    const amountInput = document.getElementById("amountInput");
+
+    // initialize safely
+    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
+
+    amountInput.addEventListener("focus", () => active = true);
+    amountInput.addEventListener("blur", () => active = false);
+
+    document.addEventListener("keydown", function(e) {
+
+        if (!active) return;
+
+        if (e.key >= "0" && e.key <= "9") {
+            value = value * 10 + parseInt(e.key);
+        } 
+        else if (e.key === "Backspace") {
+            value = Math.floor(value / 10);
+        } 
+        else {
+            return;
+        }
+
+        e.preventDefault();
+        amountInput.value = (value / 100).toFixed(2);
+    });
+
+    // optional focus
+    amountInput.focus();
+
 });
-
-// TNG INPUT
-let value = 0;
-
-document.addEventListener("keydown", function(e) {
-    if (e.key >= "0" && e.key <= "9") {
-        value = value * 10 + parseInt(e.key);
-    } else if (e.key === "Backspace") {
-        value = Math.floor(value / 10);
-    }
-
-    document.getElementById("amountInput").value = (value / 100).toFixed(2);
-});
-
 </script>
 
 </body>
