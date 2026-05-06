@@ -16,6 +16,8 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, "Finance", "static")
 )
 
+app.secret_key = "my_secret_key"
+
 # ================= TEMPLATE LOADER =================
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader(os.path.join(BASE_DIR, "Finance", "templates")),
