@@ -1,178 +1,195 @@
 // ==================================================
 // CALENDAR SYSTEM
-// This function generates a full monthly calendar
 // ==================================================
-
-// ===== CURRENT STATE =====
-let today = new Date();
 let currentMonth = today.getMonth();
 let currentYear = today.getFullYear();
-
-// ===== VIEW STATE（control month / year）====
 let currentView = "month";
 
+// ==================================================
+// GENERATE MONTH VIEW WITH TASK BADGES
+// ==================================================
 function generateCalendar() {
+    const calendar = document.getElementById("calendarDays");
+    const title = document.getElementById("monthTitle");
 
- // Get HTML elements
-    let calendar = document.getElementById("calendarDays");
-    let title = document.getElementById("monthTitle");
+    if (!calendar || !title) return;
 
- // Clear previous calendar content
     calendar.innerHTML = "";
 
-     // Get current date information
-    let month = currentMonth;  
-    let year = currentYear;
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    title.innerText = monthNames[currentMonth] + " " + currentYear;
 
-     // List of month names
-    let monthNames = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-    ];
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    // Display month and year on top
-    title.innerText = monthNames[month] + " " + year;
-
-    // ==================================================
-    // STEP 1: Calculate important values
-    // ==================================================
-
-    // Get the first day of the month (0 = Sunday, 6 = Saturday)
-    let firstDay = new Date(year, month, 1).getDay();
-
-     // Get total number of days in this month
-    let totalDays = new Date(year, month + 1, 0).getDate();
-
-    // ==================================================
-    // STEP 2: Create empty cells (for alignment)
-    // Example: if first day is Friday → add 5 empty boxes
-    // ==================================================
-
+    // Empty cells
     for (let i = 0; i < firstDay; i++) {
-        let empty = document.createElement("div");
-        empty.classList.add("empty"); // style for blank cell
+        const empty = document.createElement("div");
+        empty.classList.add("empty");
         calendar.appendChild(empty);
     }
 
-     // ==================================================
-    // STEP 3: Create actual day cells (1 → 30/31)
-    // ==================================================
+    // Days
+    for (let day = 1; day <= totalDays; day++) {
+        const dayEl = document.createElement("div");
+        dayEl.classList.add("day");
 
-    for (let i = 1; i <= totalDays; i++) {
+        const dateEl = document.createElement("div");
+        dateEl.classList.add("date");
+        dateEl.textContent = day;
+        dayEl.appendChild(dateEl);
 
-    // Create one day box
-    let day = document.createElement("div");
-    day.classList.add("day");
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-    // Create date label (top-left number)
-    let date = document.createElement("div");
-    date.classList.add("date");
-    date.innerText = i;
+        // Highlight today
+        const now = new Date();
+        if (day === now.getDate() && currentMonth === now.getMonth() && currentYear === now.getFullYear()) {
+            dayEl.classList.add("today");
+        }
 
-    // Add date into day box
-    day.appendChild(date);
+        // Count tasks
+        let taskCount = 0;
+        Object.keys(taskData).forEach(list => {
+            taskCount += taskData[list].filter(t => t.status === "active" && t.date === dateStr).length;
+        });
 
-    for (let i = 1; i <= totalDays; i++) {
+        // Task badge
+        if (taskCount > 0) {
+            const badge = document.createElement("div");
+            badge.className = "task-badge";
+            badge.textContent = taskCount > 9 ? "9+" : taskCount;
+            dayEl.appendChild(badge);
+        }
 
-    let day = document.createElement("div");
-    day.classList.add("day");
-  
-    let date = document.createElement("div");
-    date.classList.add("date");
-    date.innerText = i;
- 
-    day.appendChild(date);
-    
-    // MAKE DAY CLICKABLE
-    day.style.cursor = "pointer";
+        // Click to show tasks modal
+        dayEl.style.cursor = "pointer";
+        dayEl.addEventListener("click", () => showDayTasks(dateStr));
 
-    day.addEventListener("click", function () {
-
-        let selectedDay = String(i).padStart(2, '0');
-        let selectedMonth = String(currentMonth + 1).padStart(2, '0');
-        let selectedYear = currentYear;
-
-        let formattedDate = selectedDay + "/" + selectedMonth + "/" + selectedYear;
-
-        window.location.href = "/diary?date=" + formattedDate;
-    });
-
-    // EXISTING TODAY HIGHLIGHT (KEEP THIS)
-     if (
-        i === today.getDate() &&
-        month === today.getMonth() &&
-        year === today.getFullYear()
-    ) {
-        day.classList.add("today");
+        calendar.appendChild(dayEl);
     }
-
-    calendar.appendChild(day);
-    }
-
-     // ==================================================
-    // STEP 4: Highlight today's date
-    // ==================================================
-    if (
-        i === today.getDate() &&
-        month === today.getMonth() &&
-        year === today.getFullYear()
-    ) {
-        day.classList.add("today");
-    }
-
-    calendar.appendChild(day);
 }
 
 // ==================================================
-// VIEW SWITCH FUNCTION
+// DAY TASKS MODAL
+// ==================================================
+function showDayTasks(dateStr) {
+    let html = `<h3>Tasks on ${dateStr}</h3><div style="max-height:400px; overflow-y:auto;">`;
+
+    let hasTasks = false;
+    Object.keys(taskData).forEach(list => {
+        const tasks = taskData[list].filter(t => t.status === "active" && t.date === dateStr);
+        tasks.forEach(task => {
+            hasTasks = true;
+            const color = getPriorityColor(task.priority);
+            html += `
+                <div style="padding:10px; margin:8px 0; border-left:4px solid ${color}; background:#f9fafb;">
+                    <strong>[${list}]</strong> ${task.text}
+                    <button onclick="completeTask('${list}', ${task.id}); closeDayModal()" style="margin-left:15px; color:green;">✔ Complete</button>
+                    <button onclick="deleteTask('${list}', ${task.id}); closeDayModal()" style="margin-left:8px; color:red;">🗑 Delete</button>
+                </div>`;
+        });
+    });
+
+    if (!hasTasks) html += "<p>No tasks on this day.</p>";
+
+    html += `</div><button onclick="closeDayModal()" style="margin-top:15px; padding:8px 16px;">Close</button>`;
+
+    let modal = document.getElementById("dayModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "dayModal";
+        modal.style = "position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:2px solid #333; border-radius:8px; z-index:10000; min-width:350px; max-width:500px;";
+        document.body.appendChild(modal);
+    }
+    modal.innerHTML = html;
+    modal.style.display = "block";
+}
+
+function closeDayModal() {
+    const modal = document.getElementById("dayModal");
+    if (modal) modal.style.display = "none";
+    generateCalendar();
+}
+
+// ==================================================
+// VIEW SWITCH
 // ==================================================
 function setView(view) {
     currentView = view;
-
     if (view === "month") {
-
         document.getElementById("monthView").style.display = "block";
         document.getElementById("yearView").style.display = "none";
-
-        document.querySelector(".calendar-header").style.display = "flex"; // 👈 显示回来
-
+        document.getElementById("monthTitle").style.display = "block";
         generateCalendar();
-
     } else {
-
         document.getElementById("monthView").style.display = "none";
         document.getElementById("yearView").style.display = "block";
-
-        document.querySelector(".calendar-header").style.display = "none"; // 👈 隐藏！
-
+        document.getElementById("monthTitle").style.display = "none";
         generateYearView();
     }
 }
 
-    // ===== PREVIOUS MONTH =====
-    function prevMonth() {
-         currentMonth--;
+// ==================================================
+// NAVIGATION (HEADER BUTTONS)
+// ==================================================
+function goPrev() {
+    if (currentView === "month") {
+        prevMonth();
+    } else {
+        prevYear();
+    }
+}
 
-         if (currentMonth < 0) {
-             currentMonth = 11;
-             currentYear--;
+function goNext() {
+    if (currentView === "month") {
+        nextMonth();
+    } else {
+        nextYear();
+    }
+}
+
+function goToday() {
+    let now = new Date();
+    currentMonth = now.getMonth();
+    currentYear = now.getFullYear();
+
+    if (currentView === "month") {
+        generateCalendar();
+    } else {
+        generateYearView();
+    }
+}
+
+
+// ==================================================
+// MONTH NAVIGATION
+// ==================================================
+function prevMonth() {
+    currentMonth--;
+
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
     }
 
     generateCalendar();
 }
 
-    // ===== NEXT MONTH =====
-    function nextMonth() {
-         currentMonth++;
+function nextMonth() {
+    currentMonth++;
 
-         if (currentMonth > 11) {
-             currentMonth = 0;
-             currentYear++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
     }
 
     generateCalendar();
 }
 
+
+// ==================================================
+// YEAR VIEW
+// ==================================================
 function generateYearView() {
 
     document.getElementById("yearTitle").innerText = currentYear;
@@ -187,18 +204,23 @@ function generateYearView() {
 
     let weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
+    let today = new Date();
+    let currentDay = today.getDate();
+    let currentMonthNum = today.getMonth();
+    let currentYearNum = today.getFullYear();
+
     for (let m = 0; m < 12; m++) {
 
         let box = document.createElement("div");
         box.classList.add("month-box");
 
-        // ===== 标题 =====
+        // 标题
         let title = document.createElement("div");
         title.classList.add("month-title");
         title.innerText = monthNames[m];
         box.appendChild(title);
 
-        // ===== 星期 =====
+        // 星期
         let weekRow = document.createElement("div");
         weekRow.classList.add("mini-weekdays");
 
@@ -210,31 +232,37 @@ function generateYearView() {
 
         box.appendChild(weekRow);
 
-        // ===== 日期 =====
+        // 日期
         let mini = document.createElement("div");
         mini.classList.add("mini-calendar");
 
         let firstDay = new Date(currentYear, m, 1).getDay();
         let totalDays = new Date(currentYear, m + 1, 0).getDate();
 
-        // Space
         for (let i = 0; i < firstDay; i++) {
             let empty = document.createElement("div");
             empty.classList.add("mini-empty");
             mini.appendChild(empty);
         }
 
-        // Date
         for (let d = 1; d <= totalDays; d++) {
             let day = document.createElement("div");
             day.innerText = d;
             day.classList.add("mini-day");
+
+            // 高亮今天
+            if (m === currentMonthNum && 
+                d === currentDay && 
+                currentYear === currentYearNum) {
+                day.classList.add("today");
+            }
+
             mini.appendChild(day);
         }
 
         box.appendChild(mini);
 
-        // Click and back to Month
+        // 点击 → 回到 month view
         box.onclick = function () {
             currentMonth = m;
             setView("month");
@@ -243,18 +271,16 @@ function generateYearView() {
         yearGrid.appendChild(box);
     }
 }
-    function prevYear() {
+// ==================================================
+// YEAR NAVIGATION
+// ==================================================
+function prevYear() {
     currentYear--;
     generateYearView();
 }
 
-    function nextYear() {
+function nextYear() {
     currentYear++;
     generateYearView();
-}   
+}
 
-// ==================================================
-// RUN FUNCTION (when page loads)
-// ==================================================
-
-generateCalendar();
