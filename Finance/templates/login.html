@@ -2,84 +2,87 @@
 <html>
 <head>
     <title>Life Pages</title>
+
+    <style>
+        .input-container {
+            position: relative;
+            width: 250px;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 8px 35px 8px 8px;
+            box-sizing: border-box;
+        }
+
+        .toggle-eye {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Top Navigation -->
-    <a href="/login">Login</a> |
-    <a href="/register">Sign Up</a>
+<!-- Top Navigation -->
+<a href="/login">Login</a> |
+<a href="/register">Sign Up</a>
 
-    <hr>
+<hr>
 
-    <h1>Life Pages</h1>
-    <p>Log in to organize every page of your life</p>
+<h1>Life Pages</h1>
+<p>Log in to organize every page of your life</p>
 
-    <!-- Login Form -->
-    <h3>Log in</h3>
+<!-- Login Form -->
+<h3>Log in</h3>
 
-    <form method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+<form method="POST">
 
-<style>
-.input-container {
-    position: relative;
-    width: 250px;
-}
+    <!-- USERNAME -->
+    <label>Username:</label><br>
+    <input type="text" name="username" required autocomplete="username"><br><br>
 
-.input-container input {
-    width: 100%;
-    padding: 8px 35px 8px 8px; /* space for icon */
-    box-sizing: border-box;
-}
+    <!-- PASSWORD -->
+    <label>Password:</label><br>
 
-.toggle-eye {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    user-select: none;
-}
-</style>
+    <div class="input-container">
+        <input type="password" id="password" name="password" required autocomplete="current-password">
 
+        <span id="eye" class="toggle-eye" onclick="togglePassword()">
+            🙈
+        </span>
+    </div><br>
 
-<label>Password:</label><br>
+    <button type="submit">Login</button>
 
-<div class="input-container">
-    <input type="password" id="password" name="password">
+</form>
 
-    <span id="eye" class="toggle-eye" onclick="togglePassword()">
-        🙈
-    </span>
-</div><br>
+<br>
 
-        <button type="submit">Login</button>
-    </form>
+<!-- ACTION BUTTONS -->
+<button type="button" onclick="window.location.href='/forgot'">
+    Forgot Password
+</button>
 
-    <br>
+<br><br>
 
-    <!-- 🔥 ONLY ONE BUTTON EACH -->
-    <button type="button" onclick="window.location.href='/forgot'">
-        Forgot Password
-    </button>
+<button type="button" onclick="window.location.href='/forgot_username'">
+    Forgot Username
+</button>
 
-    <br><br>
+<!-- ERROR -->
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
 
-    <button type="button" onclick="window.location.href='/forgot_username'">
-        Forgot Username
-    </button>
-
-    <!-- 🔥 ERROR MESSAGE -->
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
-
-    <!-- 🔥 SUCCESS MESSAGE -->
-    {% if request.args.get("success") %}
-    <p style="color:green;">{{ request.args.get("success") }}</p>
-    {% endif %}
+<!-- SUCCESS -->
+{% if request.args.get("success") %}
+<p style="color:green;">{{ request.args.get("success") }}</p>
+{% endif %}
 
 <script>
 function togglePassword() {
