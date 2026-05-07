@@ -25,5 +25,14 @@
         "account": "MAE",
         "item": "",
         "amount": 500.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-22",
+        "type": "expense",
+        "category": "Entertainment",
+        "account": "TnG",
+        "item": "pokemon",
+        "amount": 500.0
     }
 ]
