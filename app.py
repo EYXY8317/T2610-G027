@@ -463,7 +463,7 @@ def calendar_static(filename):
 
 @app.route("/calendar")
 def calendar():
-    return render_template("calendarhomepage.html")
+    return render_template("mypage.html")
 
 # ================= DIARY ===================
 @app.route('/diary_static/<path:filename>')
