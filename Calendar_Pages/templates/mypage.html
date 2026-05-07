@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Life Pages</title>
-    <link rel="stylesheet" href="/Calendar_Pages/static/mystyle.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mystyle.css') }}">
 </head>
 
 <body>
@@ -381,8 +381,8 @@
 </div>
 
 <!-- JS FILE -->
-<script src="/Calendar_Pages/static/task2.0.js"></script>
-<script src="/Calendar_Pages/static/calendar2.0.js"></script>
+<script src="{{ url_for('static', filename='task2.0.js') }}"></script>
+<script src="{{ url_for('static', filename='calendar2.0.js') }}"></script>
 
 </body>
 </html>
