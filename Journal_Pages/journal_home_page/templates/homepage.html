@@ -29,7 +29,7 @@
           filename='css/summary.css') }}">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
 </head>
 
 <body>
@@ -62,6 +62,8 @@
 
     {% include 'components/summary_popup.html' %}
 
+    {% include 'components/quote_popup.html' %}
+    
     <!-- ================= JS ================= -->
 
     <script src="{{ url_for('homepage.static',
@@ -70,6 +72,10 @@
 
     <script src="{{ url_for('homepage.static',
         filename='js/summary_system.js') }}">
+    </script>
+
+    <script src="{{ url_for('homepage.static',
+        filename='js/quote_system.js') }}">
     </script>
 </body>
 
