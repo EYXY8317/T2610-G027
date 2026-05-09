@@ -41,7 +41,7 @@ let moodChart =
         }
 
     });
-    
+
 // ================= ELEMENTS =================
 
 const summarySettingButton =
@@ -164,6 +164,8 @@ chartCards.forEach(function(card) {
         const chartType =
             card.dataset.chart;
 
+        // Change text
+
         if (chartType === "line") {
 
             chartTypeText.innerText =
@@ -184,6 +186,51 @@ chartCards.forEach(function(card) {
                 "🥧 Pie Chart";
 
         }
+
+        // Destroy old chart
+
+        moodChart.destroy();
+
+        // Create new chart
+
+        moodChart =
+            new Chart(chartCanvas, {
+
+                type: chartType,
+
+                data: {
+
+                    labels: [
+                        "Mon",
+                        "Tue",
+                        "Wed",
+                        "Thu",
+                        "Fri",
+                        "Sat",
+                        "Sun"
+                    ],
+
+                    datasets: [{
+
+                        label: "Mood Level",
+
+                        data: [4, 6, 5, 7, 8, 6, 9],
+
+                        borderWidth: 2
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false
+
+                }
+
+            });
 
     });
 
