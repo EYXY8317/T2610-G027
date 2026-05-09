@@ -1,0 +1,58 @@
+/* ================= WIDGET ================= */
+
+.widget {
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    min-height: 150px;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* ================= LARGE WIDGET ================= */
+
+.large-widget {
+    min-height: 250px;
+}
+
+/* ================= WIDGET HEADER ================= */
+
+.widget-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+/* ================= SETTING BUTTON ================= */
+
+.setting-btn,
+.summary-setting-btn {
+    border: none;
+
+    background: none;
+
+    cursor: pointer;
+
+    font-size: 20px;
+}
+
+/* ================= TEXT ================= */
+
+.widget h2 {
+    margin: 0;
+
+    font-size: 24px;
+}
+
+.widget p {
+    color: gray;
+
+    font-size: 16px;
+}

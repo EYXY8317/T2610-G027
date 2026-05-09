@@ -10,6 +10,9 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 
 from Profile_Pages.profile_routes import register_profile_routes
 
+from Journal_Pages.diary_system.routes import diary_bp
+from Journal_Pages.journal_home_page.homepage import homepage_bp
+
 # ================= BASE =================
 BASE_DIR = os.path.dirname(__file__)
 
@@ -32,6 +35,7 @@ app.jinja_loader = ChoiceLoader([
 
 # ================= BLUEPRINT =================
 app.register_blueprint(diary_bp)
+app.register_blueprint(homepage_bp)
 
 # ================= FILE PATHS =================
 f_expense = os.path.join(BASE_DIR, "Finance", "expenses.json")

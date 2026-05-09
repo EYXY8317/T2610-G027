@@ -1,0 +1,31 @@
+body {
+    background: #f5f5f5;
+
+    font-family: Arial, sans-serif;
+
+    margin: 0;
+}
+
+/* ================= TOP BAR ================= */
+
+.topbar {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 20px;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+    padding: 20px;
+}

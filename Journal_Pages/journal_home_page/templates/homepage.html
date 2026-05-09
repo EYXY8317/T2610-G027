@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Journal Homepage</title>
+
+    <!-- ================= CSS ================= -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('homepage.static',
+          filename='css/layout.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('homepage.static',
+          filename='css/widgets.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('homepage.static',
+          filename='css/popup.css') }}">
+
+    <link rel="stylesheet"
+          href="{{ url_for('homepage.static',
+          filename='css/summary.css') }}">
+
+</head>
+
+<body>
+
+    <!-- ================= TOPBAR ================= -->
+
+    <div class="topbar">
+
+        <h1>My Journal Dashboard</h1>
+
+    </div>
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <div class="dashboard">
+
+        {% include 'components/streak_widget.html' %}
+
+        {% include 'components/summary_widget.html' %}
+
+        {% include 'components/quote_widget.html' %}
+
+        {% include 'components/weather_widget.html' %}
+
+    </div>
+
+    <!-- ================= POPUPS ================= -->
+
+    {% include 'components/streak_popup.html' %}
+
+    {% include 'components/summary_popup.html' %}
+
+    <!-- ================= JS ================= -->
+
+    <script src="{{ url_for('homepage.static',
+            filename='js/streak_system.js') }}">
+    </script>
+
+</body>
+
+</html>
