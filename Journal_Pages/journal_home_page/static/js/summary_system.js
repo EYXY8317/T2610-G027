@@ -1,3 +1,47 @@
+// ================= CHART =================
+
+const chartCanvas =
+    document.querySelector("#mood-chart");
+
+let moodChart =
+    new Chart(chartCanvas, {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+                "Sun"
+            ],
+
+            datasets: [{
+
+                label: "Mood Level",
+
+                data: [4, 6, 5, 7, 8, 6, 9],
+
+                borderWidth: 2
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false
+
+        }
+
+    });
+    
 // ================= ELEMENTS =================
 
 const summarySettingButton =
@@ -94,5 +138,53 @@ hideSummaryButton.addEventListener("click", function() {
     summaryWidget.style.display = "none";
 
     summaryOverlay.style.display = "none";
+
+});
+
+const chartCards =
+    document.querySelectorAll("[data-chart]");
+
+const chartTypeText =
+    document.querySelector("#chart-type-text");
+
+// ================= CHART TYPE =================
+
+chartCards.forEach(function(card) {
+
+    card.addEventListener("click", function() {
+
+        chartCards.forEach(function(item) {
+
+            item.classList.remove("selected");
+
+        });
+
+        card.classList.add("selected");
+
+        const chartType =
+            card.dataset.chart;
+
+        if (chartType === "line") {
+
+            chartTypeText.innerText =
+                "📈 Line Chart";
+
+        }
+
+        if (chartType === "bar") {
+
+            chartTypeText.innerText =
+                "📊 Bar Chart";
+
+        }
+
+        if (chartType === "pie") {
+
+            chartTypeText.innerText =
+                "🥧 Pie Chart";
+
+        }
+
+    });
 
 });
