@@ -24,7 +24,35 @@
             📈 Line Chart
         </p>
 
+        <!-- ================= CHART ================= -->
+
         <canvas id="mood-chart"></canvas>
+
+        <!-- ================= EMOJI CHART ================= -->
+
+        <div id="emoji-chart"
+
+             data-happy="{{ happy_count }}"
+
+             data-sad="{{ sad_count }}"
+
+             data-angry="{{ angry_count }}"
+
+             style="display: none;">
+
+            <span class="happy-emoji">
+                😊
+            </span>
+
+            <span class="sad-emoji">
+                😢
+            </span>
+
+            <span class="angry-emoji">
+                😡
+            </span>
+
+        </div>
 
     </div>
 

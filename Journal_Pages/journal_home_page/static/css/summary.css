@@ -4,6 +4,39 @@
     height: 150px;
 }
 
+/* ================= SUMMARY PREVIEW ================= */
+
 .summary-preview {
     height: 300px;
+}
+
+/* ================= EMOJI CHART ================= */
+
+#emoji-chart {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-end;
+
+    gap: 30px;
+
+    margin-top: 40px;
+}
+
+/* ================= EMOJI ================= */
+
+#emoji-chart span {
+
+    transition: 0.3s;
+
+    cursor: pointer;
+}
+
+/* ================= HOVER ================= */
+
+#emoji-chart span:hover {
+
+    transform: scale(1.1);
 }

@@ -3,6 +3,100 @@
 const chartCanvas =
     document.querySelector("#mood-chart");
 
+const emojiChart =
+    document.querySelector("#emoji-chart");
+
+const happyEmoji =
+    document.querySelector(".happy-emoji");
+
+const sadEmoji =
+    document.querySelector(".sad-emoji");
+
+const angryEmoji =
+    document.querySelector(".angry-emoji");
+
+
+// ================= MOOD DATA =================
+
+const happyCount =
+    Number(emojiChart.dataset.happy);
+
+const sadCount =
+    Number(emojiChart.dataset.sad);
+
+const angryCount =
+    Number(emojiChart.dataset.angry);
+
+const totalMood =
+    happyCount + sadCount + angryCount;
+
+
+// ================= EMOJI SIZE =================
+
+// No mood data
+// 没有 mood data
+
+if (totalMood === 0) {
+
+    happyEmoji.style.fontSize = "70px";
+
+    sadEmoji.style.fontSize = "70px";
+
+    angryEmoji.style.fontSize = "70px";
+
+}
+
+// Have mood data
+// 有 mood data
+
+else {
+
+    happyEmoji.style.fontSize =
+        (happyCount / totalMood * 120) + "px";
+
+    sadEmoji.style.fontSize =
+        (sadCount / totalMood * 120) + "px";
+
+    angryEmoji.style.fontSize =
+        (angryCount / totalMood * 120) + "px";
+
+}
+
+
+// ================= TOOLTIP =================
+
+if (totalMood > 0) {
+
+    happyEmoji.title =
+        "Happy: " +
+        Math.round(happyCount / totalMood * 100)
+        + "%";
+
+    sadEmoji.title =
+        "Sad: " +
+        Math.round(sadCount / totalMood * 100)
+        + "%";
+
+    angryEmoji.title =
+        "Angry: " +
+        Math.round(angryCount / totalMood * 100)
+        + "%";
+
+}
+
+else {
+
+    happyEmoji.title = "No mood data";
+
+    sadEmoji.title = "No mood data";
+
+    angryEmoji.title = "No mood data";
+
+}
+
+
+// ================= CHART =================
+
 let moodChart =
     new Chart(chartCanvas, {
 
@@ -42,6 +136,7 @@ let moodChart =
 
     });
 
+
 // ================= ELEMENTS =================
 
 const summarySettingButton =
@@ -49,9 +144,6 @@ const summarySettingButton =
 
 const summaryOverlay =
     document.querySelector("#summary-popup-overlay");
-
-const summaryPopup =
-    document.querySelector("#summary-setting-popup");
 
 const summaryWidget =
     document.querySelector("#summary-widget");
@@ -64,6 +156,12 @@ const frequencyText =
 
 const hideSummaryButton =
     document.querySelector("#hide-summary-btn");
+
+const chartCards =
+    document.querySelectorAll("[data-chart]");
+
+const chartTypeText =
+    document.querySelector("#chart-type-text");
 
 
 // ================= OPEN POPUP =================
@@ -141,11 +239,6 @@ hideSummaryButton.addEventListener("click", function() {
 
 });
 
-const chartCards =
-    document.querySelectorAll("[data-chart]");
-
-const chartTypeText =
-    document.querySelector("#chart-type-text");
 
 // ================= CHART TYPE =================
 
@@ -164,7 +257,28 @@ chartCards.forEach(function(card) {
         const chartType =
             card.dataset.chart;
 
-        // Change text
+        // ================= EMOJI MODE =================
+
+        if (chartType === "emoji") {
+
+            chartCanvas.style.display = "none";
+
+            emojiChart.style.display = "flex";
+
+            chartTypeText.innerText =
+                "😊 Emoji Mood Chart";
+
+            return;
+
+        }
+
+        // ================= NORMAL CHART =================
+
+        emojiChart.style.display = "none";
+
+        chartCanvas.style.display = "block";
+
+        // ================= CHANGE TEXT =================
 
         if (chartType === "line") {
 
@@ -187,11 +301,25 @@ chartCards.forEach(function(card) {
 
         }
 
-        // Destroy old chart
+        if (chartType === "doughnut") {
+
+            chartTypeText.innerText =
+                "🍩 Doughnut Chart";
+
+        }
+
+        if (chartType === "radar") {
+
+            chartTypeText.innerText =
+                "🕸 Radar Chart";
+
+        }
+
+        // ================= DESTROY OLD CHART =================
 
         moodChart.destroy();
 
-        // Create new chart
+        // ================= CREATE NEW CHART =================
 
         moodChart =
             new Chart(chartCanvas, {

@@ -31,11 +31,31 @@ def homepage():
 
     highest_streak = get_highest_streak()
 
+    # ================= MOOD DATA =================
+
+    # Example mood data
+    # 示例 mood 数据
+
+    happy_count = 0
+
+    sad_count = 0
+
+    angry_count = 0
+
     # Send data into HTML
     # 把数据传送去 HTML
 
     return render_template(
+
         'homepage.html',
+
         streak=streak,
-        highest_streak=highest_streak
+
+        highest_streak=highest_streak,
+
+        happy_count=happy_count,
+
+        sad_count=sad_count,
+
+        angry_count=angry_count
     )
