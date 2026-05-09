@@ -6,34 +6,32 @@
 
         <h2>📊 Summary Settings</h2>
 
-        <!-- ================= TYPE ================= -->
+        <!-- ================= DATA TYPE ================= -->
+
         <div class="setting-section">
 
-            <h3>Summary Type</h3>
+            <h3>Chart Type</h3>
 
             <div class="mode-options">
 
-                <div class="mode-card selected">
+                <div class="mode-card selected"
+                     data-chart="line">
 
                     <h4>📈 Line Chart</h4>
 
-                    <p>Track mood over time</p>
-
                 </div>
 
-                <div class="mode-card">
+                <div class="mode-card"
+                     data-chart="bar">
 
                     <h4>📊 Bar Chart</h4>
 
-                    <p>Compare mood values</p>
-
                 </div>
 
-                <div class="mode-card">
+                <div class="mode-card"
+                     data-chart="pie">
 
                     <h4>🥧 Pie Chart</h4>
-
-                    <p>Show emotional ratio</p>
 
                 </div>
 
@@ -44,25 +42,29 @@
         <hr>
 
         <!-- ================= FREQUENCY ================= -->
+
         <div class="setting-section">
 
             <h3>Frequency</h3>
 
             <div class="mode-options">
 
-                <div class="mode-card selected">
+                <div class="mode-card selected"
+                     data-frequency="week">
 
                     <h4>📅 Week</h4>
 
                 </div>
 
-                <div class="mode-card">
+                <div class="mode-card"
+                     data-frequency="month">
 
                     <h4>🗓 Month</h4>
 
                 </div>
 
-                <div class="mode-card">
+                <div class="mode-card"
+                     data-frequency="year">
 
                     <h4>📆 Year</h4>
 
@@ -75,9 +77,11 @@
         <hr>
 
         <!-- ================= HIDE ================= -->
+
         <div class="setting-section">
 
-            <div class="notification-card">
+            <div class="notification-card"
+                 id="hide-summary-btn">
 
                 🚫 Hide Summary Widget
 
