@@ -163,6 +163,14 @@ const chartCards =
 const chartTypeText =
     document.querySelector("#chart-type-text");
 
+const wordCards =
+    document.querySelectorAll("[data-word]");
+
+const wordFrequencyCards =
+    document.querySelectorAll("[data-word-frequency]");
+
+const wordSummaryText =
+    document.querySelector("#word-summary-text");
 
 // ================= OPEN POPUP =================
 
@@ -359,6 +367,93 @@ chartCards.forEach(function(card) {
                 }
 
             });
+
+    });
+
+});
+
+// ================= WORD SUMMARY TYPE =================
+
+wordCards.forEach(function(card) {
+
+    card.addEventListener("click", function() {
+
+        wordCards.forEach(function(item) {
+
+            item.classList.remove("selected");
+
+        });
+
+        card.classList.add("selected");
+
+        const wordType =
+            card.dataset.word;
+
+        // ================= AI FEEDBACK =================
+
+        if (wordType === "ai") {
+
+            wordSummaryText.innerText =
+
+                "You seemed calmer this week and " +
+                "stress levels were reduced.";
+
+        }
+
+        // ================= WORD SUMMARY =================
+
+        if (wordType === "summary") {
+
+            wordSummaryText.innerText =
+
+                "Mostly happy emotions were recorded.";
+
+        }
+
+    });
+
+});
+
+// ================= WORD FREQUENCY =================
+
+wordFrequencyCards.forEach(function(card) {
+
+    card.addEventListener("click", function() {
+
+        wordFrequencyCards.forEach(function(item) {
+
+            item.classList.remove("selected");
+
+        });
+
+        card.classList.add("selected");
+
+        const frequency =
+            card.dataset.wordFrequency;
+
+        // ================= DAY =================
+
+        if (frequency === "day") {
+
+            console.log("Day summary");
+
+        }
+
+        // ================= WEEK =================
+
+        if (frequency === "week") {
+
+            console.log("Week summary");
+
+        }
+
+        // ================= MONTH =================
+
+        if (frequency === "month") {
+
+            console.log("Month summary");
+
+        }
 
     });
 

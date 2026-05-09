@@ -1,13 +1,13 @@
 /* ================= CHART ================= */
 
 #mood-chart {
-    height: 150px;
+    max-height: 250px;
 }
 
 /* ================= SUMMARY PREVIEW ================= */
 
 .summary-preview {
-    height: 300px;
+    padding-bottom: 20px;
 }
 
 /* ================= EMOJI CHART ================= */
