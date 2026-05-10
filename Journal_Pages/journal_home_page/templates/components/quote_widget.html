@@ -3,9 +3,13 @@
 <div class="widget"
      id="quote-widget">
 
+    <!-- ================= HEADER ================= -->
+
     <div class="widget-header">
 
-        <h2>💬 Quote</h2>
+        <h2>
+            💬 Quote
+        </h2>
 
         <button class="quote-setting-btn">
             ⚙️
@@ -15,11 +19,7 @@
 
     <!-- ================= QUOTE TEXT ================= -->
 
-    <h3 id="quote-text">
-
-        "Keep going even when it feels hard."
-
-    </h3>
+    <h3 id="quote-text"></h3>
 
     <!-- ================= SAVE BUTTON ================= -->
 
@@ -28,6 +28,63 @@
         <button id="save-quote-btn">
 
             ⭐ Save Quote
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= QUOTE POPUP ================= -->
+
+<div id="quote-popup-overlay">
+
+    <div id="quote-popup">
+
+        <!-- ================= TITLE ================= -->
+
+        <h2>
+
+            Quote Setting
+
+        </h2>
+
+        <!-- ================= CATEGORY BUTTONS ================= -->
+
+        <button onclick="showRandomQuote('Motivation')">
+
+            Motivation
+
+        </button>
+
+        <button onclick="showRandomQuote('Calm')">
+
+            Calm
+
+        </button>
+
+        <button onclick="showRandomQuote('Self-love')">
+
+            Self-love
+
+        </button>
+
+        <button onclick="showRandomQuote('Study')">
+
+            Study
+
+        </button>
+
+        <button onclick="showRandomQuote('Humor')">
+
+            Humor
+
+        </button>
+
+        <button onclick="showRandomQuote('Life Reflection')">
+
+            Life Reflection
 
         </button>
 
