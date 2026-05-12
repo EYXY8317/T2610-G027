@@ -98,7 +98,7 @@ function deleteTask(listType, id) {
     renderToday(); 
 }
 
-// Render Tasks
+// Better Task Cards (Render task）
 function renderTasks(listType) {
     let taskList = document.getElementById(listType + "TaskList");
     let emptyMsg = document.getElementById(listType + "EmptyMsg");
@@ -109,29 +109,32 @@ function renderTasks(listType) {
 
     let activeTasks = taskData[listType].filter(t => t.status === "active");
 
-    // show / hide empty message
     emptyMsg.style.display = activeTasks.length === 0 ? "block" : "none";
 
     activeTasks.forEach(task => {
-        let div = document.createElement("div");
-        div.className = "task-item";
+        const card = document.createElement("div");
+        card.className = `task-card ${task.status === "completed" ? "completed" : ""}`;
+        card.dataset.id = task.id;
+        card.dataset.list = listType;
 
-        div.innerHTML = `
-            <span>
-                <input type="checkbox" onchange="completeTask('${listType}', ${task.id})">
-                ${task.text}
-            </span>
+        const checked = task.status === "completed" ? "checked" : "";
 
-            <span>
-               📅 ${task.date || "No date"} 
-               ⏰ ${task.startTime ? `${task.startTime}` : ""}${task.endTime ? ` - ${task.endTime}` : ""}
-               ${getPriorityDot(task.priority)}
-               ${task.tag ? `#${task.tag}` : ""}
-               <button onclick="deleteTask('${listType}', ${task.id})">🗑</button>
-            </span>
+        card.innerHTML = `
+            <input type="checkbox" class="task-checkbox" ${checked} 
+                   onchange="toggleComplete('${listType}', ${task.id}, this)">
+
+            <div class="task-info">
+                <div class="task-title">${task.text}</div>
+                <div class="task-date">📅 ${task.date || "No Date"}</div>
+            </div>
+
+            <div class="task-actions">
+                <button onclick="deleteTask('${listType}', ${task.id}); event.stopImmediatePropagation();">🗑</button>
+                <button onclick="showTaskDetail('${listType}', ${task.id}); event.stopImmediatePropagation();">▼</button>
+            </div>
         `;
 
-        taskList.appendChild(div);
+        taskList.appendChild(card);
     });
 }
 
