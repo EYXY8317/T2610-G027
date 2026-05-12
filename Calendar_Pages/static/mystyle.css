@@ -258,3 +258,52 @@
 .day {
     position: relative;
 }
+
+/* Better Task Cards */
+.task-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    background: white;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-card.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+.task-info {
+    flex: 1;
+}
+
+.task-title {
+    font-size: 16px;
+}
+
+.task-date {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.task-actions button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
