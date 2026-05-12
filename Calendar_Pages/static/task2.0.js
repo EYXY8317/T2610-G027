@@ -398,3 +398,49 @@ deleteTask = function(listType, id) {
     saveTasks();
     if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
 };
+
+// Toggle complete status
+function toggleComplete(listType, id, checkbox) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+
+    task.status = checkbox.checked ? "completed" : "active";
+
+    renderTasks(listType);
+    renderToday();
+    renderCompleted();
+    saveTasks();
+}
+
+// Show Detail Panel (Only when click ▼)
+let currentTaskListType = "";
+let currentTaskId = null;
+
+function showTaskDetail(listType, id) {
+    currentTaskListType = listType;
+    currentTaskId = id;
+
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+
+    document.getElementById("panelTitle").textContent = task.text;
+    document.getElementById("panelDate").textContent = task.date || "Not Set";
+    document.getElementById("panelReminder").textContent = task.reminder || "Not Set";
+    document.getElementById("panelRepeat").textContent = "No Repeat";
+    document.getElementById("panelPriority").textContent = task.priority || "None";
+    document.getElementById("panelTag").textContent = task.tag || "None";
+
+    // Open the right panel
+    document.getElementById("taskDetailPanel").style.right = "0";
+}
+
+function closeDetailPanel() {
+    document.getElementById("taskDetailPanel").style.right = "-400px";
+}
+
+function deleteCurrentTask() {
+    if (confirm("Delete this task?")) {
+        deleteTask(currentTaskListType, currentTaskId);
+        closeDetailPanel();
+    }
+}
