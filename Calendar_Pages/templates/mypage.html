@@ -365,39 +365,62 @@
 
 </div>
 
-<!-- Task Detail Panel (Right Sidebar) -->
-<div id="taskDetailPanel" style="position: fixed; top: 0; right: -400px; width: 380px; height: 100vh; background: white; box-shadow: -4px 0 15px rgba(0,0,0,0.2); transition: right 0.3s; z-index: 999; padding: 20px; overflow-y: auto;">
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-        <h3 id="panelTitle" style="margin: 0;">Task Title</h3>
-        <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; color: #999;">✕</button>
+<!-- Editable Task Detail Panel -->
+<div id="taskDetailPanel" style="position: fixed; top: 0; right: -420px; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.2); transition: right 0.3s; z-index: 1000; padding: 20px; overflow-y: auto;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <input type="text" id="panelTitleInput" style="font-size: 22px; font-weight: bold; width: 100%; border: none; border-bottom: 2px solid #4a90e2; outline: none; padding: 5px 0;">
+        <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; margin-left: 15px;">✕</button>
     </div>
-    
-    <div style="line-height: 2.2;">
-        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <span>📅 Due Date</span>
-            <span id="panelDate">-</span>
+
+    <!-- Description -->
+    <div style="margin-bottom: 20px;">
+        <label style="font-weight: bold; display: block; margin-bottom: 6px;">Description / Notes</label>
+        <textarea id="panelDescription" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical;"></textarea>
+    </div>
+
+    <!-- Due Date -->
+    <div style="margin-bottom: 16px;">
+        <label>📅 Due Date</label><br>
+        <input type="date" id="panelDateInput" style="width: 100%; padding: 8px; margin-top: 6px;">
+    </div>
+
+    <!-- Time Range -->
+    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+        <div style="flex: 1;">
+            <label>Start Time</label><br>
+            <input type="time" id="panelStartTime" style="width: 100%; padding: 8px; margin-top: 6px;">
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <span>🔔 Reminder</span>
-            <span id="panelReminder">Not Set</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <span>🔄 Repeat</span>
-            <span id="panelRepeat">No Repeat</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <span>⭐ Priority</span>
-            <span id="panelPriority">-</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
-            <span>🏷️ Tag</span>
-            <span id="panelTag">None</span>
+        <div style="flex: 1;">
+            <label>End Time</label><br>
+            <input type="time" id="panelEndTime" style="width: 100%; padding: 8px; margin-top: 6px;">
         </div>
     </div>
 
-    <div style="margin-top: 40px;">
-        <button onclick="deleteCurrentTask()" style="width: 100%; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+    <!-- Priority (颜色图标版) -->
+    <div style="margin-bottom: 16px;">
+        <label>⭐ Priority</label><br>
+        <select id="panelPrioritySelect" style="width: 100%; padding: 10px; margin-top: 6px; font-size: 16px;">
+            <option value="">None</option>
+            <option value="red">🔴 High (Must)</option>
+            <option value="orange">🟠 Medium (Should)</option>
+            <option value="blue">🔵 Low (Nice)</option>
+            <option value="gray">⚫ No Priority</option>
+        </select>
+    </div>
+
+    <!-- Tag -->
+    <div style="margin-bottom: 20px;">
+        <label>🏷️ Tag</label><br>
+        <input type="text" id="panelTagInput" style="width: 100%; padding: 8px; margin-top: 6px;" placeholder="e.g. work, study">
+    </div>
+
+    <!-- Buttons -->
+    <div style="display: flex; gap: 10px; margin-top: 30px;">
+        <button onclick="saveTaskChanges()" style="flex: 1; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+            💾 Save Changes
+        </button>
+        <button onclick="deleteCurrentTask()" style="flex: 1; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
             🗑 Delete Task
         </button>
     </div>
