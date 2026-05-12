@@ -365,6 +365,44 @@
 
 </div>
 
+<!-- Task Detail Panel (Right Sidebar) -->
+<div id="taskDetailPanel" style="position: fixed; top: 0; right: -400px; width: 380px; height: 100vh; background: white; box-shadow: -4px 0 15px rgba(0,0,0,0.2); transition: right 0.3s; z-index: 999; padding: 20px; overflow-y: auto;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+        <h3 id="panelTitle" style="margin: 0;">Task Title</h3>
+        <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; color: #999;">✕</button>
+    </div>
+    
+    <div style="line-height: 2.2;">
+        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <span>📅 Due Date</span>
+            <span id="panelDate">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <span>🔔 Reminder</span>
+            <span id="panelReminder">Not Set</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <span>🔄 Repeat</span>
+            <span id="panelRepeat">No Repeat</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <span>⭐ Priority</span>
+            <span id="panelPriority">-</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0;">
+            <span>🏷️ Tag</span>
+            <span id="panelTag">None</span>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <button onclick="deleteCurrentTask()" style="width: 100%; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+            🗑 Delete Task
+        </button>
+    </div>
+</div>
+
 <!-- JS FILE -->
 <script src="/calendar_static/task2.0.js"></script>
 <script src="/calendar_static/calendar2.0.js"></script>
