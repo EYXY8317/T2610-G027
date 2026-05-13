@@ -2,12 +2,6 @@
 // PAGE SWITCH (Sidebar Navigation)
 // ===============================
 function showPage(pageId, element) {
-    // === 新增：关闭所有可能打开的弹窗 ===
-    closeDayModal();
-    closeCalendar();
-    closeExtra();
-    closeDetailPanel();
-
     // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
@@ -505,15 +499,12 @@ function showTaskDetail(listType, id) {
 
 function closeDetailPanel() {
     const panel = document.getElementById("taskDetailPanel");
-    if (!panel) return;
-
     panel.style.right = "-450px";
-    panel.style.opacity = "0";
-
-    // 等待过渡动画结束后再彻底隐藏，防止残影
+    // 延迟隐藏，防止闪烁
     setTimeout(() => {
         panel.style.visibility = "hidden";
-    }, 400);   // 比 transition 的 0.35s 稍长一点
+        panel.style.opacity = "0";
+    }, 350);
 }
 
 // Save Changes from Detail Panel 
