@@ -535,3 +535,14 @@ function deleteCurrentTask() {
         closeDetailPanel();
     }
 }
+
+// Restore from Completed
+function restoreFromCompleted(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+    task.status = "active";
+    renderCompleted();
+    renderTasks(listType);
+    renderToday();
+    saveTasks();
+}
