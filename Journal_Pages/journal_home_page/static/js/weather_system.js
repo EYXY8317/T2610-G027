@@ -73,58 +73,273 @@ fetch("/weather_forecast")
 
     console.log(data);
 
-    // ================= HOURLY CONTAINER =================
+    // ================= TOMORROW WEATHER =================
 
-    const hourlyContainer =
-        document.querySelector("#hourly-weather");
+    const tomorrowContainer =
+        document.querySelector("#tomorrow-weather");
 
-    // ================= LOOP FORECAST =================
+    const tomorrow =
+        data.list[8];
 
-    for(let i = 0; i < 5; i++) {
+    const tomorrowTemp =
+        Math.round(tomorrow.main.temp);
 
-        const item =
+    const tomorrowWeather =
+        tomorrow.weather[0].main;
+
+    const tomorrowIcon =
+        tomorrow.weather[0].icon;
+
+    tomorrowContainer.innerHTML = `
+
+        <div class="tomorrow-card">
+
+            <div class="tomorrow-left">
+
+                <img class="tomorrow-icon"
+                     src="https://openweathermap.org/img/wn/${tomorrowIcon}@2x.png">
+
+                <div>
+
+                    <h3>
+
+                        Tomorrow
+
+                    </h3>
+
+                    <p>
+
+                        ${tomorrowWeather}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+            <p class="tomorrow-temp">
+
+                ${tomorrowTemp}°C
+
+            </p>
+
+        </div>
+
+    `;
+
+    // ================= WEEKLY WEATHER =================
+
+    const weeklyContainer =
+        document.querySelector("#weekly-weather");
+
+    for(let i = 0; i < data.list.length; i += 8) {
+
+        const dayData =
             data.list[i];
 
-        // ================= TIME =================
+        // ================= RAW DATE =================
 
-        const time =
-            item.dt_txt.split(" ")[1];
+        const rawDate =
+            dayData.dt_txt.split(" ")[0];
 
-        // ================= TEMP =================
+        // ================= DATE OBJECT =================
 
-        const temp =
-            Math.round(item.main.temp);
+        const dateObject =
+            new Date(rawDate);
 
-        // ================= HOURLY ICON =================
+        // ================= FORMAT DAY =================
 
-        const hourlyIcon =
-            item.weather[0].icon;
+        const date =
+            dateObject.toLocaleDateString("en-US", {
+
+                weekday: "short"
+
+            });
+
+        // ================= MAX TEMP =================
+
+        const maxTemp =
+            Math.round(dayData.main.temp_max);
+
+        // ================= MIN TEMP =================
+
+        const minTemp =
+            Math.round(dayData.main.temp_min);
+
+        // ================= ICON =================
+
+        const weeklyIcon =
+            dayData.weather[0].icon;
 
         // ================= ADD HTML =================
 
-        hourlyContainer.innerHTML += `
+        weeklyContainer.innerHTML += `
 
-            <div class="hourly-item">
+            <div class="weekly-item">
 
-                <p class="hourly-time">
+                <p>
 
-                    ${time}
-
-                </p>
-
-                <img class="hourly-icon"
-                     src="https://openweathermap.org/img/wn/${hourlyIcon}.png">
-
-                <p class="hourly-temp">
-
-                    ${temp}°C
+                    ${date}
 
                 </p>
+
+                <img class="weekly-icon"
+                     src="https://openweathermap.org/img/wn/${weeklyIcon}.png">
+
+                <div class="weekly-temp">
+
+                    <p class="max-temp">
+
+                        ${maxTemp}°
+
+                    </p>
+
+                    <p class="min-temp">
+
+                        ${minTemp}°
+
+                    </p>
+
+                </div>
 
             </div>
 
         `;
 
     }
+
+    // ================= CHART DATA =================
+
+    const labels = [];
+
+    const temperatures = [];
+
+    for(let i = 0; i < 8; i++) {
+
+        const item =
+            data.list[i];
+
+        const time =
+            item.dt_txt.split(" ")[1];
+
+        const temp =
+            Math.round(item.main.temp);
+
+        labels.push(time);
+
+        temperatures.push(temp);
+
+    }
+
+    // ================= WEATHER CHART =================
+
+    const ctx =
+        document.querySelector("#weather-chart");
+
+    new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+
+                label: "Temperature",
+
+                data: temperatures,
+
+                borderColor: "#111111",
+
+                backgroundColor: "rgba(255,200,120,0.18)",
+
+                pointBackgroundColor: "#111111",
+
+                pointBorderColor: "#ffffff",
+
+                pointBorderWidth: 3,
+
+                pointRadius: 5,
+
+                borderWidth: 3,
+
+                tension: 0.4,
+
+                fill: true
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    display: false
+
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    display: false,
+
+                    grid: {
+
+                        display: false
+
+                    },
+
+                    border: {
+
+                        display: false
+
+                    }
+
+                },
+
+                x: {
+
+                    grid: {
+
+                        display: false
+
+                    },
+
+                    border: {
+
+                        display: false
+
+                    },
+
+                    ticks: {
+
+                        color: "gray",
+
+                        font: {
+
+                            size: 14
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
 
 });
