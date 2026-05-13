@@ -1,17 +1,22 @@
 <hr>
+
 <a href="/view">Finance</a> |
 <a href="/calendar">Calendar</a> |
 <a href="/diary">Diary</a> |
 <a href="/logout">Logout</a>
+
 <hr>
 
 <h1>User Profile</h1>
 
+<!-- PROFILE PICTURE -->
+
 {% if user.profile_picture %}
 
 <img
-    src="/profile_static/profile_pictures/{{ user.profile_picture }}"    
+    src="/profile_static/profile_pictures/{{ user.profile_picture }}"
     width="150"
+    style="border-radius: 50%; object-fit: cover;"
 >
 
 {% else %}
@@ -19,6 +24,7 @@
 <img
     src="https://via.placeholder.com/150"
     width="150"
+    style="border-radius: 50%;"
 >
 
 {% endif %}
@@ -29,7 +35,17 @@
 <h2>Email</h2>
 <p>{{ user.email }}</p>
 
-<form method="POST" action="/upload_profile_picture" enctype="multipart/form-data">
+<hr>
+
+<!-- PROFILE PICTURE -->
+
+<h2>Upload Profile Picture</h2>
+
+<form
+    method="POST"
+    action="/upload_profile_picture"
+    enctype="multipart/form-data"
+>
 
     <input type="file" name="profile_picture">
 
@@ -39,6 +55,51 @@
 
 </form>
 
+<hr>
+
+<!-- WALLPAPER -->
+
+<h2>Customize Wallpaper</h2>
+
+{% if user.wallpaper %}
+
+<p>Current Wallpaper:</p>
+
+<img
+    src="/profile_static/wallpapers/{{ user.wallpaper }}"
+    width="300"
+    style="
+        border-radius: 12px;
+        border: 1px solid #ccc;
+    "
+>
+
+{% else %}
+
+<p>No wallpaper selected</p>
+
+{% endif %}
+
+<br><br>
+
+<form
+    method="POST"
+    action="/upload_wallpaper"
+    enctype="multipart/form-data"
+>
+
+    <input type="file" name="wallpaper">
+
+    <button type="submit">
+        Upload Wallpaper
+    </button>
+
+</form>
+
+<hr>
+
 <a href="/verify_profile">
+
     <button>Edit Profile</button>
+
 </a>
