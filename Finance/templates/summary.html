@@ -3,137 +3,239 @@
 <head>
     <title>Summary</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
 
-    <!-- Chart -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<h1>📊 Financial Summary</h1>
-
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
-
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a>
-<hr>
-
-{% if income == 0 and expense == 0 %}
-
-<div class="summary-card">
-    <h2>📭 No Summary Yet</h2>
-    <p>You haven’t added any financial records this month.</p>
-    <a href="/add"><button>Add Your First Record</button></a>
+<div class="top-nav">
+    <a href="/view">Finance</a> |
+    <a href="/calendar">Calendar</a> |
+    <a href="/diary">Diary</a> |
+    <a href="/profile">Profile</a> |
+    <a href="/logout">Logout</a>
 </div>
 
-{% else %}
+<hr>
 
-<div class="summary-card">
+<div class="sub-nav">
+    <a href="/view">View</a> |
+    <a href="/add">Add</a> |
+    <a href="/summary">Summary</a> |
+    <a href="/budget">Budget</a>
+</div>
+
+<hr>
+
+<div class="summary-wrapper">
+
+    <h1>
+    📊 Financial Summary — 
+    {{ selected_month }}/{{ selected_year }}
+    </h1>
+
+    <!-- FILTER -->
+    <div class="summary-card">
+
+        <form method="GET" class="filter-form">
+
+            <div>
+                <label>Month</label><br>
+
+                <select name="month">
+                    <option value="01" {% if selected_month == "01" %}selected{% endif %}>January</option>
+                    <option value="02" {% if selected_month == "02" %}selected{% endif %}>February</option>
+                    <option value="03" {% if selected_month == "03" %}selected{% endif %}>March</option>
+                    <option value="04" {% if selected_month == "04" %}selected{% endif %}>April</option>
+                    <option value="05" {% if selected_month == "05" %}selected{% endif %}>May</option>
+                    <option value="06" {% if selected_month == "06" %}selected{% endif %}>June</option>
+                    <option value="07" {% if selected_month == "07" %}selected{% endif %}>July</option>
+                    <option value="08" {% if selected_month == "08" %}selected{% endif %}>August</option>
+                    <option value="09" {% if selected_month == "09" %}selected{% endif %}>September</option>
+                    <option value="10" {% if selected_month == "10" %}selected{% endif %}>October</option>
+                    <option value="11" {% if selected_month == "11" %}selected{% endif %}>November</option>
+                    <option value="12" {% if selected_month == "12" %}selected{% endif %}>December</option>
+                </select>
+            </div>
+
+            <div>
+                <label>Year</label><br>
+
+                <select name="year">
+                    {% for y in range(2024, 2031) %}
+                    <option value="{{ y }}"
+                    {% if selected_year == y|string %}selected{% endif %}>
+                        {{ y }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">View</button>
+
+        </form>
+
+    </div>
+
+    {% if income == 0 and expense == 0 %}
+
+    <div class="summary-card empty-card">
+        <h2>📭 No Summary Yet</h2>
+        <p>You haven’t added any financial records for this period.</p>
+
+        <a href="/add">
+            <button>Add Your First Record</button>
+        </a>
+    </div>
+
+    {% else %}
 
     <!-- OVERVIEW -->
-    <h2>📊 Monthly Overview</h2>
+    <div class="summary-grid">
 
-    <h1>RM {{ "%.2f"|format(balance) }}</h1>
+        <div class="summary-card stat-card">
+            <h3>Balance</h3>
+            <h1>RM {{ "%.2f"|format(balance) }}</h1>
 
-    {% if balance >= 0 %}
-        <p style="color:green;">✔ Positive Balance</p>
-    {% else %}
-        <p style="color:red;">❌ Negative Balance</p>
-    {% endif %}
+            {% if balance >= 0 %}
+                <p class="positive">✔ Positive Balance</p>
+            {% else %}
+                <p class="negative">❌ Negative Balance</p>
+            {% endif %}
+        </div>
 
-    <p><strong>Income:</strong> RM {{ "%.2f"|format(income) }}</p>
-    <p><strong>Expense:</strong> RM {{ "%.2f"|format(expense) }}</p>
+        <div class="summary-card stat-card">
+            <h3>Income</h3>
+            <h2 class="income-text">
+                RM {{ "%.2f"|format(income) }}
+            </h2>
+        </div>
 
-    <p style="font-style:italic;">{{ comparison }}</p>
+        <div class="summary-card stat-card">
+            <h3>Expense</h3>
+            <h2 class="expense-text">
+                RM {{ "%.2f"|format(expense) }}
+            </h2>
+        </div>
 
-    <hr>
+        <div class="summary-card stat-card">
+            <h3>Savings</h3>
+            <h2 class="saving-text">
+                RM {{ "%.2f"|format(saving) }}
+            </h2>
+        </div>
 
-    <hr>
+    </div>
 
-    <h2>📅 Yearly Overview</h2>
+    <!-- YEARLY -->
+    <div class="summary-card">
 
-    <p>
-        <strong>Yearly Income:</strong>
-        RM {{ "%.2f"|format(yearly_income) }}
-    </p>
+        <h2>
+        📅 {{ selected_year }} Yearly Overview
+        </h2>
 
-    <p>
-        <strong>Yearly Expense:</strong>
-        RM {{ "%.2f"|format(yearly_expense) }}
-    </p>
+        <div class="year-grid">
 
-    <p>
-        <strong>Yearly Balance:</strong>
-        RM {{ "%.2f"|format(yearly_balance) }}
-    </p>
+            <div>
+                <p><strong>Yearly Income</strong></p>
+                <h3>
+                    RM {{ "%.2f"|format(yearly_income) }}
+                </h3>
+            </div>
 
-        <!-- SPENDING -->
+            <div>
+                <p><strong>Yearly Expense</strong></p>
+                <h3>
+                    RM {{ "%.2f"|format(yearly_expense) }}
+                </h3>
+            </div>
+
+            <div>
+                <p><strong>Yearly Balance</strong></p>
+                <h3>
+                    RM {{ "%.2f"|format(yearly_balance) }}
+                </h3>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SPENDING -->
+    <div class="summary-card">
+
         <h2>📈 Spending Behavior</h2>
 
         <p>
             <strong>Daily Average:</strong>
             RM {{ "%.2f"|format(daily_avg) }}
-
-            {% if daily_avg < 5 %}
-                <span style="color:green;">(Low 👍)</span>
-            {% elif daily_avg < 20 %}
-                <span style="color:orange;">(Moderate)</span>
-            {% else %}
-                <span style="color:red;">(High ⚠️)</span>
-            {% endif %}
         </p>
 
-    <h3>Top Categories</h3>
+        <p class="comparison-text">
+            {{ comparison }}
+        </p>
 
-    {% if top_categories %}
-        <ol>
-            {% for cat, amt, percent in top_categories %}
-                <li>{{ cat }} — {{ "%.0f"|format(percent) }}%</li>
-            {% endfor %}
-        </ol>
+        <h3>Top Categories</h3>
 
-        <canvas id="pieChart" width="300" height="300"></canvas>
-    {% else %}
-        <p>No category data</p>
-    {% endif %}
+        {% if top_categories %}
 
-    <h3>🧠 Insight</h3>
-    <p>{{ insight }}</p>
+            <ol>
+                {% for cat, amt, percent in top_categories %}
+                    <li>
+                        {{ cat }} —
+                        {{ "%.0f"|format(percent) }}%
+                    </li>
+                {% endfor %}
+            </ol>
 
-    <hr>
+            <div class="chart-container">
+                <canvas id="pieChart"></canvas>
+            </div>
+
+        {% else %}
+
+            <p>No category data</p>
+
+        {% endif %}
+
+        <div class="insight-box">
+            <h3>🧠 Insight</h3>
+            <p>{{ insight }}</p>
+        </div>
+
+    </div>
 
     <!-- BUDGET -->
-    <h2>💸 Budget Tracking</h2>
+    <div class="summary-card">
 
-    {% if budget_usage %}
-        <ul style="list-style:none; padding-left:0;">
+        <h2>💸 Budget Tracking</h2>
 
-        {% for b in budget_usage %}
+        {% if budget_usage %}
 
-            <li style="margin-bottom:15px;">
+            {% for b in budget_usage %}
 
-                <strong>{{ b.category }}</strong><br>
+            <div class="budget-item">
 
-                RM {{ "%.2f"|format(b.spent) }} / RM {{ "%.2f"|format(b.limit) }}
+                <div class="budget-header">
+                    <strong>{{ b.category }}</strong>
+
+                    <span>
+                        RM {{ "%.2f"|format(b.spent) }} /
+                        RM {{ "%.2f"|format(b.limit) }}
+                    </span>
+                </div>
 
                 <div class="progress-container">
                     <div class="progress-bar {{ b.status }}"
-                         style="--width: {{ b.display_percent }}%;">
+                    style="--width: {{ b.display_percent }}%;">
                     </div>
                 </div>
 
                 <small>
+
                     {{ "%.0f"|format(b.percent) }}%
 
                     {% if b.status == "over" %}
@@ -141,79 +243,94 @@
                     {% elif b.status == "warning" %}
                         ⚠ Almost full
                     {% else %}
-                        ✔ OK
+                        ✔ Healthy
                     {% endif %}
+
+                    <br>
+
+                    {% if b.remaining < 0 %}
+                        <span class="negative">
+                            Remaining:
+                            RM {{ "%.2f"|format(b.remaining) }}
+                        </span>
+                    {% else %}
+                        <span class="positive">
+                            Remaining:
+                            RM {{ "%.2f"|format(b.remaining) }}
+                        </span>
+                    {% endif %}
+
                 </small>
 
-            </li>
+            </div>
 
-        {% endfor %}
-        </ul>
+            {% endfor %}
 
-    {% else %}
-        <p>No budgets set yet</p>
+        {% else %}
+
+            <p>No budgets created yet</p>
+
+        {% endif %}
+
+    </div>
+
     {% endif %}
 
 </div>
 
-{% endif %}
-
 <!-- CHART -->
 {% if top_categories %}
+
 <script id="chart-data" type="application/json">
-    {{ top_categories | tojson }}
+{{ top_categories | tojson }}
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+const rawData = JSON.parse(
+    document.getElementById("chart-data").textContent
+);
 
-    let rawData = [];
+const categories = rawData.map(x => x[0]);
+const amounts = rawData.map(x => x[1]);
 
-    try {
-        rawData = JSON.parse(
-            document.getElementById("chart-data").textContent
-        );
-    } catch {
-        return;
-    }
+const total = amounts.reduce((a, b) => a + b, 0);
 
-    if (!rawData.length) return;
+new Chart(document.getElementById("pieChart"), {
+    type: 'doughnut',
+    data: {
+        labels: categories,
+        datasets: [{
+            data: amounts,
+            backgroundColor: [
+                '#6366F1',
+                '#10B981',
+                '#F59E0B',
+                '#EF4444',
+                '#8B5CF6'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const value = context.raw;
+                        const percent = ((value / total) * 100).toFixed(1);
 
-    const categories = rawData.map(x => x[0]);
-    const amounts = rawData.map(x => x[1]);
-
-    const total = amounts.reduce((a, b) => a + b, 0);
-
-    new Chart(document.getElementById("pieChart"), {
-        type: 'doughnut',
-        data: {
-            labels: categories,
-            datasets: [{
-                data: amounts,
-                backgroundColor: [
-                    '#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6'
-                ]
-            }]
-        },
-        options: {
-            cutout: '60%',
-            plugins: {
-                legend: { position: 'bottom' },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const value = context.raw;
-                            const percent = ((value / total) * 100).toFixed(1);
-                            return context.label + ": RM" + value + " (" + percent + "%)";
-                        }
+                        return `${context.label}: RM${value} (${percent}%)`;
                     }
                 }
             }
         }
-    });
-
+    }
 });
 </script>
+
 {% endif %}
 
 </body>
