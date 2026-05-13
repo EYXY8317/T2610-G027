@@ -46,13 +46,33 @@
 
     <div id="dashboard">
 
-        {% include 'components/streak_widget.html' %}
+        <!-- ================= STREAK WIDGETS ================= -->
 
-        {% include 'components/summary_widget.html' %}
+        {% include 'components/streak_widget/current_streak.html' %}
+
+        {% include 'components/streak_widget/highest_streak.html' %}
+
+        {% include 'components/streak_widget/total_entries.html' %}
+
+        <!-- ================= SUMMARY WIDGETS ================= -->
+
+        {% include 'components/summary_widget/chart.html' %}
+
+        {% include 'components/summary_widget/ai_summary.html' %}
+
+        <!-- ================= QUOTE WIDGET ================= -->
 
         {% include 'components/quote_widget.html' %}
 
-        {% include 'components/weather_widget.html' %}
+        <!-- ================= WEATHER WIDGETS ================= -->
+
+        {% include 'components/weather_widget/today.html' %}
+
+        {% include 'components/weather_widget/tomorrow.html' %}
+
+        {% include 'components/weather_widget/weekly.html' %}
+
+        {% include 'components/weather_widget/hourly.html' %}
 
     </div>
 
