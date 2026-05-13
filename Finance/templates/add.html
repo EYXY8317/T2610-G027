@@ -1,27 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Add Record</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
 </head>
 
 <body>
 
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+<div class="topbar">
 
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a>
-<hr>
+    <div class="topbar-title">
+        ➕ Add Record
+    </div>
 
-<h1>Add Record</h1>
+    <div class="topbar-links">
+        <a href="/view">View</a>
+        <a href="/add" class="active-link">
+            Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals"></a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
 
 <form method="POST">
 

@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Set Budget</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
 </head>
 
 <body>
 
-<h1>Set Budget</h1>
+<div class="topbar">
 
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+    <div class="topbar-title">
+        💸 Budget Tracking
+    </div>
 
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a>
-<hr>
+    <div class="topbar-links">
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget" class="active-link">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
 
 <!-- ERROR -->
 {% if error %}

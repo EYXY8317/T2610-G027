@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Financial Records</title>
+    <head>
+
+    <title>Financial Record</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
 
     <!-- 🔥 BADGE STYLE -->
     <style>
@@ -32,24 +37,28 @@
 
 <body>
 
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+<div class="topbar">
 
-<div style="margin-left:20px;">
-    <a href="/view">View</a> |
-    <a href="/add">Add</a> |
-    <a href="/summary">Summary</a> |
-    <a href="/budget">Budget</a>
+    <div class="topbar-title">
+        💸 Financial Records
+    </div>
+
+    <div class="topbar-links">
+        <a href="/view" class="active-link">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals"></a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
 </div>
-
-<hr>
-
-<h1>Financial Records</h1>
 
 <p>Logged in as: {{ session.get("user") }}</p>
 
