@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Financial Goals</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+    <div class="topbar-title">
+        🎯 Financial Goals
+    </div>
+
+    <div class="topbar-links">
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals" class="active-link">
+            Goals
+        </a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
+
+<!-- CREATE GOAL -->
+<div class="summary-card">
+
+    <h2>Create Goal</h2>
+
+    <form method="POST">
+
+        <input
+            type="hidden"
+            name="action"
+            value="create"
+        >
+
+        <label>Goal Name:</label><br>
+
+        <input
+            type="text"
+            name="name"
+            required
+        >
+
+        <br><br>
+
+        <label>Goal Type:</label><br>
+
+        <select name="type" required>
+
+            <option value="">
+                -- Select Type --
+            </option>
+
+            <option value="short">
+                🎯 Short-Term
+            </option>
+
+            <option value="long">
+                🚀 Long-Term
+            </option>
+
+        </select>
+
+        <br><br>
+
+        <label>Target Amount (RM):</label><br>
+
+        <input
+            type="text"
+            id="amountInput"
+            name="target"
+            value="0.00"
+            readonly
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">
+            Create Goal
+        </button>
+
+    </form>
+
+</div>
+
+<!-- SHORT GOALS -->
+<div class="summary-card">
+
+    <h2>🎯 Short-Term Goals</h2>
+
+    {% if short_goals %}
+
+        {% for g in short_goals %}
+
+        <div class="budget-item">
+
+            <div class="budget-header">
+
+                <strong>{{ g.name }}</strong>
+
+                <span>
+                    RM {{ "%.2f"|format(g.saved) }}
+                    /
+                    RM {{ "%.2f"|format(g.target) }}
+                </span>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div
+                    class="progress-bar safe"
+                    style="--width: {{ g.display_percent }}%;"
+                ></div>
+
+            </div>
+
+            <small>
+
+                {{ "%.0f"|format(g.percent) }}%
+
+                {% if g.status == "Completed" %}
+                    🎉 Completed
+                {% else %}
+                    🚀 In Progress
+                {% endif %}
+
+                <br>
+
+                Remaining:
+                RM {{ "%.2f"|format(g.remaining) }}
+
+            </small>
+
+            <br><br>
+
+            <!-- ADD SAVINGS -->
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="save"
+                >
+
+                <input
+                    type="hidden"
+                    name="goal_name"
+                    value="{{ g.name }}"
+                >
+
+                <input
+                    type="number"
+                    name="amount"
+                    placeholder="Add savings"
+                    step="0.01"
+                    required
+                >
+
+                <button type="submit">
+                    Add Savings
+                </button>
+
+            </form>
+
+        </div>
+
+        <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No short-term goals yet</p>
+
+    {% endif %}
+
+</div>
+
+<!-- LONG GOALS -->
+<div class="summary-card">
+
+    <h2>🚀 Long-Term Goals</h2>
+
+    {% if long_goals %}
+
+        {% for g in long_goals %}
+
+        <div class="budget-item">
+
+            <div class="budget-header">
+
+                <strong>{{ g.name }}</strong>
+
+                <span>
+                    RM {{ "%.2f"|format(g.saved) }}
+                    /
+                    RM {{ "%.2f"|format(g.target) }}
+                </span>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div
+                    class="progress-bar warning"
+                    style="--width: {{ g.display_percent }}%;"
+                ></div>
+
+            </div>
+
+            <small>
+
+                {{ "%.0f"|format(g.percent) }}%
+
+                {% if g.status == "Completed" %}
+                    🎉 Completed
+                {% else %}
+                    🚀 In Progress
+                {% endif %}
+
+                <br>
+
+                Remaining:
+                RM {{ "%.2f"|format(g.remaining) }}
+
+            </small>
+
+            <br><br>
+
+            <!-- ADD SAVINGS -->
+            <form method="POST">
+
+                <input
+                    type="hidden"
+                    name="action"
+                    value="save"
+                >
+
+                <input
+                    type="hidden"
+                    name="goal_name"
+                    value="{{ g.name }}"
+                >
+
+                <input
+                    type="number"
+                    name="amount"
+                    placeholder="Add savings"
+                    step="0.01"
+                    required
+                >
+
+                <button type="submit">
+                    Add Savings
+                </button>
+
+            </form>
+
+        </div>
+
+        <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No long-term goals yet</p>
+
+    {% endif %}
+
+</div>
+
+<!-- TNG INPUT -->
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const amountInput =
+        document.getElementById("amountInput");
+
+    if (!amountInput) return;
+
+    let value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    ) || 0;
+
+    let active = false;
+
+    amountInput.addEventListener(
+        "focus",
+        () => active = true
+    );
+
+    amountInput.addEventListener(
+        "blur",
+        () => active = false
+    );
+
+    document.addEventListener("keydown", function(e) {
+
+        if (!active) return;
+
+        if (e.key >= "0" && e.key <= "9") {
+
+            value = value * 10 + parseInt(e.key);
+
+        }
+        else if (e.key === "Backspace") {
+
+            value = Math.floor(value / 10);
+
+        }
+        else {
+
+            return;
+
+        }
+
+        e.preventDefault();
+
+        amountInput.value =
+            (value / 100).toFixed(2);
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

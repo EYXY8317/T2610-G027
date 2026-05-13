@@ -181,3 +181,72 @@ body {
 .empty-card {
     text-align: center;
 }
+
+/* ===== TOPBAR ===== */
+
+.topbar {
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 18px 24px;
+
+    margin-bottom: 25px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+}
+
+.topbar-title {
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+.topbar-links,
+.topbar-actions {
+
+    display: flex;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.topbar a {
+
+    text-decoration: none;
+
+    color: #444;
+
+    font-weight: 600;
+
+    padding: 8px 14px;
+
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+.topbar a:hover {
+
+    background: #f1f5f9;
+}
+
+.active-link {
+
+    background: #6366F1;
+
+    color: white !important;
+}

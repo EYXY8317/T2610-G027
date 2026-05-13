@@ -11,21 +11,28 @@
 
 <body>
 
-<div class="top-nav">
-    <a href="/view">Finance</a> |
-    <a href="/calendar">Calendar</a> |
-    <a href="/diary">Diary</a> |
-    <a href="/profile">Profile</a> |
-    <a href="/logout">Logout</a>
-</div>
+<div class="topbar">
 
-<hr>
+    <div class="topbar-title">
+        📊 Financial Summary
+    </div>
 
-<div class="sub-nav">
-    <a href="/view">View</a> |
-    <a href="/add">Add</a> |
-    <a href="/summary">Summary</a> |
-    <a href="/budget">Budget</a>
+    <div class="topbar-links">
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary" class="active-link">
+            Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
 </div>
 
 <hr>
@@ -278,6 +285,69 @@
 
 </div>
 
+<!-- SHORT TERM -->
+<div class="summary-card">
+
+    <h2>🎯 Short-Term Goals</h2>
+
+    <p class="comparison-text">
+        Smaller goals for upcoming plans and purchases
+    </p>
+
+    {% if short_goals %}
+
+        {% for g in short_goals %}
+
+        <div class="budget-item">
+
+            <div class="budget-header">
+
+                <strong>{{ g.name }}</strong>
+
+                <span>
+                    RM {{ "%.2f"|format(g.saved) }} /
+                    RM {{ "%.2f"|format(g.target) }}
+                </span>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div class="progress-bar safe"
+                style="--width: {{ g.display_percent }}%;">
+                </div>
+
+            </div>
+
+            <small>
+
+                {{ "%.0f"|format(g.percent) }}%
+
+                {% if g.status == "Completed" %}
+                    🎉 Completed
+                {% else %}
+                    🚀 In Progress
+                {% endif %}
+
+                <br>
+
+                Remaining:
+                RM {{ "%.2f"|format(g.remaining) }}
+
+            </small>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No short-term goals yet</p>
+
+    {% endif %}
+
+</div>
+
 <!-- CHART -->
 {% if top_categories %}
 
@@ -335,3 +405,4 @@ new Chart(document.getElementById("pieChart"), {
 
 </body>
 </html>
+
