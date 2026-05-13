@@ -138,48 +138,106 @@ function renderTasks(listType) {
     });
 }
 
-// Render Completed
+// Render Completed (按列表分组) 
 function renderCompleted() {
     let container = document.getElementById("completedList");
-
     container.innerHTML = "";
 
-    Object.keys(taskData).forEach(list => {
-        let completedTasks = taskData[list].filter(t => t.status === "completed");
+    let hasCompleted = false;
+
+    Object.keys(taskData).forEach(listType => {
+        let completedTasks = taskData[listType].filter(t => t.status === "completed");
+        
+        if (completedTasks.length === 0) return;
+
+        hasCompleted = true;
+
+        const section = document.createElement("div");
+        section.style.marginBottom = "25px";
+
+        section.innerHTML = `
+            <h3 style="margin: 0 0 12px 0; color: #333; font-size: 17px;">
+                ✅ ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${completedTasks.length})
+            </h3>
+        `;
+
+        const taskContainer = document.createElement("div");
 
         completedTasks.forEach(task => {
-            let div = document.createElement("div");
+            const card = document.createElement("div");
+            card.className = "task-card completed";
+            card.style.marginBottom = "8px";
 
-            div.innerHTML = `
-                <span>✔ ${task.text}</span>
-                <button onclick="deleteTask('${list}', ${task.id})">🗑</button>
+            card.innerHTML = `
+                <div class="task-info" style="flex:1;">
+                    <div class="task-title">${task.text}</div>
+                    <div class="task-date">📅 ${task.date || "No Date"}</div>
+                </div>
+                <button onclick="restoreFromCompleted('${listType}', ${task.id})" style="background:none;border:none;font-size:22px;cursor:pointer;margin-right:8px;">↩</button>
+                <button onclick="deleteTask('${listType}', ${task.id});" style="background:none;border:none;font-size:22px;cursor:pointer;">🗑</button>
             `;
 
-            container.appendChild(div);
+            taskContainer.appendChild(card);
         });
+
+        section.appendChild(taskContainer);
+        container.appendChild(section);
     });
+
+    if (!hasCompleted) {
+        container.innerHTML = `<p style="text-align:center; color:#888; padding:60px 20px;">No completed tasks yet.</p>`;
+    }
 }
 
-// Render Trash
+// Render Trash (按列表分组) 
 function renderTrash() {
     let container = document.getElementById("trashList");
-
     container.innerHTML = "";
 
-    Object.keys(taskData).forEach(list => {
-        let trashTasks = taskData[list].filter(t => t.status === "trash");
+    let hasTrash = false;
+
+    Object.keys(taskData).forEach(listType => {
+        let trashTasks = taskData[listType].filter(t => t.status === "trash");
+        
+        if (trashTasks.length === 0) return;
+
+        hasTrash = true;
+
+        const section = document.createElement("div");
+        section.style.marginBottom = "25px";
+
+        section.innerHTML = `
+            <h3 style="margin: 0 0 12px 0; color: #333; font-size: 17px;">
+                🗑 ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${trashTasks.length})
+            </h3>
+        `;
+
+        const taskContainer = document.createElement("div");
 
         trashTasks.forEach(task => {
-            let div = document.createElement("div");
+            const card = document.createElement("div");
+            card.className = "task-card";
+            card.style.opacity = "0.75";
+            card.style.marginBottom = "8px";
 
-            div.innerHTML = `
-                <span>🗑 ${task.text}</span>
-                <button onclick="restoreTask('${list}', ${task.id})">↩ Restore</button>
+            card.innerHTML = `
+                <div class="task-info" style="flex:1;">
+                    <div class="task-title">${task.text}</div>
+                    <div class="task-date">📅 ${task.date || "No Date"}</div>
+                </div>
+                <button onclick="restoreTask('${listType}', ${task.id})" style="background:none;border:none;font-size:22px;cursor:pointer;">↩ Restore</button>
             `;
 
-            container.appendChild(div);
+            taskContainer.appendChild(card);
         });
+
+        section.appendChild(taskContainer);
+        container.appendChild(section);
     });
+
+    if (!hasTrash) {
+        container.innerHTML = `<p style="text-align:center; color:#888; padding:60px 20px;">Trash is empty.</p>`;
+    }
 }
 
 // Restore Task
@@ -476,4 +534,15 @@ function deleteCurrentTask() {
         deleteTask(currentTaskListType, currentTaskId);
         closeDetailPanel();
     }
+}
+
+// Restore from Completed
+function restoreFromCompleted(listType, id) {
+    let task = taskData[listType].find(t => t.id === id);
+    if (!task) return;
+    task.status = "active";
+    renderCompleted();
+    renderTasks(listType);
+    renderToday();
+    saveTasks();
 }
