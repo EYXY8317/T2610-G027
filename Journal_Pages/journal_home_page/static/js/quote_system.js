@@ -24,15 +24,23 @@ const saveOwnQuoteBtn =
 const savedQuotesList =
     document.querySelector("#saved-quotes-list");
 
+const saveQuoteBtn =
+    document.querySelector("#save-quote-btn");
+
 
 // ================= QUOTE DATA =================
 
 let quotes = {};
 
 
-// ================= SAVED OWN QUOTES =================
+// ================= SAVED QUOTES =================
 
 let savedOwnQuotes = [];
+
+
+// ================= QUOTE SAVE STATUS =================
+
+let currentQuoteSaved = false;
 
 
 // ================= LOAD JSON =================
@@ -40,12 +48,19 @@ let savedOwnQuotes = [];
 fetch("/homepage_static/json/quotes.json")
 
 .then(function(response) {
+
     return response.json();
+
 })
 
 .then(function(data) {
+
     quotes = data;
+
     showRandomQuote("Motivation");
+
+    updateMainHeart();
+
 });
 
 
@@ -59,8 +74,39 @@ function showRandomQuote(category) {
     const randomIndex =
         Math.floor(Math.random() * categoryQuotes.length);
 
-    quoteText.textContent =
+    const randomQuote =
         categoryQuotes[randomIndex];
+
+    quoteText.textContent =
+        randomQuote;
+
+    // ================= CHECK SAVED =================
+
+    currentQuoteSaved =
+        savedOwnQuotes.includes(randomQuote);
+
+    updateMainHeart();
+
+}
+
+
+// ================= UPDATE HEART =================
+
+function updateMainHeart() {
+
+    if (currentQuoteSaved) {
+
+        saveQuoteBtn.innerHTML =
+            "❤️ Save Quote";
+
+    }
+
+    else {
+
+        saveQuoteBtn.innerHTML =
+            "🖤 Save Quote";
+
+    }
 
 }
 
@@ -68,16 +114,22 @@ function showRandomQuote(category) {
 // ================= OPEN POPUP =================
 
 quoteSettingButton.addEventListener("click", function() {
+
     quoteOverlay.style.display = "block";
+
 });
 
 
 // ================= CLOSE POPUP =================
 
 quoteOverlay.addEventListener("click", function(event) {
+
     if (event.target === quoteOverlay) {
+
         quoteOverlay.style.display = "none";
+
     }
+
 });
 
 
@@ -98,7 +150,9 @@ const categorySection = document.querySelector(
 // ================= HIDE FIRST =================
 
 categorySection.style.display = "none";
+
 ownQuoteSection.style.display = "none";
+
 savedQuoteSection.style.display = "none";
 
 
@@ -110,40 +164,77 @@ function renderSavedQuotes() {
 
     savedOwnQuotes.forEach(function(item, index) {
 
-        const quoteItem = document.createElement("div");
-        quoteItem.className = "saved-quote-item";
+        const quoteItem =
+            document.createElement("div");
+
+        quoteItem.className =
+            "saved-quote-item";
 
         quoteItem.innerHTML = `
             <p>${item}</p>
-            <button class="saved-star-btn" data-index="${index}">
-                ⭐
+
+            <button class="saved-heart-btn selected"
+                    data-index="${index}">
+
+                ❤️
+
             </button>
         `;
 
         savedQuotesList.appendChild(quoteItem);
+
     });
 
-    const starButtons = document.querySelectorAll(".saved-star-btn");
+    const heartButtons = document.querySelectorAll(
+        ".saved-heart-btn"
+    );
 
-    starButtons.forEach(function(btn) {
+    heartButtons.forEach(function(btn, index) {
 
         btn.addEventListener("click", function() {
 
-            const index = Number(btn.dataset.index);
+            btn.classList.remove("selected");
 
-            btn.classList.toggle("selected");
+            btn.textContent = "🖤";
 
-            if (btn.classList.contains("selected")) {
-                btn.textContent = "⭐";
-            } else {
-                btn.textContent = "☆";
+            // ================= CONFIRM REMOVE =================
+
+            const confirmRemove = confirm(
+                "Remove this saved quote?"
+            );
+
+            // ================= REMOVE =================
+
+            if (confirmRemove) {
+
+                savedOwnQuotes.splice(index, 1);
+
+                renderSavedQuotes();
+
+                const currentQuote =
+                    quoteText.textContent;
+
+                currentQuoteSaved =
+                    savedOwnQuotes.includes(currentQuote);
+
+                updateMainHeart();
+
             }
 
-            // 这里先只是切换星星
-            // 华语：这里先只做星星切换
+            // ================= CANCEL =================
+
+            else {
+
+                btn.classList.add("selected");
+
+                btn.textContent = "❤️";
+
+            }
+
         });
 
     });
+
 }
 
 
@@ -151,16 +242,80 @@ function renderSavedQuotes() {
 
 saveOwnQuoteBtn.addEventListener("click", function() {
 
-    const newQuote = ownQuoteInput.value.trim();
+    const newQuote =
+        ownQuoteInput.value.trim();
 
     if (newQuote === "") {
+
         return;
+
     }
 
-    savedOwnQuotes.push(newQuote);
+    // ================= PREVENT DUPLICATE =================
+
+    if (!savedOwnQuotes.includes(newQuote)) {
+
+        savedOwnQuotes.push(newQuote);
+
+    }
+
     ownQuoteInput.value = "";
 
     renderSavedQuotes();
+
+});
+
+
+// ================= MAIN SAVE BUTTON =================
+
+saveQuoteBtn.addEventListener("click", function() {
+
+    const currentQuote =
+        quoteText.textContent;
+
+    // ================= SAVE =================
+
+    if (!currentQuoteSaved) {
+
+        currentQuoteSaved = true;
+
+        if (!savedOwnQuotes.includes(currentQuote)) {
+
+            savedOwnQuotes.push(currentQuote);
+
+        }
+
+    }
+
+    // ================= REMOVE =================
+
+    else {
+
+        const confirmRemove = confirm(
+            "Remove this saved quote?"
+        );
+
+        if (!confirmRemove) {
+
+            return;
+
+        }
+
+        currentQuoteSaved = false;
+
+        savedOwnQuotes =
+            savedOwnQuotes.filter(function(item) {
+
+                return item !== currentQuote;
+
+            });
+
+    }
+
+    updateMainHeart();
+
+    renderSavedQuotes();
+
 });
 
 
@@ -170,7 +325,8 @@ typeCards.forEach(function(card) {
 
     card.addEventListener("click", function() {
 
-        const type = card.dataset.type;
+        const type =
+            card.dataset.type;
 
         // ================= HIDE =================
 
@@ -180,18 +336,25 @@ typeCards.forEach(function(card) {
                 card.classList.contains("selected");
 
             typeCards.forEach(function(item) {
+
                 item.classList.remove("selected");
+
             });
 
             if (!hideSelected) {
+
                 card.classList.add("selected");
+
             }
 
             categorySection.style.display = "none";
+
             ownQuoteSection.style.display = "none";
+
             savedQuoteSection.style.display = "none";
 
             return;
+
         }
 
         // ================= REMOVE HIDE =================
@@ -216,9 +379,15 @@ typeCards.forEach(function(card) {
             randomCard.classList.contains("selected");
 
         if (randomSelected) {
+
             categorySection.style.display = "block";
-        } else {
+
+        }
+
+        else {
+
             categorySection.style.display = "none";
+
         }
 
         // ================= OWN CHECK =================
@@ -231,9 +400,15 @@ typeCards.forEach(function(card) {
             ownCard.classList.contains("selected");
 
         if (ownSelected) {
+
             ownQuoteSection.style.display = "block";
-        } else {
+
+        }
+
+        else {
+
             ownQuoteSection.style.display = "none";
+
         }
 
         // ================= SAVE CHECK =================
@@ -246,10 +421,17 @@ typeCards.forEach(function(card) {
             saveCard.classList.contains("selected");
 
         if (saveSelected) {
+
             savedQuoteSection.style.display = "block";
+
             renderSavedQuotes();
-        } else {
+
+        }
+
+        else {
+
             savedQuoteSection.style.display = "none";
+
         }
 
     });
@@ -266,7 +448,9 @@ const categoryCards = document.querySelectorAll(
 categoryCards.forEach(function(card) {
 
     card.addEventListener("click", function() {
+
         card.classList.toggle("selected");
+
     });
 
 });
@@ -283,10 +467,13 @@ quoteFrequencyCards.forEach(function(card) {
     card.addEventListener("click", function() {
 
         quoteFrequencyCards.forEach(function(item) {
+
             item.classList.remove("selected");
+
         });
 
         card.classList.add("selected");
+
     });
 
 });
@@ -303,10 +490,13 @@ quoteThemeCards.forEach(function(card) {
     card.addEventListener("click", function() {
 
         quoteThemeCards.forEach(function(item) {
+
             item.classList.remove("selected");
+
         });
 
         card.classList.add("selected");
+
     });
 
 });

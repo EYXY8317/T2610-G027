@@ -130,105 +130,107 @@
 }
 
 
-/* ================= TYPE SECTION ================= */
+/* ================= CATEGORY SECTION ================= */
 
-#quote-type-options {
+#quote-category-section,
+#own-quote-section,
+#saved-quote-section {
 
-    margin-bottom: 18px;
-}
+    margin-top: 20px;
 
-
-/* ================= RANDOM CATEGORY ================= */
-
-#quote-category-section {
-
-    margin-top: 10px;
-
-    padding: 18px;
-
-    border-radius: 20px;
+    padding: 20px;
 
     background: #f9fafb;
+
+    border-radius: 20px;
 
     border: 1px solid #eeeeee;
 }
 
 
-/* ================= CATEGORY TITLE ================= */
+/* ================= TEXTAREA ================= */
 
-#quote-category-section h3 {
+#own-quote-input {
 
-    margin-top: 0;
+    width: 100%;
+
+    min-height: 120px;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 16px;
+
+    padding: 14px;
+
+    box-sizing: border-box;
+
+    resize: vertical;
+
+    font-size: 16px;
+
+    margin-top: 12px;
 }
 
 
-/* ================= CATEGORY CARD ================= */
+/* ================= BUTTON ================= */
 
-.category-card {
+#save-own-quote-btn {
 
-    min-width: 140px;
-}
+    margin-top: 14px;
 
+    background: #111111;
 
-/* ================= FREQUENCY CARD ================= */
+    color: white;
 
-.frequency-card {
+    border: none;
 
-    min-width: 140px;
-}
+    padding: 12px 20px;
 
-
-/* ================= THEME CARD ================= */
-
-.theme-card {
-
-    min-width: 140px;
-}
-
-
-/* ================= NOTIFICATION CARD ================= */
-
-.notification-card {
-
-    margin-top: 15px;
-
-    background: #f7f7f7;
-
-    padding: 16px;
-
-    border-radius: 18px;
+    border-radius: 14px;
 
     cursor: pointer;
 
     transition: 0.3s;
-
-    border: 1px solid transparent;
 }
 
 
-/* ================= NOTIFICATION HOVER ================= */
+#save-own-quote-btn:hover {
 
-.notification-card:hover {
-
-    transform: translateY(-2px);
-
-    background: #ffffff;
-
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    opacity: 0.85;
 }
 
 
-/* ================= NOTIFICATION SELECTED ================= */
+/* ================= SAVED QUOTE ITEM ================= */
 
-.notification-card.selected {
+.saved-quote-item {
 
-    background: #dbeafe;
+    display: flex;
 
-    transform: translateY(-2px) scale(1.01);
+    justify-content: space-between;
 
-    box-shadow: 0 8px 25px rgba(59,130,246,0.22);
+    align-items: center;
 
-    border: 1px solid #93c5fd;
+    background: white;
+
+    padding: 14px;
+
+    border-radius: 16px;
+
+    margin-top: 12px;
+}
+
+
+/* ================= HEART BUTTON ================= */
+
+.saved-heart-btn {
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 24px;
+
+    cursor: pointer;
 }
 
 
