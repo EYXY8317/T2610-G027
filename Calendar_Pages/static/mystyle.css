@@ -322,3 +322,28 @@
 .task-actions button:hover {
     background: #f0f0f0;
 }
+
+/* 右侧任务详情面板 */
+.task-detail-panel {
+    position: fixed;
+    top: 0;
+    right: -450px;
+    width: 420px;
+    height: 100vh;
+    background: white;
+    box-shadow: -6px 0 30px rgba(0,0,0,0.25);
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.3s ease;
+    z-index: 11000;
+    padding: 20px;
+    overflow-y: auto;
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* 打开状态 */
+.task-detail-panel.open {
+    right: 0;
+    visibility: visible;
+    opacity: 1;
+}
