@@ -60,6 +60,99 @@
 }
 
 
+/* ================= DASHBOARD ================= */
+
+#dashboard {
+
+    display: grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(350px, 1fr));
+
+    gap: 20px;
+
+    padding: 20px;
+}
+
+
+/* ================= WIDGET ================= */
+
+.widget {
+
+    background: white;
+
+    border-radius: 15px;
+
+    padding: 20px;
+
+    min-height: 150px;
+
+    position: relative;
+
+    transition: 0.3s;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+
+/* ================= LARGE WIDGET ================= */
+
+.large-widget {
+
+    min-height: 250px;
+}
+
+
+/* ================= WIDGET HEADER ================= */
+
+.widget-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+
+/* ================= SETTING BUTTON ================= */
+
+.setting-btn,
+.summary-setting-btn,
+.quote-setting-btn {
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 22px;
+
+    padding: 0;
+}
+
+
+/* ================= TEXT ================= */
+
+.widget h2 {
+
+    margin: 0;
+
+    font-size: 24px;
+}
+
+
+.widget p {
+
+    color: gray;
+
+    font-size: 16px;
+}
+
+
 /* ================= MODE OPTIONS ================= */
 
 .mode-options {
@@ -250,7 +343,10 @@
 
 /* ================= WEATHER WIDGET ================= */
 
-#weather-widget {
+#today-weather-widget,
+#tomorrow-weather-widget,
+#weekly-weather-widget,
+#hourly-weather-widget {
 
     background: #ffffff;
 
@@ -264,6 +360,7 @@
 
     box-shadow: 0 10px 40px rgba(0,0,0,0.08);
 
+    text-align: center;
 }
 
 
@@ -453,5 +550,42 @@
     height: 180px;
 
     margin-top: 5px;
+
+}
+
+
+/* ================= EDIT MODE ================= */
+
+.edit-mode .widget {
+
+    outline: 2px dashed #999999;
+
+    cursor: move;
+
+    animation: wiggle 0.3s infinite linear;
+}
+
+
+/* ================= WIGGLE ================= */
+
+@keyframes wiggle {
+
+    0% {
+
+        transform: rotate(-0.5deg);
+
+    }
+
+    50% {
+
+        transform: rotate(0.5deg);
+
+    }
+
+    100% {
+
+        transform: rotate(-0.5deg);
+
+    }
 
 }

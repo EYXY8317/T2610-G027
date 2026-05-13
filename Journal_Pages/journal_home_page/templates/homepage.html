@@ -40,37 +40,67 @@
 
         <h1>My Journal Dashboard</h1>
 
+        <button id="rearrange-btn">
+
+            ✥ Rearrange
+
+        </button>
+
+    </div>
+
+    <!-- ================= EDIT BAR ================= -->
+
+    <div id="edit-bar">
+
+        <button id="done-edit-btn">
+
+            ✅ Done
+
+        </button>
+
     </div>
 
     <!-- ================= DASHBOARD ================= -->
 
     <div id="dashboard">
 
-        <!-- ================= STREAK WIDGETS ================= -->
+        <!-- ================= CURRENT STREAK ================= -->
 
         {% include 'components/streak_widget/current_streak.html' %}
 
+        <!-- ================= HIGHEST STREAK ================= -->
+
         {% include 'components/streak_widget/highest_streak.html' %}
+
+        <!-- ================= TOTAL ENTRIES ================= -->
 
         {% include 'components/streak_widget/total_entries.html' %}
 
-        <!-- ================= SUMMARY WIDGETS ================= -->
+        <!-- ================= MOOD CHART ================= -->
 
         {% include 'components/summary_widget/chart.html' %}
 
+        <!-- ================= AI SUMMARY ================= -->
+
         {% include 'components/summary_widget/ai_summary.html' %}
 
-        <!-- ================= QUOTE WIDGET ================= -->
+        <!-- ================= QUOTE ================= -->
 
         {% include 'components/quote_widget.html' %}
 
-        <!-- ================= WEATHER WIDGETS ================= -->
+        <!-- ================= TODAY WEATHER ================= -->
 
         {% include 'components/weather_widget/today.html' %}
 
+        <!-- ================= TOMORROW WEATHER ================= -->
+
         {% include 'components/weather_widget/tomorrow.html' %}
 
+        <!-- ================= WEEKLY WEATHER ================= -->
+
         {% include 'components/weather_widget/weekly.html' %}
+
+        <!-- ================= HOURLY WEATHER ================= -->
 
         {% include 'components/weather_widget/hourly.html' %}
 
