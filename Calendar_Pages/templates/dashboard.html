@@ -550,7 +550,91 @@ body{
         </div>
 
     </section>
-</script>
+
+  <!-- ================= MUSIC SECTION ================= -->
+
+    <section class="music-section">
+
+        <!-- LEFT -->
+
+        <div class="music-left">
+
+            <!-- VINYL -->
+
+            <div class="vinyl-container">
+
+                <div class="vinyl" id="vinyl"></div>
+
+            </div>
+
+            <!-- PLAYER INFO -->
+
+            <div class="player-info">
+
+                <h2 id="songTitle">
+                    No Music Selected
+                </h2>
+
+                <p>
+                    Upload MP3 or paste YouTube link
+                </p>
+
+                <!-- PROGRESS -->
+
+                <div class="progress-bar">
+
+                    <div class="progress"></div>
+
+                </div>
+
+                <!-- CONTROLS -->
+
+                <div class="controls">
+
+                    <button onclick="playMusic()">
+                        ▶
+                    </button>
+
+                    <button onclick="pauseMusic()">
+                        ❚❚
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="music-right">
+
+            <label>Upload MP3</label>
+
+            <input
+            type="file"
+            id="musicUpload"
+            accept="audio/*">
+
+            <label>YouTube URL</label>
+
+            <input
+            type="text"
+            id="youtubeLink"
+            placeholder="Paste YouTube Link">
+
+        </div>
+
+        <!-- AUDIO -->
+
+        <audio id="audioPlayer"></audio>
+
+    </section>
+
 </div>
+
+<script>
+    
+</script> 
 </body>
 </html>
