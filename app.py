@@ -38,7 +38,7 @@ f_expense = os.path.join(BASE_DIR, "Finance", "expenses.json")
 f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
-
+f_goals = os.path.join(BASE_DIR, "goals.json")
 # ================= HELPERS =================
 def load_data(file, default):
     if not os.path.exists(file):
@@ -234,7 +234,6 @@ def add_financial():
     accounts=user_accounts,
     categories=CATEGORY_MAP
     )
-
 
 # ================= VIEW =================
 @app.route("/view")
@@ -653,6 +652,48 @@ def summary():
             "balance": monthly_income - monthly_expense
         }
 
+    # ================= GOALS =================
+    goals = load_data(f_goals, [])
+
+    user_goals = [
+        g for g in goals
+        if g["username"] == user
+    ]
+
+    short_goals = []
+    long_goals = []
+
+    for g in user_goals:
+        saved = saving
+
+        percent = (
+            (saved / g["target"]) * 100
+            if g["target"] else 0
+        )
+
+        remaining_goal = g["target"] - saved
+
+        status = "In Progress"
+
+        if percent >= 100:
+            status = "Completed"
+
+        goal_data = {
+            "name": g["name"],
+            "target": g["target"],
+            "saved": saved,
+            "remaining": remaining_goal,
+            "percent": percent,
+            "display_percent": min(percent, 100),
+            "status": status
+        }
+
+        if g["type"] == "short":
+            short_goals.append(goal_data)
+
+        else:
+            long_goals.append(goal_data)
+
     # ================= RENDER =================
     return render_template(
         "summary.html",
@@ -673,7 +714,147 @@ def summary():
         yearly_balance=yearly_balance,
         monthly_data=monthly_data,
         selected_month=selected_month,
-        selected_year=selected_year
+        selected_year=selected_year,
+        short_goals=short_goals,
+        long_goals=long_goals
+    )
+
+#================= GOALS ==================
+@app.route("/goals", methods=["GET", "POST"])
+def goals():
+
+    # ================= LOGIN CHECK =================
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    goals = load_data(f_goals, [])
+
+    # ================= CREATE GOAL =================
+    if request.method == "POST":
+
+        action = request.form.get("action")
+
+        # ================= CREATE NEW GOAL =================
+        if action == "create":
+
+            name = request.form.get("name")
+            target = request.form.get("target")
+            goal_type = request.form.get("type")
+
+            if not name or not target or not goal_type:
+
+                return render_template(
+                    "goals.html",
+                    goals=[
+                        g for g in goals
+                        if g["username"] == user
+                    ],
+                    error="All fields required"
+                )
+
+            try:
+                target = float(target)
+
+            except:
+
+                return render_template(
+                    "goals.html",
+                    goals=[
+                        g for g in goals
+                        if g["username"] == user
+                    ],
+                    error="Invalid target amount"
+                )
+
+            goals.append({
+                "username": user,
+                "name": name,
+                "target": target,
+                "saved": 0,
+                "type": goal_type
+            })
+
+            save_data(f_goals, goals)
+
+            return redirect(url_for("goals"))
+
+        # ================= ADD SAVINGS =================
+        elif action == "save":
+
+            goal_name = request.form.get("goal_name")
+            amount = request.form.get("amount")
+
+            try:
+                amount = float(amount)
+
+            except:
+                return redirect(url_for("goals"))
+
+            for g in goals:
+
+                if (
+                    g["username"] == user
+                    and g["name"] == goal_name
+                ):
+                    g["saved"] += amount
+                    break
+
+            save_data(f_goals, goals)
+
+            return redirect(url_for("goals"))
+
+    # ================= USER GOALS =================
+    user_goals = [
+        g for g in goals
+        if g["username"] == user
+    ]
+
+    # ================= PROCESS GOALS =================
+    short_goals = []
+    long_goals = []
+
+    for g in user_goals:
+
+        saved = g.get("saved", 0)
+        target = g.get("target", 0)
+        percent = (
+            (saved / target) * 100
+            if target else 0
+        )
+
+        remaining = target - saved
+        status = "In Progress"
+
+        if percent >= 100:
+            status = "Completed"
+
+        goal_data = {
+            "name": g["name"],
+            "target": target,
+            "saved": saved,
+            "remaining": remaining,
+            "percent": percent,
+            "display_percent": min(percent, 100),
+            "status": status
+        }
+
+        if g.get("type") == "short":
+            short_goals.append(goal_data)
+
+        else:
+            long_goals.append(goal_data)
+
+    # ================= RENDER =================
+    return render_template(
+
+        "goals.html",
+
+        short_goals=short_goals,
+
+        long_goals=long_goals
+
     )
 
 # ================= CALENDAR =================

@@ -1,0 +1,14 @@
+[
+    {
+        "username": "test",
+        "name": "Japan",
+        "target": 5000.0,
+        "type": "short"
+    },
+    {
+        "username": "test",
+        "name": "House",
+        "target": 30000.0,
+        "type": "long"
+    }
+]
