@@ -3,30 +3,34 @@
 <div class="widget"
      id="hourly-weather-widget">
 
-    <!-- ================= HEADER ================= -->
+    <div class="widget-controls">
+
+        <button class="delete-widget-btn">
+            ❌
+        </button>
+
+    </div>
 
     <div class="widget-header">
 
         <h2>
-            📈 Hourly Forecast
+            🕒 Hourly Weather
         </h2>
 
     </div>
 
-    <!-- ================= CONTENT ================= -->
+    <!-- ================= WEATHER CHART ================= -->
 
-    <div class="widget-content">
+    <div class="chart-container">
 
-        <div class="chart-container">
+        <canvas id="weather-chart"></canvas>
 
-            <canvas id="weather-chart"></canvas>
+    </div>
 
-        </div>
+    <div class="resize-handle">
+
+        ↘
 
     </div>
 
 </div>
-
-<!-- ================= CHART JS ================= -->
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
