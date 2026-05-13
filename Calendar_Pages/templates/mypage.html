@@ -366,13 +366,13 @@
 </div>
 
 <!-- Editable Task Detail Panel -->
-<div id="taskDetailPanel" style="position: fixed; top: 0; right: -420px; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.2); transition: right 0.3s; z-index: 1000; padding: 20px; overflow-y: auto;">
+<div id="taskDetailPanel" style="position: fixed; top: 0; right: -450px; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.25); transition: right 0.35s ease; z-index: 9999; padding: 20px; overflow-y: auto; visibility: hidden; opacity: 0;">
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <input type="text" id="panelTitleInput" style="font-size: 22px; font-weight: bold; width: 100%; border: none; border-bottom: 2px solid #4a90e2; outline: none; padding: 5px 0;">
         <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; margin-left: 15px;">✕</button>
     </div>
-
+    
     <!-- Description -->
     <div style="margin-bottom: 20px;">
         <label style="font-weight: bold; display: block; margin-bottom: 6px;">Description / Notes</label>
