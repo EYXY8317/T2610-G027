@@ -2,12 +2,6 @@
 // PAGE SWITCH (Sidebar Navigation)
 // ===============================
 function showPage(pageId, element) {
-    // === 新增：关闭所有可能打开的弹窗 ===
-    closeDayModal();
-    closeCalendar();
-    closeExtra();
-    closeDetailPanel();
-
     // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
@@ -477,7 +471,9 @@ function toggleComplete(listType, id, checkbox) {
 }
 
 // Show Editable Detail Panel 
-// 打开详情面板
+let currentTaskListType = "";
+let currentTaskId = null;
+
 function showTaskDetail(listType, id) {
     currentTaskListType = listType;
     currentTaskId = id;
@@ -485,7 +481,7 @@ function showTaskDetail(listType, id) {
     let task = taskData[listType].find(t => t.id === id);
     if (!task) return;
 
-    // 填充数据
+    // 填充可编辑字段
     document.getElementById("panelTitleInput").value = task.text || "";
     document.getElementById("panelDescription").value = task.description || "";
     document.getElementById("panelDateInput").value = task.date || "";
@@ -494,21 +490,21 @@ function showTaskDetail(listType, id) {
     document.getElementById("panelPrioritySelect").value = task.priority || "";
     document.getElementById("panelTagInput").value = task.tag || "";
 
+  // 完全显示面板
     const panel = document.getElementById("taskDetailPanel");
-    panel.classList.add("open");     // 使用 class 控制
+    panel.style.visibility = "visible";
+    panel.style.opacity = "1";
+    panel.style.right = "0";
 }
 
-// 关闭详情面板（最关键的修复）
 function closeDetailPanel() {
     const panel = document.getElementById("taskDetailPanel");
-    if (!panel) return;
-
-    panel.classList.remove("open");
-
-    // 等待动画结束后彻底隐藏，防止残影
+    panel.style.right = "-450px";
+    // 延迟隐藏，防止闪烁
     setTimeout(() => {
         panel.style.visibility = "hidden";
-    }, 450);
+        panel.style.opacity = "0";
+    }, 350);
 }
 
 // Save Changes from Detail Panel 
