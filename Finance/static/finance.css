@@ -19,7 +19,6 @@ body {
     background: rgba(255,255,255,0.88);
     backdrop-filter: blur(10px);
     padding: 20px;
-    width: 500px;
 }
 
 /* ===== Progress Bar ===== */
@@ -68,8 +67,16 @@ body {
 }
 
 .summary-wrapper {
-    max-width: 1100px;
+    width: 95%;
+    max-width: 1600px;
     margin: auto;
+}
+
+.summary-card {
+
+    width: 100%;
+
+    box-sizing: border-box;
 }
 
 .summary-grid {
