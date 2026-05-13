@@ -446,3 +446,34 @@ function deleteCurrentTask() {
         closeDetailPanel();
     }
 }
+
+// Save Changes from Detail Panel 
+function saveTaskChanges() {
+    let task = taskData[currentTaskListType].find(t => t.id === currentTaskId);
+    if (!task) return;
+
+    task.text = document.getElementById("panelTitleInput").value.trim();
+    task.description = document.getElementById("panelDescription").value.trim();
+    task.date = document.getElementById("panelDateInput").value;
+    task.startTime = document.getElementById("panelStartTime").value;
+    task.endTime = document.getElementById("panelEndTime").value;
+    task.priority = document.getElementById("panelPrioritySelect").value;
+    task.tag = document.getElementById("panelTagInput").value.trim();
+
+    saveTasks();
+    renderTasks(currentTaskListType);   // 刷新列表
+    closeDetailPanel();
+
+    alert("✅ Changes saved successfully!");
+}
+
+function closeDetailPanel() {
+    document.getElementById("taskDetailPanel").style.right = "-420px";
+}
+
+function deleteCurrentTask() {
+    if (confirm("Delete this task?")) {
+        deleteTask(currentTaskListType, currentTaskId);
+        closeDetailPanel();
+    }
+}
