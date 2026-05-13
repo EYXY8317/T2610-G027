@@ -44,7 +44,7 @@
 
     <!-- ================= DASHBOARD ================= -->
 
-    <div class="dashboard">
+    <div id="dashboard">
 
         {% include 'components/streak_widget.html' %}
 
@@ -63,7 +63,7 @@
     {% include 'components/summary_popup.html' %}
 
     {% include 'components/quote_popup.html' %}
-    
+
     <!-- ================= JS ================= -->
 
     <script src="{{ url_for('homepage.static',
@@ -77,10 +77,11 @@
     <script src="{{ url_for('homepage.static',
         filename='js/quote_system.js') }}">
     </script>
+
+    <script src="{{ url_for('homepage.static',
+        filename='js/weather_system.js') }}">
+    </script>
+
 </body>
 
 </html>
-
-<script src="{{ url_for('homepage.static',
-    filename='js/weather_system.js') }}">
-</script>
