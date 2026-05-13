@@ -1,16 +1,23 @@
-const settingButton = document.querySelector(".setting-btn");
+const settingButton =
+    document.querySelector(".setting-btn");
 
-const popup = document.querySelector("#popup-overlay");
+const popup =
+    document.querySelector("#popup-overlay");
 
-const modeCards = document.querySelectorAll(".mode-card");
+const modeCards =
+    document.querySelectorAll(
+        "#streak-setting-popup .mode-card"
+    );
 
-const streakWidget = document.querySelector("#streak-widget");
+const streakWidget =
+    document.querySelector("#streak-widget");
 
-const streakText = document.querySelector("#streak-text");
+const streakText =
+    document.querySelector("#streak-text");
 
-const notificationCard = document.querySelector(".notification-card");
+const notificationCard =
+    document.querySelector(".notification-card");
 
-console.log("JS WORKING");
 
 // ================= OPEN POPUP =================
 
@@ -63,7 +70,8 @@ modeCards.forEach(function(card) {
 
         if (mode === "daily") {
 
-            const currentStreak = streakText.dataset.current;
+            const currentStreak =
+                streakText.dataset.current;
 
             streakText.innerText =
                 currentStreak + " Day Streak";
@@ -74,9 +82,8 @@ modeCards.forEach(function(card) {
 
         if (mode === "highest") {
 
-            const highestStreak = streakText.dataset.highest;
-
-            console.log(highestStreak);
+            const highestStreak =
+                streakText.dataset.highest;
 
             streakText.innerText =
                 "Highest Streak: " +
@@ -98,57 +105,15 @@ notificationCard.addEventListener("click", function() {
 
 });
 
+
+// ================= CLOSE POPUP =================
+
 popup.addEventListener("click", function(event) {
-    // If click outside popup
-    // 如果点击 popup 外面
 
     if (event.target === popup) {
 
         popup.style.display = "none";
 
     }
-
-});
-
-// ================= DRAG POPUP =================
-
-let isDragging = false;
-
-let offsetX, offsetY;
-
-const popupBox =
-    document.querySelector("#streak-setting-popup");
-
-popupBox.addEventListener("mousedown", function(event) {
-
-    isDragging = true;
-
-    offsetX =
-        event.clientX - popupBox.offsetLeft;
-
-    offsetY =
-        event.clientY - popupBox.offsetTop;
-
-});
-
-document.addEventListener("mousemove", function(event) {
-
-    if (isDragging) {
-
-        popupBox.style.left =
-            event.clientX - offsetX + "px";
-
-        popupBox.style.top =
-            event.clientY - offsetY + "px";
-
-        popupBox.style.transform = "none";
-
-    }
-
-});
-
-document.addEventListener("mouseup", function() {
-
-    isDragging = false;
 
 });

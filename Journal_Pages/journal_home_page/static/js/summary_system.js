@@ -33,9 +33,6 @@ const totalMood =
 
 // ================= EMOJI SIZE =================
 
-// No mood data
-// 没有 mood data
-
 if (totalMood === 0) {
 
     happyEmoji.style.fontSize = "70px";
@@ -45,9 +42,6 @@ if (totalMood === 0) {
     angryEmoji.style.fontSize = "70px";
 
 }
-
-// Have mood data
-// 有 mood data
 
 else {
 
@@ -149,7 +143,9 @@ const summaryWidget =
     document.querySelector("#summary-widget");
 
 const frequencyCards =
-    document.querySelectorAll("[data-frequency]");
+    document.querySelectorAll(
+        "#summary-setting-popup [data-frequency]"
+    );
 
 const frequencyText =
     document.querySelector("#summary-frequency-text");
@@ -158,19 +154,26 @@ const hideSummaryButton =
     document.querySelector("#hide-summary-btn");
 
 const chartCards =
-    document.querySelectorAll("[data-chart]");
+    document.querySelectorAll(
+        "#summary-setting-popup [data-chart]"
+    );
 
 const chartTypeText =
     document.querySelector("#chart-type-text");
 
 const wordCards =
-    document.querySelectorAll("[data-word]");
+    document.querySelectorAll(
+        "#summary-setting-popup [data-word]"
+    );
 
 const wordFrequencyCards =
-    document.querySelectorAll("[data-word-frequency]");
+    document.querySelectorAll(
+        "#summary-setting-popup [data-word-frequency]"
+    );
 
 const wordSummaryText =
     document.querySelector("#word-summary-text");
+
 
 // ================= OPEN POPUP =================
 
@@ -372,6 +375,7 @@ chartCards.forEach(function(card) {
 
 });
 
+
 // ================= WORD SUMMARY TYPE =================
 
 wordCards.forEach(function(card) {
@@ -413,6 +417,7 @@ wordCards.forEach(function(card) {
     });
 
 });
+
 
 // ================= WORD FREQUENCY =================
 

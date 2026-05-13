@@ -66,6 +66,8 @@
 
     display: flex;
 
+    flex-wrap: wrap;
+
     gap: 12px;
 
     margin-top: 15px;
@@ -76,9 +78,7 @@
 
 .mode-card {
 
-    flex: 1;
-
-    min-width: 180px;
+    min-width: 140px;
 
     background: #f7f7f7;
 
@@ -91,6 +91,16 @@
     transition: 0.3s;
 
     border: 1px solid transparent;
+}
+
+
+/* ================= MODE CARD TITLE ================= */
+
+.mode-card h4 {
+
+    margin: 0;
+
+    font-size: 18px;
 }
 
 
@@ -117,6 +127,62 @@
     box-shadow: 0 8px 25px rgba(59,130,246,0.22);
 
     border: 1px solid #93c5fd;
+}
+
+
+/* ================= TYPE SECTION ================= */
+
+#quote-type-options {
+
+    margin-bottom: 18px;
+}
+
+
+/* ================= RANDOM CATEGORY ================= */
+
+#quote-category-section {
+
+    margin-top: 10px;
+
+    padding: 18px;
+
+    border-radius: 20px;
+
+    background: #f9fafb;
+
+    border: 1px solid #eeeeee;
+}
+
+
+/* ================= CATEGORY TITLE ================= */
+
+#quote-category-section h3 {
+
+    margin-top: 0;
+}
+
+
+/* ================= CATEGORY CARD ================= */
+
+.category-card {
+
+    min-width: 140px;
+}
+
+
+/* ================= FREQUENCY CARD ================= */
+
+.frequency-card {
+
+    min-width: 140px;
+}
+
+
+/* ================= THEME CARD ================= */
+
+.theme-card {
+
+    min-width: 140px;
 }
 
 
