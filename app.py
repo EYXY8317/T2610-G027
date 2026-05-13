@@ -447,21 +447,41 @@ def summary():
 
     now = datetime.now()
 
-    current_month = now.strftime("%Y-%m")
-    current_year = now.strftime("%Y")
+    # ================= FILTERS =================
+    selected_month = request.args.get(
+        "month",
+        now.strftime("%m")
+    )
+
+    selected_year = request.args.get(
+        "year",
+        now.strftime("%Y")
+    )
+
+    current_month = f"{selected_year}-{selected_month}"
 
     # ================= MONTH RECORDS =================
     month_records = [
+
         r for r in records
-        if r["username"] == user
-        and r["date"].startswith(current_month)
+
+        if (
+            r["username"] == user
+            and r["date"].startswith(current_month)
+        )
+
     ]
 
     # ================= YEAR RECORDS =================
     year_records = [
+
         r for r in records
-        if r["username"] == user
-        and r["date"].startswith(current_year)
+
+        if (
+            r["username"] == user
+            and r["date"].startswith(selected_year)
+        )
+
     ]
 
     # ================= MONTH TOTALS =================
@@ -491,8 +511,10 @@ def summary():
     for r in month_records:
 
         if r["type"] == "expense":
-
-            category = r.get("category", "Other")
+            category = r.get(
+                "category",
+                "Other"
+            )
 
             category_totals[category] = (
                 category_totals.get(category, 0)
@@ -506,10 +528,10 @@ def summary():
         category_totals.items(),
         key=lambda x: x[1],
         reverse=True
+
     )[:3]
 
     top_categories_with_percent = [
-
         (
             c,
             a,
@@ -518,7 +540,6 @@ def summary():
         )
 
         for c, a in top_categories
-
     ]
 
     # ================= SMART INSIGHT =================
@@ -530,7 +551,8 @@ def summary():
         top_amt = top_categories[0][1]
 
         insight = (
-            f"Most spending comes from {top_cat} "
+            f"Most spending comes from "
+            f"{top_cat} "
             f"(RM {top_amt:.2f})."
         )
 
@@ -544,8 +566,9 @@ def summary():
     comparison = "No income recorded yet."
 
     if income > 0:
-
-        expense_ratio = (expense / income) * 100
+        expense_ratio = (
+            expense / income
+        ) * 100
 
         comparison = (
             f"Expenses are "
@@ -562,96 +585,95 @@ def summary():
     ]
 
     budget_usage = []
-
     for b in user_budgets:
-
         spent = category_totals.get(
             b["category"],
             0
         )
 
         limit = b["amount"]
-
         percent = (
             (spent / limit) * 100
             if limit else 0
         )
 
         remaining = limit - spent
-
         status = "safe"
-
         if percent >= 100:
             status = "over"
-
         elif percent >= 80:
             status = "warning"
 
         budget_usage.append({
-
             "category": b["category"],
-
             "spent": spent,
-
             "limit": limit,
-
             "remaining": remaining,
-
             "percent": percent,
-
             "display_percent": min(percent, 100),
-
             "status": status
-
         })
 
-    # ================= YEARLY OVERVIEW =================
+    # ================= YEARLY TOTALS =================
     yearly_income = sum(
         r["amount"]
         for r in year_records
         if r["type"] == "income"
     )
-
     yearly_expense = sum(
         r["amount"]
         for r in year_records
         if r["type"] == "expense"
     )
-
     yearly_balance = yearly_income - yearly_expense
+
+    # ================= MONTHLY BREAKDOWN =================
+    monthly_data = {}
+    for month in range(1, 13):
+        key = f"{selected_year}-{month:02d}"
+        monthly_income = sum(
+            r["amount"]
+            for r in year_records
+            if (
+                r["type"] == "income"
+                and r["date"].startswith(key)
+            )
+        )
+        monthly_expense = sum(
+            r["amount"]
+            for r in year_records
+            if (
+                r["type"] == "expense"
+                and r["date"].startswith(key)
+            )
+        )
+        monthly_data[key] = {
+            "income": monthly_income,
+            "expense": monthly_expense,
+            "balance": monthly_income - monthly_expense
+        }
 
     # ================= RENDER =================
     return render_template(
-
         "summary.html",
-
         income=income,
-
         expense=expense,
-
         saving=saving,
-
         balance=balance,
-
         daily_avg=round(
             expense / max(now.day, 1),
             2
         ),
-
         top_categories=top_categories_with_percent,
-
         insight=insight,
-
         comparison=comparison,
-
         budget_usage=budget_usage,
-
         yearly_income=yearly_income,
-
         yearly_expense=yearly_expense,
-
-        yearly_balance=yearly_balance
-
+        yearly_balance=yearly_balance,
+        monthly_data=monthly_data,
+        selected_month=selected_month,
+        selected_year=selected_year
     )
 
 # ================= CALENDAR =================
