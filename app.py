@@ -349,23 +349,48 @@ def update_financial(idx):
 # ================= BUDGET =================
 @app.route("/budget", methods=["GET", "POST"])
 def budget():
+
     if "user" not in session:
         return redirect(url_for("login"))
 
     budgets = load_data(f_budget, [])
     user = session["user"]
 
+    # ================= POST =================
     if request.method == "POST":
-        category = request.form.get("category")
-        amount = float(request.form.get("amount"))
 
+        category = request.form.get("category")
+        amount = request.form.get("amount")
+
+        # validation
+        if not category or not amount:
+            return render_template(
+                "budget.html",
+                budgets=[b for b in budgets if b["username"] == user],
+                categories=CATEGORY_MAP["expense"],
+                error="Category and amount required"
+            )
+
+        try:
+            amount = float(amount)
+        except:
+            return render_template(
+                "budget.html",
+                budgets=[b for b in budgets if b["username"] == user],
+                categories=CATEGORY_MAP["expense"],
+                error="Invalid amount"
+            )
+
+        # update existing budget
         found = False
+
         for b in budgets:
             if b["username"] == user and b["category"] == category:
                 b["amount"] = amount
                 found = True
                 break
 
+        # create new budget
         if not found:
             budgets.append({
                 "username": user,
@@ -374,84 +399,260 @@ def budget():
             })
 
         save_data(f_budget, budgets)
+
         return redirect(url_for("budget"))
 
+    # ================= GET =================
     user_budgets = [b for b in budgets if b["username"] == user]
 
     return render_template(
-    "budget.html",
-    budgets=user_budgets,
-    categories=CATEGORY_MAP["expense"]
-)
+        "budget.html",
+        budgets=user_budgets,
+        categories=CATEGORY_MAP["expense"]
+    )
 
+# ===============DELETE BUDGET ==============
+
+@app.route("/delete_budget/<category>")
+def delete_budget(category):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    budgets = load_data(f_budget, [])
+    user = session["user"]
+
+    budgets = [
+        b for b in budgets
+        if not (
+            b["username"] == user and
+            b["category"] == category
+        )
+    ]
+
+    save_data(f_budget, budgets)
+
+    return redirect(url_for("budget"))
 
 # ================= SUMMARY =================
 @app.route("/summary")
 def summary():
+
     if "user" not in session:
         return redirect(url_for("login"))
 
     user = session["user"]
+
     records = load_data(f_expense, [])
 
     now = datetime.now()
+
     current_month = now.strftime("%Y-%m")
+    current_year = now.strftime("%Y")
 
-    month_records = [r for r in records if r["username"] == user and r["date"].startswith(current_month)]
+    # ================= MONTH RECORDS =================
+    month_records = [
+        r for r in records
+        if r["username"] == user
+        and r["date"].startswith(current_month)
+    ]
 
-    income = sum(r["amount"] for r in month_records if r["type"] == "income")
-    expense = sum(r["amount"] for r in month_records if r["type"] == "expense")
+    # ================= YEAR RECORDS =================
+    year_records = [
+        r for r in records
+        if r["username"] == user
+        and r["date"].startswith(current_year)
+    ]
+
+    # ================= MONTH TOTALS =================
+    income = sum(
+        r["amount"]
+        for r in month_records
+        if r["type"] == "income"
+    )
+
+    expense = sum(
+        r["amount"]
+        for r in month_records
+        if r["type"] == "expense"
+    )
+
+    saving = sum(
+        r["amount"]
+        for r in month_records
+        if r["type"] == "saving"
+    )
+
     balance = income - expense
 
+    # ================= CATEGORY TOTALS =================
     category_totals = {}
+
     for r in month_records:
+
         if r["type"] == "expense":
-            category_totals[r["category"]] = category_totals.get(r["category"], 0) + r["amount"]
+
+            category = r.get("category", "Other")
+
+            category_totals[category] = (
+                category_totals.get(category, 0)
+                + r["amount"]
+            )
 
     total_expense = sum(category_totals.values())
 
-    top_categories = sorted(category_totals.items(), key=lambda x: x[1], reverse=True)[:3]
+    # ================= TOP CATEGORIES =================
+    top_categories = sorted(
+        category_totals.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:3]
 
     top_categories_with_percent = [
-        (c, a, (a / total_expense * 100) if total_expense else 0)
+
+        (
+            c,
+            a,
+            (a / total_expense * 100)
+            if total_expense else 0
+        )
+
         for c, a in top_categories
+
     ]
 
+    # ================= SMART INSIGHT =================
+    insight = "Your spending looks stable this month."
+
+    if top_categories:
+
+        top_cat = top_categories[0][0]
+        top_amt = top_categories[0][1]
+
+        insight = (
+            f"Most spending comes from {top_cat} "
+            f"(RM {top_amt:.2f})."
+        )
+
+    if expense == 0:
+        insight = "No expenses recorded this month."
+
+    if balance < 0:
+        insight += " You are spending more than you earn."
+
+    # ================= COMPARISON =================
+    comparison = "No income recorded yet."
+
+    if income > 0:
+
+        expense_ratio = (expense / income) * 100
+
+        comparison = (
+            f"Expenses are "
+            f"{expense_ratio:.0f}% "
+            f"of income this month."
+        )
+
+    # ================= BUDGET TRACKING =================
     budgets = load_data(f_budget, [])
-    user_budgets = [b for b in budgets if b["username"] == user]
+
+    user_budgets = [
+        b for b in budgets
+        if b["username"] == user
+    ]
 
     budget_usage = []
 
     for b in user_budgets:
-        spent = category_totals.get(b["category"], 0)
-        percent = (spent / b["amount"] * 100) if b["amount"] else 0
+
+        spent = category_totals.get(
+            b["category"],
+            0
+        )
+
+        limit = b["amount"]
+
+        percent = (
+            (spent / limit) * 100
+            if limit else 0
+        )
+
+        remaining = limit - spent
 
         status = "safe"
+
         if percent >= 100:
             status = "over"
+
         elif percent >= 80:
             status = "warning"
 
         budget_usage.append({
+
             "category": b["category"],
+
             "spent": spent,
-            "limit": b["amount"],
+
+            "limit": limit,
+
+            "remaining": remaining,
+
             "percent": percent,
+
+            "display_percent": min(percent, 100),
+
             "status": status
+
         })
 
-    return render_template(
-        "summary.html",
-        income=income,
-        expense=expense,
-        balance=balance,
-        daily_avg=round(expense / max(now.day, 1), 2),
-        top_categories=top_categories_with_percent,
-        insight="Spending analysis ready",
-        comparison="Comparison ready",
-        budget_usage=budget_usage
+    # ================= YEARLY OVERVIEW =================
+    yearly_income = sum(
+        r["amount"]
+        for r in year_records
+        if r["type"] == "income"
     )
 
+    yearly_expense = sum(
+        r["amount"]
+        for r in year_records
+        if r["type"] == "expense"
+    )
+
+    yearly_balance = yearly_income - yearly_expense
+
+    # ================= RENDER =================
+    return render_template(
+
+        "summary.html",
+
+        income=income,
+
+        expense=expense,
+
+        saving=saving,
+
+        balance=balance,
+
+        daily_avg=round(
+            expense / max(now.day, 1),
+            2
+        ),
+
+        top_categories=top_categories_with_percent,
+
+        insight=insight,
+
+        comparison=comparison,
+
+        budget_usage=budget_usage,
+
+        yearly_income=yearly_income,
+
+        yearly_expense=yearly_expense,
+
+        yearly_balance=yearly_balance
+
+    )
 
 # ================= CALENDAR =================
 @app.route('/calendar_static/<path:filename>')
