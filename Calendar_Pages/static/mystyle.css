@@ -259,7 +259,7 @@
     position: relative;
 }
 
-/* Better Task Cards */
+/*  Better Task Cards */
 .task-card {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -269,16 +269,26 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    transition: all 0.2s;
 }
 
+.task-card:hover {
+    border-color: #aaa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Completed 任务样式 */
 .task-card.completed {
-    opacity: 0.6;
-    text-decoration: line-through;
+    opacity: 0.78;
+    color: #555;
+    background: #f8f9fa;       
+    border-color: #e0e0e0;
 }
 
 .task-checkbox {
     width: 20px;
     height: 20px;
+    accent-color: #4caf50;
 }
 
 .task-info {
@@ -306,4 +316,9 @@
     font-size: 20px;
     cursor: pointer;
     padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.task-actions button:hover {
+    background: #f0f0f0;
 }
