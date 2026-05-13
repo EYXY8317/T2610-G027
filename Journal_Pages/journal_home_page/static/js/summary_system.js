@@ -18,117 +18,173 @@ const angryEmoji =
 
 // ================= MOOD DATA =================
 
-const happyCount =
-    Number(emojiChart.dataset.happy);
+if (emojiChart) {
 
-const sadCount =
-    Number(emojiChart.dataset.sad);
+    const happyCount =
+        Number(emojiChart.dataset.happy);
 
-const angryCount =
-    Number(emojiChart.dataset.angry);
+    const sadCount =
+        Number(emojiChart.dataset.sad);
 
-const totalMood =
-    happyCount + sadCount + angryCount;
+    const angryCount =
+        Number(emojiChart.dataset.angry);
 
+    const totalMood =
+        happyCount + sadCount + angryCount;
 
-// ================= EMOJI SIZE =================
+    // ================= EMOJI SIZE =================
 
-if (totalMood === 0) {
+    if (totalMood === 0) {
 
-    happyEmoji.style.fontSize = "70px";
+        if (happyEmoji) {
 
-    sadEmoji.style.fontSize = "70px";
+            happyEmoji.style.fontSize = "70px";
 
-    angryEmoji.style.fontSize = "70px";
+        }
 
-}
+        if (sadEmoji) {
 
-else {
+            sadEmoji.style.fontSize = "70px";
 
-    happyEmoji.style.fontSize =
-        (happyCount / totalMood * 120) + "px";
+        }
 
-    sadEmoji.style.fontSize =
-        (sadCount / totalMood * 120) + "px";
+        if (angryEmoji) {
 
-    angryEmoji.style.fontSize =
-        (angryCount / totalMood * 120) + "px";
+            angryEmoji.style.fontSize = "70px";
 
-}
+        }
 
+    }
 
-// ================= TOOLTIP =================
+    else {
 
-if (totalMood > 0) {
+        if (happyEmoji) {
 
-    happyEmoji.title =
-        "Happy: " +
-        Math.round(happyCount / totalMood * 100)
-        + "%";
+            happyEmoji.style.fontSize =
+                (happyCount / totalMood * 120) + "px";
 
-    sadEmoji.title =
-        "Sad: " +
-        Math.round(sadCount / totalMood * 100)
-        + "%";
+        }
 
-    angryEmoji.title =
-        "Angry: " +
-        Math.round(angryCount / totalMood * 100)
-        + "%";
+        if (sadEmoji) {
 
-}
+            sadEmoji.style.fontSize =
+                (sadCount / totalMood * 120) + "px";
 
-else {
+        }
 
-    happyEmoji.title = "No mood data";
+        if (angryEmoji) {
 
-    sadEmoji.title = "No mood data";
+            angryEmoji.style.fontSize =
+                (angryCount / totalMood * 120) + "px";
 
-    angryEmoji.title = "No mood data";
+        }
+
+    }
+
+    // ================= TOOLTIP =================
+
+    if (totalMood > 0) {
+
+        if (happyEmoji) {
+
+            happyEmoji.title =
+                "Happy: " +
+                Math.round(happyCount / totalMood * 100)
+                + "%";
+
+        }
+
+        if (sadEmoji) {
+
+            sadEmoji.title =
+                "Sad: " +
+                Math.round(sadCount / totalMood * 100)
+                + "%";
+
+        }
+
+        if (angryEmoji) {
+
+            angryEmoji.title =
+                "Angry: " +
+                Math.round(angryCount / totalMood * 100)
+                + "%";
+
+        }
+
+    }
+
+    else {
+
+        if (happyEmoji) {
+
+            happyEmoji.title = "No mood data";
+
+        }
+
+        if (sadEmoji) {
+
+            sadEmoji.title = "No mood data";
+
+        }
+
+        if (angryEmoji) {
+
+            angryEmoji.title = "No mood data";
+
+        }
+
+    }
 
 }
 
 
 // ================= CHART =================
 
-let moodChart =
-    new Chart(chartCanvas, {
+let moodChart;
 
-        type: "line",
+if (chartCanvas) {
 
-        data: {
+    moodChart =
+        new Chart(chartCanvas, {
 
-            labels: [
-                "Mon",
-                "Tue",
-                "Wed",
-                "Thu",
-                "Fri",
-                "Sat",
-                "Sun"
-            ],
+            type: "line",
 
-            datasets: [{
+            data: {
 
-                label: "Mood Level",
+                labels: [
+                    "Mon",
+                    "Tue",
+                    "Wed",
+                    "Thu",
+                    "Fri",
+                    "Sat",
+                    "Sun"
+                ],
 
-                data: [4, 6, 5, 7, 8, 6, 9],
+                datasets: [{
 
-                borderWidth: 2
+                    label: "Mood Level",
 
-            }]
+                    data: [4, 6, 5, 7, 8, 6, 9],
 
-        },
+                    borderWidth: 2
 
-        options: {
+                }]
 
-            responsive: true,
+            },
 
-            maintainAspectRatio: false
+            options: {
 
-        }
+                responsive: true,
 
-    });
+                maintainAspectRatio: false
+
+            }
+
+        });
+
+}
 
 
 // ================= ELEMENTS =================
@@ -177,24 +233,32 @@ const wordSummaryText =
 
 // ================= OPEN POPUP =================
 
-summarySettingButton.addEventListener("click", function() {
+if (summarySettingButton) {
 
-    summaryOverlay.style.display = "block";
+    summarySettingButton.addEventListener("click", function() {
 
-});
+        summaryOverlay.style.display = "block";
+
+    });
+
+}
 
 
 // ================= CLOSE POPUP =================
 
-summaryOverlay.addEventListener("click", function(event) {
+if (summaryOverlay) {
 
-    if (event.target === summaryOverlay) {
+    summaryOverlay.addEventListener("click", function(event) {
 
-        summaryOverlay.style.display = "none";
+        if (event.target === summaryOverlay) {
 
-    }
+            summaryOverlay.style.display = "none";
 
-});
+        }
+
+    });
+
+}
 
 
 // ================= FREQUENCY =================
@@ -214,21 +278,21 @@ frequencyCards.forEach(function(card) {
         const frequency =
             card.dataset.frequency;
 
-        if (frequency === "week") {
+        if (frequency === "week" && frequencyText) {
 
             frequencyText.innerText =
                 "Weekly Mood Summary";
 
         }
 
-        if (frequency === "month") {
+        if (frequency === "month" && frequencyText) {
 
             frequencyText.innerText =
                 "Monthly Mood Summary";
 
         }
 
-        if (frequency === "year") {
+        if (frequency === "year" && frequencyText) {
 
             frequencyText.innerText =
                 "Yearly Mood Summary";
@@ -242,13 +306,25 @@ frequencyCards.forEach(function(card) {
 
 // ================= HIDE SUMMARY =================
 
-hideSummaryButton.addEventListener("click", function() {
+if (hideSummaryButton) {
 
-    summaryWidget.style.display = "none";
+    hideSummaryButton.addEventListener("click", function() {
 
-    summaryOverlay.style.display = "none";
+        if (summaryWidget) {
 
-});
+            summaryWidget.style.display = "none";
+
+        }
+
+        if (summaryOverlay) {
+
+            summaryOverlay.style.display = "none";
+
+        }
+
+    });
+
+}
 
 
 // ================= CHART TYPE =================
@@ -272,12 +348,24 @@ chartCards.forEach(function(card) {
 
         if (chartType === "emoji") {
 
-            chartCanvas.style.display = "none";
+            if (chartCanvas) {
 
-            emojiChart.style.display = "flex";
+                chartCanvas.style.display = "none";
 
-            chartTypeText.innerText =
-                "😊 Emoji Mood Chart";
+            }
+
+            if (emojiChart) {
+
+                emojiChart.style.display = "flex";
+
+            }
+
+            if (chartTypeText) {
+
+                chartTypeText.innerText =
+                    "😊 Emoji Mood Chart";
+
+            }
 
             return;
 
@@ -285,41 +373,49 @@ chartCards.forEach(function(card) {
 
         // ================= NORMAL CHART =================
 
-        emojiChart.style.display = "none";
+        if (emojiChart) {
 
-        chartCanvas.style.display = "block";
+            emojiChart.style.display = "none";
+
+        }
+
+        if (chartCanvas) {
+
+            chartCanvas.style.display = "block";
+
+        }
 
         // ================= CHANGE TEXT =================
 
-        if (chartType === "line") {
+        if (chartType === "line" && chartTypeText) {
 
             chartTypeText.innerText =
                 "📈 Line Chart";
 
         }
 
-        if (chartType === "bar") {
+        if (chartType === "bar" && chartTypeText) {
 
             chartTypeText.innerText =
                 "📊 Bar Chart";
 
         }
 
-        if (chartType === "pie") {
+        if (chartType === "pie" && chartTypeText) {
 
             chartTypeText.innerText =
                 "🥧 Pie Chart";
 
         }
 
-        if (chartType === "doughnut") {
+        if (chartType === "doughnut" && chartTypeText) {
 
             chartTypeText.innerText =
                 "🍩 Doughnut Chart";
 
         }
 
-        if (chartType === "radar") {
+        if (chartType === "radar" && chartTypeText) {
 
             chartTypeText.innerText =
                 "🕸 Radar Chart";
@@ -328,48 +424,56 @@ chartCards.forEach(function(card) {
 
         // ================= DESTROY OLD CHART =================
 
-        moodChart.destroy();
+        if (moodChart) {
+
+            moodChart.destroy();
+
+        }
 
         // ================= CREATE NEW CHART =================
 
-        moodChart =
-            new Chart(chartCanvas, {
+        if (chartCanvas) {
 
-                type: chartType,
+            moodChart =
+                new Chart(chartCanvas, {
 
-                data: {
+                    type: chartType,
 
-                    labels: [
-                        "Mon",
-                        "Tue",
-                        "Wed",
-                        "Thu",
-                        "Fri",
-                        "Sat",
-                        "Sun"
-                    ],
+                    data: {
 
-                    datasets: [{
+                        labels: [
+                            "Mon",
+                            "Tue",
+                            "Wed",
+                            "Thu",
+                            "Fri",
+                            "Sat",
+                            "Sun"
+                        ],
 
-                        label: "Mood Level",
+                        datasets: [{
 
-                        data: [4, 6, 5, 7, 8, 6, 9],
+                            label: "Mood Level",
 
-                        borderWidth: 2
+                            data: [4, 6, 5, 7, 8, 6, 9],
 
-                    }]
+                            borderWidth: 2
 
-                },
+                        }]
 
-                options: {
+                    },
 
-                    responsive: true,
+                    options: {
 
-                    maintainAspectRatio: false
+                        responsive: true,
 
-                }
+                        maintainAspectRatio: false
 
-            });
+                    }
+
+                });
+
+        }
 
     });
 
@@ -395,7 +499,7 @@ wordCards.forEach(function(card) {
 
         // ================= AI FEEDBACK =================
 
-        if (wordType === "ai") {
+        if (wordType === "ai" && wordSummaryText) {
 
             wordSummaryText.innerText =
 
@@ -406,7 +510,7 @@ wordCards.forEach(function(card) {
 
         // ================= WORD SUMMARY =================
 
-        if (wordType === "summary") {
+        if (wordType === "summary" && wordSummaryText) {
 
             wordSummaryText.innerText =
 

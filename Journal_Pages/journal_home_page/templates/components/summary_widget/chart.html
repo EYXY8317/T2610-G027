@@ -1,0 +1,60 @@
+<!-- ================= MOOD CHART WIDGET ================= -->
+
+<div class="widget large-widget"
+     id="mood-chart-widget">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="widget-header">
+
+        <h2>
+            📊 Mood Chart
+        </h2>
+
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+
+    <div class="widget-content">
+
+        <p id="summary-frequency-text">
+            Weekly Mood Summary
+        </p>
+
+        <p id="chart-type-text">
+            📈 Line Chart
+        </p>
+
+        <!-- ================= CHART ================= -->
+
+        <canvas id="mood-chart"></canvas>
+
+        <!-- ================= EMOJI CHART ================= -->
+
+        <div id="emoji-chart"
+
+             data-happy="{{ happy_count }}"
+
+             data-sad="{{ sad_count }}"
+
+             data-angry="{{ angry_count }}"
+
+             style="display: none;">
+
+            <span class="happy-emoji">
+                😊
+            </span>
+
+            <span class="sad-emoji">
+                😢
+            </span>
+
+            <span class="angry-emoji">
+                😡
+            </span>
+
+        </div>
+
+    </div>
+
+</div>

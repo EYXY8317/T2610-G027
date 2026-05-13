@@ -21,11 +21,15 @@ const notificationCard =
 
 // ================= OPEN POPUP =================
 
-settingButton.addEventListener("click", function () {
+if (settingButton) {
 
-    popup.style.display = "block";
+    settingButton.addEventListener("click", function () {
 
-});
+        popup.style.display = "block";
+
+    });
+
+}
 
 
 // ================= MODE SELECTION =================
@@ -52,7 +56,7 @@ modeCards.forEach(function(card) {
 
         // ================= HIDE MODE =================
 
-        if (mode === "hide") {
+        if (mode === "hide" && streakWidget) {
 
             streakWidget.style.display = "none";
 
@@ -60,7 +64,7 @@ modeCards.forEach(function(card) {
 
         // ================= SHOW WIDGET =================
 
-        else {
+        else if (streakWidget) {
 
             streakWidget.style.display = "block";
 
@@ -68,7 +72,7 @@ modeCards.forEach(function(card) {
 
         // ================= DAILY MODE =================
 
-        if (mode === "daily") {
+        if (mode === "daily" && streakText) {
 
             const currentStreak =
                 streakText.dataset.current;
@@ -80,7 +84,7 @@ modeCards.forEach(function(card) {
 
         // ================= HIGHEST MODE =================
 
-        if (mode === "highest") {
+        if (mode === "highest" && streakText) {
 
             const highestStreak =
                 streakText.dataset.highest;
@@ -99,21 +103,29 @@ modeCards.forEach(function(card) {
 
 // ================= NOTIFICATION =================
 
-notificationCard.addEventListener("click", function() {
+if (notificationCard) {
 
-    notificationCard.classList.toggle("selected");
+    notificationCard.addEventListener("click", function() {
 
-});
+        notificationCard.classList.toggle("selected");
+
+    });
+
+}
 
 
 // ================= CLOSE POPUP =================
 
-popup.addEventListener("click", function(event) {
+if (popup) {
 
-    if (event.target === popup) {
+    popup.addEventListener("click", function(event) {
 
-        popup.style.display = "none";
+        if (event.target === popup) {
 
-    }
+            popup.style.display = "none";
 
-});
+        }
+
+    });
+
+}
