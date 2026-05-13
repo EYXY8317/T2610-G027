@@ -477,9 +477,7 @@ function toggleComplete(listType, id, checkbox) {
 }
 
 // Show Editable Detail Panel 
-let currentTaskListType = "";
-let currentTaskId = null;
-
+// 打开详情面板
 function showTaskDetail(listType, id) {
     currentTaskListType = listType;
     currentTaskId = id;
@@ -487,7 +485,7 @@ function showTaskDetail(listType, id) {
     let task = taskData[listType].find(t => t.id === id);
     if (!task) return;
 
-    // 填充可编辑字段
+    // 填充数据
     document.getElementById("panelTitleInput").value = task.text || "";
     document.getElementById("panelDescription").value = task.description || "";
     document.getElementById("panelDateInput").value = task.date || "";
@@ -496,24 +494,21 @@ function showTaskDetail(listType, id) {
     document.getElementById("panelPrioritySelect").value = task.priority || "";
     document.getElementById("panelTagInput").value = task.tag || "";
 
-  // 完全显示面板
     const panel = document.getElementById("taskDetailPanel");
-    panel.style.visibility = "visible";
-    panel.style.opacity = "1";
-    panel.style.right = "0";
+    panel.classList.add("open");     // 使用 class 控制
 }
 
+// 关闭详情面板（最关键的修复）
 function closeDetailPanel() {
     const panel = document.getElementById("taskDetailPanel");
     if (!panel) return;
 
-    panel.style.right = "-450px";
-    panel.style.opacity = "0";
+    panel.classList.remove("open");
 
-    // 等待过渡动画结束后再彻底隐藏，防止残影
+    // 等待动画结束后彻底隐藏，防止残影
     setTimeout(() => {
         panel.style.visibility = "hidden";
-    }, 400);   // 比 transition 的 0.35s 稍长一点
+    }, 450);
 }
 
 // Save Changes from Detail Panel 
