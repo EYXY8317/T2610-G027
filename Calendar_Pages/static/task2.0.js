@@ -490,19 +490,21 @@ function showTaskDetail(listType, id) {
     document.getElementById("panelPrioritySelect").value = task.priority || "";
     document.getElementById("panelTagInput").value = task.tag || "";
 
-    // 打开右侧面板
-    document.getElementById("taskDetailPanel").style.right = "0";
+  // 完全显示面板
+    const panel = document.getElementById("taskDetailPanel");
+    panel.style.visibility = "visible";
+    panel.style.opacity = "1";
+    panel.style.right = "0";
 }
 
 function closeDetailPanel() {
-    document.getElementById("taskDetailPanel").style.right = "-400px";
-}
-
-function deleteCurrentTask() {
-    if (confirm("Delete this task?")) {
-        deleteTask(currentTaskListType, currentTaskId);
-        closeDetailPanel();
-    }
+    const panel = document.getElementById("taskDetailPanel");
+    panel.style.right = "-450px";
+    // 延迟隐藏，防止闪烁
+    setTimeout(() => {
+        panel.style.visibility = "hidden";
+        panel.style.opacity = "0";
+    }, 350);
 }
 
 // Save Changes from Detail Panel 

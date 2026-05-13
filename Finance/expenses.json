@@ -1,38 +1,47 @@
 [
     {
         "username": "test",
-        "date": "2026-05-07",
+        "date": "2026-05-01",
         "type": "income",
         "category": "Salary",
         "account": "CIMB",
         "item": "",
-        "amount": 5000.0
+        "amount": 1000.0
     },
     {
         "username": "test",
-        "date": "2026-05-22",
+        "date": "2026-05-13",
         "type": "expense",
         "category": "Food",
-        "account": "Public bank",
-        "item": "food",
-        "amount": 10.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-05",
-        "type": "saving",
-        "category": "Savings",
         "account": "MAE",
-        "item": "",
-        "amount": 500.0
+        "item": "hotdogs",
+        "amount": 800.0
     },
     {
         "username": "test",
-        "date": "2026-05-22",
+        "date": "2026-05-21",
+        "type": "expense",
+        "category": "Food",
+        "account": "TnG",
+        "item": "hotdog",
+        "amount": 50.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-13",
+        "type": "expense",
+        "category": "Transport",
+        "account": "TnG",
+        "item": "a",
+        "amount": 100.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-13",
         "type": "expense",
         "category": "Entertainment",
         "account": "TnG",
         "item": "pokemon",
-        "amount": 500.0
+        "amount": 300.0
     }
 ]
