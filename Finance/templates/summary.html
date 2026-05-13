@@ -1,15 +1,34 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Summary</title>
 
     <link rel="stylesheet"
     href="{{ url_for('static', filename='finance.css') }}">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
+<body
+
+{% if wallpaper %}
+
+style="
+background-image:
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+
+>
+
+<div class="wallpaper-overlay"></div>
+
+<!-- ===== TOPBAR ===== -->
 
 <div class="topbar">
 
@@ -18,337 +37,473 @@
     </div>
 
     <div class="topbar-links">
+
         <a href="/view">View</a>
+
         <a href="/add">Add</a>
+
         <a href="/summary" class="active-link">
-            Summary</a>
+            Summary
+        </a>
+
         <a href="/budget">Budget</a>
+
         <a href="/goals">Goals</a>
+
     </div>
 
     <div class="topbar-actions">
+
         <a href="/calendar">Calendar</a>
+
         <a href="/diary">Diary</a>
+
         <a href="/profile">Profile</a>
+
         <a href="/logout">Logout</a>
+
     </div>
 
 </div>
 
-<hr>
+<!-- ===== MAIN ===== -->
 
 <div class="summary-wrapper">
 
     <h1>
-    📊 Financial Summary — 
-    {{ selected_month }}/{{ selected_year }}
+        📊 Financial Summary —
+        {{ selected_month }}/{{ selected_year }}
     </h1>
 
-    <!-- FILTER -->
+    <!-- ===== FILTER ===== -->
+
     <div class="summary-card">
 
         <form method="GET" class="filter-form">
 
             <div>
+
                 <label>Month</label><br>
 
                 <select name="month">
-                    <option value="01" {% if selected_month == "01" %}selected{% endif %}>January</option>
-                    <option value="02" {% if selected_month == "02" %}selected{% endif %}>February</option>
-                    <option value="03" {% if selected_month == "03" %}selected{% endif %}>March</option>
-                    <option value="04" {% if selected_month == "04" %}selected{% endif %}>April</option>
-                    <option value="05" {% if selected_month == "05" %}selected{% endif %}>May</option>
-                    <option value="06" {% if selected_month == "06" %}selected{% endif %}>June</option>
-                    <option value="07" {% if selected_month == "07" %}selected{% endif %}>July</option>
-                    <option value="08" {% if selected_month == "08" %}selected{% endif %}>August</option>
-                    <option value="09" {% if selected_month == "09" %}selected{% endif %}>September</option>
-                    <option value="10" {% if selected_month == "10" %}selected{% endif %}>October</option>
-                    <option value="11" {% if selected_month == "11" %}selected{% endif %}>November</option>
-                    <option value="12" {% if selected_month == "12" %}selected{% endif %}>December</option>
+
+                    <option value="01"
+                    {% if selected_month == "01" %}selected{% endif %}>
+                        January
+                    </option>
+
+                    <option value="02"
+                    {% if selected_month == "02" %}selected{% endif %}>
+                        February
+                    </option>
+
+                    <option value="03"
+                    {% if selected_month == "03" %}selected{% endif %}>
+                        March
+                    </option>
+
+                    <option value="04"
+                    {% if selected_month == "04" %}selected{% endif %}>
+                        April
+                    </option>
+
+                    <option value="05"
+                    {% if selected_month == "05" %}selected{% endif %}>
+                        May
+                    </option>
+
+                    <option value="06"
+                    {% if selected_month == "06" %}selected{% endif %}>
+                        June
+                    </option>
+
+                    <option value="07"
+                    {% if selected_month == "07" %}selected{% endif %}>
+                        July
+                    </option>
+
+                    <option value="08"
+                    {% if selected_month == "08" %}selected{% endif %}>
+                        August
+                    </option>
+
+                    <option value="09"
+                    {% if selected_month == "09" %}selected{% endif %}>
+                        September
+                    </option>
+
+                    <option value="10"
+                    {% if selected_month == "10" %}selected{% endif %}>
+                        October
+                    </option>
+
+                    <option value="11"
+                    {% if selected_month == "11" %}selected{% endif %}>
+                        November
+                    </option>
+
+                    <option value="12"
+                    {% if selected_month == "12" %}selected{% endif %}>
+                        December
+                    </option>
+
                 </select>
+
             </div>
 
             <div>
+
                 <label>Year</label><br>
 
                 <select name="year">
+
                     {% for y in range(2024, 2031) %}
+
                     <option value="{{ y }}"
                     {% if selected_year == y|string %}selected{% endif %}>
+
                         {{ y }}
+
                     </option>
+
                     {% endfor %}
+
                 </select>
+
             </div>
 
-            <button type="submit">View</button>
+            <button type="submit">
+                View
+            </button>
 
         </form>
 
     </div>
 
+    <!-- ===== EMPTY ===== -->
+
     {% if income == 0 and expense == 0 %}
 
     <div class="summary-card empty-card">
+
         <h2>📭 No Summary Yet</h2>
-        <p>You haven’t added any financial records for this period.</p>
+
+        <p>
+            You haven’t added any financial records
+            for this period.
+        </p>
 
         <a href="/add">
-            <button>Add Your First Record</button>
+
+            <button>
+                Add Your First Record
+            </button>
+
         </a>
+
     </div>
 
     {% else %}
 
-    <!-- OVERVIEW -->
+    <!-- ===== SUMMARY GRID ===== -->
+
     <div class="summary-grid">
 
-        <div class="summary-card stat-card">
-            <h3>Balance</h3>
-            <h1>RM {{ "%.2f"|format(balance) }}</h1>
+        <!-- ===== MONTHLY OVERVIEW ===== -->
+
+        <div class="summary-card">
+
+            <h2>
+                📅 Monthly Overview
+            </h2>
+
+            <div class="overview-stats">
+
+                <div class="overview-box">
+
+                    <p>Income</p>
+
+                    <h3 class="income-text">
+                        RM {{ "%.2f"|format(income) }}
+                    </h3>
+
+                </div>
+
+                <div class="overview-box">
+
+                    <p>Expense</p>
+
+                    <h3 class="expense-text">
+                        RM {{ "%.2f"|format(expense) }}
+                    </h3>
+
+                </div>
+
+                <div class="overview-box">
+
+                    <p>Balance</p>
+
+                    <h3>
+                        RM {{ "%.2f"|format(balance) }}
+                    </h3>
+
+                </div>
+
+                <div class="overview-box">
+
+                    <p>Savings</p>
+
+                    <h3 class="saving-text">
+                        RM {{ "%.2f"|format(saving) }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <br>
 
             {% if balance >= 0 %}
-                <p class="positive">✔ Positive Balance</p>
+
+                <p class="positive">
+                    ✔ Positive Balance
+                </p>
+
             {% else %}
-                <p class="negative">❌ Negative Balance</p>
+
+                <p class="negative">
+                    ❌ Negative Balance
+                </p>
+
             {% endif %}
+
         </div>
 
-        <div class="summary-card stat-card">
-            <h3>Income</h3>
-            <h2 class="income-text">
-                RM {{ "%.2f"|format(income) }}
-            </h2>
+<!-- ===== YEARLY OVERVIEW ===== -->
+
+<div class="summary-card">
+
+    <h2>
+        🗓 {{ selected_year }} Yearly Overview
+    </h2>
+
+    <div class="overview-stats">
+
+        <div class="overview-box">
+
+            <p>Income</p>
+
+            <h3 class="income-text">
+                RM {{ "%.2f"|format(year_income) }}
+            </h3>
+
         </div>
 
-        <div class="summary-card stat-card">
-            <h3>Expense</h3>
-            <h2 class="expense-text">
-                RM {{ "%.2f"|format(expense) }}
-            </h2>
+        <div class="overview-box">
+
+            <p>Expense</p>
+
+            <h3 class="expense-text">
+                RM {{ "%.2f"|format(year_expense) }}
+            </h3>
+
         </div>
 
-        <div class="summary-card stat-card">
-            <h3>Savings</h3>
-            <h2 class="saving-text">
-                RM {{ "%.2f"|format(saving) }}
-            </h2>
+        <div class="overview-box">
+
+            <p>Balance</p>
+
+            <h3>
+                RM {{ "%.2f"|format(year_balance) }}
+            </h3>
+
         </div>
 
-    </div>
+        <div class="overview-box">
 
-    <!-- YEARLY -->
-    <div class="summary-card">
+            <p>Year</p>
 
-        <h2>
-        📅 {{ selected_year }} Yearly Overview
-        </h2>
-
-        <div class="year-grid">
-
-            <div>
-                <p><strong>Yearly Income</strong></p>
-                <h3>
-                    RM {{ "%.2f"|format(yearly_income) }}
-                </h3>
-            </div>
-
-            <div>
-                <p><strong>Yearly Expense</strong></p>
-                <h3>
-                    RM {{ "%.2f"|format(yearly_expense) }}
-                </h3>
-            </div>
-
-            <div>
-                <p><strong>Yearly Balance</strong></p>
-                <h3>
-                    RM {{ "%.2f"|format(yearly_balance) }}
-                </h3>
-            </div>
+            <h3 class="saving-text">
+                {{ selected_year }}
+            </h3>
 
         </div>
 
     </div>
-
-    <!-- SPENDING -->
-    <div class="summary-card">
-
-        <h2>📈 Spending Behavior</h2>
-
-        <p>
-            <strong>Daily Average:</strong>
-            RM {{ "%.2f"|format(daily_avg) }}
-        </p>
-
-        <p class="comparison-text">
-            {{ comparison }}
-        </p>
-
-        <h3>Top Categories</h3>
-
-        {% if top_categories %}
-
-            <ol>
-                {% for cat, amt, percent in top_categories %}
-                    <li>
-                        {{ cat }} —
-                        {{ "%.0f"|format(percent) }}%
-                    </li>
-                {% endfor %}
-            </ol>
-
-            <div class="chart-container">
-                <canvas id="pieChart"></canvas>
-            </div>
-
-        {% else %}
-
-            <p>No category data</p>
-
-        {% endif %}
-
-        <div class="insight-box">
-            <h3>🧠 Insight</h3>
-            <p>{{ insight }}</p>
-        </div>
-
-    </div>
-
-    <!-- BUDGET -->
-    <div class="summary-card">
-
-        <h2>💸 Budget Tracking</h2>
-
-        {% if budget_usage %}
-
-            {% for b in budget_usage %}
-
-            <div class="budget-item">
-
-                <div class="budget-header">
-                    <strong>{{ b.category }}</strong>
-
-                    <span>
-                        RM {{ "%.2f"|format(b.spent) }} /
-                        RM {{ "%.2f"|format(b.limit) }}
-                    </span>
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-bar {{ b.status }}"
-                    style="--width: {{ b.display_percent }}%;">
-                    </div>
-                </div>
-
-                <small>
-
-                    {{ "%.0f"|format(b.percent) }}%
-
-                    {% if b.status == "over" %}
-                        🚨 Over budget
-                    {% elif b.status == "warning" %}
-                        ⚠ Almost full
-                    {% else %}
-                        ✔ Healthy
-                    {% endif %}
-
-                    <br>
-
-                    {% if b.remaining < 0 %}
-                        <span class="negative">
-                            Remaining:
-                            RM {{ "%.2f"|format(b.remaining) }}
-                        </span>
-                    {% else %}
-                        <span class="positive">
-                            Remaining:
-                            RM {{ "%.2f"|format(b.remaining) }}
-                        </span>
-                    {% endif %}
-
-                </small>
-
-            </div>
-
-            {% endfor %}
-
-        {% else %}
-
-            <p>No budgets created yet</p>
-
-        {% endif %}
-
-    </div>
-
-    {% endif %}
 
 </div>
 
-<!-- SHORT TERM -->
-<div class="summary-card">
+        <!-- ===== SPENDING ===== -->
 
-    <h2>🎯 Short-Term Goals</h2>
+        <div class="summary-card">
 
-    <p class="comparison-text">
-        Smaller goals for upcoming plans and purchases
-    </p>
+            <h2>📉 Spending Behavior</h2>
 
-    {% if short_goals %}
+            <p>
 
-        {% for g in short_goals %}
+                <strong>Daily Average:</strong>
 
-        <div class="budget-item">
+                RM {{ "%.2f"|format(daily_avg) }}
 
-            <div class="budget-header">
+                {% if daily_avg < 5 %}
 
-                <strong>{{ g.name }}</strong>
+                    <span style="color:green;">
+                        (Low 👍)
+                    </span>
 
-                <span>
-                    RM {{ "%.2f"|format(g.saved) }} /
-                    RM {{ "%.2f"|format(g.target) }}
-                </span>
+                {% elif daily_avg < 20 %}
 
-            </div>
+                    <span style="color:orange;">
+                        (Moderate)
+                    </span>
 
-            <div class="progress-container">
-
-                <div class="progress-bar safe"
-                style="--width: {{ g.display_percent }}%;">
-                </div>
-
-            </div>
-
-            <small>
-
-                {{ "%.0f"|format(g.percent) }}%
-
-                {% if g.status == "Completed" %}
-                    🎉 Completed
                 {% else %}
-                    🚀 In Progress
+
+                    <span style="color:red;">
+                        (High ⚠️)
+                    </span>
+
                 {% endif %}
+
+            </p>
+
+            <h3>Top Categories</h3>
+
+            {% if top_categories %}
+
+                <ol>
+
+                    {% for cat, amt, percent in top_categories %}
+
+                    <li>
+
+                        {{ cat }} —
+                        {{ "%.0f"|format(percent) }}%
+
+                    </li>
+
+                    {% endfor %}
+
+                </ol>
+
+                <canvas id="pieChart"></canvas>
+
+            {% else %}
+
+                <p>No category data</p>
+
+            {% endif %}
+
+            <h3>🧠 Insight</h3>
+
+            <p>{{ insight }}</p>
+
+        </div>
+
+        <!-- ===== BUDGET ===== -->
+
+        <div class="summary-card">
+
+            <h2>💸 Budget Tracking</h2>
+
+            {% if budget_usage %}
+
+                {% for b in budget_usage %}
+
+                <div class="budget-item">
+
+                    <div class="budget-header">
+
+                        <strong>{{ b.category }}</strong>
+
+                        <span>
+
+                            RM {{ "%.2f"|format(b.spent) }}
+                            /
+                            RM {{ "%.2f"|format(b.limit) }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="progress-container">
+
+                        <div
+                            class="progress-bar {{ b.status }}"
+                            style="--width: {{ b.display_percent }}%;"
+                        ></div>
+
+                    </div>
+
+                    <small>
+
+                        {{ "%.0f"|format(b.percent) }}%
+
+                        {% if b.status == "over" %}
+
+                            🚨 Over budget
+
+                        {% elif b.status == "warning" %}
+
+                            ⚠ Almost full
+
+                        {% else %}
+
+                            ✔ OK
+
+                        {% endif %}
+
+                        <br>
+
+                        Remaining:
+                        RM {{ "%.2f"|format(b.remaining) }}
+
+                    </small>
+
+                </div>
 
                 <br>
 
-                Remaining:
-                RM {{ "%.2f"|format(g.remaining) }}
+                {% endfor %}
 
-            </small>
+            {% else %}
+
+                <p>No budgets set yet</p>
+
+            {% endif %}
 
         </div>
 
-        {% endfor %}
+        <!-- ===== GOALS ===== -->
 
-    {% else %}
+        <div class="summary-card">
 
-        <p>No short-term goals yet</p>
+            <h2>🎯 Financial Goals</h2>
+
+            <p class="comparison-text">
+
+                Track your financial progress
+
+            </p>
+
+            <a href="/goals">
+
+                <button>
+                    Open Goals Dashboard
+                </button>
+
+            </a>
+
+        </div>
+
+    </div>
 
     {% endif %}
 
 </div>
 
-<!-- CHART -->
+<!-- ===== CHART ===== -->
+
 {% if top_categories %}
 
 <script id="chart-data" type="application/json">
@@ -356,21 +511,29 @@
 </script>
 
 <script>
+
 const rawData = JSON.parse(
     document.getElementById("chart-data").textContent
 );
 
 const categories = rawData.map(x => x[0]);
+
 const amounts = rawData.map(x => x[1]);
 
 const total = amounts.reduce((a, b) => a + b, 0);
 
 new Chart(document.getElementById("pieChart"), {
+
     type: 'doughnut',
+
     data: {
+
         labels: categories,
+
         datasets: [{
+
             data: amounts,
+
             backgroundColor: [
                 '#6366F1',
                 '#10B981',
@@ -378,31 +541,49 @@ new Chart(document.getElementById("pieChart"), {
                 '#EF4444',
                 '#8B5CF6'
             ]
+
         }]
+
     },
+
     options: {
+
         responsive: true,
+
         plugins: {
+
             legend: {
                 position: 'bottom'
             },
+
             tooltip: {
+
                 callbacks: {
+
                     label: function(context) {
+
                         const value = context.raw;
-                        const percent = ((value / total) * 100).toFixed(1);
+
+                        const percent =
+                        ((value / total) * 100).toFixed(1);
 
                         return `${context.label}: RM${value} (${percent}%)`;
+
                     }
+
                 }
+
             }
+
         }
+
     }
+
 });
+
 </script>
 
 {% endif %}
 
 </body>
 </html>
-

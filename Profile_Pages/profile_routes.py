@@ -127,3 +127,43 @@ def register_profile_routes(app):
             "edit_profile.html",
             user=current_user
         )
+    
+    @app.route("/upload_wallpaper", methods=["POST"])
+    def upload_wallpaper():
+
+        wallpaper = request.files["wallpaper"]
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        for user in users:
+
+            if user["username"] == session["user"]:
+
+                if wallpaper.filename != "":
+
+                    filename = wallpaper.filename
+
+                    folder = os.path.join(
+                        "Profile_Pages",
+                        "static",
+                        "wallpapers"
+                    )
+
+                    os.makedirs(folder, exist_ok=True)
+
+                    save_path = os.path.join(
+                        folder,
+                        filename
+                    )
+
+                    wallpaper.save(save_path)
+
+                    user["wallpaper"] = filename
+
+                break
+
+        with open("users.json", "w") as f:
+            json.dump(users, f, indent=4)
+
+        return redirect("/profile")

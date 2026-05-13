@@ -36,6 +36,20 @@
 </head>
 
 <body>
+<body
+
+{% if wallpaper %}
+
+style="
+background-image:
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+
+>
+
+<div class="wallpaper-overlay"></div>
 
 <div class="topbar">
 

@@ -53,6 +53,20 @@ def save_data(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
+def get_user_wallpaper():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u.get("wallpaper")
+
+    return None
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
     "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
@@ -232,7 +246,8 @@ def add_financial():
     return render_template(
     "add.html",
     accounts=user_accounts,
-    categories=CATEGORY_MAP
+    categories=CATEGORY_MAP,
+    wallpaper=get_user_wallpaper(),
     )
 
 # ================= VIEW =================
@@ -247,7 +262,11 @@ def view_financial():
     user_records = [r for r in records if r["username"] == user]
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    return render_template("view.html", records=sorted_records)
+    return render_template(
+        "view.html",
+        records=sorted_records,
+        wallpaper=get_user_wallpaper(),
+        )
 
 
 # ================= DELETE =================
@@ -342,7 +361,8 @@ def update_financial(idx):
     return render_template(
         "update.html",
         record=record,
-        accounts=user_accounts
+        accounts=user_accounts,
+        wallpaper=get_user_wallpaper(),
     )
 
 # ================= BUDGET =================
@@ -407,7 +427,8 @@ def budget():
     return render_template(
         "budget.html",
         budgets=user_budgets,
-        categories=CATEGORY_MAP["expense"]
+        categories=CATEGORY_MAP["expense"],
+        wallpaper=get_user_wallpaper(),
     )
 
 # ===============DELETE BUDGET ==============
@@ -694,6 +715,20 @@ def summary():
         else:
             long_goals.append(goal_data)
 
+        year_income = sum(
+        r["amount"]
+        for r in year_records
+        if r["type"] == "income"
+    )
+
+    year_expense = sum(
+        r["amount"]
+        for r in year_records
+        if r["type"] == "expense"
+    )
+
+    year_balance = year_income - year_expense
+
     # ================= RENDER =================
     return render_template(
         "summary.html",
@@ -701,6 +736,9 @@ def summary():
         expense=expense,
         saving=saving,
         balance=balance,
+        year_income=year_income,
+        year_expense=year_expense,
+        year_balance=year_balance,
         daily_avg=round(
             expense / max(now.day, 1),
             2
@@ -716,7 +754,8 @@ def summary():
         selected_month=selected_month,
         selected_year=selected_year,
         short_goals=short_goals,
-        long_goals=long_goals
+        long_goals=long_goals,
+        wallpaper=get_user_wallpaper(),
     )
 
 #================= GOALS ==================
@@ -850,10 +889,9 @@ def goals():
     return render_template(
 
         "goals.html",
-
         short_goals=short_goals,
-
-        long_goals=long_goals
+        long_goals=long_goals,
+        wallpaper=get_user_wallpaper(),
 
     )
 
