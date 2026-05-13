@@ -621,6 +621,10 @@ body{
             id="youtubeLink"
             placeholder="Paste YouTube Link">
 
+            <button onclick="loadYoutubeMusic()">
+                 Load YouTube Music
+            </button>
+
         </div>
 
         <!-- AUDIO -->
@@ -628,6 +632,13 @@ body{
         <audio id="audioPlayer"></audio>
 
     </section>
+
+    <iframe
+    id="youtubePlayer"
+    width="0"
+    height="0"
+    style="border:none;">
+    </iframe>
 
 </div>
 
@@ -662,6 +673,45 @@ function playMusic() {
 function pauseMusic() {
     audio.pause();                     // Pause playback
     vinyl.classList.remove("playing"); // Stop vinyl spinning animation
+}
+
+/* ================= YOUTUBE MUSIC ================= */
+
+function loadYoutubeMusic(){
+
+    /* Get YouTube URL */
+    const youtubeURL =
+    document.getElementById("youtubeLink").value;
+
+    /* Extract video ID */
+    const videoID =
+    youtubeURL.split("v=")[1];
+
+    /* Check if valid */
+    if(videoID){
+
+        /* Create embed URL */
+        const embedURL =
+        "https://www.youtube.com/embed/" +
+        videoID +
+        "?autoplay=1";
+
+        /* Get iframe */
+        const player =
+        document.getElementById("youtubePlayer");
+
+        /* Load video */
+        player.src = embedURL;
+
+        /* Update title */
+        songTitle.textContent =
+        "YouTube Music Playing";
+
+        /* Start vinyl */
+        vinyl.classList.add("playing");
+
+    }
+
 }
 </script>
 
