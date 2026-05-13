@@ -412,7 +412,7 @@ function toggleComplete(listType, id, checkbox) {
     saveTasks();
 }
 
-// Show Detail Panel (Only when click ▼)
+// Show Editable Detail Panel 
 let currentTaskListType = "";
 let currentTaskId = null;
 
@@ -423,14 +423,16 @@ function showTaskDetail(listType, id) {
     let task = taskData[listType].find(t => t.id === id);
     if (!task) return;
 
-    document.getElementById("panelTitle").textContent = task.text;
-    document.getElementById("panelDate").textContent = task.date || "Not Set";
-    document.getElementById("panelReminder").textContent = task.reminder || "Not Set";
-    document.getElementById("panelRepeat").textContent = "No Repeat";
-    document.getElementById("panelPriority").textContent = task.priority || "None";
-    document.getElementById("panelTag").textContent = task.tag || "None";
+    // 填充可编辑字段
+    document.getElementById("panelTitleInput").value = task.text || "";
+    document.getElementById("panelDescription").value = task.description || "";
+    document.getElementById("panelDateInput").value = task.date || "";
+    document.getElementById("panelStartTime").value = task.startTime || "";
+    document.getElementById("panelEndTime").value = task.endTime || "";
+    document.getElementById("panelPrioritySelect").value = task.priority || "";
+    document.getElementById("panelTagInput").value = task.tag || "";
 
-    // Open the right panel
+    // 打开右侧面板
     document.getElementById("taskDetailPanel").style.right = "0";
 }
 
