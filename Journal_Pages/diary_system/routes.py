@@ -243,3 +243,26 @@ def weather():
     data = response.json()
 
     return jsonify(data)
+
+#================================ weather forecast API ================================
+
+@diary_bp.route("/weather_forecast")
+
+def weather_forecast():
+
+    city = "Cyberjaya"
+
+    api_key = "825799c844694c8dcff5bf94fa943a5a"
+
+    url = (
+        f"https://api.openweathermap.org/data/2.5/forecast"
+        f"?q={city}"
+        f"&appid={api_key}"
+        f"&units=metric"
+    )
+
+    response = requests.get(url)
+
+    data = response.json()
+
+    return jsonify(data)
