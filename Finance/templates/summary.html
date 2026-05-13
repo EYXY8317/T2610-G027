@@ -59,21 +59,40 @@
 
     <hr>
 
-    <!-- SPENDING -->
-    <h2>📈 Spending Behavior</h2>
+    <hr>
+
+    <h2>📅 Yearly Overview</h2>
 
     <p>
-        <strong>Daily Average:</strong>
-        RM {{ "%.2f"|format(daily_avg) }}
-
-        {% if daily_avg < 5 %}
-            <span style="color:green;">(Low 👍)</span>
-        {% elif daily_avg < 20 %}
-            <span style="color:orange;">(Moderate)</span>
-        {% else %}
-            <span style="color:red;">(High ⚠️)</span>
-        {% endif %}
+        <strong>Yearly Income:</strong>
+        RM {{ "%.2f"|format(yearly_income) }}
     </p>
+
+    <p>
+        <strong>Yearly Expense:</strong>
+        RM {{ "%.2f"|format(yearly_expense) }}
+    </p>
+
+    <p>
+        <strong>Yearly Balance:</strong>
+        RM {{ "%.2f"|format(yearly_balance) }}
+    </p>
+
+        <!-- SPENDING -->
+        <h2>📈 Spending Behavior</h2>
+
+        <p>
+            <strong>Daily Average:</strong>
+            RM {{ "%.2f"|format(daily_avg) }}
+
+            {% if daily_avg < 5 %}
+                <span style="color:green;">(Low 👍)</span>
+            {% elif daily_avg < 20 %}
+                <span style="color:orange;">(Moderate)</span>
+            {% else %}
+                <span style="color:red;">(High ⚠️)</span>
+            {% endif %}
+        </p>
 
     <h3>Top Categories</h3>
 
@@ -102,8 +121,6 @@
 
         {% for b in budget_usage %}
 
-            {% set percent = 100 if b.percent > 100 else b.percent %}
-
             <li style="margin-bottom:15px;">
 
                 <strong>{{ b.category }}</strong><br>
@@ -112,7 +129,7 @@
 
                 <div class="progress-container">
                     <div class="progress-bar {{ b.status }}"
-                         style="--width: {{ percent }}%;">
+                         style="--width: {{ b.display_percent }}%;">
                     </div>
                 </div>
 

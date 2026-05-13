@@ -9,7 +9,6 @@
 <h1>Set Budget</h1>
 
 <hr>
-<hr>
 <a href="/view">Finance</a> |
 <a href="/calendar">Calendar</a> |
 <a href="/diary">Diary</a> |
@@ -24,14 +23,17 @@
 <a href="/budget">Budget</a>
 <hr>
 
+<!-- ERROR -->
 {% if error %}
 <p style="color:red;">{{ error }}</p>
 {% endif %}
 
+<!-- FORM -->
 <form method="POST">
 
     <!-- CATEGORY -->
     <label>Category:</label><br>
+
     <select name="category" required>
         <option value="">-- Select Category --</option>
 
@@ -44,7 +46,14 @@
 
     <!-- AMOUNT -->
     <label>Budget Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount" value="0.00" readonly>
+
+    <input
+        type="text"
+        id="amountInput"
+        name="amount"
+        value="0.00"
+        readonly
+    >
 
     <br><br>
 
@@ -57,15 +66,35 @@
 <h2>Your Budgets</h2>
 
 {% if budgets %}
+
     <ul>
+
         {% for b in budgets %}
-            <li>{{ b.category }} — RM {{ "%.2f"|format(b.amount) }}</li>
+
+        <li>
+
+            <strong>{{ b.category }}</strong>
+            — RM {{ "%.2f"|format(b.amount) }}
+
+            <a href="/delete_budget/{{ b.category }}">
+                Delete
+            </a>
+
+        </li>
+
+        <br>
+
         {% endfor %}
+
     </ul>
+
 {% else %}
-    <p>No budgets set</p>
+
+    <p>No budgets created yet</p>
+
 {% endif %}
 
+<!-- TNG INPUT -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -74,10 +103,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const amountInput = document.getElementById("amountInput");
 
-    // initialize safely
-    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
+    value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    ) || 0;
 
     amountInput.addEventListener("focus", () => active = true);
+
     amountInput.addEventListener("blur", () => active = false);
 
     document.addEventListener("keydown", function(e) {
@@ -85,20 +116,25 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!active) return;
 
         if (e.key >= "0" && e.key <= "9") {
+
             value = value * 10 + parseInt(e.key);
-        } 
+
+        }
         else if (e.key === "Backspace") {
+
             value = Math.floor(value / 10);
-        } 
+
+        }
         else {
             return;
         }
 
         e.preventDefault();
+
         amountInput.value = (value / 100).toFixed(2);
+
     });
 
-    // optional UX
     amountInput.focus();
 
 });
