@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
     <title>Add Record</title>
@@ -9,7 +10,6 @@
 
 </head>
 
-<body>
 <body
 
 {% if wallpaper %}
@@ -25,153 +25,281 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 <div class="wallpaper-overlay"></div>
 
-<div class="topbar">
+<div class="summary-wrapper">
 
-    <div class="topbar-title">
-        ➕ Add Record
+    <!-- ===== TOPBAR ===== -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+            ➕ Add Record
+        </div>
+
+        <div class="topbar-links">
+
+            <a href="/view">View</a>
+
+            <a href="/add" class="active-link">
+                Add
+            </a>
+
+            <a href="/summary">Summary</a>
+
+            <a href="/budget">Budget</a>
+
+            <a href="/goals">Goals</a>
+
+        </div>
+
+        <div class="topbar-actions">
+
+            <a href="/calendar">Calendar</a>
+
+            <a href="/diary">Diary</a>
+
+            <a href="/profile">Profile</a>
+
+            <a href="/logout">Logout</a>
+
+        </div>
+
     </div>
 
-    <div class="topbar-links">
-        <a href="/view">View</a>
-        <a href="/add" class="active-link">
-            Add</a>
-        <a href="/summary">Summary</a>
-        <a href="/budget">Budget</a>
-        <a href="/goals"></a>
-    </div>
+    <!-- ===== ADD RECORD CARD ===== -->
 
-    <div class="topbar-actions">
-        <a href="/calendar">Calendar</a>
-        <a href="/diary">Diary</a>
-        <a href="/profile">Profile</a>
-        <a href="/logout">Logout</a>
+    <div class="summary-card">
+
+        <h2>Financial Record</h2>
+
+        {% if error %}
+        <p class="negative">{{ error }}</p>
+        {% endif %}
+
+        {% if success %}
+        <p class="positive">{{ success }}</p>
+        {% endif %}
+
+        <form method="POST">
+
+            <!-- DATE -->
+
+            <label>Date</label>
+
+            <input
+                type="date"
+                name="date"
+                value="{{ form_data.date if form_data else '' }}"
+                required
+            >
+
+            <!-- TYPE -->
+
+            <label>Type</label>
+
+            <select name="type" id="typeSelect" required>
+
+                <option value="">
+                    -- Select Type --
+                </option>
+
+                <option
+                    value="income"
+                    {{ 'selected' if form_data and form_data.type == 'income' else '' }}
+                >
+                    Income
+                </option>
+
+                <option
+                    value="expense"
+                    {{ 'selected' if form_data and form_data.type == 'expense' else '' }}
+                >
+                    Expense
+                </option>
+
+                <option
+                    value="saving"
+                    {{ 'selected' if form_data and form_data.type == 'saving' else '' }}
+                >
+                    Saving
+                </option>
+
+            </select>
+
+            <!-- CATEGORY -->
+
+            <label>Category</label>
+
+            <select
+                name="category"
+                id="categorySelect"
+                required
+                data-selected="{{ form_data.category if form_data else '' }}"
+            >
+
+                <option value="">
+                    -- Select Category --
+                </option>
+
+            </select>
+
+            <!-- ACCOUNT -->
+
+            <label>Account</label>
+
+            <select name="account">
+
+                <option value="">
+                    -- Select Account --
+                </option>
+
+                {% for acc in accounts %}
+
+                <option
+                    value="{{ acc.name }}"
+                    {% if form_data and form_data.account == acc.name %}selected{% endif %}
+                >
+                    {{ acc.name }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <!-- NEW ACCOUNT -->
+
+            <label>New Account (Optional)</label>
+
+            <input
+                type="text"
+                name="new_account"
+                value="{{ form_data.new_account if form_data else '' }}"
+                placeholder="Create new account"
+            >
+
+            <!-- ITEM -->
+
+            <label>Item</label>
+
+            <input
+                type="text"
+                name="item"
+                value="{{ form_data.item if form_data else '' }}"
+                placeholder="Example: Lunch, Salary, Grab..."
+            >
+
+            <!-- AMOUNT -->
+
+            <label>Amount (RM)</label>
+
+            <input
+                type="text"
+                id="amountInput"
+                name="amount"
+                value="{{ form_data.amount if form_data else '0.00' }}"
+                readonly
+            >
+
+            <button type="submit">
+
+                Add Record
+
+            </button>
+
+        </form>
+
     </div>
 
 </div>
 
-<form method="POST">
+<!-- ===== SAFE JSON ===== -->
 
-    <!-- DATE -->
-    <label>Date:</label><br>
-    <input type="date" name="date"
-        value="{{ form_data.date if form_data else '' }}" required><br><br>
-
-    <!-- TYPE -->
-    <label>Type:</label><br>
-    <select name="type" id="typeSelect" required>
-        <option value="">-- Select Type --</option>
-        <option value="income" {{ 'selected' if form_data and form_data.type == 'income' else '' }}>Income</option>
-        <option value="expense" {{ 'selected' if form_data and form_data.type == 'expense' else '' }}>Expense</option>
-        <option value="saving" {{ 'selected' if form_data and form_data.type == 'saving' else '' }}>Saving</option>
-    </select><br><br>
-
-    <!-- CATEGORY -->
-    <label>Category:</label><br>
-    <select name="category" id="categorySelect" required
-        data-selected="{{ form_data.category if form_data else '' }}">
-        <option value="">-- Select Category --</option>
-    </select><br><br>
-
-    <!-- ACCOUNT -->
-    <label>Account:</label><br>
-    <select name="account">
-        <option value="">-- Select Account --</option>
-        {% for acc in accounts %}
-        <option value="{{ acc.name }}"
-            {% if form_data and form_data.account == acc.name %}selected{% endif %}>
-            {{ acc.name }}
-        </option>
-        {% endfor %}
-    </select><br><br>
-
-    <input type="text" name="new_account"
-        value="{{ form_data.new_account if form_data else '' }}"
-        placeholder="Or create new account"><br><br>
-
-    <!-- ITEM -->
-    <label>Item:</label><br>
-    <input type="text" name="item"
-        value="{{ form_data.item if form_data else '' }}"><br><br>
-
-    <!-- AMOUNT -->
-    <label>Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount"
-        value="{{ form_data.amount if form_data else '0.00' }}" readonly>
-
-    <br><br>
-    <button type="submit">Add</button>
-
-</form>
-
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
-
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
-
-<!-- SAFE JSON -->
 <script id="categories-data" type="application/json">
-    {{ categories | tojson if categories else '{}' }}
+
+{{ categories | tojson if categories else '{}' }}
+
 </script>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // ================= CATEGORY =================
+
     let categories = {};
+
     try {
+
         categories = JSON.parse(
             document.getElementById("categories-data").textContent
         );
+
     } catch {
+
         categories = {};
     }
 
     const typeSelect = document.getElementById("typeSelect");
+
     const categorySelect = document.getElementById("categorySelect");
 
-    let selectedCategory = categorySelect.getAttribute("data-selected") || "";
+    let selectedCategory =
+        categorySelect.getAttribute("data-selected") || "";
 
     function updateCategory() {
+
         const type = typeSelect.value;
 
-        categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+        categorySelect.innerHTML =
+            '<option value="">-- Select Category --</option>';
 
         if (categories[type]) {
+
             categories[type].forEach(cat => {
+
                 const option = document.createElement("option");
+
                 option.value = cat;
+
                 option.textContent = cat;
 
                 if (cat === selectedCategory) {
+
                     option.selected = true;
                 }
 
                 categorySelect.appendChild(option);
+
             });
         }
     }
 
     typeSelect.addEventListener("change", function () {
-        selectedCategory = ""; // reset when user changes type
+
+        selectedCategory = "";
+
         updateCategory();
+
     });
 
     updateCategory();
 
 
     // ================= TNG INPUT =================
+
     let value = 0;
+
     let active = false;
 
-    const amountInput = document.getElementById("amountInput");
+    const amountInput =
+        document.getElementById("amountInput");
 
-    // initialize safely
-    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
+    value =
+        Math.round(
+            parseFloat(amountInput.value || "0") * 100
+        ) || 0;
 
     amountInput.addEventListener("focus", () => active = true);
+
     amountInput.addEventListener("blur", () => active = false);
 
     document.addEventListener("keydown", function(e) {
@@ -179,23 +307,35 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!active) return;
 
         if (e.key >= "0" && e.key <= "9") {
-            value = value * 10 + parseInt(e.key);
-        } 
+
+            value =
+                value * 10 + parseInt(e.key);
+
+        }
+
         else if (e.key === "Backspace") {
-            value = Math.floor(value / 10);
-        } 
+
+            value =
+                Math.floor(value / 10);
+
+        }
+
         else {
+
             return;
         }
 
         e.preventDefault();
-        amountInput.value = (value / 100).toFixed(2);
+
+        amountInput.value =
+            (value / 100).toFixed(2);
+
     });
 
-    // optional focus
     amountInput.focus();
 
 });
+
 </script>
 
 </body>
