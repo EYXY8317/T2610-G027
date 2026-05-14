@@ -1143,6 +1143,245 @@ def dashboard():
 
     )
 
+# ================= FINANCE HOME =================
+@app.route("/finance")
+def finance_home():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    current_user = get_current_user()
+
+    records = load_data(f_expense, [])
+
+    budgets = load_data(f_budget, [])
+
+    goals = load_data(f_goals, [])
+
+    now = datetime.now()
+
+    current_month = now.strftime("%Y-%m")
+
+    # =================================================
+    # USER RECORDS
+    # =================================================
+
+    user_records = [
+
+        r for r in records
+
+        if r.get("username") == user
+
+    ]
+
+    month_records = [
+
+        r for r in user_records
+
+        if r.get("date", "").startswith(current_month)
+
+    ]
+
+    # =================================================
+    # TOTALS
+    # =================================================
+
+    income = sum(
+
+        r.get("amount", 0)
+
+        for r in month_records
+
+        if r.get("type") == "income"
+
+    )
+
+    expense = sum(
+
+        r.get("amount", 0)
+
+        for r in month_records
+
+        if r.get("type") == "expense"
+
+    )
+
+    saving = sum(
+
+        r.get("amount", 0)
+
+        for r in month_records
+
+        if r.get("type") == "saving"
+
+    )
+
+    balance = income - expense
+
+    # =================================================
+    # RECENT RECORDS
+    # =================================================
+
+    recent_records = sorted(
+
+        user_records,
+
+        key=lambda x: x.get("date", ""),
+
+        reverse=True
+
+    )[:5]
+
+    # =================================================
+    # TOP CATEGORY
+    # =================================================
+
+    category_totals = {}
+
+    for r in month_records:
+
+        if r.get("type") == "expense":
+
+            cat = r.get("category", "Other")
+
+            category_totals[cat] = (
+
+                category_totals.get(cat, 0)
+
+                + r.get("amount", 0)
+
+            )
+
+    top_category = None
+
+    if category_totals:
+
+        top_category = max(
+
+            category_totals,
+
+            key=category_totals.get
+
+        )
+
+    # =================================================
+    # BUDGET STATUS
+    # =================================================
+
+    user_budgets = [
+
+        b for b in budgets
+
+        if b.get("username") == user
+
+    ]
+
+    warning_budgets = []
+
+    for b in user_budgets:
+
+        spent = category_totals.get(
+
+            b.get("category"),
+
+            0
+
+        )
+
+        limit = b.get("amount", 0)
+
+        percent = (
+
+            (spent / limit) * 100
+
+            if limit else 0
+
+        )
+
+        if percent >= 80:
+
+            warning_budgets.append({
+
+                "category": b.get("category"),
+
+                "percent": percent
+
+            })
+
+    # =================================================
+    # GOALS
+    # =================================================
+
+    user_goals = [
+
+        g for g in goals
+
+        if g.get("username") == user
+
+    ]
+
+    active_goals = []
+
+    for g in user_goals:
+
+        saved = g.get("saved", 0)
+
+        target = g.get("target", 0)
+
+        percent = (
+
+            (saved / target) * 100
+
+            if target else 0
+
+        )
+
+        active_goals.append({
+
+            "name": g.get("name"),
+
+            "saved": saved,
+
+            "target": target,
+
+            "percent": min(percent, 100)
+
+        })
+
+    # =================================================
+    # RENDER
+    # =================================================
+
+    return render_template(
+
+        "finance.html",
+
+        income=income,
+
+        expense=expense,
+
+        saving=saving,
+
+        balance=balance,
+
+        top_category=top_category,
+
+        warning_budgets=warning_budgets,
+
+        active_goals=active_goals,
+
+        recent_records=recent_records,
+
+        wallpaper=get_user_wallpaper(),
+
+        user=get_current_user(),
+
+        theme=current_user.get("theme", "adaptive"),
+
+        ui_style=current_user.get("ui_style", "premium"),
+    )
 
 # ================= CALENDAR =================
 @app.route("/calendar")

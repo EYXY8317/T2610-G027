@@ -8,6 +8,11 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
     <title>Profile</title>
 
     <link
@@ -35,35 +40,30 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
     <div class="topbar">
 
-        <div class="topbar-title">
-            👤 Profile
-        </div>
+    <div class="topbar-title">
 
-        <div class="topbar-links">
-
-            <a href="/view">View</a>
-
-            <a href="/add">Add</a>
-
-            <a href="/summary">Summary</a>
-
-            <a href="/budget">Budget</a>
-
-            <a href="/goals">Goals</a>
-
-            <a href="/calendar">Calendar</a>
-
-            <a href="/diary">Diary</a>
-
-            <a href="/profile" class="active-link">
-                Profile
-            </a>
-
-            <a href="/logout">Logout</a>
-
-        </div>
+        👤 Profile
 
     </div>
+
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile" class="active-link">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
 
     <div class="profile-wrapper">
 
