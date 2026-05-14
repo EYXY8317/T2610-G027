@@ -1,18 +1,14 @@
 [
     {
         "username": "test",
-        "name": "CIMB"
-    },
-    {
-        "username": "test",
         "name": "TnG"
     },
     {
         "username": "test",
-        "name": "MAE"
+        "name": "CIMB"
     },
     {
         "username": "test",
-        "name": "Public bank"
+        "name": "MAE"
     }
 ]

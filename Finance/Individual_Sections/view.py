@@ -37,11 +37,16 @@ from password_system.password_validation import is_valid_password
 app = Flask(__name__)
 
 app.secret_key = "your_secret_key"
+
+# Get the parent directory (Finance folder)
+FINANCE_DIR = os.path.dirname(os.path.abspath(__file__)).replace("Individual_Sections", "")
+
 # -----------
 # JSON
 #------------
 
-f_expense = "expenses.json"
+f_expense = os.path.join(FINANCE_DIR, "expenses.json")
+f_accounts = os.path.join(FINANCE_DIR, "accounts.json")
 
 # ---------------
 # FUNCTIONS
@@ -178,7 +183,7 @@ def view_financial():
     # 🔄 Sort by date (newest first)
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    accounts = load_data("accounts.json", [])
+    accounts = load_data(f_accounts, [])
     user_accounts = [a for a in accounts if a["username"] == user]
 
     return render_template(

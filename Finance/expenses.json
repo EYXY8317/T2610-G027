@@ -1,65 +1,38 @@
 [
     {
         "username": "test",
-        "date": "2026-05-02",
-        "type": "saving",
-        "category": "Savings",
-        "account": "MAE",
-        "item": "a",
-        "amount": 500.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-13",
+        "date": "2026-05-14",
         "type": "expense",
         "category": "Food",
         "account": "TnG",
         "item": "hotdog",
-        "amount": 700.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-22",
-        "type": "expense",
-        "category": "Food",
-        "account": "TnG",
-        "item": "",
-        "amount": 150.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-19",
-        "type": "expense",
-        "category": "Transport",
-        "account": "TnG",
-        "item": "",
-        "amount": 50.0
+        "amount": 800.0
     },
     {
         "username": "test",
         "date": "2026-05-01",
         "type": "income",
         "category": "Salary",
-        "account": "MAE",
+        "account": "CIMB",
         "item": "",
-        "amount": 3000.0
+        "amount": 3500.0
     },
     {
         "username": "test",
-        "date": "2026-05-13",
+        "date": "2026-05-02",
+        "type": "saving",
+        "category": "Savings",
+        "account": "MAE",
+        "item": "",
+        "amount": 500.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-14",
         "type": "expense",
         "category": "Entertainment",
         "account": "TnG",
-        "item": "",
+        "item": "pokemon",
         "amount": 300.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-29",
-        "type": "income",
-        "category": "Bonus",
-        "account": "CIMB",
-        "item": "",
-        "amount": 500.0
     }
 ]

@@ -273,15 +273,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function updateItemRequired() {
+
+        const itemInput = document.querySelector("input[name='item']");
+
+        const type = typeSelect.value;
+
+        if (type === "expense") {
+
+            itemInput.setAttribute("required", "required");
+
+        } else {
+
+            itemInput.removeAttribute("required");
+
+        }
+    }
+
     typeSelect.addEventListener("change", function () {
 
         selectedCategory = "";
 
         updateCategory();
 
+        updateItemRequired();
+
     });
 
     updateCategory();
+
+    updateItemRequired();
 
 
     // ================= TNG INPUT =================

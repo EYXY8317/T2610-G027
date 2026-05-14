@@ -345,11 +345,11 @@ select {
 
     width: 100%;
 
-    min-width: 180px;
+    max-width: 250px;
 
-    padding: 12px 16px;
+    padding: 10px 14px;
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     border: 1px solid rgba(255,255,255,0.18);
 
@@ -361,7 +361,7 @@ select {
 
     color: white;
 
-    font-size: 15px;
+    font-size: 14px;
 
     font-weight: 600;
 
@@ -369,21 +369,27 @@ select {
 
     transition: 0.2s;
 
-    appearance: auto;
-
     cursor: pointer;
 
-    box-shadow:
-    0 4px 18px rgba(0,0,0,0.18);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
 }
 
 /* ===== OPTIONS ===== */
 
 select option {
 
-    background: white;
+    background: rgba(20,20,30,0.95);
 
-    color: black;
+    color: white;
+
+    padding: 10px;
+
+    margin: 2px 0;
+}
+
+select option:hover {
+
+    background: rgba(99,102,241,0.35);
 }
 
 /* ===== FOCUS ===== */
@@ -392,8 +398,7 @@ select:focus {
 
     border: 1px solid #6366F1;
 
-    box-shadow:
-    0 0 0 3px rgba(99,102,241,0.18);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.18);
 }
 
 /* ===================== FILTER ==================== */
@@ -403,21 +408,45 @@ select:focus {
 
     display: flex;
 
-    gap: 14px;
+    gap: 12px;
 
     align-items: center;
 
     flex-wrap: wrap;
 
     margin-top: 18px;
+
+    position: relative;
+
+    z-index: 10;
 }
 
 .filter-form label,
 .summary-filter label {
 
-    color: white;
+    color: black;
 
     font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.filter-form select {
+
+    flex: 0 1 auto;
+
+    max-width: 250px;
+}
+
+.filter-form button {
+
+    padding: 10px 20px !important;
+
+    font-size: 14px !important;
+
+    white-space: nowrap;
+
+    flex-shrink: 0;
 }
 
 /* ===================== TABLE ==================== */
