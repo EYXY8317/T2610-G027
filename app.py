@@ -115,7 +115,7 @@ def login():
         for u in users:
             if u["username"] == username and u["password"] == password:
                 session["user"] = username
-                return redirect(url_for("add_financial"))
+                return redirect(url_for("dashboard"))
 
         return render_template("login.html", error="Invalid login")
 
@@ -1092,6 +1092,15 @@ def edit_goal(goal_id):
         wallpaper=get_user_wallpaper(),
 
     )
+
+# ================= DASHBOARD =================
+@app.route("/dashboard")
+def dashboard():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("dashboard.html")
 
 # ================= CALENDAR =================
 @app.route('/calendar_static/<path:filename>')
