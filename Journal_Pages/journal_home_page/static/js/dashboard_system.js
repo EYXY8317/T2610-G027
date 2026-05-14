@@ -1,10 +1,21 @@
-// ================= WIDGETS =================
+/* ===================================================== */
+/* ================= WIDGETS =========================== */
+/* ===================================================== */
 
 const widgets =
 document.querySelectorAll(".widget");
 
 
-// ================= CTRL CLICK WIDGET =================
+/* ===================================================== */
+/* ================= EDIT MODE ========================= */
+/* ===================================================== */
+
+let editMode = false;
+
+
+/* ===================================================== */
+/* ================= CTRL CLICK WIDGET ================= */
+/* ===================================================== */
 
 widgets.forEach(function(widget) {
 
@@ -14,9 +25,14 @@ widgets.forEach(function(widget) {
 
         function(event) {
 
+            if (editMode) {
+
+                return;
+            }
+
             if (event.ctrlKey) {
 
-                // ================= STREAK =================
+                /* ================= STREAK ================= */
 
                 if (
                     widget.id ===
@@ -32,12 +48,11 @@ widgets.forEach(function(widget) {
 
                         popup.style.display =
                         "block";
-
                     }
 
                 }
 
-                // ================= SUMMARY =================
+                /* ================= SUMMARY ================= */
 
                 if (
                     widget.id ===
@@ -53,12 +68,11 @@ widgets.forEach(function(widget) {
 
                         popup.style.display =
                         "block";
-
                     }
 
                 }
 
-                // ================= AI SUMMARY =================
+                /* ================= AI SUMMARY ================= */
 
                 if (
                     widget.id ===
@@ -74,12 +88,11 @@ widgets.forEach(function(widget) {
 
                         popup.style.display =
                         "block";
-
                     }
 
                 }
 
-                // ================= QUOTE =================
+                /* ================= QUOTE ================= */
 
                 if (
                     widget.id ===
@@ -95,7 +108,6 @@ widgets.forEach(function(widget) {
 
                         popup.style.display =
                         "block";
-
                     }
 
                 }
@@ -109,15 +121,15 @@ widgets.forEach(function(widget) {
 });
 
 
-// ================= REARRANGE BUTTON =================
+/* ===================================================== */
+/* ================= REARRANGE BUTTON ================== */
+/* ===================================================== */
 
 const rearrangeButton =
 document.querySelector(
     "#rearrange-btn"
 );
 
-
-// ================= ENTER EDIT MODE =================
 
 if (rearrangeButton) {
 
@@ -127,9 +139,13 @@ if (rearrangeButton) {
 
         function() {
 
-            document.body.classList.toggle(
+            editMode = true;
+
+            document.body.classList.add(
                 "edit-mode"
             );
+
+            updateEditModeUI();
 
         }
 
@@ -138,15 +154,15 @@ if (rearrangeButton) {
 }
 
 
-// ================= DONE BUTTON =================
+/* ===================================================== */
+/* ================= DONE BUTTON ======================= */
+/* ===================================================== */
 
 const doneButton =
 document.querySelector(
     "#done-edit-btn"
 );
 
-
-// ================= EXIT EDIT MODE =================
 
 if (doneButton) {
 
@@ -156,9 +172,13 @@ if (doneButton) {
 
         function() {
 
+            editMode = false;
+
             document.body.classList.remove(
                 "edit-mode"
             );
+
+            updateEditModeUI();
 
         }
 
@@ -167,7 +187,9 @@ if (doneButton) {
 }
 
 
-// ================= DELETE WIDGET =================
+/* ===================================================== */
+/* ================= DELETE WIDGET ===================== */
+/* ===================================================== */
 
 const deleteButtons =
 document.querySelectorAll(
@@ -191,7 +213,6 @@ deleteButtons.forEach(function(button) {
             if (widget) {
 
                 widget.remove();
-
             }
 
         }
@@ -201,7 +222,9 @@ deleteButtons.forEach(function(button) {
 });
 
 
-// ================= RESIZE =================
+/* ===================================================== */
+/* ================= RESIZE ============================ */
+/* ===================================================== */
 
 const resizeHandles =
 document.querySelectorAll(
@@ -217,28 +240,17 @@ resizeHandles.forEach(function(handle) {
 
         function(event) {
 
-            // ================= ONLY EDIT MODE =================
-
-            if (
-                !document.body.classList.contains(
-                    "edit-mode"
-                )
-            ) {
+            if (!editMode) {
 
                 return;
-
             }
 
             event.preventDefault();
 
             event.stopPropagation();
 
-            // ================= WIDGET =================
-
             const widget =
             handle.closest(".widget");
-
-            // ================= START =================
 
             const startX =
             event.clientX;
@@ -252,17 +264,11 @@ resizeHandles.forEach(function(handle) {
             const startHeight =
             widget.offsetHeight;
 
-            // ================= RESIZE EFFECT =================
-
             widget.classList.add(
                 "resizing"
             );
 
-            // ================= RESIZE =================
-
             function resize(event) {
-
-                // ================= THROTTLE =================
 
                 const now = Date.now();
 
@@ -272,12 +278,9 @@ resizeHandles.forEach(function(handle) {
                 ) {
 
                     return;
-
                 }
 
                 resize.lastFrame = now;
-
-                // ================= NEW SIZE =================
 
                 let newWidth =
                 startWidth +
@@ -287,26 +290,18 @@ resizeHandles.forEach(function(handle) {
                 startHeight +
                 (event.clientY - startY);
 
-                // ================= MIN SIZE =================
-
                 if (newWidth < 220) {
 
                     newWidth = 220;
-
                 }
 
                 if (newHeight < 180) {
 
                     newHeight = 180;
-
                 }
-
-                // ================= CURRENT RECT =================
 
                 const currentRect =
                 widget.getBoundingClientRect();
-
-                // ================= PREDICT WIDTH ONLY =================
 
                 const predictedRect = {
 
@@ -321,10 +316,7 @@ resizeHandles.forEach(function(handle) {
 
                     bottom:
                     currentRect.bottom
-
                 };
-
-                // ================= CHECK COLLISION =================
 
                 let collision = false;
 
@@ -333,7 +325,6 @@ resizeHandles.forEach(function(handle) {
                     if (other === widget) {
 
                         return;
-
                     }
 
                     const otherRect =
@@ -352,34 +343,25 @@ resizeHandles.forEach(function(handle) {
 
                         predictedRect.top >
                         otherRect.bottom
-
                     );
 
                     if (overlap) {
 
                         collision = true;
-
                     }
 
                 });
-
-                // ================= APPLY WIDTH =================
 
                 if (!collision) {
 
                     widget.style.width =
                     newWidth + "px";
-
                 }
-
-                // ================= APPLY HEIGHT =================
 
                 widget.style.height =
                 newHeight + "px";
 
             }
-
-            // ================= STOP =================
 
             function stopResize() {
 
@@ -399,8 +381,6 @@ resizeHandles.forEach(function(handle) {
 
             }
 
-            // ================= EVENTS =================
-
             document.addEventListener(
                 "mousemove",
                 resize
@@ -416,3 +396,322 @@ resizeHandles.forEach(function(handle) {
     );
 
 });
+
+
+/* ===================================================== */
+/* ================= CUSTOM DRAG SYSTEM ================ */
+/* ===================================================== */
+
+let draggedWidget = null;
+
+let placeholder = null;
+
+let offsetX = 0;
+
+let offsetY = 0;
+
+
+/* ===================================================== */
+/* ================= ENABLE DRAGGING =================== */
+/* ===================================================== */
+
+function enableWidgetDragging() {
+
+    const widgets =
+    document.querySelectorAll(".widget");
+
+
+    widgets.forEach(function(widget) {
+
+        if (
+            widget.dataset.dragReady ===
+            "true"
+        ) {
+
+            return;
+        }
+
+        widget.dataset.dragReady = "true";
+
+
+        /* CREATE DRAG AREA */
+
+        const dragArea =
+        document.createElement("div");
+
+        dragArea.className =
+        "widget-drag-area";
+
+        widget.appendChild(dragArea);
+
+
+        /* ===================================================== */
+        /* ================= MOUSE DOWN ======================== */
+        /* ===================================================== */
+
+        dragArea.addEventListener(
+
+            "mousedown",
+
+            function(event) {
+
+                if (!editMode) {
+
+                    return;
+                }
+
+                event.preventDefault();
+
+                draggedWidget = widget;
+
+                widget.classList.add(
+                    "dragging"
+                );
+
+
+                /* START POSITION */
+
+                const rect =
+                widget.getBoundingClientRect();
+
+                offsetX =
+                event.clientX - rect.left;
+
+                offsetY =
+                event.clientY - rect.top;
+
+
+                /* PLACEHOLDER */
+
+                placeholder =
+                document.createElement("div");
+
+                placeholder.className =
+                "widget-placeholder";
+
+                placeholder.style.width =
+                rect.width + "px";
+
+                placeholder.style.height =
+                rect.height + "px";
+
+
+                widget.parentNode.insertBefore(
+
+                    placeholder,
+
+                    widget.nextSibling
+                );
+
+
+                /* FLOATING MODE */
+
+                widget.style.position =
+                "fixed";
+
+                widget.style.left =
+                rect.left + "px";
+
+                widget.style.top =
+                rect.top + "px";
+
+                widget.style.width =
+                rect.width + "px";
+
+                widget.style.height =
+                rect.height + "px";
+
+
+                /* MOVE EVENTS */
+
+                document.addEventListener(
+                    "mousemove",
+                    dragMove
+                );
+
+                document.addEventListener(
+                    "mouseup",
+                    stopDrag
+                );
+
+            }
+
+        );
+
+    });
+
+}
+
+
+/* ===================================================== */
+/* ================= DRAG MOVE ========================= */
+/* ===================================================== */
+
+function dragMove(event) {
+
+    if (!draggedWidget) {
+
+        return;
+    }
+
+
+    /* MOVE CARD */
+
+    draggedWidget.style.left =
+
+        (event.clientX - offsetX) + "px";
+
+    draggedWidget.style.top =
+
+        (event.clientY - offsetY) + "px";
+
+
+    /* DETECT TARGET */
+
+    const widgets =
+    document.querySelectorAll(
+        ".widget:not(.dragging)"
+    );
+
+
+    widgets.forEach(function(widget) {
+
+        const rect =
+        widget.getBoundingClientRect();
+
+
+        const inside =
+
+            event.clientX > rect.left &&
+            event.clientX < rect.right &&
+            event.clientY > rect.top &&
+            event.clientY < rect.bottom;
+
+
+        if (inside) {
+
+            const container =
+            widget.parentNode;
+
+
+            const middleY =
+            rect.top + rect.height / 2;
+
+
+            if (event.clientY > middleY) {
+
+                container.insertBefore(
+
+                    placeholder,
+
+                    widget.nextSibling
+                );
+
+            }
+
+            else {
+
+                container.insertBefore(
+
+                    placeholder,
+
+                    widget
+                );
+
+            }
+
+        }
+
+    });
+
+}
+
+
+/* ===================================================== */
+/* ================= STOP DRAG ========================= */
+/* ===================================================== */
+
+function stopDrag() {
+
+    if (!draggedWidget) {
+
+        return;
+    }
+
+
+    draggedWidget.classList.remove(
+        "dragging"
+    );
+
+
+    draggedWidget.style.position = "";
+
+    draggedWidget.style.left = "";
+
+    draggedWidget.style.top = "";
+
+    draggedWidget.style.width = "";
+
+    draggedWidget.style.height = "";
+
+
+    /* INSERT FINAL */
+
+    placeholder.replaceWith(
+        draggedWidget
+    );
+
+
+    document.removeEventListener(
+        "mousemove",
+        dragMove
+    );
+
+    document.removeEventListener(
+        "mouseup",
+        stopDrag
+    );
+
+
+    draggedWidget = null;
+
+    placeholder = null;
+
+}
+
+
+/* ===================================================== */
+/* ================= UPDATE EDIT UI ==================== */
+/* ===================================================== */
+
+function updateEditModeUI() {
+
+    const widgets =
+    document.querySelectorAll(".widget");
+
+    widgets.forEach(function(widget) {
+
+        if (editMode) {
+
+            widget.classList.add(
+                "edit-mode"
+            );
+        }
+
+        else {
+
+            widget.classList.remove(
+                "edit-mode"
+            );
+        }
+
+    });
+
+}
+
+
+/* ===================================================== */
+/* ================= INIT ============================== */
+/* ===================================================== */
+
+enableWidgetDragging();
