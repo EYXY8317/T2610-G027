@@ -206,34 +206,34 @@ def register_profile_routes(app):
         return redirect("/profile")
     
     # =========================
-# CHANGE UI STYLE
-# =========================
+    # CHANGE UI STYLE
+    # =========================
 
-@app.route("/change_ui_style", methods=["POST"])
-def change_ui_style():
+    @app.route("/change_ui_style", methods=["POST"])
+    def change_ui_style():
 
-    if "user" not in session:
+        if "user" not in session:
 
-        return redirect("/login")
+            return redirect("/login")
 
-    current_user = session["user"]
+        current_user = session["user"]
 
-    selected_style = request.form.get("ui_style")
+        selected_style = request.form.get("ui_style")
 
-    with open("users.json", "r") as file:
+        with open("users.json", "r") as file:
 
-        users = json.load(file)
+            users = json.load(file)
 
-    for user in users:
+        for user in users:
 
-        if user["username"] == current_user:
+            if user["username"] == current_user:
 
-            user["ui_style"] = selected_style
+                user["ui_style"] = selected_style
 
-            break
+                break
 
-    with open("users.json", "w") as file:
+        with open("users.json", "w") as file:
 
-        json.dump(users, file, indent=4)
+            json.dump(users, file, indent=4)
 
-    return redirect("/profile")
+        return redirect("/profile")

@@ -5,157 +5,302 @@
 
     <title>Add Record</title>
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='finance.css') }}">
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
 
 </head>
 
 <body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 {% if wallpaper %}
 
 style="
 background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
 url('/profile_static/wallpapers/{{ wallpaper }}');
 "
 
 {% endif %}
-
 >
 
 <div class="wallpaper-overlay"></div>
 
 <div class="summary-wrapper">
 
-    <!-- ===== TOPBAR ===== -->
+    <!-- ================================================= -->
+    <!-- ==================== TOPBAR ===================== -->
+    <!-- ================================================= -->
 
     <div class="topbar">
 
         <div class="topbar-title">
+
             ➕ Add Record
+
         </div>
 
         <div class="topbar-links">
+
             <a href="/view">View</a>
-            <a href="/add" class="active-link">Add</a>
+
+            <a
+            href="/add"
+            class="active-link"
+            >
+                Add
+            </a>
+
             <a href="/summary">Summary</a>
+
             <a href="/budget">Budget</a>
+
             <a href="/goals">Goals</a>
+
         </div>
 
         <div class="topbar-actions">
+
             <a href="/dashboard">Home</a>
+
             <a href="/calendar">Calendar</a>
+
             <a href="/diary">Diary</a>
+
             <a href="/profile">Profile</a>
+
             <a href="/logout">Logout</a>
+
         </div>
 
     </div>
 
-    <!-- ===== ADD RECORD CARD ===== -->
+    <!-- ================================================= -->
+    <!-- ===================== MAIN ====================== -->
+    <!-- ================================================= -->
 
-    <div class="summary-card">
+    <div class="summary-card hover-card">
 
-        <h2>Financial Record</h2>
+        <div class="add-header">
+
+            <div>
+
+                <h1 class="summary-main-title">
+
+                    ➕ New Financial Record
+
+                </h1>
+
+                <p class="add-subtitle">
+
+                    Add income, expenses, or savings
+                    into your finance workspace.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ===== ERROR ===== -->
 
         {% if error %}
-        <p class="negative">{{ error }}</p>
+
+        <div class="insight-box">
+
+            <p class="negative">
+
+                {{ error }}
+
+            </p>
+
+        </div>
+
         {% endif %}
+
+        <!-- ===== SUCCESS ===== -->
 
         {% if success %}
-        <p class="positive">{{ success }}</p>
+
+        <div class="insight-box">
+
+            <p class="positive">
+
+                {{ success }}
+
+            </p>
+
+        </div>
+
         {% endif %}
 
-        <form method="POST">
+        <!-- ===== FORM ===== -->
 
-            <!-- DATE -->
+        <form
+        method="POST"
+        class="add-form"
+        >
 
-            <label>Date</label>
+            <!-- ROW 1 -->
 
-            <input
-                type="date"
-                name="date"
-                value="{{ form_data.date if form_data else '' }}"
-                required
-            >
+            <div class="summary-grid">
 
-            <!-- TYPE -->
+                <!-- DATE -->
 
-            <label>Type</label>
+                <div>
 
-            <select name="type" id="typeSelect" required>
+                    <label>
 
-                <option value="">
-                    -- Select Type --
-                </option>
+                        Date
 
-                <option
-                    value="income"
-                    {{ 'selected' if form_data and form_data.type == 'income' else '' }}
-                >
-                    Income
-                </option>
+                    </label>
 
-                <option
-                    value="expense"
-                    {{ 'selected' if form_data and form_data.type == 'expense' else '' }}
-                >
-                    Expense
-                </option>
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ form_data.date if form_data else '' }}"
+                        required
+                    >
 
-                <option
-                    value="saving"
-                    {{ 'selected' if form_data and form_data.type == 'saving' else '' }}
-                >
-                    Saving
-                </option>
+                </div>
 
-            </select>
+                <!-- TYPE -->
 
-            <!-- CATEGORY -->
+                <div>
 
-            <label>Category</label>
+                    <label>
 
-            <select
-                name="category"
-                id="categorySelect"
-                required
-                data-selected="{{ form_data.category if form_data else '' }}"
-            >
+                        Type
 
-                <option value="">
-                    -- Select Category --
-                </option>
+                    </label>
 
-            </select>
+                    <select
+                    name="type"
+                    id="typeSelect"
+                    required
+                    >
 
-            <!-- ACCOUNT -->
+                        <option value="">
 
-            <label>Account</label>
+                            -- Select Type --
 
-            <select name="account">
+                        </option>
 
-                <option value="">
-                    -- Select Account --
-                </option>
+                        <option
+                        value="income"
+                        {{ 'selected' if form_data and form_data.type == 'income' else '' }}
+                        >
 
-                {% for acc in accounts %}
+                            Income
 
-                <option
-                    value="{{ acc.name }}"
-                    {% if form_data and form_data.account == acc.name %}selected{% endif %}
-                >
-                    {{ acc.name }}
-                </option>
+                        </option>
 
-                {% endfor %}
+                        <option
+                        value="expense"
+                        {{ 'selected' if form_data and form_data.type == 'expense' else '' }}
+                        >
 
-            </select>
+                            Expense
+
+                        </option>
+
+                        <option
+                        value="saving"
+                        {{ 'selected' if form_data and form_data.type == 'saving' else '' }}
+                        >
+
+                            Saving
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- ROW 2 -->
+
+            <div class="summary-grid">
+
+                <!-- CATEGORY -->
+
+                <div>
+
+                    <label>
+
+                        Category
+
+                    </label>
+
+                    <select
+                        name="category"
+                        id="categorySelect"
+                        required
+                        data-selected="{{ form_data.category if form_data else '' }}"
+                    >
+
+                        <option value="">
+
+                            -- Select Category --
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- ACCOUNT -->
+
+                <div>
+
+                    <label>
+
+                        Account
+
+                    </label>
+
+                    <select name="account">
+
+                        <option value="">
+
+                            -- Select Account --
+
+                        </option>
+
+                        {% for acc in accounts %}
+
+                        <option
+                            value="{{ acc.name }}"
+                            {% if form_data and form_data.account == acc.name %}selected{% endif %}
+                        >
+
+                            {{ acc.name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
 
             <!-- NEW ACCOUNT -->
 
-            <label>New Account (Optional)</label>
+            <label>
+
+                New Account (Optional)
+
+            </label>
 
             <input
                 type="text"
@@ -166,7 +311,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <!-- ITEM -->
 
-            <label>Item</label>
+            <label>
+
+                Item
+
+            </label>
 
             <input
                 type="text"
@@ -177,21 +326,35 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <!-- AMOUNT -->
 
-            <label>Amount (RM)</label>
+            <div class="amount-card">
 
-            <input
-                type="text"
-                id="amountInput"
-                name="amount"
-                value="{{ form_data.amount if form_data else '0.00' }}"
-                readonly
-            >
+                <p>
 
-            <button type="submit">
+                    Amount (RM)
 
-                Add Record
+                </p>
 
-            </button>
+                <input
+                    type="text"
+                    id="amountInput"
+                    name="amount"
+                    value="{{ form_data.amount if form_data else '0.00' }}"
+                    readonly
+                >
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="add-button-row">
+
+                <button type="submit">
+
+                    Add Record
+
+                </button>
+
+            </div>
 
         </form>
 
@@ -199,7 +362,9 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
-<!-- ===== SAFE JSON ===== -->
+<!-- ================================================= -->
+<!-- ================= SAFE JSON ===================== -->
+<!-- ================================================= -->
 
 <script id="categories-data" type="application/json">
 
@@ -226,9 +391,11 @@ document.addEventListener("DOMContentLoaded", function () {
         categories = {};
     }
 
-    const typeSelect = document.getElementById("typeSelect");
+    const typeSelect =
+        document.getElementById("typeSelect");
 
-    const categorySelect = document.getElementById("categorySelect");
+    const categorySelect =
+        document.getElementById("categorySelect");
 
     let selectedCategory =
         categorySelect.getAttribute("data-selected") || "";
@@ -238,13 +405,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const type = typeSelect.value;
 
         categorySelect.innerHTML =
-            '<option value="">-- Select Category --</option>';
+        '<option value="">-- Select Category --</option>';
 
         if (categories[type]) {
 
             categories[type].forEach(cat => {
 
-                const option = document.createElement("option");
+                const option =
+                    document.createElement("option");
 
                 option.value = cat;
 
@@ -263,18 +431,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function updateItemRequired() {
 
-        const itemInput = document.querySelector("input[name='item']");
+        const itemInput =
+            document.querySelector("input[name='item']");
 
         const type = typeSelect.value;
 
         if (type === "expense") {
 
-            itemInput.setAttribute("required", "required");
+            itemInput.setAttribute(
+                "required",
+                "required"
+            );
 
-        } else {
+        }
+
+        else {
 
             itemInput.removeAttribute("required");
-
         }
     }
 
@@ -292,7 +465,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateItemRequired();
 
-
     // ================= TNG INPUT =================
 
     let value = 0;
@@ -302,14 +474,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const amountInput =
         document.getElementById("amountInput");
 
-    value =
-        Math.round(
-            parseFloat(amountInput.value || "0") * 100
-        ) || 0;
+    value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    ) || 0;
 
-    amountInput.addEventListener("focus", () => active = true);
+    amountInput.addEventListener(
+        "focus",
+        () => active = true
+    );
 
-    amountInput.addEventListener("blur", () => active = false);
+    amountInput.addEventListener(
+        "blur",
+        () => active = false
+    );
 
     document.addEventListener("keydown", function(e) {
 
@@ -318,14 +495,14 @@ document.addEventListener("DOMContentLoaded", function () {
         if (e.key >= "0" && e.key <= "9") {
 
             value =
-                value * 10 + parseInt(e.key);
+            value * 10 + parseInt(e.key);
 
         }
 
         else if (e.key === "Backspace") {
 
             value =
-                Math.floor(value / 10);
+            Math.floor(value / 10);
 
         }
 
@@ -347,5 +524,106 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 
+<script>
+
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
 </body>
 </html>

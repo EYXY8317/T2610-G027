@@ -67,6 +67,22 @@ def get_user_wallpaper():
             return u.get("wallpaper")
 
     return None
+
+def get_current_user():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u
+
+    return None
+
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
     "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
@@ -248,6 +264,7 @@ def add_financial():
     accounts=user_accounts,
     categories=CATEGORY_MAP,
     wallpaper=get_user_wallpaper(),
+    user=get_current_user(),
     )
 
 # ================= VIEW =================
@@ -266,6 +283,7 @@ def view_financial():
         "view.html",
         records=sorted_records,
         wallpaper=get_user_wallpaper(),
+        user=get_current_user(),
         )
 
 
@@ -429,6 +447,7 @@ def budget():
         budgets=user_budgets,
         categories=CATEGORY_MAP["expense"],
         wallpaper=get_user_wallpaper(),
+        user=get_current_user(),
     )
 
 # ===============DELETE BUDGET ==============
@@ -815,6 +834,8 @@ def summary():
 
         wallpaper=get_user_wallpaper(),
 
+        user=get_current_user(),
+
     )
 
 # ================= GOALS =================
@@ -984,6 +1005,7 @@ def goals():
 
         wallpaper=get_user_wallpaper(),
 
+        user=get_current_user(),
     )
 
 # =========== DELETE GOALS ==================
@@ -1100,16 +1122,29 @@ def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    return render_template("dashboard.html")
+    users = load_data(f_users, [])
 
-# ================= CALENDAR =================
-@app.route('/calendar_static/<path:filename>')
-def calendar_static(filename):
-    return send_from_directory(
-        os.path.join('Calendar_Pages', 'static'),
-        filename
+    current_user = None
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            current_user = u
+            break
+
+    return render_template(
+
+        "dashboard.html",
+
+        user=current_user,
+
+        wallpaper=get_user_wallpaper(),
+
     )
 
+
+# ================= CALENDAR =================
 @app.route("/calendar")
 def calendar():
     return render_template("mypage.html")
