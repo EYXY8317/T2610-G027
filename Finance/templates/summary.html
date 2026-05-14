@@ -70,15 +70,14 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 <div class="summary-wrapper">
 
-    <h1>
-        📊 Financial Summary —
-        {{ selected_month }}/{{ selected_year }}
-    </h1>
-
     <!-- ===== FILTER ===== -->
 
-    <div class="summary-card">
-
+    <div class="summary-card summary-hero">
+        <h1 class="summary-main-title">
+            📊 Financial Summary —
+            {{ selected_month }}/{{ selected_year }}
+        </h1>
+        
         <form method="GET" class="filter-form">
 
             <div>
