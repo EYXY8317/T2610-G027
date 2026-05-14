@@ -1,60 +1,182 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
     <title>Update Record</title>
 
-    <link rel="stylesheet"
-    href="{{ url_for('static', filename='finance.css') }}">
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
 
 </head>
 
 <body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 {% if wallpaper %}
 
 style="
 background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
 url('/profile_static/wallpapers/{{ wallpaper }}');
 "
 
 {% endif %}
-
 >
 
 <div class="wallpaper-overlay"></div>
 
-<!-- ================= PAGE ================= -->
-
 <div class="summary-wrapper">
 
-    <div class="summary-card">
+    <!-- ================================================= -->
+    <!-- ==================== TOPBAR ===================== -->
+    <!-- ================================================= -->
 
-        <div class="card-header">
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            ✏️ Update Record
+
+        </div>
+
+        <div class="topbar-links">
+
+            <a href="/view">
+                View
+            </a>
+
+            <a href="/add">
+                Add
+            </a>
+
+            <a href="/summary">
+                Summary
+            </a>
+
+            <a href="/budget">
+                Budget
+            </a>
+
+            <a href="/goals">
+                Goals
+            </a>
+
+        </div>
+
+        <div class="topbar-actions">
+
+            <a href="/dashboard">
+                Home
+            </a>
+
+            <a href="/calendar">
+                Calendar
+            </a>
+
+            <a href="/diary">
+                Diary
+            </a>
+
+            <a href="/profile">
+                Profile
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ===================== MAIN ====================== -->
+    <!-- ================================================= -->
+
+    <div class="summary-card hover-card">
+
+        <!-- ===== HEADER ===== -->
+
+        <div class="add-header">
 
             <div>
-                <h1>💸 Update Record</h1>
 
-                <p class="card-subtitle">
+                <h1 class="summary-main-title">
+
+                    ✏️ Update Financial Record
+
+                </h1>
+
+                <p class="add-subtitle">
+
                     Edit and manage your financial transaction.
+
                 </p>
+
             </div>
 
         </div>
 
-        <!-- ================= FORM ================= -->
+        <!-- ===== ERROR ===== -->
 
-        <form method="POST" class="modern-form">
+        {% if error %}
+
+        <div class="insight-box">
+
+            <p class="negative">
+
+                {{ error }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== SUCCESS ===== -->
+
+        {% if success %}
+
+        <div class="insight-box">
+
+            <p class="positive">
+
+                {{ success }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== FORM ===== -->
+
+        <form
+        method="POST"
+        class="add-form"
+        >
 
             <!-- ROW 1 -->
 
-            <div class="form-grid">
+            <div class="summary-grid">
 
                 <!-- DATE -->
 
-                <div class="form-group">
+                <div>
 
-                    <label>Date</label>
+                    <label>
+
+                        Date
+
+                    </label>
 
                     <input
                         type="date"
@@ -67,25 +189,51 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 <!-- TYPE -->
 
-                <div class="form-group">
+                <div>
 
-                    <label>Type</label>
+                    <label>
 
-                    <select name="type" id="typeSelect" required>
+                        Type
 
-                        <option value="income"
-                        {% if record.type=="income" %}selected{% endif %}>
+                    </label>
+
+                    <select
+                    name="type"
+                    id="typeSelect"
+                    required
+                    >
+
+                        <option
+                        value="income"
+                        {% if record.type=="income" %}
+                        selected
+                        {% endif %}
+                        >
+
                             Income
+
                         </option>
 
-                        <option value="expense"
-                        {% if record.type=="expense" %}selected{% endif %}>
+                        <option
+                        value="expense"
+                        {% if record.type=="expense" %}
+                        selected
+                        {% endif %}
+                        >
+
                             Expense
+
                         </option>
 
-                        <option value="saving"
-                        {% if record.type=="saving" %}selected{% endif %}>
+                        <option
+                        value="saving"
+                        {% if record.type=="saving" %}
+                        selected
+                        {% endif %}
+                        >
+
                             Saving
+
                         </option>
 
                     </select>
@@ -96,32 +244,47 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <!-- ROW 2 -->
 
-            <div class="form-grid">
+            <div class="summary-grid">
 
                 <!-- CATEGORY -->
 
-                <div class="form-group">
+                <div>
 
-                    <label>Category</label>
+                    <label>
+
+                        Category
+
+                    </label>
 
                     <select
-                        name="category"
-                        id="categorySelect"
-                        required
-                    ></select>
+                    name="category"
+                    id="categorySelect"
+                    required
+                    >
+
+                    </select>
 
                 </div>
 
                 <!-- ACCOUNT -->
 
-                <div class="form-group">
+                <div>
 
-                    <label>Account</label>
+                    <label>
 
-                    <select id="account" name="account">
+                        Account
+
+                    </label>
+
+                    <select
+                    id="account"
+                    name="account"
+                    >
 
                         <option value="">
+
                             -- Select Account --
+
                         </option>
 
                         {% for acc in accounts %}
@@ -130,13 +293,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                             value="{{ acc.name }}"
                             {{ "selected" if record.account == acc.name else "" }}
                         >
+
                             {{ acc.name }}
+
                         </option>
 
                         {% endfor %}
 
                         <option value="__new__">
+
                             ➕ Create New Account
+
                         </option>
 
                     </select>
@@ -147,38 +314,50 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <!-- NEW ACCOUNT -->
 
-            <div class="form-group">
+            <div
+            id="newAccountWrapper"
+            class="hidden-section"
+            >
+
+                <label>
+
+                    New Account
+
+                </label>
 
                 <input
                     type="text"
                     id="new_account"
                     name="new_account"
                     placeholder="Enter new account"
-                    style="display:none;"
                 >
 
             </div>
 
             <!-- ITEM -->
 
-            <div class="form-group">
+            <label>
 
-                <label>Item</label>
+                Item
 
-                <input
-                    type="text"
-                    name="item"
-                    value="{{ record.item }}"
-                    placeholder="Example: Coffee, Netflix, Salary..."
-                >
+            </label>
 
-            </div>
+            <input
+                type="text"
+                name="item"
+                value="{{ record.item }}"
+                placeholder="Example: Coffee, Netflix, Salary..."
+            >
 
             <!-- AMOUNT -->
 
-            <div class="form-group">
+            <div class="amount-card">
 
-                <label>Amount (RM)</label>
+                <p>
+
+                    Amount (RM)
+
+                </p>
 
                 <input
                     type="text"
@@ -193,45 +372,37 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <!-- BUTTONS -->
 
-            <div class="form-actions">
+            <div class="update-actions">
 
-                <button type="submit" class="primary-btn">
-                    Update Record
+                <button type="submit">
+
+                    Save Changes
+
                 </button>
 
-                <a href="/view" class="back-btn">
+                <a
+                href="/view"
+                class="secondary-btn"
+                >
+
                     Back
+
                 </a>
 
             </div>
 
         </form>
 
-        <!-- ================= MESSAGES ================= -->
-
-        {% if error %}
-
-        <div class="error-box">
-            {{ error }}
-        </div>
-
-        {% endif %}
-
-        {% if success %}
-
-        <div class="success-box">
-            {{ success }}
-        </div>
-
-        {% endif %}
-
     </div>
 
 </div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- ================================================= -->
+<!-- ==================== SCRIPT ===================== -->
+<!-- ================================================= -->
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // ================= CATEGORY =================
@@ -262,7 +433,8 @@ document.addEventListener("DOMContentLoaded", function () {
         ]
     };
 
-    const typeSelect = document.getElementById("typeSelect");
+    const typeSelect =
+        document.getElementById("typeSelect");
 
     const categorySelect =
         document.getElementById("categorySelect");
@@ -275,7 +447,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const type = typeSelect.value;
 
         categorySelect.innerHTML =
-            '<option value="">-- Select Category --</option>';
+        '<option value="">-- Select Category --</option>';
 
         if (categories[type]) {
 
@@ -289,6 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 option.textContent = cat;
 
                 if (cat === selectedCategory) {
+
                     option.selected = true;
                 }
 
@@ -300,14 +473,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    typeSelect.addEventListener("change", loadCategories);
+    typeSelect.addEventListener(
+        "change",
+        loadCategories
+    );
 
     loadCategories();
 
-    // ================= ACCOUNT TOGGLE =================
+    // ================= ACCOUNT =================
 
     const accountSelect =
         document.getElementById("account");
+
+    const newAccountWrapper =
+        document.getElementById("newAccountWrapper");
 
     const newAccountInput =
         document.getElementById("new_account");
@@ -316,12 +495,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (accountSelect.value === "__new__") {
 
-            newAccountInput.style.display = "block";
+            newAccountWrapper.classList.add("show");
 
         }
+
         else {
 
-            newAccountInput.style.display = "none";
+            newAccountWrapper.classList.remove("show");
 
             newAccountInput.value = "";
 
@@ -339,6 +519,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================= TNG INPUT =================
 
     let value =
+
         Math.round(
             parseFloat("{{ record.amount or 0 }}") * 100
         ) || 0;
@@ -364,14 +545,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (e.key >= "0" && e.key <= "9") {
 
-            value = value * 10 + parseInt(e.key);
+            value =
+            value * 10 + parseInt(e.key);
 
         }
+
         else if (e.key === "Backspace") {
 
-            value = Math.floor(value / 10);
+            value =
+            Math.floor(value / 10);
 
         }
+
         else {
 
             return;
@@ -386,7 +571,109 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
 </script>
 
+<script>
+
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
 </body>
 </html>

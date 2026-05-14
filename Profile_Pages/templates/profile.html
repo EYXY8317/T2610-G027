@@ -18,11 +18,7 @@
 </head>
 
 <body
-
-class="
-{{ user.theme if user.theme else 'adaptive' }}
-{{ user.ui_style if user.ui_style else 'premium' }}
-"
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 {% if user.wallpaper %}
 
@@ -33,7 +29,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 "
 
 {% endif %}
-
 >
 
     <!-- TOPBAR -->
@@ -211,23 +206,38 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                 class="theme-select"
             >
 
-                <option value="adaptive">
+                <option
+                    value="adaptive"
+                    {% if user.theme == "adaptive" %}selected{% endif %}
+                >
                     Adaptive
                 </option>
 
-                <option value="cozy">
+                <option
+                    value="cozy"
+                    {% if user.theme == "cozy" %}selected{% endif %}
+                >
                     Cozy Beige
                 </option>
 
-                <option value="dark">
+                <option
+                    value="dark"
+                    {% if user.theme == "dark" %}selected{% endif %}
+                >
                     Dark Mode
                 </option>
 
-                <option value="frosted">
+                <option
+                    value="frosted"
+                    {% if user.theme == "frosted" %}selected{% endif %}
+                >
                     Frosted
                 </option>
 
-                <option value="sakura">
+                <option
+                    value="sakura"
+                    {% if user.theme == "sakura" %}selected{% endif %}
+                >
                     Sakura
                 </option>
 
@@ -266,19 +276,31 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                 class="theme-select"
             >
 
-                <option value="premium">
+                <option
+                    value="premium"
+                    {% if user.ui_style == "premium" %}selected{% endif %}
+                >
                     Premium
                 </option>
 
-                <option value="minimal">
+                <option
+                    value="minimal"
+                    {% if user.ui_style == "minimal" %}selected{% endif %}
+                >
                     Minimal
                 </option>
 
-                <option value="compact">
+                <option
+                    value="compact"
+                    {% if user.ui_style == "compact" %}selected{% endif %}
+                >
                     Compact
                 </option>
 
-                <option value="soft">
+                <option
+                    value="soft"
+                    {% if user.ui_style == "soft" %}selected{% endif %}
+                >
                     Soft
                 </option>
 
@@ -324,17 +346,38 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
     </div>
 
 </div>
+</div>
 
-    <script>
+<script>
 
-const themeSelect = document.querySelector(".theme-select");
+const themeSelect = document.querySelector('select[name="theme"]');
+
+const styleSelect = document.querySelector('select[name="ui_style"]');
+
+function updateBodyClasses(){
+
+    const selectedTheme = themeSelect.value;
+
+    const selectedStyle = styleSelect.value;
+
+    document.body.className =
+        `${selectedTheme} ${selectedStyle}`;
+}
 
 if(themeSelect){
 
-    themeSelect.addEventListener("change", function(){
+    themeSelect.addEventListener(
+        "change",
+        updateBodyClasses
+    );
+}
 
-        document.body.className = this.value;
-    });
+if(styleSelect){
+
+    styleSelect.addEventListener(
+        "change",
+        updateBodyClasses
+    );
 }
 
 </script>
