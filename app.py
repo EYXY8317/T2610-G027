@@ -895,6 +895,11 @@ def goals():
 
     )
 
+# ================= DASHBOARD =================
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 # ================= CALENDAR =================
 @app.route('/calendar_static/<path:filename>')
 def calendar_static(filename):
