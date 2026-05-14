@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
     <title>Financial Goals</title>
@@ -9,7 +10,6 @@
 
 </head>
 
-<body>
 <body
 
 {% if wallpaper %}
@@ -20,10 +20,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 "
 
 {% endif %}
-
 >
 
 <div class="wallpaper-overlay"></div>
+
+<!-- ================= TOPBAR ================= -->
 
 <div class="topbar">
 
@@ -32,30 +33,57 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
 
     <div class="topbar-links">
+
         <a href="/view">View</a>
+
         <a href="/add">Add</a>
+
         <a href="/summary">Summary</a>
+
         <a href="/budget">Budget</a>
-        <a href="/goals" class="active-link">
+
+        <a href="/goals"
+        class="active-link">
             Goals
         </a>
+
     </div>
 
     <div class="topbar-actions">
+
         <a href="/calendar">Calendar</a>
+
         <a href="/diary">Diary</a>
+
         <a href="/profile">Profile</a>
+
         <a href="/logout">Logout</a>
+
     </div>
 
 </div>
 
-<!-- CREATE GOAL -->
+<!-- ================= CREATE GOAL ================= -->
+
 <div class="summary-card">
 
-    <h2>Create Goal</h2>
+    <div class="hero-card">
 
-    <form method="POST">
+        <div>
+
+            <h1>Create Financial Goal</h1>
+
+            <p>
+                Track your savings progress
+                and achieve your targets.
+            </p>
+
+        </div>
+
+    </div>
+
+    <form method="POST"
+    class="goal-form">
 
         <input
             type="hidden"
@@ -63,37 +91,60 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             value="create"
         >
 
-        <label>Goal Name:</label><br>
+        <div class="summary-grid">
 
-        <input
-            type="text"
-            name="name"
-            required
-        >
+            <!-- NAME -->
 
-        <br><br>
+            <div>
 
-        <label>Goal Type:</label><br>
+                <label>
+                    Goal Name
+                </label>
 
-        <select name="type" required>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Example: Gaming PC"
+                    required
+                >
 
-            <option value="">
-                -- Select Type --
-            </option>
+            </div>
 
-            <option value="short">
-                🎯 Short-Term
-            </option>
+            <!-- TYPE -->
 
-            <option value="long">
-                🚀 Long-Term
-            </option>
+            <div>
 
-        </select>
+                <label>
+                    Goal Type
+                </label>
 
-        <br><br>
+                <select name="type" required>
 
-        <label>Target Amount (RM):</label><br>
+                    <option value="">
+                        Select Goal Type
+                    </option>
+
+                    <option value="short">
+                        🎯 Short-Term
+                    </option>
+
+                    <option value="long">
+                        🚀 Long-Term
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <br>
+
+        <!-- TARGET -->
+
+        <label>
+            Target Amount (RM)
+        </label>
 
         <input
             type="text"
@@ -114,58 +165,110 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
-<!-- SHORT GOALS -->
+<!-- ================= SHORT GOALS ================= -->
+
 <div class="summary-card">
 
-    <h2>🎯 Short-Term Goals</h2>
+    <h2>
+        🎯 Short-Term Goals
+    </h2>
 
     {% if short_goals %}
 
+    <div class="summary-grid">
+
         {% for g in short_goals %}
 
-        <div class="budget-item">
+        <div class="overview-box">
 
-            <div class="budget-header">
+            <!-- TITLE -->
 
-                <strong>{{ g.name }}</strong>
+            <div class="budget-top">
 
-                <span>
-                    RM {{ "%.2f"|format(g.saved) }}
-                    /
-                    RM {{ "%.2f"|format(g.target) }}
-                </span>
+                <h3>
+                    {{ g.name }}
+                </h3>
+
+                <div class="action-buttons">
+
+                    <a
+                        href="/edit_goal/{{ g.id }}"
+                        class="edit-btn"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                        href="/delete_goal/{{ g.id }}"
+                        class="delete-btn"
+                    >
+                        Delete
+                    </a>
+
+                </div>
 
             </div>
 
-            <div class="progress-container">
+            <!-- AMOUNT -->
 
-                <div
-                    class="progress-bar safe"
-                    style="--width: {{ g.display_percent }}%;"
-                ></div>
+            <h2>
+                RM {{ "%.2f"|format(g.saved) }}
+            </h2>
+
+            <p>
+
+                Target:
+                RM {{ "%.2f"|format(g.target) }}
+
+            </p>
+
+            <!-- PROGRESS -->
+
+            <div class="budget-modern">
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar safe"
+                        style="
+                        --width:
+                        {{ g.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
 
             </div>
 
-            <small>
+            <!-- STATUS -->
+
+            <p>
 
                 {{ "%.0f"|format(g.percent) }}%
 
                 {% if g.status == "Completed" %}
-                    🎉 Completed
+
+                    • 🎉 Completed
+
                 {% else %}
-                    🚀 In Progress
+
+                    • 🚀 In Progress
+
                 {% endif %}
 
-                <br>
+            </p>
+
+            <p>
 
                 Remaining:
                 RM {{ "%.2f"|format(g.remaining) }}
 
-            </small>
+            </p>
 
-            <br><br>
+            <br>
 
-            <!-- ADD SAVINGS -->
+            <!-- SAVE FORM -->
+
             <form method="POST">
 
                 <input
@@ -188,78 +291,140 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     required
                 >
 
+                <br><br>
+
                 <button type="submit">
+
                     Add Savings
+
                 </button>
 
             </form>
 
         </div>
 
-        <hr>
-
         {% endfor %}
+
+    </div>
 
     {% else %}
 
-        <p>No short-term goals yet</p>
+        <div class="empty-card">
+
+            <h3>
+                No short-term goals yet
+            </h3>
+
+        </div>
 
     {% endif %}
 
 </div>
 
-<!-- LONG GOALS -->
+<!-- ================= LONG GOALS ================= -->
+
 <div class="summary-card">
 
-    <h2>🚀 Long-Term Goals</h2>
+    <h2>
+        🚀 Long-Term Goals
+    </h2>
 
     {% if long_goals %}
 
+    <div class="summary-grid">
+
         {% for g in long_goals %}
 
-        <div class="budget-item">
+        <div class="overview-box">
 
-            <div class="budget-header">
+            <!-- TITLE -->
 
-                <strong>{{ g.name }}</strong>
+            <div class="budget-top">
 
-                <span>
-                    RM {{ "%.2f"|format(g.saved) }}
-                    /
-                    RM {{ "%.2f"|format(g.target) }}
-                </span>
+                <h3>
+                    {{ g.name }}
+                </h3>
+
+                <div class="action-buttons">
+
+                    <a
+                        href="/edit_goal/{{ g.id }}"
+                        class="edit-btn"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                        href="/delete_goal/{{ g.id }}"
+                        class="delete-btn"
+                    >
+                        Delete
+                    </a>
+
+                </div>
 
             </div>
 
-            <div class="progress-container">
+            <!-- AMOUNT -->
 
-                <div
-                    class="progress-bar warning"
-                    style="--width: {{ g.display_percent }}%;"
-                ></div>
+            <h2>
+                RM {{ "%.2f"|format(g.saved) }}
+            </h2>
+
+            <p>
+
+                Target:
+                RM {{ "%.2f"|format(g.target) }}
+
+            </p>
+
+            <!-- PROGRESS -->
+
+            <div class="budget-modern">
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar warning"
+                        style="
+                        --width:
+                        {{ g.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
 
             </div>
 
-            <small>
+            <!-- STATUS -->
+
+            <p>
 
                 {{ "%.0f"|format(g.percent) }}%
 
                 {% if g.status == "Completed" %}
-                    🎉 Completed
+
+                    • 🎉 Completed
+
                 {% else %}
-                    🚀 In Progress
+
+                    • 🚀 In Progress
+
                 {% endif %}
 
-                <br>
+            </p>
+
+            <p>
 
                 Remaining:
                 RM {{ "%.2f"|format(g.remaining) }}
 
-            </small>
+            </p>
 
-            <br><br>
+            <br>
 
-            <!-- ADD SAVINGS -->
+            <!-- SAVE FORM -->
+
             <form method="POST">
 
                 <input
@@ -282,27 +447,38 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     required
                 >
 
+                <br><br>
+
                 <button type="submit">
+
                     Add Savings
+
                 </button>
 
             </form>
 
         </div>
 
-        <hr>
-
         {% endfor %}
+
+    </div>
 
     {% else %}
 
-        <p>No long-term goals yet</p>
+        <div class="empty-card">
+
+            <h3>
+                No long-term goals yet
+            </h3>
+
+        </div>
 
     {% endif %}
 
 </div>
 
-<!-- TNG INPUT -->
+<!-- ================= TNG INPUT ================= -->
+
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -334,14 +510,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (e.key >= "0" && e.key <= "9") {
 
-            value = value * 10 + parseInt(e.key);
+            value =
+            value * 10 + parseInt(e.key);
 
         }
-        else if (e.key === "Backspace") {
 
-            value = Math.floor(value / 10);
+        else if (
+            e.key === "Backspace"
+        ) {
+
+            value =
+            Math.floor(value / 10);
 
         }
+
         else {
 
             return;

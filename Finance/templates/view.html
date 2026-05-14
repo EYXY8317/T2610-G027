@@ -9,6 +9,14 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='finance.css') }}"
     >
+<link
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+/>
+
+<script
+src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js">
+</script>
 
 </head>
 
@@ -152,7 +160,10 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             </label>
 
-            <select name="account">
+            <select
+            id="accountFilter"
+            name="account"
+            >
 
                 <option value="">
                     All Accounts
@@ -311,6 +322,30 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const accountFilter =
+    document.getElementById("accountFilter");
+
+    if (accountFilter) {
+
+        new Choices(accountFilter, {
+
+            searchEnabled: false,
+
+            itemSelectText: '',
+
+            shouldSort: false
+
+        });
+
+    }
+
+});
+
+</script>
 </body>
 
 </html>
