@@ -41,6 +41,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
 
     <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
         <a href="/calendar">Calendar</a>
         <a href="/diary">Diary</a>
         <a href="/profile">Profile</a>
@@ -208,14 +209,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             {% for b in budgets %}
 
-            <div
-            style="
-            background:rgba(255,255,255,0.12);
-            border:1px solid rgba(255,255,255,0.15);
-            backdrop-filter:blur(14px);
-            border-radius:18px;
-            padding:22px;
-            ">
+            <div class="budget-modern">
 
                 <div
                 style="
@@ -252,15 +246,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 </div>
 
-                <div
-                style="
-                font-size:28px;
-                font-weight:bold;
-                margin-top:10px;
-                color:white;
-                ">
+                <div class="budget-amount-wrapper">
 
-                    RM {{ "%.2f"|format(b.amount) }}
+                    <p class="budget-amount">
+                        RM {{ "%.2f"|format(b.amount) }}
+                    </p>
 
                 </div>
 
