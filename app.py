@@ -467,7 +467,6 @@ def summary():
 
     now = datetime.now()
 
-    # ================= FILTERS =================
     selected_month = request.args.get(
         "month",
         now.strftime("%m")
@@ -486,8 +485,8 @@ def summary():
         r for r in records
 
         if (
-            r["username"] == user
-            and r["date"].startswith(current_month)
+            r.get("username") == user
+            and r.get("date", "").startswith(current_month)
         )
 
     ]
@@ -498,29 +497,29 @@ def summary():
         r for r in records
 
         if (
-            r["username"] == user
-            and r["date"].startswith(selected_year)
+            r.get("username") == user
+            and r.get("date", "").startswith(selected_year)
         )
 
     ]
 
-    # ================= MONTH TOTALS =================
+    # ================= TOTALS =================
     income = sum(
-        r["amount"]
+        r.get("amount", 0)
         for r in month_records
-        if r["type"] == "income"
+        if r.get("type") == "income"
     )
 
     expense = sum(
-        r["amount"]
+        r.get("amount", 0)
         for r in month_records
-        if r["type"] == "expense"
+        if r.get("type") == "expense"
     )
 
     saving = sum(
-        r["amount"]
+        r.get("amount", 0)
         for r in month_records
-        if r["type"] == "saving"
+        if r.get("type") == "saving"
     )
 
     balance = income - expense
@@ -530,7 +529,8 @@ def summary():
 
     for r in month_records:
 
-        if r["type"] == "expense":
+        if r.get("type") == "expense":
+
             category = r.get(
                 "category",
                 "Other"
@@ -538,7 +538,7 @@ def summary():
 
             category_totals[category] = (
                 category_totals.get(category, 0)
-                + r["amount"]
+                + r.get("amount", 0)
             )
 
     total_expense = sum(category_totals.values())
@@ -548,10 +548,10 @@ def summary():
         category_totals.items(),
         key=lambda x: x[1],
         reverse=True
-
     )[:3]
 
     top_categories_with_percent = [
+
         (
             c,
             a,
@@ -560,9 +560,10 @@ def summary():
         )
 
         for c, a in top_categories
+
     ]
 
-    # ================= SMART INSIGHT =================
+    # ================= INSIGHT =================
     insight = "Your spending looks stable this month."
 
     if top_categories:
@@ -586,6 +587,7 @@ def summary():
     comparison = "No income recorded yet."
 
     if income > 0:
+
         expense_ratio = (
             expense / income
         ) * 100
@@ -596,103 +598,145 @@ def summary():
             f"of income this month."
         )
 
-    # ================= BUDGET TRACKING =================
+    # ================= BUDGET =================
     budgets = load_data(f_budget, [])
 
     user_budgets = [
+
         b for b in budgets
-        if b["username"] == user
+
+        if b.get("username") == user
+
     ]
 
     budget_usage = []
+
     for b in user_budgets:
+
         spent = category_totals.get(
-            b["category"],
+            b.get("category"),
             0
         )
 
-        limit = b["amount"]
+        limit = b.get("amount", 0)
+
         percent = (
             (spent / limit) * 100
             if limit else 0
         )
 
         remaining = limit - spent
+
         status = "safe"
+
         if percent >= 100:
             status = "over"
+
         elif percent >= 80:
             status = "warning"
 
         budget_usage.append({
-            "category": b["category"],
+
+            "category": b.get("category"),
+
             "spent": spent,
+
             "limit": limit,
+
             "remaining": remaining,
+
             "percent": percent,
+
             "display_percent": min(percent, 100),
+
             "status": status
+
         })
 
-    # ================= YEARLY TOTALS =================
+    # ================= YEAR TOTALS =================
     yearly_income = sum(
-        r["amount"]
+        r.get("amount", 0)
         for r in year_records
-        if r["type"] == "income"
+        if r.get("type") == "income"
     )
+
     yearly_expense = sum(
-        r["amount"]
+        r.get("amount", 0)
         for r in year_records
-        if r["type"] == "expense"
+        if r.get("type") == "expense"
     )
+
     yearly_balance = yearly_income - yearly_expense
 
-    # ================= MONTHLY BREAKDOWN =================
+    # ================= MONTHLY DATA =================
     monthly_data = {}
+
     for month in range(1, 13):
+
         key = f"{selected_year}-{month:02d}"
+
         monthly_income = sum(
-            r["amount"]
+
+            r.get("amount", 0)
+
             for r in year_records
+
             if (
-                r["type"] == "income"
-                and r["date"].startswith(key)
+                r.get("type") == "income"
+                and r.get("date", "").startswith(key)
             )
+
         )
+
         monthly_expense = sum(
-            r["amount"]
+
+            r.get("amount", 0)
+
             for r in year_records
+
             if (
-                r["type"] == "expense"
-                and r["date"].startswith(key)
+                r.get("type") == "expense"
+                and r.get("date", "").startswith(key)
             )
+
         )
+
         monthly_data[key] = {
+
             "income": monthly_income,
+
             "expense": monthly_expense,
+
             "balance": monthly_income - monthly_expense
+
         }
 
     # ================= GOALS =================
-    goals = load_data(f_goals, [])
+    goals_data = load_data(f_goals, [])
 
     user_goals = [
-        g for g in goals
-        if g["username"] == user
+
+        g for g in goals_data
+
+        if g.get("username") == user
+
     ]
 
     short_goals = []
     long_goals = []
 
     for g in user_goals:
-        saved = saving
+
+        saved = g.get("saved", 0)
+
+        target = g.get("target", 0)
 
         percent = (
-            (saved / g["target"]) * 100
-            if g["target"] else 0
+            (saved / target) * 100
+            if target else 0
         )
 
-        remaining_goal = g["target"] - saved
+        remaining_goal = target - saved
 
         status = "In Progress"
 
@@ -700,69 +744,83 @@ def summary():
             status = "Completed"
 
         goal_data = {
-            "name": g["name"],
-            "target": g["target"],
+
+            "id": g.get("id"),
+
+            "name": g.get("name"),
+
+            "target": target,
+
             "saved": saved,
+
             "remaining": remaining_goal,
+
             "percent": percent,
+
             "display_percent": min(percent, 100),
+
             "status": status
+
         }
 
-        if g["type"] == "short":
+        if g.get("type") == "short":
+
             short_goals.append(goal_data)
 
         else:
+
             long_goals.append(goal_data)
-
-        year_income = sum(
-        r["amount"]
-        for r in year_records
-        if r["type"] == "income"
-    )
-
-    year_expense = sum(
-        r["amount"]
-        for r in year_records
-        if r["type"] == "expense"
-    )
-
-    year_balance = year_income - year_expense
 
     # ================= RENDER =================
     return render_template(
+
         "summary.html",
+
         income=income,
+
         expense=expense,
+
         saving=saving,
+
         balance=balance,
-        year_income=year_income,
-        year_expense=year_expense,
-        year_balance=year_balance,
+
         daily_avg=round(
             expense / max(now.day, 1),
             2
         ),
+
         top_categories=top_categories_with_percent,
+
         insight=insight,
+
         comparison=comparison,
+
         budget_usage=budget_usage,
-        yearly_income=yearly_income,
-        yearly_expense=yearly_expense,
-        yearly_balance=yearly_balance,
+
+        year_income=yearly_income,
+
+        year_expense=yearly_expense,
+
+        year_balance=yearly_balance,
+
         monthly_data=monthly_data,
+
         selected_month=selected_month,
+
         selected_year=selected_year,
+
         short_goals=short_goals,
+
         long_goals=long_goals,
+
         wallpaper=get_user_wallpaper(),
+
     )
 
-#================= GOALS ==================
+# ================= GOALS =================
 @app.route("/goals", methods=["GET", "POST"])
 def goals():
 
-    # ================= LOGIN CHECK =================
     if "user" not in session:
         return redirect(url_for("login"))
 
@@ -770,12 +828,12 @@ def goals():
 
     goals = load_data(f_goals, [])
 
-    # ================= CREATE GOAL =================
+    # ================= CREATE / SAVE =================
     if request.method == "POST":
 
         action = request.form.get("action")
 
-        # ================= CREATE NEW GOAL =================
+        # ===== CREATE GOAL =====
         if action == "create":
 
             name = request.form.get("name")
@@ -786,11 +844,10 @@ def goals():
 
                 return render_template(
                     "goals.html",
-                    goals=[
-                        g for g in goals
-                        if g["username"] == user
-                    ],
-                    error="All fields required"
+                    short_goals=[],
+                    long_goals=[],
+                    error="All fields required",
+                    wallpaper=get_user_wallpaper(),
                 )
 
             try:
@@ -800,26 +857,42 @@ def goals():
 
                 return render_template(
                     "goals.html",
-                    goals=[
-                        g for g in goals
-                        if g["username"] == user
-                    ],
-                    error="Invalid target amount"
+                    short_goals=[],
+                    long_goals=[],
+                    error="Invalid target amount",
+                    wallpaper=get_user_wallpaper(),
                 )
 
+            # ===== CREATE ID =====
+            new_id = 1
+
+            if goals:
+                new_id = max(
+                    [g.get("id", 0) for g in goals],
+                    default=0
+                ) + 1
+
+            # ===== SAVE GOAL =====
             goals.append({
+
+                "id": new_id,
+
                 "username": user,
+
                 "name": name,
+
+                "type": goal_type,
+
                 "target": target,
-                "saved": 0,
-                "type": goal_type
+
+                "saved": 0
             })
 
             save_data(f_goals, goals)
 
             return redirect(url_for("goals"))
 
-        # ================= ADD SAVINGS =================
+        # ===== SAVE MONEY INTO GOAL =====
         elif action == "save":
 
             goal_name = request.form.get("goal_name")
@@ -834,20 +907,24 @@ def goals():
             for g in goals:
 
                 if (
-                    g["username"] == user
-                    and g["name"] == goal_name
+                    g.get("username") == user
+                    and g.get("name") == goal_name
                 ):
-                    g["saved"] += amount
+
+                    g["saved"] = g.get("saved", 0) + amount
                     break
 
             save_data(f_goals, goals)
 
             return redirect(url_for("goals"))
 
-    # ================= USER GOALS =================
+    # ================= FILTER USER GOALS =================
     user_goals = [
+
         g for g in goals
-        if g["username"] == user
+
+        if g.get("username") == user
+
     ]
 
     # ================= PROCESS GOALS =================
@@ -858,24 +935,35 @@ def goals():
 
         saved = g.get("saved", 0)
         target = g.get("target", 0)
+
         percent = (
             (saved / target) * 100
             if target else 0
         )
 
         remaining = target - saved
+
         status = "In Progress"
 
         if percent >= 100:
             status = "Completed"
 
         goal_data = {
-            "name": g["name"],
+
+            "id": g.get("id"),
+
+            "name": g.get("name"),
+
             "target": target,
+
             "saved": saved,
+
             "remaining": remaining,
+
             "percent": percent,
+
             "display_percent": min(percent, 100),
+
             "status": status
         }
 
@@ -889,8 +977,118 @@ def goals():
     return render_template(
 
         "goals.html",
+
         short_goals=short_goals,
+
         long_goals=long_goals,
+
+        wallpaper=get_user_wallpaper(),
+
+    )
+
+# =========== DELETE GOALS ==================
+@app.route("/delete_goal/<int:goal_id>")
+def delete_goal(goal_id):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    goals = load_data(f_goals, [])
+
+    # remove only THIS user's goal
+    goals = [
+
+        g for g in goals
+
+        if not (
+            g.get("id") == goal_id
+            and g.get("username") == user
+        )
+
+    ]
+
+    save_data(f_goals, goals)
+
+    return redirect(url_for("goals"))
+
+
+# ================ EDIT GOALS ====================
+@app.route("/edit_goal/<int:goal_id>", methods=["GET", "POST"])
+def edit_goal(goal_id):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    goals = load_data(f_goals, [])
+
+    # find correct goal
+    goal = next(
+
+        (
+
+            g for g in goals
+
+            if (
+                g.get("id") == goal_id
+                and g.get("username") == user
+            )
+
+        ),
+
+        None
+
+    )
+
+    # goal not found
+    if not goal:
+        return redirect(url_for("goals"))
+
+    # ================= UPDATE =================
+    if request.method == "POST":
+
+        name = request.form.get("name")
+        target = request.form.get("target")
+
+        if not name or not target:
+
+            return render_template(
+                "edit_goal.html",
+                goal=goal,
+                error="All fields required",
+                wallpaper=get_user_wallpaper(),
+            )
+
+        try:
+            target = float(target)
+
+        except:
+
+            return render_template(
+                "edit_goal.html",
+                goal=goal,
+                error="Invalid target amount",
+                wallpaper=get_user_wallpaper(),
+            )
+
+        # update data
+        goal["name"] = name
+        goal["target"] = target
+
+        save_data(f_goals, goals)
+
+        return redirect(url_for("goals"))
+
+    # ================= RENDER =================
+    return render_template(
+
+        "edit_goal.html",
+
+        goal=goal,
+
         wallpaper=get_user_wallpaper(),
 
     )

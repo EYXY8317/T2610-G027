@@ -474,27 +474,174 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         </div>
 
-        <!-- ===== GOALS ===== -->
+    <!-- ================= GOALS ================= -->
 
-        <div class="summary-card">
+    <div class="summary-card">
 
-            <h2>🎯 Financial Goals</h2>
+        <h2>
+            🎯 Financial Goals
+        </h2>
 
-            <p class="comparison-text">
+        <p>
+            Track your financial progress
+        </p>
 
-                Track your financial progress
+        <br>
 
+        {% if short_goals or long_goals %}
+
+            <!-- SHORT GOALS -->
+
+            {% for goal in short_goals %}
+
+            <div class="budget-modern">
+
+                <div class="budget-top">
+
+                    <strong>
+                        {{ goal.name }}
+                    </strong>
+
+                    <strong>
+                        RM {{ "%.2f"|format(goal.saved) }}
+                        /
+                        RM {{ "%.2f"|format(goal.target) }}
+                    </strong>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar
+                        {% if goal.percent >= 100 %}
+                            over
+                        {% elif goal.percent >= 80 %}
+                            warning
+                        {% else %}
+                            safe
+                        {% endif %}"
+
+                        style="
+                        --width:
+                        {{ goal.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
+
+                <p>
+
+                    {{ goal.percent|round(0) }}%
+
+                    {% if goal.percent >= 100 %}
+                        🎉 Completed
+
+                    {% elif goal.percent >= 80 %}
+                        ⚠ Almost there
+
+                    {% else %}
+                        🚀 In Progress
+
+                    {% endif %}
+
+                </p>
+
+                <p>
+                    Remaining:
+                    RM {{ "%.2f"|format(goal.remaining) }}
+                </p>
+
+                <br>
+
+            </div>
+
+            {% endfor %}
+
+            <!-- LONG GOALS -->
+
+            {% for goal in long_goals %}
+
+            <div class="budget-modern">
+
+                <div class="budget-top">
+
+                    <strong>
+                        {{ goal.name }}
+                    </strong>
+
+                    <strong>
+                        RM {{ "%.2f"|format(goal.saved) }}
+                        /
+                        RM {{ "%.2f"|format(goal.target) }}
+                    </strong>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar
+                        {% if goal.percent >= 100 %}
+                            over
+                        {% elif goal.percent >= 80 %}
+                            warning
+                        {% else %}
+                            safe
+                        {% endif %}"
+
+                        style="
+                        --width:
+                        {{ goal.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
+
+                <p>
+
+                    {{ goal.percent|round(0) }}%
+
+                    {% if goal.percent >= 100 %}
+                        🎉 Completed
+
+                    {% elif goal.percent >= 80 %}
+                        ⚠ Almost there
+
+                    {% else %}
+                        🚀 In Progress
+
+                    {% endif %}
+
+                </p>
+
+                <p>
+                    Remaining:
+                    RM {{ "%.2f"|format(goal.remaining) }}
+                </p>
+
+                <br>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>
+                No financial goals yet.
             </p>
 
-            <a href="/goals">
+        {% endif %}
 
-                <button>
-                    Open Goals Dashboard
-                </button>
+        <br>
 
-            </a>
-
-        </div>
+        <a
+            href="/goals"
+            class="primary-btn"
+        >
+            Open Goals Dashboard
+        </a>
 
     </div>
 
@@ -553,28 +700,23 @@ new Chart(document.getElementById("pieChart"), {
         plugins: {
 
             legend: {
-                position: 'bottom'
-            },
 
-            tooltip: {
+                position: 'bottom',
 
-                callbacks: {
+                labels: {
 
-                    label: function(context) {
+                    color: 'white',
 
-                        const value = context.raw;
+                    padding: 20,
 
-                        const percent =
-                        ((value / total) * 100).toFixed(1);
+                    font: {
 
-                        return `${context.label}: RM${value} (${percent}%)`;
+                        size: 14,
 
+                        weight: 'bold'
                     }
-
                 }
-
             }
-
         }
 
     }

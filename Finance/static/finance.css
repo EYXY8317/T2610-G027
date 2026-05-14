@@ -1,7 +1,20 @@
 :root {
 
-    --glass-border: rgba(0,0,0,0.10);
+    --glass-bg: rgba(255,255,255,0.16);
+
+    --glass-border: rgba(255,255,255,0.18);
+
+    --glass-shadow:
+    0 8px 32px rgba(0,0,0,0.18);
+
+    --purple: #6366F1;
+
+    --text-dark: #111827;
+
+    --text-light: white;
 }
+
+/* ===================== BODY ==================== */
 
 body {
 
@@ -11,7 +24,7 @@ body {
 
     padding: 20px;
 
-    background-color: #f5f7fb;
+    background-color: #0f172a;
 
     background-size: cover;
 
@@ -22,7 +35,7 @@ body {
     color: white;
 }
 
-/* ================= WALLPAPER ===================== */
+/* ===================== WALLPAPER ==================== */
 
 .wallpaper-overlay {
 
@@ -34,12 +47,12 @@ body {
     width: 100%;
     height: 100%;
 
-    background: rgba(0,0,0,0.38);
+    background: rgba(0,0,0,0.35);
 
     z-index: -1;
 }
 
-/* ================== MAIN LAYOUT ================== */
+/* ===================== LAYOUT ==================== */
 
 .summary-wrapper {
 
@@ -54,19 +67,19 @@ body {
 
 .topbar {
 
-    background: rgba(255,255,255,0.18);
+    background: var(--glass-bg);
 
     backdrop-filter: blur(18px);
 
     -webkit-backdrop-filter: blur(18px);
 
-    border: 1px solid rgba(255,255,255,0.25);
+    border: 1px solid var(--glass-border);
 
-    border-radius: 20px;
+    border-radius: 22px;
 
     padding: 18px 24px;
 
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 
     display: flex;
 
@@ -74,11 +87,11 @@ body {
 
     align-items: center;
 
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-
     flex-wrap: wrap;
 
-    gap: 15px;
+    gap: 14px;
+
+    box-shadow: var(--glass-shadow);
 }
 
 .topbar-title {
@@ -87,7 +100,7 @@ body {
 
     font-weight: bold;
 
-    color: #111;
+    color: black;
 }
 
 .topbar-links,
@@ -104,9 +117,9 @@ body {
 
     text-decoration: none;
 
-    color: #111;
+    color: black;
 
-    font-weight: 600;
+    font-weight: 700;
 
     padding: 10px 16px;
 
@@ -122,216 +135,182 @@ body {
 
 .active-link {
 
-    background: #6366F1;
+    background: var(--purple);
 
     color: white !important;
 }
 
-/* ====================== CARDS ==================== */
+/* ===================== CARDS ==================== */
 
 .summary-card {
 
-    background: rgba(255,255,255,0.18);
+    background: var(--glass-bg);
 
     backdrop-filter: blur(20px);
 
     -webkit-backdrop-filter: blur(20px);
 
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid var(--glass-border);
 
     border-radius: 24px;
 
-    padding: 25px;
+    padding: 28px;
 
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    margin-bottom: 24px;
 
-    margin-bottom: 20px;
+    box-shadow: var(--glass-shadow);
 
-    color: white;
+    box-sizing: border-box;
 }
 
-/* ======================= GRID ==================== */
+/* ===================== HERO ==================== */
+
+.hero-card {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+}
+
+/* ===================== GRID ==================== */
 
 .summary-grid {
 
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+    repeat(auto-fit, minmax(350px, 1fr));
 
-    gap: 24px;
+    gap: 20px;
 
     margin-top: 20px;
 }
 
-.year-grid {
+.overview-grid {
 
     display: grid;
 
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
 
     gap: 20px;
+
+    margin-top: 20px;
+
+    margin-bottom: 20px;
 }
 
-/* ====================== FORMS ==================== */
+/* ===================== OVERVIEW BOX ==================== */
 
-form {
+.overview-box {
 
-    width: 100%;
-}
+    padding: 24px;
 
-/* ===== INPUT / SELECT / TEXTAREA ===== */
+    border-radius: 22px;
 
-input,
-select,
-textarea {
-
-    width: 100%;
-
-    padding: 14px 16px;
-
-    border-radius: 14px;
-
-    border: 1px solid rgba(255,255,255,0.22);
-
-    background: rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.10);
 
     backdrop-filter: blur(14px);
 
-    -webkit-backdrop-filter: blur(14px);
-
-    box-sizing: border-box;
-
-    margin-top: 8px;
-
-    margin-bottom: 18px;
-
-    font-size: 15px;
-
-    color: white;
-
-    outline: none;
-
-    transition: 0.2s;
-}
-
-/* ===== INPUT PLACEHOLDER ===== */
-
-input::placeholder,
-textarea::placeholder {
-
-    color: rgba(255,255,255,0.65);
-}
-
-/* ===== FOCUS EFFECT ===== */
-
-input:focus,
-select:focus,
-textarea:focus {
-
-    border: 1px solid rgba(99,102,241,0.65);
-
-    box-shadow:
-    0 0 0 4px rgba(99,102,241,0.15);
-}
-
-/* ===== DROPDOWN OPTIONS ===== */
-
-select option {
-
-    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.12);
 
     color: white;
 }
 
-/* ===== BUTTON ===== */
+.overview-box p {
 
-button {
+    margin: 0;
 
-    background: #6366F1;
+    opacity: 0.8;
+}
 
-    color: white;
+.overview-box h2 {
+
+    margin-top: 12px;
+
+    font-size: 30px;
+}
+
+/* ===================== TEXT ==================== */
+
+.income-text {
+
+    color: #22c55e;
+}
+
+.expense-text {
+
+    color: #ef4444;
+}
+
+.saving-text {
+
+    color: #3b82f6;
+}
+
+.positive {
+
+    color: #22c55e;
+}
+
+.negative {
+
+    color: #ef4444;
+}
+
+/* ===================== BUTTONS ==================== */
+
+button,
+.primary-btn {
+
+    padding: 12px 22px;
 
     border: none;
 
-    padding: 12px 20px;
+    border-radius: 14px;
 
-    border-radius: 12px;
+    background: var(--purple);
 
-    cursor: pointer;
+    color: white;
 
     font-weight: 700;
 
-    font-size: 14px;
+    cursor: pointer;
 
     transition: 0.2s;
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    box-shadow:
+    0 4px 18px rgba(99,102,241,0.25);
 }
 
-/* ===== BUTTON HOVER ===== */
-
-button:hover {
+button:hover,
+.primary-btn:hover {
 
     background: #4f46e5;
 
     transform: translateY(-1px);
 }
 
-/* ===================== FILTER ==================== */
+/* ===================== INPUTS ==================== */
 
-.filter-form {
+input,
+textarea {
 
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    flex-wrap: wrap;
-
-    margin-top: 20px;
-}
-
-/* ===== LABEL ===== */
-
-.filter-form label {
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 600;
-}
-
-/* ===================== FILTER ==================== */
-
-.filter-form {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    flex-wrap: wrap;
-
-    margin-top: 20px;
-}
-
-/* ================= LABEL ================= */
-
-.filter-form label {
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-/* ================= SELECT ================= */
-
-.filter-form select {
-
-    min-width: 190px;
+    width: 100%;
 
     padding: 12px 16px;
 
@@ -339,119 +318,109 @@ button:hover {
 
     border: 1px solid rgba(255,255,255,0.18);
 
-    background: rgba(45,45,45,0.72);
+    background: rgba(255,255,255,0.10);
+
+    backdrop-filter: blur(14px);
+
+    -webkit-backdrop-filter: blur(14px);
 
     color: white;
 
-    font-size: 14px;
+    font-size: 15px;
 
-    font-weight: 600;
+    box-sizing: border-box;
 
     outline: none;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    backdrop-filter: blur(12px);
-
-    -webkit-backdrop-filter: blur(12px);
-
-    box-shadow:
-    0 4px 18px rgba(0,0,0,0.18);
 }
 
-/* ===== SELECT HOVER ===== */
+input::placeholder,
+textarea::placeholder {
 
-.filter-form select:hover {
-
-    background: rgba(60,60,60,0.82);
+    color: rgba(255,255,255,0.6);
 }
 
-/* ===== SELECT FOCUS ===== */
+/* ===================== SELECT ==================== */
 
-.filter-form select:focus {
+select {
 
-    border: 1px solid rgba(99,102,241,0.65);
+    width: 100%;
 
-    box-shadow:
-    0 0 0 4px rgba(99,102,241,0.16);
-}
+    min-width: 180px;
 
-/* ===== DROPDOWN POPUP ===== */
-
-.filter-form select option {
-
-    background: #2b2b2b;
-
-    color: white;
-
-    padding: 10px;
-}
-
-/* ================= BUTTON ================= */
-
-.filter-form button {
-
-    padding: 12px 18px;
+    padding: 12px 16px;
 
     border-radius: 14px;
 
     border: 1px solid rgba(255,255,255,0.18);
 
-    background: rgba(255,255,255,0.88);
+    background: rgba(40,40,40,0.72);
 
-    color: #111827;
+    backdrop-filter: blur(14px);
 
-    font-size: 14px;
+    -webkit-backdrop-filter: blur(14px);
 
-    font-weight: 700;
+    color: white;
 
-    cursor: pointer;
+    font-size: 15px;
+
+    font-weight: 600;
+
+    outline: none;
 
     transition: 0.2s;
 
-    backdrop-filter: blur(12px);
+    appearance: auto;
 
-    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
 
     box-shadow:
-    0 4px 18px rgba(0,0,0,0.12);
+    0 4px 18px rgba(0,0,0,0.18);
 }
 
-/* ===== BUTTON HOVER ===== */
+/* ===== OPTIONS ===== */
 
-.filter-form button:hover {
+select option {
 
     background: white;
 
-    transform: translateY(-1px);
+    color: black;
 }
 
-/* ====================== TABLE ==================== */
+/* ===== FOCUS ===== */
 
-table {
+select:focus {
 
-    width: 100%;
+    border: 1px solid #6366F1;
 
-    border-collapse: collapse;
-
-    background: rgba(255,255,255,0.22);
-
-    backdrop-filter: blur(18px);
-
-    -webkit-backdrop-filter: blur(18px);
-
-    border: 1px solid rgba(255,255,255,0.12);
-
-    border-radius: 18px;
-
-    overflow: hidden;
-
-    margin-top: 25px;
+    box-shadow:
+    0 0 0 3px rgba(99,102,241,0.18);
 }
 
-/* ===== MAIN TABLE ===== */
+/* ===================== FILTER ==================== */
+
+.filter-form,
+.summary-filter {
+
+    display: flex;
+
+    gap: 14px;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    margin-top: 18px;
+}
+
+.filter-form label,
+.summary-filter label {
+
+    color: white;
+
+    font-weight: 700;
+}
+
+/* ===================== TABLE ==================== */
 
 .records-table {
 
@@ -459,10 +428,18 @@ table {
 
     border-collapse: collapse;
 
-    color: white;
-}
+    margin-top: 24px;
 
-/* ===== TABLE HEADER ===== */
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    background: rgba(255,255,255,0.14);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+}
 
 .records-table th {
 
@@ -470,26 +447,29 @@ table {
 
     text-align: left;
 
-    color: #0f172a;
+    color: black;
 
-    border-bottom: 1px solid var(--glass-border);
+    background: rgba(255,255,255,0.18);
 
-    border-right: 1px solid var(--glass-border);
+    border-bottom: 1px solid rgba(0,0,0,0.12);
 
-    background: rgba(255,255,255,0.04);
+    border-right: 1px solid rgba(0,0,0,0.10);
 }
-
-/* ===== TABLE ROWS ===== */
 
 .records-table td {
 
     padding: 18px 16px;
 
-    color: #1e293b;
+    color: black;
 
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid rgba(0,0,0,0.10);
 
-    border-right: 1px solid var(--glass-border);
+    border-right: 1px solid rgba(0,0,0,0.10);
+}
+
+.records-table tr:hover {
+
+    background: rgba(255,255,255,0.06);
 }
 
 .records-table th:last-child,
@@ -498,23 +478,7 @@ table {
     border-right: none;
 }
 
-/* ===== HOVER EFFECT ===== */
-
-.records-table tr:hover {
-
-    background: rgba(255,255,255,0.05);
-
-    transition: 0.2s;
-}
-
-/* ===== ZEBRA ROWS ===== */
-
-.records-table tr:nth-child(even) {
-
-    background: rgba(255,255,255,0.02);
-}
-
-/* ================= BADGES ================= */
+/* ===================== BADGES ==================== */
 
 .badge {
 
@@ -531,31 +495,7 @@ table {
     font-size: 13px;
 
     font-weight: 700;
-
-    letter-spacing: 0.3px;
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    border: 1px solid rgba(255,255,255,0.18);
 }
-
-/* ===== EXPENSE ===== */
-
-.badge.expense {
-
-    background: rgba(239,68,68,0.18);
-
-    color: #dc2626;
-
-    border: 1px solid rgba(239,68,68,0.35);
-
-    box-shadow:
-    0 0 12px rgba(239,68,68,0.12);
-}
-
-/* ===== INCOME ===== */
 
 .badge.income {
 
@@ -564,12 +504,16 @@ table {
     color: #15803d;
 
     border: 1px solid rgba(34,197,94,0.35);
-
-    box-shadow:
-    0 0 12px rgba(34,197,94,0.12);
 }
 
-/* ===== SAVING ===== */
+.badge.expense {
+
+    background: rgba(239,68,68,0.18);
+
+    color: #dc2626;
+
+    border: 1px solid rgba(239,68,68,0.35);
+}
 
 .badge.saving {
 
@@ -578,77 +522,88 @@ table {
     color: #2563eb;
 
     border: 1px solid rgba(59,130,246,0.35);
-
-    box-shadow:
-    0 0 12px rgba(59,130,246,0.12);
 }
 
-/* ===================== BUTTONS =================== */
+/* ===================== ACTION BUTTONS ==================== */
 
-.add-btn {
+.action-buttons {
 
-    background: #6366F1;
+    display: flex;
 
-    color: white;
+    gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+
+    padding: 7px 14px;
+
+    border-radius: 10px;
 
     text-decoration: none;
 
-    padding: 12px 18px;
+    font-size: 13px;
 
-    border-radius: 12px;
-
-    font-weight: 600;
+    font-weight: 700;
 
     transition: 0.2s;
 }
 
-.add-btn:hover {
+.edit-btn {
 
-    background: #4f46e5;
+    background: rgba(99,102,241,0.16);
+
+    color: #4f46e5;
+
+    border: 1px solid rgba(99,102,241,0.28);
 }
 
-/* ===================== STATUS ==================== */
+.delete-btn {
 
-.positive {
-
-    color: #16a34a;
-}
-
-.negative {
+    background: rgba(239,68,68,0.16);
 
     color: #dc2626;
+
+    border: 1px solid rgba(239,68,68,0.28);
 }
 
-.income-text {
+.edit-btn:hover,
+.delete-btn:hover {
 
-    color: #16a34a;
+    transform: translateY(-1px);
 }
 
-.expense-text {
+/* ===================== BUDGET ==================== */
 
-    color: #dc2626;
+.budget-modern {
+
+    margin-top: 18px;
 }
 
-.saving-text {
+.budget-top {
 
-    color: #2563eb;
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
 }
-
-/* ================= PROGRESS BAR ================== */
 
 .progress-container {
 
-    background: #e5e7eb;
+    width: 100%;
 
     height: 12px;
 
     border-radius: 999px;
 
+    background: rgba(255,255,255,0.12);
+
     overflow: hidden;
 
     margin-top: 8px;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .progress-bar {
@@ -675,165 +630,100 @@ table {
     background: #ef4444;
 }
 
-/* ==================== INSIGHT ==================== */
+/* ===================== INSIGHT ==================== */
 
 .insight-box {
 
-    background: rgba(248,250,252,0.9);
+    margin-top: 20px;
 
     padding: 18px;
 
-    border-radius: 14px;
+    border-radius: 16px;
 
-    margin-top: 20px;
+    background: rgba(255,255,255,0.08);
+
+    border: 1px solid rgba(255,255,255,0.08);
 }
 
-/* ===================== EMPTY ===================== */
+/* ===================== EMPTY ==================== */
 
 .empty-card {
 
     text-align: center;
 
-    padding: 40px 20px;
+    padding: 50px 20px;
 }
 
-/* =================== RESPONSIVE ================== */
+/* ===================== RESPONSIVE ==================== */
 
 @media (max-width: 900px) {
 
-    .summary-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-    .topbar {
+    .hero-card {
 
         flex-direction: column;
 
         align-items: flex-start;
     }
 
-    .records-table {
+    .summary-grid {
 
-        font-size: 14px;
+        grid-template-columns: 1fr;
+    }
+
+    .overview-grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .filter-form,
+    .summary-filter {
+
+        flex-direction: column;
+
+        align-items: stretch;
     }
 }
 
-/* ================= BACK BUTTON ================= */
+/* ===================== CHART ==================== */
 
-.back-btn {
+.chart-container {
 
-    display: inline-flex;
+    position: relative;
 
-    align-items: center;
+    width: 100%;
 
-    justify-content: center;
+    height: 420px;
 
-    padding: 10px 18px;
+    margin-top: 20px;
+}
 
-    border-radius: 12px;
+.chart-container canvas {
 
-    background: rgba(255,255,255,0.16);
+    width: 100% !important;
 
-    backdrop-filter: blur(12px);
+    max-height: 420px;
+}
 
-    -webkit-backdrop-filter: blur(12px);
+/* ===== CHART LEGEND ===== */
 
-    border: 1px solid rgba(255,255,255,0.22);
+.chart-legend {
 
     color: white;
-
-    text-decoration: none;
-
-    font-weight: 600;
-
-    font-size: 14px;
-
-    transition: 0.2s;
 }
 
-.back-btn:hover {
+/* ===== INSIGHT ===== */
 
-    background: rgba(255,255,255,0.24);
+.insight-box h2,
+.insight-box h3,
+.insight-box p,
+.insight-box span {
 
-    transform: translateY(-1px);
+    color: white;
 }
 
-/* ================= ACTION BUTTONS ================= */
+/* ===== PIE LABELS ===== */
 
-.action-buttons {
+canvas {
 
-    display: flex;
-
-    gap: 10px;
-
-    align-items: center;
-}
-
-/* ===== EDIT ===== */
-
-.edit-btn {
-
-    padding: 7px 14px;
-
-    border-radius: 10px;
-
-    background: rgba(99,102,241,0.16);
-
-    color: #4f46e5;
-
-    text-decoration: none;
-
-    font-weight: 700;
-
-    font-size: 13px;
-
-    border: 1px solid rgba(99,102,241,0.28);
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    transition: 0.2s;
-}
-
-.edit-btn:hover {
-
-    background: rgba(99,102,241,0.24);
-
-    transform: translateY(-1px);
-}
-
-/* ===== DELETE ===== */
-
-.delete-btn {
-
-    padding: 7px 14px;
-
-    border-radius: 10px;
-
-    background: rgba(239,68,68,0.16);
-
-    color: #dc2626;
-
-    text-decoration: none;
-
-    font-weight: 700;
-
-    font-size: 13px;
-
-    border: 1px solid rgba(239,68,68,0.28);
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    transition: 0.2s;
-}
-
-.delete-btn:hover {
-
-    background: rgba(239,68,68,0.24);
-
-    transform: translateY(-1px);
+    color: white !important;
 }

@@ -1,14 +1,25 @@
 [
     {
-        "username": "test",
-        "name": "Japan",
+        "id": 1,
+        "name": "laptop",
+        "type": "short",
         "target": 5000.0,
-        "type": "short"
+        "saved": 0
     },
     {
+        "id": 2,
+        "username": "test",
+        "name": "laptop",
+        "type": "short",
+        "target": 5000.0,
+        "saved": 0
+    },
+    {
+        "id": 3,
         "username": "test",
         "name": "House",
-        "target": 30000.0,
-        "type": "long"
+        "type": "long",
+        "target": 10000.0,
+        "saved": 0
     }
 ]
