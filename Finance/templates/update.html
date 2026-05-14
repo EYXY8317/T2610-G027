@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <title>Update Record</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
 </head>
 
-<body>
 <body
 
 {% if wallpaper %}
@@ -20,106 +24,268 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 <div class="wallpaper-overlay"></div>
 
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a> |
-<a href="/logout">Logout</a>
-<hr>
+<!-- ================= PAGE ================= -->
 
-<h1>Update Record</h1>
+<div class="summary-wrapper">
 
-<form method="POST">
+    <div class="summary-card">
 
-    <!-- DATE -->
-    <label>Date:</label><br>
-    <input type="date" name="date" value="{{ record.date }}" required><br><br>
+        <div class="card-header">
 
-    <!-- TYPE -->
-    <label>Type:</label><br>
-    <select name="type" id="typeSelect" required>
-        <option value="income" {% if record.type=="income" %}selected{% endif %}>Income</option>
-        <option value="expense" {% if record.type=="expense" %}selected{% endif %}>Expense</option>
-        <option value="saving" {% if record.type=="saving" %}selected{% endif %}>Saving</option>
-    </select><br><br>
+            <div>
+                <h1>💸 Update Record</h1>
 
-    <!-- CATEGORY -->
-    <label>Category:</label><br>
-    <select name="category" id="categorySelect"></select><br><br>
+                <p class="card-subtitle">
+                    Edit and manage your financial transaction.
+                </p>
+            </div>
 
-    <!-- ACCOUNT -->
-    <label>Account:</label><br>
-    <select id="account" name="account">
-        <option value="">-- Select Account --</option>
+        </div>
 
-        {% for acc in accounts %}
-            <option value="{{ acc.name }}"
-            {{ "selected" if record.account == acc.name else "" }}>
-                {{ acc.name }}
-            </option>
-        {% endfor %}
+        <!-- ================= FORM ================= -->
 
-        <option value="__new__">➕ Create New Account</option>
-    </select>
+        <form method="POST" class="modern-form">
 
-    <br><br>
+            <!-- ROW 1 -->
 
-    <!-- NEW ACCOUNT -->
-    <input type="text" id="new_account" name="new_account"
-    placeholder="Enter new account"
-    style="display:none;">
+            <div class="form-grid">
 
-    <!-- ITEM -->
-    <label>Item:</label><br>
-    <input type="text" name="item" value="{{ record.item }}"><br><br>
+                <!-- DATE -->
 
-    <!-- AMOUNT -->
-    <label>Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount"
-        value="{{ record.amount }}" readonly required>
+                <div class="form-group">
 
-    <br><br>
-    <button type="submit">Update</button>
+                    <label>Date</label>
 
-</form>
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ record.date }}"
+                        required
+                    >
 
-<!-- MESSAGES -->
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+                </div>
 
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
+                <!-- TYPE -->
 
-<br>
-<a href="/view">Back</a>
+                <div class="form-group">
+
+                    <label>Type</label>
+
+                    <select name="type" id="typeSelect" required>
+
+                        <option value="income"
+                        {% if record.type=="income" %}selected{% endif %}>
+                            Income
+                        </option>
+
+                        <option value="expense"
+                        {% if record.type=="expense" %}selected{% endif %}>
+                            Expense
+                        </option>
+
+                        <option value="saving"
+                        {% if record.type=="saving" %}selected{% endif %}>
+                            Saving
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- ROW 2 -->
+
+            <div class="form-grid">
+
+                <!-- CATEGORY -->
+
+                <div class="form-group">
+
+                    <label>Category</label>
+
+                    <select
+                        name="category"
+                        id="categorySelect"
+                        required
+                    ></select>
+
+                </div>
+
+                <!-- ACCOUNT -->
+
+                <div class="form-group">
+
+                    <label>Account</label>
+
+                    <select id="account" name="account">
+
+                        <option value="">
+                            -- Select Account --
+                        </option>
+
+                        {% for acc in accounts %}
+
+                        <option
+                            value="{{ acc.name }}"
+                            {{ "selected" if record.account == acc.name else "" }}
+                        >
+                            {{ acc.name }}
+                        </option>
+
+                        {% endfor %}
+
+                        <option value="__new__">
+                            ➕ Create New Account
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- NEW ACCOUNT -->
+
+            <div class="form-group">
+
+                <input
+                    type="text"
+                    id="new_account"
+                    name="new_account"
+                    placeholder="Enter new account"
+                    style="display:none;"
+                >
+
+            </div>
+
+            <!-- ITEM -->
+
+            <div class="form-group">
+
+                <label>Item</label>
+
+                <input
+                    type="text"
+                    name="item"
+                    value="{{ record.item }}"
+                    placeholder="Example: Coffee, Netflix, Salary..."
+                >
+
+            </div>
+
+            <!-- AMOUNT -->
+
+            <div class="form-group">
+
+                <label>Amount (RM)</label>
+
+                <input
+                    type="text"
+                    id="amountInput"
+                    name="amount"
+                    value="{{ record.amount }}"
+                    readonly
+                    required
+                >
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="form-actions">
+
+                <button type="submit" class="primary-btn">
+                    Update Record
+                </button>
+
+                <a href="/view" class="back-btn">
+                    Back
+                </a>
+
+            </div>
+
+        </form>
+
+        <!-- ================= MESSAGES ================= -->
+
+        {% if error %}
+
+        <div class="error-box">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+        {% if success %}
+
+        <div class="success-box">
+            {{ success }}
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     // ================= CATEGORY =================
+
     const categories = {
-        income: ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-        expense: ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-        saving: ["Savings", "Investment", "Emergency Fund"]
+
+        income: [
+            "Salary",
+            "Freelance",
+            "Business",
+            "Gift",
+            "Bonus"
+        ],
+
+        expense: [
+            "Food",
+            "Transport",
+            "Entertainment",
+            "Rent",
+            "Education",
+            "Travel"
+        ],
+
+        saving: [
+            "Savings",
+            "Investment",
+            "Emergency Fund"
+        ]
     };
 
     const typeSelect = document.getElementById("typeSelect");
-    const categorySelect = document.getElementById("categorySelect");
 
-    const selectedCategory = "{{ record.category or '' }}";
+    const categorySelect =
+        document.getElementById("categorySelect");
+
+    const selectedCategory =
+        "{{ record.category or '' }}";
 
     function loadCategories() {
+
         const type = typeSelect.value;
 
-        categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+        categorySelect.innerHTML =
+            '<option value="">-- Select Category --</option>';
 
         if (categories[type]) {
+
             categories[type].forEach(cat => {
-                const option = document.createElement("option");
+
+                const option =
+                    document.createElement("option");
+
                 option.value = cat;
+
                 option.textContent = cat;
 
                 if (cat === selectedCategory) {
@@ -127,57 +293,96 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 categorySelect.appendChild(option);
+
             });
+
         }
+
     }
 
     typeSelect.addEventListener("change", loadCategories);
 
     loadCategories();
 
-
     // ================= ACCOUNT TOGGLE =================
-    const accountSelect = document.getElementById("account");
-    const newAccountInput = document.getElementById("new_account");
+
+    const accountSelect =
+        document.getElementById("account");
+
+    const newAccountInput =
+        document.getElementById("new_account");
 
     function toggleNewAccount() {
+
         if (accountSelect.value === "__new__") {
+
             newAccountInput.style.display = "block";
-        } else {
-            newAccountInput.style.display = "none";
-            newAccountInput.value = "";
+
         }
+        else {
+
+            newAccountInput.style.display = "none";
+
+            newAccountInput.value = "";
+
+        }
+
     }
 
-    accountSelect.addEventListener("change", toggleNewAccount);
+    accountSelect.addEventListener(
+        "change",
+        toggleNewAccount
+    );
+
     toggleNewAccount();
 
-
     // ================= TNG INPUT =================
-    let value = Math.round(parseFloat("{{ record.amount or 0 }}") * 100) || 0;
+
+    let value =
+        Math.round(
+            parseFloat("{{ record.amount or 0 }}") * 100
+        ) || 0;
+
     let active = false;
 
-    const amountInput = document.getElementById("amountInput");
+    const amountInput =
+        document.getElementById("amountInput");
 
-    amountInput.addEventListener("focus", () => active = true);
-    amountInput.addEventListener("blur", () => active = false);
+    amountInput.addEventListener(
+        "focus",
+        () => active = true
+    );
+
+    amountInput.addEventListener(
+        "blur",
+        () => active = false
+    );
 
     document.addEventListener("keydown", function(e) {
 
         if (!active) return;
 
         if (e.key >= "0" && e.key <= "9") {
+
             value = value * 10 + parseInt(e.key);
-        } 
+
+        }
         else if (e.key === "Backspace") {
+
             value = Math.floor(value / 10);
-        } 
+
+        }
         else {
+
             return;
+
         }
 
         e.preventDefault();
-        amountInput.value = (value / 100).toFixed(2);
+
+        amountInput.value =
+            (value / 100).toFixed(2);
+
     });
 
 });

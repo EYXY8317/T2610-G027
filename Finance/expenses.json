@@ -52,5 +52,14 @@
         "account": "TnG",
         "item": "",
         "amount": 300.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-29",
+        "type": "income",
+        "category": "Bonus",
+        "account": "CIMB",
+        "item": "",
+        "amount": 500.0
     }
 ]
