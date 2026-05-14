@@ -133,7 +133,7 @@ body {
 
     background: var(--purple);
 
-    color: white !important;
+    color: white;
 }
 
 /* ===================== CARDS ==================== */
@@ -366,13 +366,23 @@ select {
 
 select option {
 
-    background: rgba(20,20,30,0.95);
+    background: #fffaf3;
 
     color: #2c241b;
+}
 
-    padding: 10px;
+select {
 
-    margin: 2px 0;
+    background: #fffaf3;
+
+    color: #2c241b;
+}
+
+select:focus {
+
+    background: #fffaf3;
+
+    color: #2c241b;
 }
 
 select option:hover {
@@ -893,4 +903,134 @@ textarea::placeholder {
     gap: 16px;
 
     flex-wrap: wrap;
+}
+
+/* ================= LIGHT THEME FIX ================= */
+
+/* LABELS */
+
+label {
+
+    color: #2c241b !important;
+}
+
+/* INPUTS */
+
+input,
+textarea,
+select {
+
+    color: #2c241b !important;
+
+    background: #fffaf3 !important;
+
+    border: 1px solid #d9cbb7 !important;
+}
+
+/* PLACEHOLDER */
+
+input::placeholder,
+textarea::placeholder {
+
+    color: #8a7b68 !important;
+}
+
+.budget-amount-wrapper {
+
+    margin-top: 10px;
+}
+
+/* ===== BUDGET CARDS ===== */
+
+.budget-modern,
+.budget-card {
+
+    background: #e4d4c1;
+
+    border: 1px solid #ccb79f;
+
+    border-radius: 24px;
+
+    padding: 22px;
+
+    min-height: 120px;
+
+    box-shadow:
+    0 6px 18px rgba(0,0,0,0.08);
+
+    transition: 0.2s ease;
+}
+
+/* HOVER */
+
+.budget-modern:hover,
+.budget-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+    0 10px 24px rgba(0,0,0,0.10);
+}
+
+/* BUDGET TEXT */
+
+.budget-card h3,
+.budget-card p,
+.budget-modern h3,
+.budget-modern p,
+.budget-modern strong {
+
+    color: #2c241b !important;
+
+}
+
+.budget-modern .budget-amount {
+
+    color: #2c241b !important;
+
+    font-size: 28px;
+
+    font-weight: 800;
+}
+
+/* FORM DESCRIPTION */
+
+.summary-card p,
+.overview-box p {
+
+    color: #5f5448 !important;
+}
+
+/* INPUT VALUE */
+
+input {
+
+    font-weight: 600;
+}
+
+/* ================= HOVER CARD ================= */
+
+/* ================= PREMIUM HOVER ================= */
+
+.hover-card {
+
+    transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+    box-shadow:
+    0 6px 18px rgba(0,0,0,0.08);
+}
+
+.hover-card:hover {
+
+    transform:
+    translateY(-5px)
+    scale(1.01);
+
+    box-shadow:
+    0 18px 34px rgba(0,0,0,0.14);
+
+    border-color: #bfa78d;
 }

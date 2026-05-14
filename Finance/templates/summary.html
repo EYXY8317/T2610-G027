@@ -37,31 +37,20 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
 
     <div class="topbar-links">
-
         <a href="/view">View</a>
-
         <a href="/add">Add</a>
-
-        <a href="/summary" class="active-link">
-            Summary
-        </a>
-
+        <a href="/summary" class="active-link">Summary</a>
         <a href="/budget">Budget</a>
-
         <a href="/goals">Goals</a>
 
     </div>
 
     <div class="topbar-actions">
-
+        <a href="/dashboard">Home</a>
         <a href="/calendar">Calendar</a>
-
         <a href="/diary">Diary</a>
-
         <a href="/profile">Profile</a>
-
         <a href="/logout">Logout</a>
-
     </div>
 
 </div>
@@ -72,7 +61,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
     <!-- ===== FILTER ===== -->
 
-    <div class="summary-card summary-hero">
+    <div class="summary-card summary-hero hover-card">
         <h1 class="summary-main-title">
             📊 Financial Summary —
             {{ selected_month }}/{{ selected_year }}
@@ -206,276 +195,288 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
     <!-- ===== SUMMARY GRID ===== -->
 
-    <div class="summary-grid">
+<div class="summary-grid">
 
-        <!-- ===== MONTHLY OVERVIEW ===== -->
+    <!-- ===== MONTHLY OVERVIEW ===== -->
 
-        <div class="summary-card">
+    <div class="summary-card hover-card">
 
-            <h2>
-                📅 Monthly Overview
-            </h2>
+        <h2>
+            📅 Monthly Overview
+        </h2>
 
-            <div class="overview-stats">
+        <div class="overview-stats">
 
-                <div class="overview-box">
+            <div class="overview-box hover-card">
 
-                    <p>Income</p>
+                <p>Income</p>
 
-                    <h3 class="income-text">
-                        RM {{ "%.2f"|format(income) }}
-                    </h3>
-
-                </div>
-
-                <div class="overview-box">
-
-                    <p>Expense</p>
-
-                    <h3 class="expense-text">
-                        RM {{ "%.2f"|format(expense) }}
-                    </h3>
-
-                </div>
-
-                <div class="overview-box">
-
-                    <p>Balance</p>
-
-                    <h3>
-                        RM {{ "%.2f"|format(balance) }}
-                    </h3>
-
-                </div>
-
-                <div class="overview-box">
-
-                    <p>Savings</p>
-
-                    <h3 class="saving-text">
-                        RM {{ "%.2f"|format(saving) }}
-                    </h3>
-
-                </div>
+                <h3 class="income-text">
+                    RM {{ "%.2f"|format(income) }}
+                </h3>
 
             </div>
 
-            <br>
+            <div class="overview-box hover-card">
 
-            {% if balance >= 0 %}
+                <p>Expense</p>
 
-                <p class="positive">
-                    ✔ Positive Balance
-                </p>
+                <h3 class="expense-text">
+                    RM {{ "%.2f"|format(expense) }}
+                </h3>
 
-            {% else %}
+            </div>
 
-                <p class="negative">
-                    ❌ Negative Balance
-                </p>
+            <div class="overview-box hover-card">
 
-            {% endif %}
+                <p>Balance</p>
 
-        </div>
+                <h3>
+                    RM {{ "%.2f"|format(balance) }}
+                </h3>
 
-<!-- ===== YEARLY OVERVIEW ===== -->
+            </div>
 
-<div class="summary-card">
+            <div class="overview-box hover-card">
 
-    <h2>
-        🗓 {{ selected_year }} Yearly Overview
-    </h2>
+                <p>Savings</p>
 
-    <div class="overview-stats">
+                <h3 class="saving-text">
+                    RM {{ "%.2f"|format(saving) }}
+                </h3>
 
-        <div class="overview-box">
-
-            <p>Income</p>
-
-            <h3 class="income-text">
-                RM {{ "%.2f"|format(year_income) }}
-            </h3>
+            </div>
 
         </div>
 
-        <div class="overview-box">
+        <br>
 
-            <p>Expense</p>
+        {% if balance >= 0 %}
 
-            <h3 class="expense-text">
-                RM {{ "%.2f"|format(year_expense) }}
-            </h3>
+            <p class="positive">
+                ✔ Positive Balance
+            </p>
 
-        </div>
+        {% else %}
 
-        <div class="overview-box">
+            <p class="negative">
+                ❌ Negative Balance
+            </p>
 
-            <p>Balance</p>
+        {% endif %}
 
-            <h3>
-                RM {{ "%.2f"|format(year_balance) }}
-            </h3>
+    </div>
 
-        </div>
+    <!-- ===== YEARLY OVERVIEW ===== -->
 
-        <div class="overview-box">
+    <div class="summary-card hover-card">
 
-            <p>Year</p>
+        <h2>
+            🗓 {{ selected_year }} Yearly Overview
+        </h2>
 
-            <h3 class="saving-text">
-                {{ selected_year }}
-            </h3>
+        <div class="overview-stats">
+
+            <div class="overview-box hover-card">
+
+                <p>Income</p>
+
+                <h3 class="income-text">
+                    RM {{ "%.2f"|format(year_income) }}
+                </h3>
+
+            </div>
+
+            <div class="overview-box hover-card">
+
+                <p>Expense</p>
+
+                <h3 class="expense-text">
+                    RM {{ "%.2f"|format(year_expense) }}
+                </h3>
+
+            </div>
+
+            <div class="overview-box hover-card">
+
+                <p>Balance</p>
+
+                <h3>
+                    RM {{ "%.2f"|format(year_balance) }}
+                </h3>
+
+            </div>
+
+            <div class="overview-box hover-card">
+
+                <p>Year</p>
+
+                <h3 class="saving-text">
+                    {{ selected_year }}
+                </h3>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
+    <!-- ===== SPENDING ===== -->
 
-        <!-- ===== SPENDING ===== -->
+    <div class="summary-card hover-card">
 
-        <div class="summary-card">
+        <h2>
+            📉 Spending Behavior
+        </h2>
 
-            <h2>📉 Spending Behavior</h2>
+        <p>
 
-            <p>
+            <strong>Daily Average:</strong>
 
-                <strong>Daily Average:</strong>
+            RM {{ "%.2f"|format(daily_avg) }}
 
-                RM {{ "%.2f"|format(daily_avg) }}
+            {% if daily_avg < 5 %}
 
-                {% if daily_avg < 5 %}
+                <span style="color:green;">
+                    (Low 👍)
+                </span>
 
-                    <span style="color:green;">
-                        (Low 👍)
-                    </span>
+            {% elif daily_avg < 20 %}
 
-                {% elif daily_avg < 20 %}
-
-                    <span style="color:orange;">
-                        (Moderate)
-                    </span>
-
-                {% else %}
-
-                    <span style="color:red;">
-                        (High ⚠️)
-                    </span>
-
-                {% endif %}
-
-            </p>
-
-            <h3>Top Categories</h3>
-
-            {% if top_categories %}
-
-                <ol>
-
-                    {% for cat, amt, percent in top_categories %}
-
-                    <li>
-
-                        {{ cat }} —
-                        {{ "%.0f"|format(percent) }}%
-
-                    </li>
-
-                    {% endfor %}
-
-                </ol>
-
-                <canvas id="pieChart"></canvas>
+                <span style="color:orange;">
+                    (Moderate)
+                </span>
 
             {% else %}
 
-                <p>No category data</p>
+                <span style="color:red;">
+                    (High ⚠️)
+                </span>
 
             {% endif %}
 
-            <h3>🧠 Insight</h3>
+        </p>
 
-            <p>{{ insight }}</p>
+        <h3>
+            Top Categories
+        </h3>
 
-        </div>
+        {% if top_categories %}
 
-        <!-- ===== BUDGET ===== -->
+            <ol>
 
-        <div class="summary-card">
+                {% for cat, amt, percent in top_categories %}
 
-            <h2>💸 Budget Tracking</h2>
+                <li>
 
-            {% if budget_usage %}
+                    {{ cat }} —
+                    {{ "%.0f"|format(percent) }}%
 
-                {% for b in budget_usage %}
-
-                <div class="budget-item">
-
-                    <div class="budget-header">
-
-                        <strong>{{ b.category }}</strong>
-
-                        <span>
-
-                            RM {{ "%.2f"|format(b.spent) }}
-                            /
-                            RM {{ "%.2f"|format(b.limit) }}
-
-                        </span>
-
-                    </div>
-
-                    <div class="progress-container">
-
-                        <div
-                            class="progress-bar {{ b.status }}"
-                            style="--width: {{ b.display_percent }}%;"
-                        ></div>
-
-                    </div>
-
-                    <small>
-
-                        {{ "%.0f"|format(b.percent) }}%
-
-                        {% if b.status == "over" %}
-
-                            🚨 Over budget
-
-                        {% elif b.status == "warning" %}
-
-                            ⚠ Almost full
-
-                        {% else %}
-
-                            ✔ OK
-
-                        {% endif %}
-
-                        <br>
-
-                        Remaining:
-                        RM {{ "%.2f"|format(b.remaining) }}
-
-                    </small>
-
-                </div>
-
-                <br>
+                </li>
 
                 {% endfor %}
 
-            {% else %}
+            </ol>
 
-                <p>No budgets set yet</p>
+            <canvas id="pieChart"></canvas>
 
-            {% endif %}
+        {% else %}
 
-        </div>
+            <p>No category data</p>
 
-    <!-- ================= GOALS ================= -->
+        {% endif %}
 
-    <div class="summary-card">
+        <h3>
+            🧠 Insight
+        </h3>
+
+        <p>
+            {{ insight }}
+        </p>
+
+    </div>
+
+    <!-- ===== BUDGET ===== -->
+
+    <div class="summary-card hover-card">
+
+        <h2>
+            💸 Budget Tracking
+        </h2>
+
+        {% if budget_usage %}
+
+            {% for b in budget_usage %}
+
+            <div class="budget-modern hover-card">
+
+                <div class="budget-top">
+
+                    <strong>
+                        {{ b.category }}
+                    </strong>
+
+                    <span>
+
+                        RM {{ "%.2f"|format(b.spent) }}
+                        /
+                        RM {{ "%.2f"|format(b.limit) }}
+
+                    </span>
+
+                </div>
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar {{ b.status }}"
+                        style="--width: {{ b.display_percent }}%;"
+                    ></div>
+
+                </div>
+
+                <small>
+
+                    {{ "%.0f"|format(b.percent) }}%
+
+                    {% if b.status == "over" %}
+
+                        🚨 Over budget
+
+                    {% elif b.status == "warning" %}
+
+                        ⚠ Almost full
+
+                    {% else %}
+
+                        ✔ OK
+
+                    {% endif %}
+
+                    <br>
+
+                    Remaining:
+                    RM {{ "%.2f"|format(b.remaining) }}
+
+                </small>
+
+            </div>
+
+            <br>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No budgets set yet</p>
+
+        {% endif %}
+
+    </div>
+
+    <!-- ===== GOALS ===== -->
+
+    <div class="summary-card hover-card">
 
         <h2>
             🎯 Financial Goals
@@ -489,11 +490,9 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% if short_goals or long_goals %}
 
-            <!-- SHORT GOALS -->
-
             {% for goal in short_goals %}
 
-            <div class="budget-modern">
+            <div class="budget-modern hover-card">
 
                 <div class="budget-top">
 
@@ -546,82 +545,9 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 </p>
 
-                <p>
-                    Remaining:
-                    RM {{ "%.2f"|format(goal.remaining) }}
-                </p>
-
-                <br>
-
             </div>
 
-            {% endfor %}
-
-            <!-- LONG GOALS -->
-
-            {% for goal in long_goals %}
-
-            <div class="budget-modern">
-
-                <div class="budget-top">
-
-                    <strong>
-                        {{ goal.name }}
-                    </strong>
-
-                    <strong>
-                        RM {{ "%.2f"|format(goal.saved) }}
-                        /
-                        RM {{ "%.2f"|format(goal.target) }}
-                    </strong>
-
-                </div>
-
-                <div class="progress-container">
-
-                    <div
-                        class="progress-bar
-                        {% if goal.percent >= 100 %}
-                            over
-                        {% elif goal.percent >= 80 %}
-                            warning
-                        {% else %}
-                            safe
-                        {% endif %}"
-
-                        style="
-                        --width:
-                        {{ goal.display_percent }}%;
-                        "
-                    ></div>
-
-                </div>
-
-                <p>
-
-                    {{ goal.percent|round(0) }}%
-
-                    {% if goal.percent >= 100 %}
-                        🎉 Completed
-
-                    {% elif goal.percent >= 80 %}
-                        ⚠ Almost there
-
-                    {% else %}
-                        🚀 In Progress
-
-                    {% endif %}
-
-                </p>
-
-                <p>
-                    Remaining:
-                    RM {{ "%.2f"|format(goal.remaining) }}
-                </p>
-
-                <br>
-
-            </div>
+            <br>
 
             {% endfor %}
 
@@ -633,20 +559,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% endif %}
 
-        <br>
-
-        <a
-            href="/goals"
-            class="primary-btn"
-        >
-            Open Goals Dashboard
-        </a>
-
     </div>
 
-    {% endif %}
-
 </div>
+
+{% endif %}
 
 <!-- ===== CHART ===== -->
 
@@ -704,7 +621,7 @@ new Chart(document.getElementById("pieChart"), {
 
                 labels: {
 
-                    color: 'white',
+                    color: '#2c241b',
 
                     padding: 20,
 
