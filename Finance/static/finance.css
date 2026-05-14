@@ -1,15 +1,15 @@
 :root {
 
-    --glass-bg: rgba(255,255,255,0.16);
+    --card-bg: #f3e7d7;
 
-    --glass-border: rgba(255,255,255,0.18);
+    --card-border: #e2d3bf;
 
-    --glass-shadow:
-    0 8px 32px rgba(0,0,0,0.18);
+    --card-shadow:
+    0 10px 30px rgba(0,0,0,0.12);
 
     --purple: #6366F1;
 
-    --text-dark: #111827;
+    --text-dark: #2c241b;
 
     --text-light: white;
 }
@@ -32,7 +32,7 @@ body {
 
     background-attachment: fixed;
 
-    color: white;
+    color: #2c241b;
 }
 
 /* ===================== WALLPAPER ==================== */
@@ -67,13 +67,9 @@ body {
 
 .topbar {
 
-    background: var(--glass-bg);
+    background: var(--card-bg);
 
-    backdrop-filter: blur(18px);
-
-    -webkit-backdrop-filter: blur(18px);
-
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--card-border);
 
     border-radius: 22px;
 
@@ -91,7 +87,7 @@ body {
 
     gap: 14px;
 
-    box-shadow: var(--glass-shadow);
+    box-shadow: var(--card-shadow);
 }
 
 .topbar-title {
@@ -117,7 +113,7 @@ body {
 
     text-decoration: none;
 
-    color: black;
+    color: #3a3228  ;
 
     font-weight: 700;
 
@@ -144,21 +140,17 @@ body {
 
 .summary-card {
 
-    background: var(--glass-bg);
+    background: var(--card-bg);
 
-    backdrop-filter: blur(20px);
-
-    -webkit-backdrop-filter: blur(20px);
-
-    border: 1px solid var(--glass-border);
+    border: 1px solid var(--card-border);
 
     border-radius: 24px;
 
-    padding: 28px;
+    padding: 42px 36px;
 
     margin-bottom: 24px;
 
-    box-shadow: var(--glass-shadow);
+    box-shadow: var(--card-shadow);
 
     box-sizing: border-box;
 }
@@ -214,13 +206,11 @@ body {
 
     border-radius: 22px;
 
-    background: rgba(255,255,255,0.10);
+    background: #f7efe4;
 
-    backdrop-filter: blur(14px);
+    border: 1px solid #e7d8c5;
 
-    border: 1px solid rgba(255,255,255,0.12);
-
-    color: white;
+    color: var(--text-dark);
 }
 
 .overview-box p {
@@ -264,45 +254,53 @@ body {
     color: #ef4444;
 }
 
-/* ===================== BUTTONS ==================== */
+/* ================= BUTTONS ================= */
 
 button,
 .primary-btn {
 
-    padding: 12px 22px;
+    background: linear-gradient(
+    135deg,
+    #7a614c,
+    #5f4938
+    );
+
+    color: #fffaf3;
 
     border: none;
 
-    border-radius: 14px;
+    border-radius: 16px;
 
-    background: var(--purple);
+    padding: 14px 24px;
 
-    color: white;
+    font-size: 15px;
 
     font-weight: 700;
 
     cursor: pointer;
 
-    transition: 0.2s;
-
-    text-decoration: none;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
+    transition: 0.25s ease;
 
     box-shadow:
-    0 4px 18px rgba(99,102,241,0.25);
+    0 6px 18px rgba(0,0,0,0.12);
 }
+
+/* HOVER */
 
 button:hover,
 .primary-btn:hover {
 
-    background: #4f46e5;
+    background: #5b4837;
 
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+}
+
+/* ACTIVE */
+
+button:active,
+.primary-btn:active {
+
+    transform: scale(0.98);
 }
 
 /* ===================== INPUTS ==================== */
@@ -316,15 +314,11 @@ textarea {
 
     border-radius: 14px;
 
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid #d7c7b2;
 
-    background: rgba(255,255,255,0.10);
+    background: #fffaf3;
 
-    backdrop-filter: blur(14px);
-
-    -webkit-backdrop-filter: blur(14px);
-
-    color: white;
+    color: #2c241b;
 
     font-size: 15px;
 
@@ -345,23 +339,19 @@ select {
 
     width: 100%;
 
-    max-width: 250px;
+    min-width: 180px;
 
-    padding: 10px 14px;
+    padding: 12px 16px;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid #d7c7b2;
 
-    background: rgba(40,40,40,0.72);
+    background: #fffaf3;
 
-    backdrop-filter: blur(14px);
+    color: #2c241b;
 
-    -webkit-backdrop-filter: blur(14px);
-
-    color: white;
-
-    font-size: 14px;
+    font-size: 15px;
 
     font-weight: 600;
 
@@ -370,8 +360,6 @@ select {
     transition: 0.2s;
 
     cursor: pointer;
-
-    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
 }
 
 /* ===== OPTIONS ===== */
@@ -380,7 +368,7 @@ select option {
 
     background: rgba(20,20,30,0.95);
 
-    color: white;
+    color: #2c241b;
 
     padding: 10px;
 
@@ -463,11 +451,9 @@ select:focus {
 
     overflow: hidden;
 
-    background: rgba(255,255,255,0.14);
+    background: #f8f1e8;
 
-    backdrop-filter: blur(18px);
-
-    -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--card-shadow);
 }
 
 .records-table th {
@@ -737,7 +723,7 @@ select:focus {
 
 .chart-legend {
 
-    color: white;
+    color: #2c241b;
 }
 
 /* ===== INSIGHT ===== */
@@ -747,7 +733,7 @@ select:focus {
 .insight-box p,
 .insight-box span {
 
-    color: white;
+    color: #2c241b;
 }
 
 /* ===== PIE LABELS ===== */
@@ -755,4 +741,156 @@ select:focus {
 canvas {
 
     color: white !important;
+}
+
+/* ================= TEXT COLORS ================= */
+
+body {
+
+    color: #2c241b;
+}
+
+/* HEADINGS */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+
+    color: #2c241b;
+}
+
+/* PARAGRAPHS */
+
+p,
+span,
+label,
+strong,
+td,
+th,
+li {
+
+    color: #3a3128;
+}
+
+/* TABLE */
+
+.records-table th {
+
+    color: #2c241b;
+
+    background: #efe3d2;
+}
+
+.records-table td {
+
+    color: #3a3128;
+}
+
+/* NAVBAR */
+
+.topbar a {
+
+    color: #3a3128;
+}
+
+.topbar-title {
+
+    color: #2c241b;
+}
+
+/* FORM INPUTS */
+
+input,
+textarea,
+select {
+
+    color: #2c241b;
+}
+
+/* PLACEHOLDER */
+
+input::placeholder,
+textarea::placeholder {
+
+    color: #8b7d6b;
+}
+
+/* SUMMARY TEXT */
+
+.summary-card,
+.overview-box {
+
+    color: #2c241b;
+}
+
+/* ================= PAGE TITLE ================= */
+
+.page-title-card {
+
+    background: #f3e7d7;
+
+    border: 1px solid #e2d3bf;
+
+    border-radius: 24px;
+
+    padding: 28px 36px;
+
+    margin-bottom: 28px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.10);
+}
+
+.page-title-card h1 {
+
+    margin: 0;
+
+    color: #2c241b;
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+    letter-spacing: -1px;
+}
+
+/* ===== SUMMARY TITLE ===== */
+
+.summary-main-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    font-size: 42px;
+
+    font-weight: 800;
+
+    color: #2c241b;
+
+    margin: 0 0 30px 0;
+
+    line-height: 1.1;
+
+    letter-spacing: -1px;
+
+    justify-content: flex-start;
+}
+
+/* ===== SUMMARY CONTROLS ===== */
+
+.summary-controls {
+
+    display: flex;
+
+    align-items: end;
+
+    gap: 16px;
+
+    flex-wrap: wrap;
 }
