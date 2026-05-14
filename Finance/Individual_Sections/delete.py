@@ -163,25 +163,32 @@ def delete_financial(idx):
     records = load_data(f_expense, [])
     user = session.get("user")
 
+    # Get ALL user records (don't filter by account)
     user_records = [r for r in records if r["username"] == user]
 
-    # 🚨 NEW LINE (IMPORTANT)
     if len(user_records) == 0:
         return render_template("view.html", records=[], error="No records to delete")
 
+    # Sort the same way as view.py
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
     if idx < 0 or idx >= len(sorted_records):
         return render_template("view.html", records=sorted_records, error="Invalid record")
 
+    # Get the record to delete
     selected = sorted_records[idx]
-    real_index = records.index(selected)
-
-    records.pop(real_index)
+    
+    # Find and delete the exact matching record from the full list
+    # Match by date, type, amount, and account to ensure accuracy
+    for i, record in enumerate(records):
+        if (record["username"] == user and 
+            record["date"] == selected["date"] and 
+            record["type"] == selected["type"] and 
+            record["amount"] == selected["amount"] and
+            record["account"] == selected["account"]):
+            records.pop(i)
+            break
+    
     save_data(f_expense, records)
-
-    # reload
-    user_records = [r for r in records if r["username"] == user]
-    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
     return redirect(url_for("view_financial", success="Deleted successfully"))
