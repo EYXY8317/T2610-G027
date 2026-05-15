@@ -9,7 +9,6 @@ from Journal_Pages.diary_system.encouragement_data import (
 )
 
 import random
-import requests
 
 
 #================================ blueprint ================================
@@ -238,12 +237,6 @@ def weather():
         f"&units=metric"
     )
 
-    response = requests.get(url)
-
-    data = response.json()
-
-    return jsonify(data)
-
 #================================ weather forecast API ================================
 
 @diary_bp.route("/weather_forecast")
@@ -261,8 +254,4 @@ def weather_forecast():
         f"&units=metric"
     )
 
-    response = requests.get(url)
-
-    data = response.json()
-
-    return jsonify(data)
+  
