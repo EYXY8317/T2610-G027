@@ -710,12 +710,8 @@ body.soft button{
 
     height:6px;
 
-    background:
-    linear-gradient(
-    90deg,
-    var(--accent),
-    transparent
-    );
+    background:var(--accent);
+    opacity:0.9;
 }
 
 /* ===== GOAL VALUE ===== */
@@ -741,24 +737,6 @@ body.soft button{
 .goal-card form{
 
     margin-top:18px;
-}
-
-/* ===== DARK MODE ===== */
-
-body.dark .goal-card{
-
-    background:
-    rgba(255,255,255,0.04);
-}
-
-/* ===== FROSTED ===== */
-
-body.frosted .goal-card{
-
-    background:
-    rgba(255,255,255,0.10);
-
-    backdrop-filter:blur(18px);
 }
 
 /* ===== SOFT ===== */
@@ -874,7 +852,7 @@ body.minimal .goal-card{
 .records-table tr:hover{
 
     background:
-    rgba(255,255,255,0.05);
+    var(--card-bg-2);
 }
 
 /* ===== ACTION CELL ===== */
@@ -897,14 +875,6 @@ body.compact .records-table td{
 body.minimal .records-table{
 
     box-shadow:none;
-}
-
-/* ===== DARK ===== */
-
-body.dark .records-table tr:hover{
-
-    background:
-    rgba(255,255,255,0.04);
 }
 
 /* ================================================= */
@@ -984,24 +954,6 @@ body.dark .records-table tr:hover{
     margin-top:10px;
 }
 
-/* ===== DARK ===== */
-
-body.dark .amount-card{
-
-    background:
-    rgba(255,255,255,0.04);
-}
-
-/* ===== FROSTED ===== */
-
-body.frosted .amount-card{
-
-    background:
-    rgba(255,255,255,0.10);
-
-    backdrop-filter:blur(18px);
-}
-
 /* ===== SOFT ===== */
 
 body.soft .amount-card{
@@ -1062,84 +1014,6 @@ body.soft .amount-card{
 .hidden-section.show{
 
     display:block;
-}
-
-/* ================================================= */
-/* ================= FROSTED TEXT ================== */
-/* ================================================= */
-
-body.frosted .topbar-title,
-body.frosted .topbar a{
-
-    color:
-    rgba(255,255,255,0.92);
-
-    text-shadow:
-    0 2px 12px rgba(0,0,0,0.45);
-}
-
-/* ===== FROSTED CONTENT TEXT ===== */
-
-body.frosted .summary-main-title,
-body.frosted .view-header h2,
-body.frosted .summary-card h1,
-body.frosted .summary-card h2,
-body.frosted .summary-card h3,
-body.frosted .summary-card label,
-body.frosted .summary-card td,
-body.frosted .summary-card th{
-
-    color:#1f1f1f;
-
-    text-shadow:none;
-}
-
-/* ===== SECONDARY TEXT ===== */
-
-body.frosted .summary-card p,
-body.frosted .summary-card small,
-body.frosted .logged-text{
-
-    color:#555555;
-
-    text-shadow:none;
-}
-
-/* ===== SECONDARY TEXT ===== */
-
-body.frosted .logged-text,
-body.frosted .view-header p,
-body.frosted .goal-subtitle,
-body.frosted .overview-box p{
-
-    color:
-    rgba(255,255,255,0.72);
-
-    text-shadow:
-    0 2px 10px rgba(0,0,0,0.35);
-}
-
-/* ================================================= */
-/* ============ FROSTED OVERVIEW FIX =============== */
-/* ================================================= */
-
-body.frosted .overview-box{
-
-    color:#1f1f1f;
-}
-
-body.frosted .overview-box p{
-
-    color:#666666;
-
-    text-shadow:none;
-}
-
-body.frosted .overview-box h3{
-
-    color:#1f1f1f;
-
-    text-shadow:none;
 }
 
 /* ================================================= */
@@ -1290,7 +1164,7 @@ body.adaptive.adaptive-ready{
 
 .quick-action-card{
 
-    background:var(--bg-card-2);
+    background:var(--card-bg-2);
 
     border:1px solid var(--border-color);
 
@@ -1329,4 +1203,202 @@ body.adaptive.adaptive-ready{
 
         text-align:left;
     }
+}
+
+/* ================================================= */
+/* ================= DARK THEME FIX ================ */
+/* ================================================= */
+
+body.dark{
+
+    --text-main:#f5f1eb;
+
+    --text-soft:#b8ada1;
+
+    --accent:#7c5a43;
+
+    --accent-hover:#946b4f;
+}
+
+/* ===== TOPBAR ===== */
+
+body.dark .topbar{
+
+    background:
+    linear-gradient(
+    135deg,
+    rgba(10,10,10,0.96),
+    rgba(20,20,20,0.94)
+    );
+}
+
+/* ===== TOPBAR TEXT ===== */
+
+body.dark .topbar-title,
+body.dark .topbar a{
+
+    color:#f5f1eb;
+}
+
+/* ===== ACTIVE LINK ===== */
+
+body.dark .active-link{
+
+    background:#5f78d1;
+
+    color:white !important;
+}
+
+/* ===== MAIN BIG CARDS ===== */
+
+body.dark .summary-card{
+
+    background:#1b1815;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* ===== INNER CARDS ===== */
+
+body.dark .overview-box,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .amount-card,
+body.dark .quick-action-card,
+body.dark .insight-box,
+body.dark .records-table,
+body.dark .records-table th{
+
+    background:#23201d;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:none;
+}
+
+/* ===== OVERVIEW TOP LINES ===== */
+
+body.dark .overview-box::before,
+body.dark .goal-card::before{
+
+    background:#5f78d1;
+}
+
+/* ===== MAIN TEXT ===== */
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark .summary-main-title,
+body.dark .section-title,
+body.dark .view-header h2,
+body.dark .records-table th,
+body.dark .records-table td,
+body.dark .quick-action-card,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .insight-box{
+
+    color:#f5f1eb;
+}
+
+/* ===== SECONDARY TEXT ===== */
+
+body.dark p,
+body.dark label,
+body.dark .logged-text,
+body.dark .hero-label,
+body.dark .hero-subtitle,
+body.dark .budget-limit,
+body.dark .goal-card p,
+body.dark .overview-box p,
+body.dark .add-subtitle{
+
+    color:#b8ada1;
+}
+
+/* ===== INPUTS ===== */
+
+body.dark input,
+body.dark textarea,
+body.dark select{
+
+    background:#2c2824;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:#f5f1eb;
+}
+
+/* ===== PLACEHOLDER ===== */
+
+body.dark input::placeholder,
+body.dark textarea::placeholder{
+
+    color:#8f8479;
+}
+
+/* ===== TABLE ===== */
+
+body.dark .records-table tr:hover{
+
+    background:#2a2622;
+}
+
+/* ===== BUTTONS ===== */
+
+body.dark button,
+body.dark .primary-btn,
+body.dark .add-btn{
+
+    background:#5f78d1;
+
+    color:white;
+}
+
+body.dark button:hover,
+body.dark .primary-btn:hover,
+body.dark .add-btn:hover{
+
+    background:#7480ff;
+}
+
+/* ===== HERO BALANCE ===== */
+
+body.dark .hero-balance h2{
+
+    color:#ffffff;
+}
+
+/* ===== QUICK ACTIONS ===== */
+
+body.dark .quick-action-card:hover{
+
+    border-color:#5f78d1;
+
+    transform:translateY(-4px);
+}
+
+/* ===== PROGRESS BACKGROUND ===== */
+
+body.dark .progress-container{
+
+    background:rgba(255,255,255,0.08);
+}
+
+/* ===== SHADOW POLISH ===== */
+
+body.dark .overview-box,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .amount-card{
+
+    box-shadow:
+    0 6px 20px rgba(0,0,0,0.22);
 }

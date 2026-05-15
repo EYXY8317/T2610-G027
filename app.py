@@ -85,9 +85,29 @@ def get_current_user():
 
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
-    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    "saving": ["Savings", "Investment", "Emergency Fund"]
+
+    "income": [
+        "Salary",
+        "Freelance",
+        "Business",
+        "Gift",
+        "Bonus"
+    ],
+
+    "expense": [
+        "Food",
+        "Transport",
+        "Travel",
+        "Entertainment",
+        "Rent",
+        "Education"
+    ],
+
+    "saving": [
+        "Savings",
+        "Investment",
+        "Emergency Fund"
+    ]
 }
 
 # ================= AUTH =================

@@ -681,6 +681,22 @@ new Chart(document.getElementById("pieChart"), {
                         weight: 'bold'
                     }
                 }
+            },
+
+            tooltip: {
+
+                callbacks: {
+
+                    label: function(context) {
+
+                        return (
+                            context.label +
+                            ": RM " +
+                            context.raw.toFixed(2)
+                        );
+
+                    }
+                }
             }
         }
 
