@@ -34,5 +34,14 @@
         "account": "TnG",
         "item": "pokemon",
         "amount": 300.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-29",
+        "type": "expense",
+        "category": "Travel",
+        "account": "TnG",
+        "item": "Grab",
+        "amount": 50.0
     }
 ]
