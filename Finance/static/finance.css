@@ -98,79 +98,118 @@ body.dark .wallpaper-overlay{
     margin:auto;
 }
 
-/* ================================================= */
-/* ==================== TOPBAR ===================== */
-/* ================================================= */
+/* ================= TOPBAR ================= */
 
 .topbar{
 
-    display:flex;
+    width:95%;
 
-    justify-content:space-between;
+    margin:30px auto;
+
+    padding:22px 40px;
+
+    display:flex;
 
     align-items:center;
 
-    flex-wrap:wrap;
+    justify-content:space-between;
 
-    gap:16px;
+    gap:40px;
 
-    padding:20px 26px;
+    border-radius:30px;
 
-    margin-bottom:24px;
+    background:
+    linear-gradient(
+        135deg,
+        rgba(10,10,15,0.92),
+        rgba(20,15,25,0.88)
+    );
 
-    background:var(--card-bg);
+    backdrop-filter:blur(18px);
 
-    border:1px solid var(--border);
+    border:1px solid rgba(255,255,255,0.08);
 
-    border-radius:var(--radius);
-
-    box-shadow:var(--shadow);
-
-    backdrop-filter:blur(16px);
+    box-sizing:border-box;
 }
+
+/* ===== TITLE ===== */
 
 .topbar-title{
 
-    font-size:1.8rem;
+    color:white;
+
+    font-size:2rem;
 
     font-weight:800;
 
-    color:var(--text-main);
+    white-space:nowrap;
 }
+
+/* ===== LINK CONTAINERS ===== */
 
 .topbar-links,
 .topbar-actions{
 
     display:flex;
 
-    gap:10px;
+    align-items:center;
 
-    flex-wrap:wrap;
+    gap:28px;
 }
 
-.topbar a{
+/* ===== CENTER NAV ===== */
+
+.topbar-links{
+
+    flex:1;
+
+    justify-content:center;
+}
+
+/* ===== RIGHT NAV ===== */
+
+.topbar-actions{
+
+    justify-content:flex-end;
+
+    white-space:nowrap;
+}
+
+/* ===== LINKS ===== */
+
+.topbar-links a,
+.topbar-actions a{
+
+    color:white;
 
     text-decoration:none;
 
-    color:var(--text-main);
+    font-size:1rem;
 
-    font-weight:700;
+    font-weight:600;
 
-    padding:10px 16px;
+    transition:0.2s ease;
 
-    border-radius:14px;
+    padding:10px 0;
 }
 
-.topbar a:hover{
+/* ===== HOVER ===== */
 
-    background:rgba(255,255,255,0.08);
+.topbar-links a:hover,
+.topbar-actions a:hover{
+
+    opacity:0.7;
 }
+
+/* ===== ACTIVE LINK ===== */
 
 .active-link{
 
-    background:var(--accent);
+    background:#6f7cff;
 
-    color:white !important;
+    padding:10px 18px !important;
+
+    border-radius:14px;
 }
 
 /* ================================================= */
@@ -1401,4 +1440,62 @@ body.dark .amount-card{
 
     box-shadow:
     0 6px 20px rgba(0,0,0,0.22);
+}
+
+/* ================= GOALS ACCOUNT FIX ================= */
+
+.goal-account-group{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+}
+
+.goal-account-select{
+    width:100%;
+}
+
+/* ================= GOALS INPUT UI ================= */
+
+.goal-card input,
+.goal-card select{
+
+    width:100%;
+
+    padding:18px 20px;
+
+    border-radius:20px;
+
+    border:1px solid #d8c8b5;
+
+    background:#f7f3ef;
+
+    color:#2c241b;
+
+    font-size:1rem;
+
+    margin-top:14px;
+}
+
+/* ===== FOCUS ===== */
+
+.goal-card input:focus,
+.goal-card select:focus{
+
+    outline:none;
+
+    box-shadow:
+    0 0 0 3px rgba(124,140,255,0.15);
+}
+
+/* ===== DARK MODE ===== */
+
+body.dark .goal-card input,
+body.dark .goal-card select{
+
+    background:#2c2824;
+
+    color:#f5f1eb;
+
+    border:1px solid rgba(255,255,255,0.08);
 }

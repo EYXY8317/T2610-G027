@@ -10,6 +10,7 @@
 
     <title>Profile</title>
 
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link
         rel="stylesheet"
         href="{{ url_for('profile_static', filename='profile.css') }}"
@@ -18,22 +19,22 @@
 </head>
 
 <body
+
 class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 {% if user.wallpaper %}
-
 style="
 background-image:
 linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
 url('/profile_static/wallpapers/{{ user.wallpaper }}');
 "
-
 {% endif %}
+
 >
 
     <!-- TOPBAR -->
 
-    <div class="topbar">
+<div class="topbar">
 
     <div class="topbar-title">
 

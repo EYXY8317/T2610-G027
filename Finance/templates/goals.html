@@ -319,13 +319,57 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         value="{{ g.name }}"
                     >
 
-                    <input
-                        type="number"
-                        name="amount"
-                        placeholder="Add savings"
-                        step="0.01"
-                        required
-                    >
+                    <div class="goal-add-savings-row">
+
+                        <div class="goal-account-group">
+
+                            <select name="account" class="goal-account-select" required>
+
+                                <option value="">
+
+                                    Select Account
+
+                                </option>
+
+                                {% for account in accounts %}
+
+                                <option value="{{ account.name }}">
+
+                                    {{ account.name }}
+
+                                </option>
+
+                                {% endfor %}
+
+                                <option value="__new__">
+
+                                    + Create New Account
+
+                                </option>
+
+                            </select>
+
+                            <input
+                                type="text"
+                                name="new_account"
+                                class="new-account-input"
+                                placeholder="Enter new account name"
+                                style="display:none;"
+                            >
+
+                        </div>
+
+                        <input
+                            type="number"
+                            name="amount"
+                            placeholder="Add savings"
+                            value="0.00"
+                            step="0.01"
+                            min="0.01"
+                            required
+                        >
+
+                    </div>
 
                     <br><br>
 
@@ -495,13 +539,51 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         value="{{ g.name }}"
                     >
 
-                    <input
-                        type="number"
-                        name="amount"
-                        placeholder="Add savings"
-                        step="0.01"
-                        required
-                    >
+                    <div class="goal-add-savings-row">
+
+                        <select name="account" required>
+
+                            <option value="">
+
+                                Select Account
+
+                            </option>
+
+                            {% for account in accounts %}
+
+                            <option value="{{ account.name }}">
+
+                                {{ account.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                            <option value="__new__">
+
+                                + Create New Account
+
+                            </option>
+
+                        </select>
+
+                        <input
+                            type="text"
+                            name="new_account"
+                            class="new-account-input"
+                            placeholder="Enter new account name"
+                            style="display:none;"
+                        >
+
+                        <input
+                            type="number"
+                            name="amount"
+                            placeholder="Add savings"
+                            value="{{ form_data.amount if form_data else '0.00' }}"
+                            readonly
+                        >
+
+                    </div>
 
                     <br><br>
 
@@ -537,69 +619,66 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
-<!-- ================================================= -->
-<!-- ================= TNG INPUT ===================== -->
-<!-- ================================================= -->
-
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const amountInput =
-    document.getElementById("amountInput");
-
-    if (!amountInput) return;
-
-    let value = Math.round(
-
-        parseFloat(amountInput.value || "0") * 100
-
-    ) || 0;
-
-    let active = false;
-
-    amountInput.addEventListener(
-
-        "focus",
-
-        () => active = true
+    const tngInputs = document.querySelectorAll(
+        "#amountInput, input[name='amount']"
     );
 
-    amountInput.addEventListener(
+    tngInputs.forEach(function(amountInput) {
 
-        "blur",
+        let value = Math.round(
 
-        () => active = false
-    );
+            parseFloat(amountInput.value || "0") * 100
 
-    document.addEventListener("keydown", function(e) {
+        ) || 0;
 
-        if (!active) return;
+        let active = false;
 
-        if (e.key >= "0" && e.key <= "9") {
+        amountInput.addEventListener(
+            "focus",
+            () => active = true
+        );
 
-            value =
-            value * 10 + parseInt(e.key);
+        amountInput.addEventListener(
+            "blur",
+            () => active = false
+        );
 
-        }
+        document.addEventListener(
+            "keydown",
+            function(e) {
 
-        else if (e.key === "Backspace") {
+                if (!active) return;
 
-            value =
-            Math.floor(value / 10);
+                if (e.key >= "0" && e.key <= "9") {
 
-        }
+                    value =
+                    value * 10 + parseInt(e.key);
 
-        else {
+                }
 
-            return;
+                else if (e.key === "Backspace") {
 
-        }
+                    value =
+                    Math.floor(value / 10);
 
-        e.preventDefault();
+                }
 
-        amountInput.value =
-        (value / 100).toFixed(2);
+                else {
+
+                    return;
+                }
+
+                e.preventDefault();
+
+                amountInput.value =
+                (value / 100).toFixed(2);
+
+            }
+        );
 
     });
 
@@ -706,6 +785,58 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
 })();
+
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const accountSelects =
+        document.querySelectorAll(
+            "select[name='account']"
+        );
+
+    accountSelects.forEach(function(select) {
+
+        select.addEventListener(
+            "change",
+            function () {
+
+                const wrapper =
+                    select.parentElement;
+
+                const newInput =
+                    wrapper.querySelector(
+                        ".new-account-input"
+                    );
+
+                if (
+                    select.value === "__new__"
+                ) {
+
+                    newInput.style.display =
+                        "block";
+
+                    newInput.required = true;
+
+                }
+
+                else {
+
+                    newInput.style.display =
+                        "none";
+
+                    newInput.required = false;
+
+                }
+
+            }
+        );
+
+    });
+
+});
 
 </script>
 </body>

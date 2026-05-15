@@ -1,15 +1,6 @@
 [
     {
         "username": "test",
-        "date": "2026-05-14",
-        "type": "expense",
-        "category": "Food",
-        "account": "TnG",
-        "item": "hotdog",
-        "amount": 800.0
-    },
-    {
-        "username": "test",
         "date": "2026-05-01",
         "type": "income",
         "category": "Salary",
@@ -43,5 +34,14 @@
         "account": "TnG",
         "item": "Grab",
         "amount": 50.0
+    },
+    {
+        "username": "test",
+        "date": "2026-05-15",
+        "type": "expense",
+        "category": "Food",
+        "account": "TnG",
+        "item": "lunch",
+        "amount": 800.0
     }
 ]
