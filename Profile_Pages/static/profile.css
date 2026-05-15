@@ -7,55 +7,11 @@
 
 body{
     min-height:100vh;
-    padding:30px;
+    padding:20px;
     color:#2c241b;
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
-}
-
-.topbar{
-    width:100%;
-    background:rgba(255,248,240,0.88);
-    backdrop-filter:blur(16px);
-    border-radius:28px;
-    padding:24px 35px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
-    border:1px solid rgba(255,255,255,0.35);
-    box-shadow:0 10px 30px rgba(0,0,0,0.12);
-}
-
-.topbar-title{
-    font-size:2rem;
-    font-weight:bold;
-}
-
-.topbar-links{
-    display:flex;
-    gap:18px;
-    flex-wrap:wrap;
-}
-
-.topbar-links a{
-    text-decoration:none;
-    color:#2c241b;
-    font-weight:bold;
-    padding:12px 20px;
-    border-radius:14px;
-    transition:0.25s;
-}
-
-.topbar-links a:hover{
-    background:#7b5e4a;
-    color:white;
-}
-
-.active-link{
-    background:#6c63ff;
-    color:white !important;
 }
 
 .profile-wrapper{
@@ -709,7 +665,7 @@ body.compact .card{
 
 body.compact .topbar{
 
-    padding:16px 22px;
+    padding:22px 40px;
 }
 
 body.compact .profile-top{

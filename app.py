@@ -39,6 +39,7 @@ f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
 f_goals = os.path.join(BASE_DIR, "goals.json")
+
 # ================= HELPERS =================
 def load_data(file, default):
     if not os.path.exists(file):
@@ -290,22 +291,64 @@ def add_financial():
 # ================= VIEW =================
 @app.route("/view")
 def view_financial():
+
     if "user" not in session:
         return redirect(url_for("login"))
 
-    records = load_data(f_expense, [])
     user = session["user"]
 
-    user_records = [r for r in records if r["username"] == user]
-    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
+    records = load_data(f_expense, [])
+    accounts = load_data(f_accounts, [])
+
+    # ===== USER RECORDS =====
+    user_records = [
+
+        r for r in records
+
+        if r["username"] == user
+    ]
+
+    # ===== FILTER =====
+    selected_account = request.args.get("account")
+
+    if selected_account and selected_account != "All Accounts":
+
+        user_records = [
+
+            r for r in user_records
+
+            if r.get("account") == selected_account
+        ]
+
+    # ===== SORT =====
+    sorted_records = sorted(
+        user_records,
+        key=lambda x: x["date"],
+        reverse=True
+    )
+
+    # ===== USER ACCOUNTS =====
+    user_accounts = [
+
+        a for a in accounts
+
+        if a["username"] == user
+    ]
 
     return render_template(
-        "view.html",
-        records=sorted_records,
-        wallpaper=get_user_wallpaper(),
-        user=get_current_user(),
-        )
 
+        "view.html",
+
+        records=sorted_records,
+
+        accounts=user_accounts,
+
+        selected_account=selected_account,
+
+        wallpaper=get_user_wallpaper(),
+
+        user=get_current_user(),
+    )
 
 # ================= DELETE =================
 @app.route("/delete/<int:idx>")
@@ -401,6 +444,7 @@ def update_financial(idx):
         record=record,
         accounts=user_accounts,
         wallpaper=get_user_wallpaper(),
+        user=get_current_user(),
     )
 
 # ================= BUDGET =================
@@ -938,12 +982,36 @@ def goals():
 
             goal_name = request.form.get("goal_name")
             amount = request.form.get("amount")
+            account = request.form.get("account")
+            new_account = request.form.get("new_account")
 
             try:
                 amount = float(amount)
 
             except:
                 return redirect(url_for("goals"))
+
+            accounts = load_data(f_accounts, [])
+
+            if account == "__new__" and new_account:
+
+                account = new_account
+
+                if not any(
+                    a["name"] == account
+                    and a["username"] == user
+                    for a in accounts
+                ):
+
+                    accounts.append({
+
+                        "username": user,
+
+                        "name": account
+
+                    })
+
+                    save_data(f_accounts, accounts)
 
             for g in goals:
 
@@ -1014,10 +1082,21 @@ def goals():
         else:
             long_goals.append(goal_data)
 
+    accounts = load_data(f_accounts, [])
+
+    user_accounts = [
+
+    a for a in accounts
+
+    if a.get("username") == user
+
+    ]
     # ================= RENDER =================
     return render_template(
 
         "goals.html",
+
+        accounts=user_accounts,
 
         short_goals=short_goals,
 
