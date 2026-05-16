@@ -1,5 +1,7 @@
 import { editMode } from "./editMode.js";
 
+import { saveLayout } from "./saveLayout.js";
+
 const handles = document.querySelectorAll(".resize-handle");
 
 const cards = document.querySelectorAll(".card");
@@ -163,6 +165,8 @@ if (height > maxHeight) {
 document.addEventListener("mouseup", () => {
 
     clearResizeGuides();
+
+    saveLayout();
 
     activeCard = null;
 

@@ -1,8 +1,10 @@
 import { editMode } from "./editMode.js";
+import { saveLayout } from "./saveLayout.js";
 
 const cards = document.querySelectorAll(".card");
 
 const paper = document.querySelector("#paper");
+
 
 let activeCard = null;
 
@@ -76,7 +78,7 @@ document.addEventListener("mousemove", (e) => {
 
     clearGuides();
 
-    const SNAP_DISTANCE = 20;
+    const SNAP_DISTANCE = 40;
 
     cards.forEach(card => {
 
@@ -150,6 +152,53 @@ document.addEventListener("mousemove", (e) => {
                 2,
                 paper.clientHeight
             );
+        }
+
+        /* ================= GROUP CENTER ================= */
+
+        const otherCards = [...cards].filter(
+            card => card !== activeCard
+        );
+
+        /* must have 2 cards */
+
+        if (otherCards.length >= 2) {
+
+            const leftCard = otherCards[0];
+
+            const rightCard = otherCards[1];
+
+            const groupLeft =
+                leftCard.offsetLeft;
+
+            const groupRight =
+                rightCard.offsetLeft +
+                rightCard.offsetWidth;
+
+            const groupCenter =
+                (groupLeft + groupRight) / 2;
+
+            const activeCenter =
+                newX + activeCard.offsetWidth / 2;
+
+            if (
+                Math.abs(
+                    activeCenter - groupCenter
+                ) < SNAP_DISTANCE
+            ) {
+
+                newX =
+                    groupCenter -
+                    activeCard.offsetWidth / 2;
+
+                createGuideLine(
+                    groupCenter,
+                    0,
+                    2,
+                    paper.clientHeight
+                );
+            }
+
         }
 
         /* TOP */
@@ -232,6 +281,8 @@ document.addEventListener("mouseup", () => {
 
     clearGuides();
 
+    saveLayout();
+    
     activeCard = null;
 
 });
