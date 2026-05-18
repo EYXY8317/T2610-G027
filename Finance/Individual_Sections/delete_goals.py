@@ -39,6 +39,7 @@ f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
 f_goals = os.path.join(BASE_DIR, "goals.json")
+
 # ================= HELPERS =================
 def load_data(file, default):
     if not os.path.exists(file):
@@ -67,12 +68,61 @@ def get_user_wallpaper():
             return u.get("wallpaper")
 
     return None
+
+def get_current_user():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u
+
+    return None
+
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
-    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    "saving": ["Savings", "Investment", "Emergency Fund"]
+
+    "income": [
+        "Salary",
+        "Freelance",
+        "Business",
+        "Gift",
+        "Bonus"
+    ],
+
+    "expense": [
+        "Food",
+        "Transport",
+        "Travel",
+        "Entertainment",
+        "Rent",
+        "Education"
+    ],
+
+    "saving": [
+        "Savings",
+        "Investment",
+        "Emergency Fund"
+    ]
 }
+
+# ----------
+# ROUTES
+# ----------
+
+# "@" attaches this function to something
+# app.route is a flask function that defines a URL
+# "/" is the root URL
+# url_for("add_financial") is a flask helper function; helps find the URL of a function
+# redirect sends the user to the specific page
+@app.route("/")
+def home():
+    return redirect(url_for("login"))
 
 @app.route("/delete_goal/<int:goal_id>")
 def delete_goal(goal_id):

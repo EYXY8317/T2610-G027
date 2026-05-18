@@ -39,6 +39,7 @@ f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
 f_goals = os.path.join(BASE_DIR, "goals.json")
+
 # ================= HELPERS =================
 def load_data(file, default):
     if not os.path.exists(file):
@@ -67,12 +68,61 @@ def get_user_wallpaper():
             return u.get("wallpaper")
 
     return None
+
+def get_current_user():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u
+
+    return None
+
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
-    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    "saving": ["Savings", "Investment", "Emergency Fund"]
+
+    "income": [
+        "Salary",
+        "Freelance",
+        "Business",
+        "Gift",
+        "Bonus"
+    ],
+
+    "expense": [
+        "Food",
+        "Transport",
+        "Travel",
+        "Entertainment",
+        "Rent",
+        "Education"
+    ],
+
+    "saving": [
+        "Savings",
+        "Investment",
+        "Emergency Fund"
+    ]
 }
+
+# ----------
+# ROUTES
+# ----------
+
+# "@" attaches this function to something
+# app.route is a flask function that defines a URL
+# "/" is the root URL
+# url_for("add_financial") is a flask helper function; helps find the URL of a function
+# redirect sends the user to the specific page
+@app.route("/")
+def home():
+    return redirect(url_for("login"))
 
 @app.route("/goals", methods=["GET", "POST"])
 def goals():
@@ -153,12 +203,36 @@ def goals():
 
             goal_name = request.form.get("goal_name")
             amount = request.form.get("amount")
+            account = request.form.get("account")
+            new_account = request.form.get("new_account")
 
             try:
                 amount = float(amount)
 
             except:
                 return redirect(url_for("goals"))
+
+            accounts = load_data(f_accounts, [])
+
+            if account == "__new__" and new_account:
+
+                account = new_account
+
+                if not any(
+                    a["name"] == account
+                    and a["username"] == user
+                    for a in accounts
+                ):
+
+                    accounts.append({
+
+                        "username": user,
+
+                        "name": account
+
+                    })
+
+                    save_data(f_accounts, accounts)
 
             for g in goals:
 
@@ -229,10 +303,21 @@ def goals():
         else:
             long_goals.append(goal_data)
 
+    accounts = load_data(f_accounts, [])
+
+    user_accounts = [
+
+    a for a in accounts
+
+    if a.get("username") == user
+
+    ]
     # ================= RENDER =================
     return render_template(
 
         "goals.html",
+
+        accounts=user_accounts,
 
         short_goals=short_goals,
 
@@ -240,4 +325,5 @@ def goals():
 
         wallpaper=get_user_wallpaper(),
 
+        user=get_current_user(),
     )
