@@ -39,6 +39,7 @@ f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
 f_goals = os.path.join(BASE_DIR, "goals.json")
+
 # ================= HELPERS =================
 def load_data(file, default):
     if not os.path.exists(file):
@@ -67,13 +68,90 @@ def get_user_wallpaper():
             return u.get("wallpaper")
 
     return None
+
+def get_current_user():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u
+
+    return None
+
 # =============== ARRAYS ==================
 CATEGORY_MAP = {
-    "income": ["Salary", "Freelance", "Business", "Gift", "Bonus"],
-    "expense": ["Food", "Transport", "Entertainment", "Rent", "Education", "Travel"],
-    "saving": ["Savings", "Investment", "Emergency Fund"]
+
+    "income": [
+        "Salary",
+        "Freelance",
+        "Business",
+        "Gift",
+        "Bonus"
+    ],
+
+    "expense": [
+        "Food",
+        "Transport",
+        "Travel",
+        "Entertainment",
+        "Rent",
+        "Education"
+    ],
+
+    "saving": [
+        "Savings",
+        "Investment",
+        "Emergency Fund"
+    ]
 }
 
+# ----------
+# ROUTES
+# ----------
+
+# "@" attaches this function to something
+# app.route is a flask function that defines a URL
+# "/" is the root URL
+# url_for("add_financial") is a flask helper function; helps find the URL of a function
+# redirect sends the user to the specific page
+@app.route("/")
+def home():
+    return redirect(url_for("login"))
+
+@app.route("/delete_goal/<int:goal_id>")
+def delete_goal(goal_id):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    goals = load_data(f_goals, [])
+
+    # remove only THIS user's goal
+    goals = [
+
+        g for g in goals
+
+        if not (
+            g.get("id") == goal_id
+            and g.get("username") == user
+        )
+
+    ]
+
+    save_data(f_goals, goals)
+
+    return redirect(url_for("goals"))
+
+
+# ================ EDIT GOALS ====================
 @app.route("/edit_goal/<int:goal_id>", methods=["GET", "POST"])
 def edit_goal(goal_id):
 
@@ -105,3 +183,49 @@ def edit_goal(goal_id):
     # goal not found
     if not goal:
         return redirect(url_for("goals"))
+
+    # ================= UPDATE =================
+    if request.method == "POST":
+
+        name = request.form.get("name")
+        target = request.form.get("target")
+
+        if not name or not target:
+
+            return render_template(
+                "edit_goal.html",
+                goal=goal,
+                error="All fields required",
+                wallpaper=get_user_wallpaper(),
+            )
+
+        try:
+            target = float(target)
+
+        except:
+
+            return render_template(
+                "edit_goal.html",
+                goal=goal,
+                error="Invalid target amount",
+                wallpaper=get_user_wallpaper(),
+            )
+
+        # update data
+        goal["name"] = name
+        goal["target"] = target
+
+        save_data(f_goals, goals)
+
+        return redirect(url_for("goals"))
+
+    # ================= RENDER =================
+    return render_template(
+
+        "edit_goal.html",
+
+        goal=goal,
+
+        wallpaper=get_user_wallpaper(),
+
+    )
