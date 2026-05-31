@@ -514,7 +514,8 @@ body{
 
 
 /* ===== EMPTY ===== */
-.empty{
+
+.empty-state{
     text-align:center;
     color:#9c99b7;
     padding:40px 0;
@@ -1126,11 +1127,6 @@ body{
     padding:0 4px;
     box-shadow:
     0 2px 8px rgba(255,107,151,0.3);
-}
-
-/* ===== Make day position relative for badge ===== */
-.day {
-    position: relative;
 }
 
 
