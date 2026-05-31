@@ -6,7 +6,9 @@
         "security_question": "nickname",
         "security_answer": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
         "profile_picture": "download.jpg",
-        "wallpaper": "download (1).jpg"
+        "wallpaper": "download (2).jpg",
+        "theme": "dark",
+        "ui_style": "premium"
     },
     {
         "username": "ZOEY",
@@ -29,5 +31,14 @@
         "email": "yxin683@gmail.com",
         "security_question": "favourite_subject",
         "security_answer": "4d4e6a6794a094ec318a7f48ee6f380df6bd2bebebccd6cf83152e21ad420bfb"
+    },
+    {
+        "username": "testuser123",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "testuser@test.com",
+        "security_question": "nickname",
+        "security_answer": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+        "theme": "dark",
+        "ui_style": "compact"
     }
 ]

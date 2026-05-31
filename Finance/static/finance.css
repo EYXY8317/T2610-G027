@@ -1,839 +1,1501 @@
-:root {
+/* ================================================= */
+/* ================= GLOBAL RESET ================== */
+/* ================================================= */
 
-    --glass-border: rgba(0,0,0,0.10);
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease,
+    backdrop-filter 0.25s ease;
 }
 
-body {
+/* ================================================= */
+/* ================= ROOT TOKENS =================== */
+/* ================================================= */
 
-    font-family: Arial, sans-serif;
+:root{
 
-    margin: 0;
+    --card-bg:var(--bg-card);
 
-    padding: 20px;
+    --card-bg-2:var(--bg-card-2);
 
-    background-color: #f5f7fb;
+    --border:var(--border-color);
 
-    background-size: cover;
+    --shadow:var(--shadow);
 
-    background-position: center;
+    --text-main:var(--text-primary);
 
-    background-attachment: fixed;
+    --text-soft:var(--text-secondary);
 
-    color: white;
+    --accent:var(--button-bg);
+
+    --accent-hover:var(--button-hover);
+
+    --radius:28px;
+
+    --radius-small:18px;
 }
 
+/* ================================================= */
+/* ===================== BODY ====================== */
+/* ================================================= */
+
+body{
+
+    font-family:Arial,sans-serif;
+
+    padding:20px;
+
+    color:var(--text-main);
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-attachment:fixed;
+}
+
+/* ================================================= */
 /* ================= WALLPAPER ===================== */
+/* ================================================= */
 
-.wallpaper-overlay {
+.wallpaper-overlay{
 
-    position: fixed;
+    position:fixed;
 
-    top: 0;
-    left: 0;
+    inset:0;
 
-    width: 100%;
-    height: 100%;
+    background:rgba(0,0,0,0.18);
 
-    background: rgba(0,0,0,0.38);
-
-    z-index: -1;
+    z-index:-1;
 }
 
-/* ================== MAIN LAYOUT ================== */
+body.dark .wallpaper-overlay{
 
-.summary-wrapper {
-
-    width: 95%;
-
-    max-width: 1600px;
-
-    margin: auto;
+    background:rgba(0,0,0,0.55);
 }
 
-/* ===================== TOPBAR ==================== */
+/* ================================================= */
+/* ==================== LAYOUT ===================== */
+/* ================================================= */
 
-.topbar {
+.summary-wrapper{
 
-    background: rgba(255,255,255,0.18);
+    width:95%;
 
-    backdrop-filter: blur(18px);
+    max-width:1600px;
 
-    -webkit-backdrop-filter: blur(18px);
-
-    border: 1px solid rgba(255,255,255,0.25);
-
-    border-radius: 20px;
-
-    padding: 18px 24px;
-
-    margin-bottom: 25px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-
-    flex-wrap: wrap;
-
-    gap: 15px;
+    margin:auto;
 }
 
-.topbar-title {
+/* ================= TOPBAR ================= */
 
-    font-size: 28px;
+.topbar{
 
-    font-weight: bold;
+    width:95%;
 
-    color: #111;
+    margin:30px auto;
+
+    padding:22px 40px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:40px;
+
+    border-radius:30px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(10,10,15,0.92),
+        rgba(20,15,25,0.88)
+    );
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    box-sizing:border-box;
 }
+
+/* ===== TITLE ===== */
+
+.topbar-title{
+
+    color:white;
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    white-space:nowrap;
+}
+
+/* ===== LINK CONTAINERS ===== */
 
 .topbar-links,
-.topbar-actions {
+.topbar-actions{
 
-    display: flex;
+    display:flex;
 
-    gap: 12px;
+    align-items:center;
 
-    flex-wrap: wrap;
+    gap:28px;
 }
 
-.topbar a {
+/* ===== CENTER NAV ===== */
 
-    text-decoration: none;
+.topbar-links{
 
-    color: #111;
+    flex:1;
 
-    font-weight: 600;
-
-    padding: 10px 16px;
-
-    border-radius: 12px;
-
-    transition: 0.2s;
+    justify-content:center;
 }
 
-.topbar a:hover {
+/* ===== RIGHT NAV ===== */
 
-    background: rgba(99,102,241,0.12);
+.topbar-actions{
+
+    justify-content:flex-end;
+
+    white-space:nowrap;
 }
 
-.active-link {
+/* ===== LINKS ===== */
 
-    background: #6366F1;
+.topbar-links a,
+.topbar-actions a{
 
-    color: white !important;
+    color:white;
+
+    text-decoration:none;
+
+    font-size:1rem;
+
+    font-weight:600;
+
+    transition:0.2s ease;
+
+    padding:10px 0;
 }
 
-/* ====================== CARDS ==================== */
+/* ===== HOVER ===== */
 
-.summary-card {
+.topbar-links a:hover,
+.topbar-actions a:hover{
 
-    background: rgba(255,255,255,0.18);
-
-    backdrop-filter: blur(20px);
-
-    -webkit-backdrop-filter: blur(20px);
-
-    border: 1px solid rgba(255,255,255,0.2);
-
-    border-radius: 24px;
-
-    padding: 25px;
-
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-
-    margin-bottom: 20px;
-
-    color: white;
+    opacity:0.7;
 }
 
-/* ======================= GRID ==================== */
+/* ===== ACTIVE LINK ===== */
 
-.summary-grid {
+.active-link{
 
-    display: grid;
+    background:#6f7cff;
 
-    grid-template-columns: 1fr 1fr;
+    padding:10px 18px !important;
 
-    gap: 24px;
-
-    margin-top: 20px;
+    border-radius:14px;
 }
 
-.year-grid {
+/* ================================================= */
+/* ===================== CARDS ===================== */
+/* ================================================= */
 
-    display: grid;
+.summary-card{
 
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    background:var(--card-bg);
 
-    gap: 20px;
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    box-shadow:var(--shadow);
+
+    backdrop-filter:blur(16px);
+
+    padding:36px;
+
+    margin-bottom:24px;
 }
 
+/* ================================================= */
+/* ===================== HOVER ===================== */
+/* ================================================= */
+
+.hover-card:hover{
+
+    transform:
+    translateY(-5px)
+    scale(1.01);
+
+    border-color:var(--accent);
+
+    box-shadow:
+    0 18px 36px rgba(0,0,0,0.14);
+}
+
+/* ================================================= */
+/* ====================== GRID ===================== */
+/* ================================================= */
+
+.summary-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:20px;
+
+    margin-top:20px;
+}
+
+/* ================================================= */
+/* =================== OVERVIEW ==================== */
+/* ================================================= */
+
+.overview-box{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+}
+
+.overview-box::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    height:5px;
+
+    background:var(--accent);
+}
+
+.overview-box p{
+
+    color:var(--text-soft);
+
+    font-size:0.9rem;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+.overview-box h3{
+
+    margin-top:14px;
+
+    font-size:2rem;
+
+    color:var(--text-main);
+}
+
+/* ================================================= */
+/* ===================== BUTTONS =================== */
+/* ================================================= */
+
+button,
+.primary-btn{
+
+    background:var(--accent);
+
+    color:white;
+
+    border:none;
+
+    border-radius:16px;
+
+    padding:14px 24px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,0.12);
+}
+
+button:hover,
+.primary-btn:hover{
+
+    background:var(--accent-hover);
+
+    transform:translateY(-2px);
+}
+
+/* ================================================= */
 /* ====================== FORMS ==================== */
-
-form {
-
-    width: 100%;
-}
-
-/* ===== INPUT / SELECT / TEXTAREA ===== */
+/* ================================================= */
 
 input,
-select,
-textarea {
+textarea,
+select{
 
-    width: 100%;
+    width:100%;
 
-    padding: 14px 16px;
+    padding:14px 16px;
 
-    border-radius: 14px;
+    border-radius:16px;
 
-    border: 1px solid rgba(255,255,255,0.22);
+    border:1px solid var(--border);
 
-    background: rgba(255,255,255,0.12);
+    background:var(--card-bg-2);
 
-    backdrop-filter: blur(14px);
+    color:var(--text-main);
 
-    -webkit-backdrop-filter: blur(14px);
+    font-size:15px;
 
-    box-sizing: border-box;
-
-    margin-top: 8px;
-
-    margin-bottom: 18px;
-
-    font-size: 15px;
-
-    color: white;
-
-    outline: none;
-
-    transition: 0.2s;
+    outline:none;
 }
-
-/* ===== INPUT PLACEHOLDER ===== */
 
 input::placeholder,
-textarea::placeholder {
+textarea::placeholder{
 
-    color: rgba(255,255,255,0.65);
+    color:var(--text-soft);
 }
 
-/* ===== FOCUS EFFECT ===== */
+label{
 
-input:focus,
-select:focus,
-textarea:focus {
+    display:block;
 
-    border: 1px solid rgba(99,102,241,0.65);
+    margin-bottom:10px;
 
-    box-shadow:
-    0 0 0 4px rgba(99,102,241,0.15);
+    color:var(--text-main);
+
+    font-weight:700;
 }
 
-/* ===== DROPDOWN OPTIONS ===== */
-
-select option {
-
-    background: #1e293b;
-
-    color: white;
-}
-
-/* ===== BUTTON ===== */
-
-button {
-
-    background: #6366F1;
-
-    color: white;
-
-    border: none;
-
-    padding: 12px 20px;
-
-    border-radius: 12px;
-
-    cursor: pointer;
-
-    font-weight: 700;
-
-    font-size: 14px;
-
-    transition: 0.2s;
-}
-
-/* ===== BUTTON HOVER ===== */
-
-button:hover {
-
-    background: #4f46e5;
-
-    transform: translateY(-1px);
-}
-
-/* ===================== FILTER ==================== */
-
-.filter-form {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    flex-wrap: wrap;
-
-    margin-top: 20px;
-}
-
-/* ===== LABEL ===== */
-
-.filter-form label {
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 600;
-}
-
-/* ===================== FILTER ==================== */
-
-.filter-form {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    flex-wrap: wrap;
-
-    margin-top: 20px;
-}
-
-/* ================= LABEL ================= */
-
-.filter-form label {
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-/* ================= SELECT ================= */
-
-.filter-form select {
-
-    min-width: 190px;
-
-    padding: 12px 16px;
-
-    border-radius: 14px;
-
-    border: 1px solid rgba(255,255,255,0.18);
-
-    background: rgba(45,45,45,0.72);
-
-    color: white;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    outline: none;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    backdrop-filter: blur(12px);
-
-    -webkit-backdrop-filter: blur(12px);
-
-    box-shadow:
-    0 4px 18px rgba(0,0,0,0.18);
-}
-
-/* ===== SELECT HOVER ===== */
-
-.filter-form select:hover {
-
-    background: rgba(60,60,60,0.82);
-}
-
-/* ===== SELECT FOCUS ===== */
-
-.filter-form select:focus {
-
-    border: 1px solid rgba(99,102,241,0.65);
-
-    box-shadow:
-    0 0 0 4px rgba(99,102,241,0.16);
-}
-
-/* ===== DROPDOWN POPUP ===== */
-
-.filter-form select option {
-
-    background: #2b2b2b;
-
-    color: white;
-
-    padding: 10px;
-}
-
-/* ================= BUTTON ================= */
-
-.filter-form button {
-
-    padding: 12px 18px;
-
-    border-radius: 14px;
-
-    border: 1px solid rgba(255,255,255,0.18);
-
-    background: rgba(255,255,255,0.88);
-
-    color: #111827;
-
-    font-size: 14px;
-
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    backdrop-filter: blur(12px);
-
-    -webkit-backdrop-filter: blur(12px);
-
-    box-shadow:
-    0 4px 18px rgba(0,0,0,0.12);
-}
-
-/* ===== BUTTON HOVER ===== */
-
-.filter-form button:hover {
-
-    background: white;
-
-    transform: translateY(-1px);
-}
-
+/* ================================================= */
 /* ====================== TABLE ==================== */
+/* ================================================= */
 
-table {
+.records-table{
 
-    width: 100%;
+    width:100%;
 
-    border-collapse: collapse;
+    border-collapse:collapse;
 
-    background: rgba(255,255,255,0.22);
+    overflow:hidden;
 
-    backdrop-filter: blur(18px);
+    border-radius:20px;
 
-    -webkit-backdrop-filter: blur(18px);
+    background:var(--card-bg);
 
-    border: 1px solid rgba(255,255,255,0.12);
-
-    border-radius: 18px;
-
-    overflow: hidden;
-
-    margin-top: 25px;
+    border:1px solid var(--border);
 }
 
-/* ===== MAIN TABLE ===== */
+.records-table th{
 
-.records-table {
+    background:var(--card-bg-2);
 
-    width: 100%;
+    color:var(--text-main);
 
-    border-collapse: collapse;
+    padding:18px;
 
-    color: white;
+    text-align:left;
 }
 
-/* ===== TABLE HEADER ===== */
+.records-table td{
 
-.records-table th {
+    padding:18px;
 
-    padding: 18px 16px;
+    color:var(--text-main);
 
-    text-align: left;
-
-    color: #0f172a;
-
-    border-bottom: 1px solid var(--glass-border);
-
-    border-right: 1px solid var(--glass-border);
-
-    background: rgba(255,255,255,0.04);
+    border-top:1px solid rgba(255,255,255,0.06);
 }
 
-/* ===== TABLE ROWS ===== */
+/* ================================================= */
+/* ===================== BADGES ==================== */
+/* ================================================= */
 
-.records-table td {
+.badge{
 
-    padding: 18px 16px;
+    display:inline-flex;
 
-    color: #1e293b;
+    align-items:center;
 
-    border-bottom: 1px solid var(--glass-border);
+    justify-content:center;
 
-    border-right: 1px solid var(--glass-border);
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:700;
 }
 
-.records-table th:last-child,
-.records-table td:last-child {
+.badge.income{
 
-    border-right: none;
+    background:rgba(34,197,94,0.16);
+
+    color:#22c55e;
 }
 
-/* ===== HOVER EFFECT ===== */
+.badge.expense{
 
-.records-table tr:hover {
+    background:rgba(239,68,68,0.16);
 
-    background: rgba(255,255,255,0.05);
-
-    transition: 0.2s;
+    color:#ef4444;
 }
 
-/* ===== ZEBRA ROWS ===== */
+.badge.saving{
 
-.records-table tr:nth-child(even) {
+    background:rgba(59,130,246,0.16);
 
-    background: rgba(255,255,255,0.02);
+    color:#3b82f6;
 }
 
-/* ================= BADGES ================= */
+/* ================================================= */
+/* ==================== PROGRESS =================== */
+/* ================================================= */
 
-.badge {
+.progress-container{
 
-    display: inline-flex;
+    width:100%;
 
-    align-items: center;
+    height:12px;
 
-    justify-content: center;
+    border-radius:999px;
 
-    padding: 8px 14px;
+    overflow:hidden;
 
-    border-radius: 999px;
+    margin-top:16px;
 
-    font-size: 13px;
-
-    font-weight: 700;
-
-    letter-spacing: 0.3px;
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    border: 1px solid rgba(255,255,255,0.18);
+    background:
+    rgba(255,255,255,0.08);
 }
 
-/* ===== EXPENSE ===== */
+.progress-bar{
 
-.badge.expense {
+    height:100%;
 
-    background: rgba(239,68,68,0.18);
+    width:var(--width);
 
-    color: #dc2626;
-
-    border: 1px solid rgba(239,68,68,0.35);
-
-    box-shadow:
-    0 0 12px rgba(239,68,68,0.12);
+    border-radius:999px;
 }
 
-/* ===== INCOME ===== */
+.progress-bar.safe{
 
-.badge.income {
-
-    background: rgba(34,197,94,0.18);
-
-    color: #15803d;
-
-    border: 1px solid rgba(34,197,94,0.35);
-
-    box-shadow:
-    0 0 12px rgba(34,197,94,0.12);
+    background:
+    linear-gradient(
+    90deg,
+    #22c55e,
+    #4ade80
+    );
 }
 
-/* ===== SAVING ===== */
+.progress-bar.warning{
 
-.badge.saving {
-
-    background: rgba(59,130,246,0.18);
-
-    color: #2563eb;
-
-    border: 1px solid rgba(59,130,246,0.35);
-
-    box-shadow:
-    0 0 12px rgba(59,130,246,0.12);
+    background:
+    linear-gradient(
+    90deg,
+    #f59e0b,
+    #fbbf24
+    );
 }
 
-/* ===================== BUTTONS =================== */
+.progress-bar.over{
 
-.add-btn {
-
-    background: #6366F1;
-
-    color: white;
-
-    text-decoration: none;
-
-    padding: 12px 18px;
-
-    border-radius: 12px;
-
-    font-weight: 600;
-
-    transition: 0.2s;
+    background:
+    linear-gradient(
+    90deg,
+    #ef4444,
+    #f87171
+    );
 }
 
-.add-btn:hover {
-
-    background: #4f46e5;
-}
-
-/* ===================== STATUS ==================== */
-
-.positive {
-
-    color: #16a34a;
-}
-
-.negative {
-
-    color: #dc2626;
-}
-
-.income-text {
-
-    color: #16a34a;
-}
-
-.expense-text {
-
-    color: #dc2626;
-}
-
-.saving-text {
-
-    color: #2563eb;
-}
-
-/* ================= PROGRESS BAR ================== */
-
-.progress-container {
-
-    background: #e5e7eb;
-
-    height: 12px;
-
-    border-radius: 999px;
-
-    overflow: hidden;
-
-    margin-top: 8px;
-
-    margin-bottom: 10px;
-}
-
-.progress-bar {
-
-    height: 100%;
-
-    width: var(--width);
-
-    border-radius: 999px;
-}
-
-.safe {
-
-    background: #22c55e;
-}
-
-.warning {
-
-    background: #f59e0b;
-}
-
-.over {
-
-    background: #ef4444;
-}
-
-/* ==================== INSIGHT ==================== */
-
-.insight-box {
-
-    background: rgba(248,250,252,0.9);
-
-    padding: 18px;
-
-    border-radius: 14px;
-
-    margin-top: 20px;
-}
-
+/* ================================================= */
 /* ===================== EMPTY ===================== */
+/* ================================================= */
 
-.empty-card {
+.empty-card{
 
-    text-align: center;
+    text-align:center;
 
-    padding: 40px 20px;
+    padding:60px 20px;
 }
 
+/* ================================================= */
+/* ===================== TITLES ==================== */
+/* ================================================= */
+
+.summary-main-title{
+
+    font-size:2.5rem;
+
+    font-weight:800;
+
+    margin-bottom:24px;
+
+    letter-spacing:-1px;
+
+    color:var(--text-main);
+}
+
+/* ================================================= */
+/* ==================== BUDGET ===================== */
+/* ================================================= */
+
+.budget-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+
+    gap:20px;
+}
+
+.budget-modern{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:22px;
+}
+
+.budget-card-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+}
+
+.budget-amount{
+
+    font-size:2rem;
+
+    font-weight:800;
+
+    color:var(--text-main);
+}
+
+.budget-limit{
+
+    color:var(--text-soft);
+}
+
+.delete-budget-btn{
+
+    color:#ef4444;
+
+    text-decoration:none;
+
+    font-weight:700;
+}
+
+/* ================================================= */
+/* ==================== INSIGHT ==================== */
+/* ================================================= */
+
+.insight-box{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    margin-top:20px;
+}
+
+/* ================================================= */
+/* =================== UI STYLES =================== */
+/* ================================================= */
+
+/* ===== PREMIUM ===== */
+
+body.premium .summary-card,
+body.premium .topbar{
+
+    backdrop-filter:blur(18px);
+}
+
+/* ===== MINIMAL ===== */
+
+body.minimal .summary-card,
+body.minimal .topbar,
+body.minimal .overview-box,
+body.minimal .budget-modern{
+
+    box-shadow:none;
+
+    backdrop-filter:none;
+
+    border:1px solid rgba(0,0,0,0.08);
+}
+
+/* ===== COMPACT ===== */
+
+body.compact .summary-card{
+
+    padding:24px;
+}
+
+body.compact .overview-box{
+
+    padding:16px;
+}
+
+body.compact .summary-main-title{
+
+    font-size:2rem;
+}
+
+/* ===== SOFT ===== */
+
+body.soft .summary-card,
+body.soft .overview-box,
+body.soft .budget-modern{
+
+    border-radius:40px;
+}
+
+body.soft button{
+
+    border-radius:999px;
+}
+
+/* ================================================= */
 /* =================== RESPONSIVE ================== */
+/* ================================================= */
 
-@media (max-width: 900px) {
+@media (max-width:900px){
 
-    .summary-grid {
+    .summary-grid{
 
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr;
     }
 
-    .topbar {
+    .topbar{
 
-        flex-direction: column;
+        flex-direction:column;
 
-        align-items: flex-start;
-    }
-
-    .records-table {
-
-        font-size: 14px;
+        align-items:flex-start;
     }
 }
 
-/* ================= BACK BUTTON ================= */
+/* ================================================= */
+/* ==================== GOALS ====================== */
+/* ================================================= */
 
-.back-btn {
+.goal-card{
 
-    display: inline-flex;
+    background:var(--card-bg-2);
 
-    align-items: center;
+    border:1px solid var(--border);
 
-    justify-content: center;
+    border-radius:28px;
 
-    padding: 10px 18px;
+    padding:24px;
 
-    border-radius: 12px;
+    position:relative;
 
-    background: rgba(255,255,255,0.16);
-
-    backdrop-filter: blur(12px);
-
-    -webkit-backdrop-filter: blur(12px);
-
-    border: 1px solid rgba(255,255,255,0.22);
-
-    color: white;
-
-    text-decoration: none;
-
-    font-weight: 600;
-
-    font-size: 14px;
-
-    transition: 0.2s;
+    overflow:hidden;
 }
 
-.back-btn:hover {
+.goal-card::before{
 
-    background: rgba(255,255,255,0.24);
+    content:"";
 
-    transform: translateY(-1px);
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    height:6px;
+
+    background:var(--accent);
+    opacity:0.9;
 }
 
-/* ================= ACTION BUTTONS ================= */
+/* ===== GOAL VALUE ===== */
 
-.action-buttons {
+.goal-card h2{
 
-    display: flex;
+    font-size:2.2rem;
 
-    gap: 10px;
+    margin-top:16px;
 
-    align-items: center;
+    color:var(--text-main);
 }
 
-/* ===== EDIT ===== */
+/* ===== GOAL TEXT ===== */
 
-.edit-btn {
+.goal-card p{
 
-    padding: 7px 14px;
-
-    border-radius: 10px;
-
-    background: rgba(99,102,241,0.16);
-
-    color: #4f46e5;
-
-    text-decoration: none;
-
-    font-weight: 700;
-
-    font-size: 13px;
-
-    border: 1px solid rgba(99,102,241,0.28);
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    transition: 0.2s;
+    color:var(--text-soft);
 }
 
-.edit-btn:hover {
+/* ===== GOAL FORM ===== */
 
-    background: rgba(99,102,241,0.24);
+.goal-card form{
 
-    transform: translateY(-1px);
+    margin-top:18px;
 }
 
-/* ===== DELETE ===== */
+/* ===== SOFT ===== */
 
-.delete-btn {
+body.soft .goal-card{
 
-    padding: 7px 14px;
-
-    border-radius: 10px;
-
-    background: rgba(239,68,68,0.16);
-
-    color: #dc2626;
-
-    text-decoration: none;
-
-    font-weight: 700;
-
-    font-size: 13px;
-
-    border: 1px solid rgba(239,68,68,0.28);
-
-    backdrop-filter: blur(10px);
-
-    -webkit-backdrop-filter: blur(10px);
-
-    transition: 0.2s;
+    border-radius:40px;
 }
 
-.delete-btn:hover {
+/* ===== MINIMAL ===== */
 
-    background: rgba(239,68,68,0.24);
+body.minimal .goal-card{
 
-    transform: translateY(-1px);
+    box-shadow:none;
+
+    backdrop-filter:none;
+}
+
+/* ================================================= */
+/* ===================== VIEW ====================== */
+/* ================================================= */
+
+.logged-text{
+
+    margin-bottom:18px;
+
+    color:var(--text-soft);
+
+    font-size:0.95rem;
+}
+
+/* ===== HEADER ===== */
+
+.view-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:24px;
+}
+
+.view-header h2{
+
+    font-size:2rem;
+
+    margin-bottom:6px;
+}
+
+.view-header p{
+
+    color:var(--text-soft);
+}
+
+/* ===== ADD BUTTON ===== */
+
+.add-btn{
+
+    background:var(--accent);
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    font-weight:700;
+
+    box-shadow:
+    0 8px 18px rgba(0,0,0,0.12);
+}
+
+.add-btn:hover{
+
+    background:var(--accent-hover);
+
+    transform:translateY(-2px);
+}
+
+/* ===== TABLE WRAPPER ===== */
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+    margin-top:24px;
+
+    border-radius:22px;
+}
+
+/* ===== TABLE ===== */
+
+.records-table{
+
+    min-width:900px;
+}
+
+/* ===== ROW HOVER ===== */
+
+.records-table tr{
+
+    transition:0.2s ease;
+}
+
+.records-table tr:hover{
+
+    background:
+    var(--card-bg-2);
+}
+
+/* ===== ACTION CELL ===== */
+
+.table-actions{
+
+    white-space:nowrap;
+}
+
+/* ===== COMPACT ===== */
+
+body.compact .records-table th,
+body.compact .records-table td{
+
+    padding:14px;
+}
+
+/* ===== MINIMAL ===== */
+
+body.minimal .records-table{
+
+    box-shadow:none;
+}
+
+/* ================================================= */
+/* ====================== ADD ====================== */
+/* ================================================= */
+
+.add-header{
+
+    margin-bottom:24px;
+}
+
+.add-subtitle{
+
+    color:var(--text-soft);
+
+    margin-top:10px;
+}
+
+/* ===== FORM ===== */
+
+.add-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+}
+
+/* ===== AMOUNT CARD ===== */
+
+.amount-card{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    margin-top:8px;
+}
+
+.amount-card p{
+
+    color:var(--text-soft);
+
+    margin-bottom:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-size:0.9rem;
+}
+
+.amount-card input{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    border:none;
+
+    background:transparent !important;
+
+    padding:0;
+
+    color:var(--text-main);
+}
+
+/* ===== BUTTON ROW ===== */
+
+.add-button-row{
+
+    margin-top:10px;
+}
+
+/* ===== SOFT ===== */
+
+body.soft .amount-card{
+
+    border-radius:40px;
+}
+
+/* ================================================= */
+/* ==================== UPDATE ===================== */
+/* ================================================= */
+
+.update-actions{
+
+    display:flex;
+
+    gap:14px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    margin-top:12px;
+}
+
+/* ===== SECONDARY BUTTON ===== */
+
+.secondary-btn{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+
+    color:var(--text-main);
+
+    text-decoration:none;
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    font-weight:700;
+}
+
+.secondary-btn:hover{
+
+    transform:translateY(-2px);
+
+    border-color:var(--accent);
+}
+
+/* ===== HIDDEN SECTION ===== */
+
+.hidden-section{
+
+    display:none;
+}
+
+.hidden-section.show{
+
+    display:block;
+}
+
+/* ================================================= */
+/* ============ ADAPTIVE GLASS ENGINE ============== */
+/* ================================================= */
+
+body.adaptive .summary-card,
+body.adaptive .topbar,
+body.adaptive .goal-card,
+body.adaptive .overview-box,
+body.adaptive .budget-modern,
+body.adaptive .amount-card,
+body.adaptive .insight-box{
+
+    backdrop-filter:blur(18px);
+}
+
+/* ===== DARK WALLPAPER ===== */
+
+body.adaptive.dark-wallpaper .topbar-title,
+body.adaptive.dark-wallpaper .topbar a{
+
+    color:
+    rgba(255,255,255,0.92);
+
+    text-shadow:
+    0 2px 10px rgba(0,0,0,0.45);
+}
+
+body.adaptive.dark-wallpaper .summary-main-title,
+body.adaptive.dark-wallpaper .view-header h2,
+body.adaptive.dark-wallpaper .overview-box h3,
+body.adaptive.dark-wallpaper .goal-card h2,
+body.adaptive.dark-wallpaper .goal-card h3{
+
+    color:#ffffff;
+}
+
+/* ================================================= */
+/* ============ ADAPTIVE LOADING FIX =============== */
+/* ================================================= */
+
+body.adaptive{
+
+    opacity:1;
+}
+
+body.adaptive.adaptive-ready{
+
+    opacity:1;
+
+    transition:
+    opacity 0.35s ease;
+}
+
+/* ================================================= */
+/* ================== FINANCE HOME ================= */
+/* ================================================= */
+
+.finance-hero{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:30px;
+
+    flex-wrap:wrap;
+}
+
+/* ===== HERO ===== */
+
+.hero-label{
+
+    text-transform:uppercase;
+
+    letter-spacing:2px;
+
+    font-size:0.82rem;
+
+    color:var(--text-secondary);
+
+    margin-bottom:12px;
+}
+
+.hero-subtitle{
+
+    color:var(--text-secondary);
+
+    margin-top:10px;
+}
+
+.hero-balance{
+
+    text-align:right;
+}
+
+.hero-balance p{
+
+    color:var(--text-secondary);
+
+    margin-bottom:8px;
+}
+
+.hero-balance h2{
+
+    font-size:3rem;
+
+    font-weight:800;
+}
+
+/* ===== DASHBOARD GRID ===== */
+
+.finance-dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(320px, 1fr));
+
+    gap:24px;
+
+    margin-bottom:24px;
+}
+
+/* ===== SECTION TITLE ===== */
+
+.section-title{
+
+    margin-bottom:20px;
+
+    font-size:1.4rem;
+}
+
+/* ===== QUICK ACTIONS ===== */
+
+.quick-actions-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(180px, 1fr));
+
+    gap:14px;
+}
+
+.quick-action-card{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border-color);
+
+    border-radius:22px;
+
+    padding:22px;
+
+    text-decoration:none;
+
+    color:var(--text-primary);
+
+    font-weight:700;
+
+    transition:0.25s ease;
+}
+
+.quick-action-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--accent);
+}
+
+/* ===== MOBILE ===== */
+
+@media (max-width:768px){
+
+    .finance-hero{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+    .hero-balance{
+
+        text-align:left;
+    }
+}
+
+/* ================================================= */
+/* ================= DARK THEME FIX ================ */
+/* ================================================= */
+
+body.dark{
+
+    --text-main:#f5f1eb;
+
+    --text-soft:#b8ada1;
+
+    --accent:#7c5a43;
+
+    --accent-hover:#946b4f;
+}
+
+/* ===== TOPBAR ===== */
+
+body.dark .topbar{
+
+    background:
+    linear-gradient(
+    135deg,
+    rgba(10,10,10,0.96),
+    rgba(20,20,20,0.94)
+    );
+}
+
+/* ===== TOPBAR TEXT ===== */
+
+body.dark .topbar-title,
+body.dark .topbar a{
+
+    color:#f5f1eb;
+}
+
+/* ===== ACTIVE LINK ===== */
+
+body.dark .active-link{
+
+    background:#5f78d1;
+
+    color:white !important;
+}
+
+/* ===== MAIN BIG CARDS ===== */
+
+body.dark .summary-card{
+
+    background:#1b1815;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* ===== INNER CARDS ===== */
+
+body.dark .overview-box,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .amount-card,
+body.dark .quick-action-card,
+body.dark .insight-box,
+body.dark .records-table,
+body.dark .records-table th{
+
+    background:#23201d;
+
+    border:1px solid rgba(255,255,255,0.06);
+
+    backdrop-filter:none;
+}
+
+/* ===== OVERVIEW TOP LINES ===== */
+
+body.dark .overview-box::before,
+body.dark .goal-card::before{
+
+    background:#5f78d1;
+}
+
+/* ===== MAIN TEXT ===== */
+
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark .summary-main-title,
+body.dark .section-title,
+body.dark .view-header h2,
+body.dark .records-table th,
+body.dark .records-table td,
+body.dark .quick-action-card,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .insight-box{
+
+    color:#f5f1eb;
+}
+
+/* ===== SECONDARY TEXT ===== */
+
+body.dark p,
+body.dark label,
+body.dark .logged-text,
+body.dark .hero-label,
+body.dark .hero-subtitle,
+body.dark .budget-limit,
+body.dark .goal-card p,
+body.dark .overview-box p,
+body.dark .add-subtitle{
+
+    color:#b8ada1;
+}
+
+/* ===== INPUTS ===== */
+
+body.dark input,
+body.dark textarea,
+body.dark select{
+
+    background:#2c2824;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+    color:#f5f1eb;
+}
+
+/* ===== PLACEHOLDER ===== */
+
+body.dark input::placeholder,
+body.dark textarea::placeholder{
+
+    color:#8f8479;
+}
+
+/* ===== TABLE ===== */
+
+body.dark .records-table tr:hover{
+
+    background:#2a2622;
+}
+
+/* ===== BUTTONS ===== */
+
+body.dark button,
+body.dark .primary-btn,
+body.dark .add-btn{
+
+    background:#5f78d1;
+
+    color:white;
+}
+
+body.dark button:hover,
+body.dark .primary-btn:hover,
+body.dark .add-btn:hover{
+
+    background:#7480ff;
+}
+
+/* ===== HERO BALANCE ===== */
+
+body.dark .hero-balance h2{
+
+    color:#ffffff;
+}
+
+/* ===== QUICK ACTIONS ===== */
+
+body.dark .quick-action-card:hover{
+
+    border-color:#5f78d1;
+
+    transform:translateY(-4px);
+}
+
+/* ===== PROGRESS BACKGROUND ===== */
+
+body.dark .progress-container{
+
+    background:rgba(255,255,255,0.08);
+}
+
+/* ===== SHADOW POLISH ===== */
+
+body.dark .overview-box,
+body.dark .goal-card,
+body.dark .budget-modern,
+body.dark .amount-card{
+
+    box-shadow:
+    0 6px 20px rgba(0,0,0,0.22);
+}
+
+/* ================= GOALS ACCOUNT FIX ================= */
+
+.goal-account-group{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%;
+}
+
+.goal-account-select{
+    width:100%;
+}
+
+/* ================= GOALS INPUT UI ================= */
+
+.goal-card input,
+.goal-card select{
+
+    width:100%;
+
+    padding:18px 20px;
+
+    border-radius:20px;
+
+    border:1px solid #d8c8b5;
+
+    background:#f7f3ef;
+
+    color:#2c241b;
+
+    font-size:1rem;
+
+    margin-top:14px;
+}
+
+/* ===== FOCUS ===== */
+
+.goal-card input:focus,
+.goal-card select:focus{
+
+    outline:none;
+
+    box-shadow:
+    0 0 0 3px rgba(124,140,255,0.15);
+}
+
+/* ===== DARK MODE ===== */
+
+body.dark .goal-card input,
+body.dark .goal-card select{
+
+    background:#2c2824;
+
+    color:#f5f1eb;
+
+    border:1px solid rgba(255,255,255,0.08);
 }
