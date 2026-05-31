@@ -3,83 +3,321 @@
 <head>
     <title>Life Pages</title>
     <link rel="stylesheet" href="/calendar_static/mystyle.css">
+    <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"/>
 </head>
 
 <body>
-<hr>
-<a href="/view">Finance</a> |
-<a href="/diary">Diary</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/logout">Logout</a>
-</hr>
+<!-- TOP NAVIGATION -->
+<div class="top-nav">
+
+    <a href="/view" class="nav-link">Finance</a>
+
+    <a href="/diary" class="nav-link">Diary</a>
+
+    <a href="/calendar" class="nav-link">Calendar</a>
+
+    <a href="/logout" class="nav-link logout-link">Logout</a>
+
+</div>
 
 <div class="container">
 
     <!-- Sidebar -->
     <div class="sidebar">
 
-        <div class="logo">
-            Life Pages
+       <div class="logo-area">
+
+    <img src="logo.png" class="logo-img" alt="logo">
+
+    <h1 class="logo">Life Pages</h1>
+
+</div>
+
+          <!-- MENU -->
+        <div class="menu-group">
+
+            <div class="section-title">
+                MENU
+            </div>
+
+            <div class="menu-item active" onclick="showPage('today', this)">
+
+                <span class="material-symbols-rounded">calendar_month</span>
+
+                <span>Today</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('work', this)">
+
+                <span class="material-symbols-rounded">dashboard</span>
+
+                <span>Work Tasks</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('shopping', this)">
+
+                <span class="material-symbols-rounded">shopping_cart</span>
+
+                <span>Shopping List</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('study', this)">
+
+                <span class="material-symbols-rounded">menu_book</span>
+
+                <span>Study Plan</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('personal', this)">
+
+                <span class="material-symbols-rounded">description</span>
+
+                <span>Personal Memos</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('workout', this)">
+
+                <span class="material-symbols-rounded">fitness_center</span>
+
+                <span>Workout Plan</span>
+
+            </div>
+
         </div>
 
-        <div class="menu-item active" onclick="showPage('today', this)">Today</div>
+        <!-- CALENDAR -->
+        <div class="menu-group">
 
-        <div class="section-title">To-Do Lists</div>
-        <div class="menu-item" onclick="showPage('work', this)">Work Tasks</div>
-        <div class="menu-item" onclick="showPage('shopping', this)">Shopping List</div>
-        <div class="menu-item" onclick="showPage('study', this)">Study Plan</div>
-        <div class="menu-item" onclick="showPage('personal', this)">Personal Memos</div>
-        <div class="menu-item" onclick="showPage('workout', this)">Workout Plan</div>
+            <div class="section-title">
+                CALENDAR
+            </div>
 
-        <div class="section-title">Calendar</div>
-        <div class="menu-item" onclick="showPage('calendar', this)">Calendar</div>
+            <div class="menu-item" onclick="showPage('calendar', this)">
 
-        <div class="section-title">Others</div>
-        <div class="menu-item" onclick="showPage('completed', this)">✔ Completed</div>
-        <div class="menu-item" onclick="showPage('trash', this)">🗑 Trash</div>
+                <span class="material-symbols-rounded">calendar_month</span>
+
+                <span>Calendar</span>
+
+            </div>
+
+        </div>
+
+        <!-- OTHERS -->
+        <div class="menu-group">
+
+            <div class="section-title">
+                OTHERS
+            </div>
+
+            <div class="menu-item" onclick="showPage('completed', this)">
+
+                <span class="material-symbols-rounded">task_alt</span>
+
+                <span>Completed</span>
+
+            </div>
+
+            <div class="menu-item" onclick="showPage('trash', this)">
+
+                <span class="material-symbols-rounded">delete</span>
+
+                <span>Trash</span>
+
+            </div>
+
+        </div>
 
     </div>
 
     <!-- Main Content -->
     <div class="main">
 
-        <!-- Today -->
-        <div id="today" class="page active">
-            <h2>Today</h2>
-            <p id="date"></p>
+        <!-- TOP BAR -->
+<div class="topbar">
 
-            <h3>Today Tasks</h3>
-            <ul id="todayTasks"></ul>
+    <div>
+
+        <h1 class="page-title">
+            Today
+        </h1>
+
+        <p class="today-date" id="date"></p>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <div class="search-box">
+
+            <span class="material-symbols-rounded search-icon">search</span>
+
+            <input type="text" placeholder="Search..." class="search-bar">
+
         </div>
+
+        <span class="material-symbols-rounded notification-icon">notifications</span>
+
+    </div>
+
+</div>
+
+        <!-- TODAY PAGE -->
+        <div id="today" class="page active">
+
+    <!-- TODAY TASKS -->
+    <div class="dashboard-card task-section">
+
+        <div class="card-header">
+
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">calendar_month</span>
+
+                </div>
+
+                <h2 class="card-title">Today's Tasks</h2>
+
+            </div>
+
+           <button class="add-btn" onclick="addTask('today')">+ Add Task</button>
+
+        </div>
+
+        <!-- TASK LIST -->
+        <div id="todayTasks"></div>
+
+        <div class="view-all">View all tasks</div>
+
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="dashboard-card progress-card">
+
+        <div class="card-header">
+
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">donut_large</span>
+
+                </div>
+
+                <h2 class="card-title">Progress Overview</h2>
+
+            </div>
+
+            <div class="progress-badge">⭐ Great job!</div>
+
+        </div>
+
+        <div class="progress-content">
+
+            <div>
+
+                <h1 class="progress-number" id="progressPercent">0%</h1>
+
+                <p class="progress-label">Overall Progress</p>
+
+            </div>
+
+            <div class="progress-right">
+
+                <div class="progress-bar">
+
+                    <div class="progress-fill" id="progressFill"></div>
+
+                </div>
+
+                <p class="progress-task-text">
+
+                    <span id="completedTasksCount">0</span>
+
+                    of
+
+                    <span id="totalTasksCount">0</span>
+
+                    tasks completed
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- DAILY QUOTE -->
+    <div class="dashboard-card quote-card">
+
+        <div class="quote-left">
+
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">auto_awesome</span>
+
+                </div>
+
+                <h2 class="card-title">Daily Quote</h2>
+
+            </div>
+
+            <h2 class="quote-text" id="dailyQuote"> “Small progress is still progress.” </h2>
+
+            <p class="quote-sub">Keep going! You're doing great.💜</p>
+
+        </div>
+
+    </div>
+
+</div>
 
         <!-- Work -->
         <div id="work" class="page">
             <h2>Work Tasks</h2>
 
             <div class="task-input">
-                <input type="text" id="workTaskText">
+ 
+        <input type="text" id="workTaskText" placeholder="Add a new task...">
 
-       <!-- 📅 -->
-       <button onclick="toggleCalendar(this, event)">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+        <div class="task-icons">
 
-       <!-- ⋯ -->
-       <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
+        <!-- 📅 -->
+        <button class="icon-btn" onclick="toggleCalendar(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+            </svg>
+        </button>
 
-                <button onclick="addTask('work')">Add</button>
-            </div>
+        <!-- ⋯ -->
+        <button class="icon-btn" onclick="toggleExtra(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+        </button>
+
+        <!-- Add -->
+        <button class="add-btn" onclick="addTask('work')">
+            Add
+        </button>
+
+         </div> <!-- task-icons end -->
+
+        </div> <!-- task-input end-->
 
             <div id="workEmptyMsg" class="empty">No tasks yet</div>
             <div id="workTaskList"></div>
@@ -90,29 +328,38 @@
             <h2>Shopping List</h2>
 
             <div class="task-input">
-                <input type="text" id="shoppingTaskText">
+
+        <input type="text" id="shoppingTaskText" placeholder="Add a new task...">
+
+        <div class="task-icons">
 
         <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleCalendar(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+            </svg>
+        </button>
 
         <!-- ⋯ -->
-        <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>    
+        <button class="icon-btn" onclick="toggleExtra(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+        </button>
 
-                <button onclick="addTask('shopping')">Add</button>
-            </div>
+        <!-- Add -->
+        <button class="add-btn" onclick="addTask('shopping')">
+            Add
+        </button>
+
+         </div> <!-- task-icons end -->
+
+        </div> <!-- task-input end -->
 
             <div id="shoppingEmptyMsg" class="empty">No tasks yet</div>
             <div id="shoppingTaskList"></div>
@@ -123,29 +370,38 @@
             <h2>Study Plan</h2>
 
             <div class="task-input">
-                <input type="text" id="studyTaskText">
+
+    <input type="text" id="studyTaskText" placeholder="Add a new task...">
+
+    <div class="task-icons">
 
         <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleCalendar(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+            </svg>
+        </button>
 
         <!-- ⋯ -->
-        <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleExtra(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+        </button>
 
-                <button onclick="addTask('study')">Add</button>
-            </div>
+        <!-- Add -->
+        <button class="add-btn" onclick="addTask('study')">
+            Add
+        </button>
+
+         </div> <!-- task-icons end -->
+
+        </div> <!-- task-input end -->
 
             <div id="studyEmptyMsg" class="empty">No tasks yet</div>
             <div id="studyTaskList"></div>
@@ -155,30 +411,39 @@
         <div id="personal" class="page">
             <h2>Personal Memos</h2>
 
-            <div class="task-input">
-                <input type="text" id="personalTaskText">
+          <div class="task-input">
+
+    <input type="text" id="personalTaskText" placeholder="Add a new task...">
+
+    <div class="task-icons">
 
         <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleCalendar(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+            </svg>
+        </button>
 
         <!-- ⋯ -->
-       <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleExtra(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+        </button>
 
-                <button onclick="addTask('personal')">Add</button>
-            </div>
+        <!-- Add -->
+        <button class="add-btn" onclick="addTask('personal')">
+            Add
+        </button>
+
+         </div> <!-- task-icons end -->
+
+        </div> <!-- task-input end -->
 
             <div id="personalEmptyMsg" class="empty">No tasks yet</div>
             <div id="personalTaskList"></div>
@@ -189,28 +454,38 @@
             <h2>Workout Plan</h2>
 
             <div class="task-input">
-                <input type="text" id="workoutTaskText">
+
+    <input type="text" id="workoutTaskText" placeholder="Add a new task...">
+
+    <div class="task-icons">
 
         <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+        <button class="icon-btn" onclick="toggleCalendar(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+            </svg>
+        </button>
 
-         <!-- ⋯ -->
-         <button onclick="toggleExtra(this, event)">
-         <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
-                <button onclick="addTask('workout')">Add</button>
-            </div>
+        <!-- ⋯ -->
+        <button class="icon-btn" onclick="toggleExtra(this, event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
+                <circle cx="5" cy="12" r="2"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+                <circle cx="19" cy="12" r="2"></circle>
+            </svg>
+        </button>
+
+        <!-- Add -->
+        <button class="add-btn" onclick="addTask('workout')">
+            Add
+        </button>
+
+         </div> <!-- task-icons end -->
+
+        </div> <!-- task-input end -->
 
             <div id="workoutEmptyMsg" class="empty">No tasks yet</div>
             <div id="workoutTaskList"></div>
@@ -271,159 +546,366 @@
 
 </div>
 
-    <div id="calendarPopup" style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc; width:260px;">
+    <!-- POPUP -->
+    <div id="calendarPopup" class="calendar-popup">
 
-    <!-- Header -->
-    <div>
-        <span>Schedule</span>
-        <button onclick="closeCalendar()">✕</button>
+    <!-- HEADER -->
+    <div class="popup-header">
+
+        <div class="popup-title-area">
+
+            <span class="material-symbols-rounded popup-main-icon">calendar_month</span>
+
+            <h3 class="popup-title">Schedule</h3>
+
+        </div>
+
+        <button onclick="closeCalendar()" class="popup-close-btn">✕</button>
+
     </div>
 
-    <!-- Date -->
-    <div>
-        <label>Date</label><br>
-        <input type="date" id="popupDate">
+    <!-- DATE -->
+    <div class="popup-section">
+
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">event</span>
+
+            Date
+
+        </label>
+
+        <input type="date" id="popupDate" class="popup-input">
+
     </div>
 
-    <!-- Time -->
-    <div>
-        <label>Time</label><br>
-        <input type="time" id="startTime">
-        →
-        <input type="time" id="endTime">
+    <!-- TIME -->
+    <div class="popup-section">
+
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">schedule</span>
+
+            Time
+
+        </label>
+
+        <div class="time-row">
+
+            <input type="time" id="startTime" class="popup-input">
+
+            <span class="time-arrow">→</span>
+
+            <input type="time" id="endTime"class="popup-input">
+
+        </div>
+
     </div>
 
-    <!-- Reminder -->
-    <div>
-        <label>Reminder</label><br>
-        <select id="reminder">
+     <!-- REMINDER -->
+     <div class="popup-section">
+
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">notifications</span>
+
+            Reminder
+
+        </label>
+
+        <select id="reminder" class="popup-select">
+
             <option value="none">None</option>
             <option value="1day">1 day before</option>
             <option value="1hour">1 hour before</option>
             <option value="30min">30 min before</option>
             <option value="10min">10 min before</option>
             <option value="custom">Custom</option>
+
         </select>
 
-        <div id="customReminderBox" style="display:none;">
-            <input type="number" id="reminderMinutes" placeholder="10">
-            minutes before
+       <!-- CUSTOM REMINDER -->
+        <div id="customReminderBox" class="custom-box" style="display:none;">
+
+            <input type="number" id="reminderMinutes" class="popup-input" placeholder="10">
+
+            <span>minutes before</span>
+
         </div>
+
     </div>
 
-    <!-- Repeat -->
-    <div>
-        <label>Repeat</label><br>
-        <select id="repeat">
+    <!-- REPEAT -->
+    <div class="popup-section">
+
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">repeat</span>
+
+            Repeat
+
+        </label>
+
+        <select id="repeat" class="popup-select">
+
             <option value="none">None</option>
             <option value="daily">Every day</option>
             <option value="weekly">Every week</option>
             <option value="monthly">Every month</option>
             <option value="yearly">Every year</option>
             <option value="custom">Custom</option>
+
         </select>
 
-        <div id="customRepeatBox" style="display:none;">
-            <input type="number" id="repeatInterval" placeholder="1">
-            days
+        <!-- CUSTOM REPEAT -->
+        <div id="customRepeatBox" class="custom-box" style="display:none;">
+
+            <input type="number" id="repeatInterval" class="popup-input" placeholder="1">
+
+            <span>days</span>
+
         </div>
+
     </div>
 
-    <!-- Buttons -->
-    <div>
-        <button onclick="closeCalendar()">Cancel</button>
-        <button onclick="applyDate()">Save</button>
+    <!-- BUTTONS -->
+    <div class="popup-buttons">
+
+        <button onclick="closeCalendar()" class="cancel-popup-btn">Cancel</button>
+
+        <button onclick="applyDate()" class="save-popup-btn">Save</button>
+
     </div>
 
 </div>
 
-<!-- ^ Extra Popup -->
-<div id="extraPopup" 
-     onclick="event.stopPropagation()" 
-     style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc;">
+<!-- EXTRA POPUP -->
+<div id="extraPopup" class="extra-popup" onclick="event.stopPropagation()">
 
-    <h4>Options</h4>
+    <div class="popup-header">
 
-    <!-- Priority -->
+        <div class="popup-title-area">
+
+            <span class="material-symbols-rounded popup-main-icon">tune</span>
+
+            <h3 class="popup-title">Options</h3>
+
+        </div>
+
+    </div>
+
+    <!-- PRIORITY -->
     <div class="popup-section">
-       <label>Priority</label>
-         <div class="priority-box">
-           <span onclick="setPriority('red', event)">🔴 Must</span>
-           <span onclick="setPriority('orange', event)">🟠 Should</span>
-           <span onclick="setPriority('blue', event)">🔵 Nice</span>
-           <span onclick="setPriority('gray', event)">⚫ Ignore</span>
-    </div>
-</div>
 
-    <!-- Tag -->
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">star</span>
+
+            Priority
+
+        </label>
+
+        <div class="priority-box">
+
+            <span class="priority-option high" onclick="setPriority('red', event)">
+
+                <div class="priority-dot"></div>
+
+                Must
+
+            </span>
+
+            <span class="priority-option medium" onclick="setPriority('orange', event)">
+
+                <div class="priority-dot"></div>
+
+                Should
+
+            </span>
+
+            <span class="priority-option low" onclick="setPriority('blue', event)">
+
+                <div class="priority-dot"></div>
+
+                Nice
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- TAG -->
     <div class="popup-section">
-        <label>Tag</label>
-        <input type="text" id="taskTag">
+
+        <label class="popup-label">
+
+            <span class="material-symbols-rounded">sell</span>
+
+            Tag
+
+        </label>
+
+        <input type="text" id="taskTag" class="popup-input" placeholder="e.g. work, study">
+
     </div>
 
-    <button onclick="closeExtra()">Done</button>
+    <!-- DONE BUTTON -->
+    <button onclick="closeExtra()" class="done-popup-btn">Done</button>
 
 </div>
 
-<!-- Editable Task Detail Panel -->
-<div id="taskDetailPanel" style="position: fixed; top: 0; right: -450px; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.25); transition: right 0.35s ease; z-index: 9999; padding: 20px; overflow-y: auto; visibility: hidden; opacity: 0;">
+<!-- TASK DETAIL PANEL -->
+<div id="taskDetailPanel" class="task-detail-panel">
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <input type="text" id="panelTitleInput" style="font-size: 22px; font-weight: bold; width: 100%; border: none; border-bottom: 2px solid #4a90e2; outline: none; padding: 5px 0;">
-        <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; margin-left: 15px;">✕</button>
-    </div>
-    
-    <!-- Description -->
-    <div style="margin-bottom: 20px;">
-        <label style="font-weight: bold; display: block; margin-bottom: 6px;">Description / Notes</label>
-        <textarea id="panelDescription" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical;"></textarea>
-    </div>
+    <!-- TOP -->
+<div class="panel-top">
 
-    <!-- Due Date -->
-    <div style="margin-bottom: 16px;">
-        <label>📅 Due Date</label><br>
-        <input type="date" id="panelDateInput" style="width: 100%; padding: 8px; margin-top: 6px;">
-    </div>
+    <div class="panel-title-area">
 
-    <!-- Time Range -->
-    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <label>Start Time</label><br>
-            <input type="time" id="panelStartTime" style="width: 100%; padding: 8px; margin-top: 6px;">
+        <div class="panel-main-icon">
+
+            <span class="material-symbols-rounded">description</span>
+
         </div>
-        <div style="flex: 1;">
-            <label>End Time</label><br>
-            <input type="time" id="panelEndTime" style="width: 100%; padding: 8px; margin-top: 6px;">
+
+        <input type="text" id="panelTitleInput"
+               class="panel-title-input">
+
+    </div>
+
+    <button onclick="closeDetailPanel()"
+            class="close-panel-btn">✕</button>
+
+</div>
+
+    <!-- DESCRIPTION -->
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">notes</span>
+
+            Description / Notes
+
+        </label>
+
+        <textarea
+        id="panelDescription" rows="4" class="panel-textarea"></textarea>
+
+    </div>
+
+    <!-- DATE -->
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">calendar_month</span>
+
+            Due Date
+
+        </label>
+
+        <input type="date" id="panelDateInput" class="panel-input">
+
+    </div>
+
+    <!-- TIME -->
+    <div class="panel-time-grid">
+
+        <div class="panel-section">
+
+            <label class="panel-label">
+
+                <span class="material-symbols-rounded">schedule</span>
+
+                Start Time
+
+            </label>
+
+            <input type="time" id="panelStartTime" class="panel-input">
+
         </div>
+
+        <div class="panel-section">
+
+            <label class="panel-label">
+
+                <span class="material-symbols-rounded">schedule</span>
+
+                End Time
+
+            </label>
+
+            <input type="time" id="panelEndTime" class="panel-input">
+
+        </div>
+
     </div>
 
-    <!-- Priority (颜色图标版) -->
-    <div style="margin-bottom: 16px;">
-        <label>⭐ Priority</label><br>
-        <select id="panelPrioritySelect" style="width: 100%; padding: 10px; margin-top: 6px; font-size: 16px;">
-            <option value="">None</option>
-            <option value="red">🔴 High (Must)</option>
-            <option value="orange">🟠 Medium (Should)</option>
-            <option value="blue">🔵 Low (Nice)</option>
-            <option value="gray">⚫ No Priority</option>
-        </select>
+    <!-- PRIORITY -->
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">star</span>
+
+            Priority
+
+        </label>
+
+        <div class="priority-box">
+
+            <span class="priority-option high" onclick="setPriority('red', event)">
+                <div class="priority-dot"></div>High
+            </span>
+
+            <span class="priority-option medium" onclick="setPriority('orange', event)">
+                <div class="priority-dot"></div>Medium
+            </span>
+
+            <span class="priority-option low" onclick="setPriority('blue', event)">
+                <div class="priority-dot"></div>Low
+            </span>
+
+        </div>
+
     </div>
 
-    <!-- Tag -->
-    <div style="margin-bottom: 20px;">
-        <label>🏷️ Tag</label><br>
-        <input type="text" id="panelTagInput" style="width: 100%; padding: 8px; margin-top: 6px;" placeholder="e.g. work, study">
+    <!-- TAG -->
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">sell</span>
+
+            Tag
+
+        </label>
+
+        <input type="text" id="panelTagInput" class="panel-input" placeholder="e.g. work, study, urgent">
+
     </div>
 
-    <!-- Buttons -->
-    <div style="display: flex; gap: 10px; margin-top: 30px;">
-        <button onclick="saveTaskChanges()" style="flex: 1; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-            💾 Save Changes
+    <!-- BUTTONS -->
+    <div class="panel-buttons">
+
+        <button onclick="saveTaskChanges()" class="save-btn">
+
+            <span class="material-symbols-rounded">save</span>
+
+            Save Changes
         </button>
-        <button onclick="deleteCurrentTask()" style="flex: 1; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-            🗑 Delete Task
+
+        <button onclick="deleteCurrentTask()" class="delete-btn">
+
+            <span class="material-symbols-rounded">delete</span>
+
+            Delete Task
         </button>
+
     </div>
+
 </div>
 
 <!-- JS FILE -->
