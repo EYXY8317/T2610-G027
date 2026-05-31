@@ -6,111 +6,96 @@
     <title>Financial Records</title>
 
     <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='finance.css') }}"
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
     >
 
 </head>
 
 <body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 {% if wallpaper %}
 
 style="
 background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
 url('/profile_static/wallpapers/{{ wallpaper }}');
 "
 
 {% endif %}
-
 >
 
 <div class="wallpaper-overlay"></div>
 
 <div class="summary-wrapper">
 
-    <!-- ===== TOPBAR ===== -->
+    <!-- ================================================= -->
+    <!-- ==================== TOPBAR ===================== -->
+    <!-- ================================================= -->
 
     <div class="topbar">
 
         <div class="topbar-title">
-            💸 Financial Records
+
+            💸 Records
+
         </div>
 
         <div class="topbar-links">
-
-            <a href="/view" class="active-link">
-                View
-            </a>
-
-            <a href="/add">
-                Add
-            </a>
-
-            <a href="/summary">
-                Summary
-            </a>
-
-            <a href="/budget">
-                Budget
-            </a>
-
-            <a href="/goals">
-                Goals
-            </a>
-
+            <a href="/finance">Dashboard</a>
+            <a href="/view" class="active-link">View</a>
+            <a href="/add">Add</a>
+            <a href="/summary">Summary</a>
+            <a href="/budget">Budget</a>
+            <a href="/goals">Goals</a>
         </div>
 
         <div class="topbar-actions">
-
-            <a href="/calendar">
-                Calendar
-            </a>
-
-            <a href="/diary">
-                Diary
-            </a>
-
-            <a href="/profile">
-                Profile
-            </a>
-
-            <a href="/logout">
-                Logout
-            </a>
-
+            <a href="/dashboard">Home</a>
+            <a href="/calendar">Calendar</a>
+            <a href="/diary">Diary</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
         </div>
 
     </div>
 
-    <!-- ===== USER ===== -->
+    <!-- ================================================= -->
+    <!-- ===================== MAIN ====================== -->
+    <!-- ================================================= -->
 
-    <p class="logged-text">
+    <div class="summary-card hover-card">
 
-        Logged in as:
-        {{ session.get("user") }}
-
-    </p>
-
-    <!-- ===== RECORD CARD ===== -->
-
-    <div class="summary-card">
+        <!-- ===== HEADER ===== -->
 
         <div class="view-header">
 
             <div>
 
                 <h2>
+
                     Financial Records
+
                 </h2>
 
                 <p>
-                    Manage and track your transactions.
+
+                    Manage and track all your transactions.
+
                 </p>
 
             </div>
 
-            <a href="/add" class="add-btn">
+            <a
+            href="/add"
+            class="add-btn"
+            >
 
                 + Add Record
 
@@ -118,33 +103,44 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         </div>
 
-        <!-- SUCCESS -->
+        <!-- ===== SUCCESS ===== -->
 
         {% if success %}
 
-        <p class="positive">
+        <div class="insight-box">
 
-            {{ success }}
+            <p class="positive">
 
-        </p>
+                {{ success }}
+
+            </p>
+
+        </div>
 
         {% endif %}
 
-        <!-- ERROR -->
+        <!-- ===== ERROR ===== -->
 
         {% if error %}
 
-        <p class="negative">
+        <div class="insight-box">
 
-            {{ error }}
+            <p class="negative">
 
-        </p>
+                {{ error }}
+
+            </p>
+
+        </div>
 
         {% endif %}
 
-        <!-- FILTER -->
+        <!-- ===== FILTER ===== -->
 
-        <form method="GET" class="filter-form">
+        <form
+        method="GET"
+        class="filter-form"
+        >
 
             <label>
 
@@ -152,17 +148,25 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             </label>
 
-            <select name="account">
+            <select
+            id="accountFilter"
+            name="account"
+            >
 
                 <option value="">
+
                     All Accounts
+
                 </option>
 
                 {% for acc in accounts|default([]) %}
 
                 <option
                     value="{{ acc.name }}"
-                    {% if request.args.get('account') == acc.name %}selected{% endif %}
+
+                    {% if request.args.get('account') == acc.name %}
+                    selected
+                    {% endif %}
                 >
 
                     {{ acc.name }}
@@ -181,129 +185,157 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         </form>
 
-        <!-- EMPTY -->
+        <!-- ===== EMPTY ===== -->
 
         {% if not records %}
 
         <div class="empty-card">
 
             <h3>
+
                 No records found
+
             </h3>
 
             <p>
+
                 Add your first financial record.
+
             </p>
 
         </div>
 
         {% else %}
 
-        <!-- TABLE -->
+        <!-- ===== TABLE ===== -->
 
-        <table class="records-table">
+        <div class="table-wrapper">
 
-            <tr>
+            <table class="records-table">
 
-                <th>Date</th>
+                <tr>
 
-                <th>Type</th>
+                    <th>Date</th>
 
-                <th>Category</th>
+                    <th>Type</th>
 
-                <th>Account</th>
+                    <th>Category</th>
 
-                <th>Item</th>
+                    <th>Account</th>
 
-                <th>Amount</th>
+                    <th>Item</th>
 
-                <th>Actions</th>
+                    <th>Amount</th>
 
-            </tr>
+                    <th>Actions</th>
 
-            {% for r in records %}
+                </tr>
 
-            <tr>
+                {% for r in records %}
 
-                <td>
-                    {{ r.date }}
-                </td>
+                <tr>
 
-                <td>
+                    <!-- DATE -->
 
-                    <span class="badge {{ r.type }}">
+                    <td>
 
-                        {{ r.type }}
+                        {{ r.date }}
 
-                    </span>
+                    </td>
 
-                </td>
+                    <!-- TYPE -->
 
-                <td>
+                    <td>
 
-                    {{ r.category|default('-') }}
+                        <span class="badge {{ r.type }}">
 
-                </td>
+                            {{ r.type }}
 
-                <td>
+                        </span>
 
-                    {{ r.account|default('-') }}
+                    </td>
 
-                </td>
+                    <!-- CATEGORY -->
 
-                <td>
+                    <td>
 
-                    {{ r.item|default('-') }}
+                        {{ r.category|default('-') }}
 
-                </td>
+                    </td>
 
-                <td>
+                    <!-- ACCOUNT -->
 
-                    <span class="badge {{ r.type }}">
+                    <td>
 
-                        {% if r.type == 'income' %}
+                        {{ r.account|default('-') }}
 
-                        +
+                    </td>
 
-                        {% elif r.type == 'expense' %}
+                    <!-- ITEM -->
 
-                        -
+                    <td>
 
-                        {% endif %}
+                        {{ r.item|default('-') }}
 
-                        RM {{ "%.2f"|format(r.amount) }}
+                    </td>
 
-                    </span>
+                    <!-- AMOUNT -->
 
-                </td>
+                    <td>
 
-                <td class="table-actions">
+                        <span class="badge {{ r.type }}">
 
-                    <div class="action-buttons">
+                            {% if r.type == 'income' %}
 
-                        <a
+                                +
+
+                            {% elif r.type == 'expense' %}
+
+                                -
+
+                            {% endif %}
+
+                            RM {{ "%.2f"|format(r.amount) }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- ACTIONS -->
+
+                    <td class="table-actions">
+
+                        <div class="action-buttons">
+
+                            <a
                             href="/update/{{ loop.index0 }}"
                             class="edit-btn"
-                        >
-                            Edit
-                        </a>
+                            >
 
-                        <a
+                                Edit
+
+                            </a>
+
+                            <a
                             href="/delete/{{ loop.index0 }}"
                             class="delete-btn"
-                        >
-                            Delete
-                        </a>
+                            >
 
-</div>
+                                Delete
 
-                </td>
+                            </a>
 
-            </tr>
+                        </div>
 
-            {% endfor %}
+                    </td>
 
-        </table>
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
 
         {% endif %}
 
@@ -311,6 +343,116 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
-</body>
+<script>
 
+document.addEventListener("DOMContentLoaded", function () {
+
+    console.log("Financial Records Loaded");
+
+});
+
+</script>
+
+<script>
+
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
+</body>
 </html>

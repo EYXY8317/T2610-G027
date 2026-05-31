@@ -124,68 +124,28 @@ CATEGORY_MAP = {
 def home():
     return redirect(url_for("login"))
 
-@app.route("/budget", methods=["GET", "POST"])
-def budget():
+@app.route("/delete_goal/<int:goal_id>")
+def delete_goal(goal_id):
 
     if "user" not in session:
         return redirect(url_for("login"))
 
-    budgets = load_data(f_budget, [])
     user = session["user"]
 
-    # ================= POST =================
-    if request.method == "POST":
+    goals = load_data(f_goals, [])
 
-        category = request.form.get("category")
-        amount = request.form.get("amount")
+    # remove only THIS user's goal
+    goals = [
 
-        # validation
-        if not category or not amount:
-            return render_template(
-                "budget.html",
-                budgets=[b for b in budgets if b["username"] == user],
-                categories=CATEGORY_MAP["expense"],
-                error="Category and amount required"
-            )
+        g for g in goals
 
-        try:
-            amount = float(amount)
-        except:
-            return render_template(
-                "budget.html",
-                budgets=[b for b in budgets if b["username"] == user],
-                categories=CATEGORY_MAP["expense"],
-                error="Invalid amount"
-            )
+        if not (
+            g.get("id") == goal_id
+            and g.get("username") == user
+        )
 
-        # update existing budget
-        found = False
+    ]
 
-        for b in budgets:
-            if b["username"] == user and b["category"] == category:
-                b["amount"] = amount
-                found = True
-                break
+    save_data(f_goals, goals)
 
-        # create new budget
-        if not found:
-            budgets.append({
-                "username": user,
-                "category": category,
-                "amount": amount
-            })
-
-        save_data(f_budget, budgets)
-
-        return redirect(url_for("budget"))
-
-    # ================= GET =================
-    user_budgets = [b for b in budgets if b["username"] == user]
-
-    return render_template(
-        "budget.html",
-        budgets=user_budgets,
-        categories=CATEGORY_MAP["expense"],
-        wallpaper=get_user_wallpaper(),
-        user=get_current_user(),
-    )
+    return redirect(url_for("goals"))

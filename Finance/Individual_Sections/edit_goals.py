@@ -124,68 +124,108 @@ CATEGORY_MAP = {
 def home():
     return redirect(url_for("login"))
 
-@app.route("/budget", methods=["GET", "POST"])
-def budget():
+@app.route("/delete_goal/<int:goal_id>")
+def delete_goal(goal_id):
 
     if "user" not in session:
         return redirect(url_for("login"))
 
-    budgets = load_data(f_budget, [])
     user = session["user"]
 
-    # ================= POST =================
+    goals = load_data(f_goals, [])
+
+    # remove only THIS user's goal
+    goals = [
+
+        g for g in goals
+
+        if not (
+            g.get("id") == goal_id
+            and g.get("username") == user
+        )
+
+    ]
+
+    save_data(f_goals, goals)
+
+    return redirect(url_for("goals"))
+
+
+# ================ EDIT GOALS ====================
+@app.route("/edit_goal/<int:goal_id>", methods=["GET", "POST"])
+def edit_goal(goal_id):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+
+    goals = load_data(f_goals, [])
+
+    # find correct goal
+    goal = next(
+
+        (
+
+            g for g in goals
+
+            if (
+                g.get("id") == goal_id
+                and g.get("username") == user
+            )
+
+        ),
+
+        None
+
+    )
+
+    # goal not found
+    if not goal:
+        return redirect(url_for("goals"))
+
+    # ================= UPDATE =================
     if request.method == "POST":
 
-        category = request.form.get("category")
-        amount = request.form.get("amount")
+        name = request.form.get("name")
+        target = request.form.get("target")
 
-        # validation
-        if not category or not amount:
+        if not name or not target:
+
             return render_template(
-                "budget.html",
-                budgets=[b for b in budgets if b["username"] == user],
-                categories=CATEGORY_MAP["expense"],
-                error="Category and amount required"
+                "edit_goal.html",
+                goal=goal,
+                error="All fields required",
+                wallpaper=get_user_wallpaper(),
             )
 
         try:
-            amount = float(amount)
+            target = float(target)
+
         except:
+
             return render_template(
-                "budget.html",
-                budgets=[b for b in budgets if b["username"] == user],
-                categories=CATEGORY_MAP["expense"],
-                error="Invalid amount"
+                "edit_goal.html",
+                goal=goal,
+                error="Invalid target amount",
+                wallpaper=get_user_wallpaper(),
             )
 
-        # update existing budget
-        found = False
+        # update data
+        goal["name"] = name
+        goal["target"] = target
 
-        for b in budgets:
-            if b["username"] == user and b["category"] == category:
-                b["amount"] = amount
-                found = True
-                break
+        save_data(f_goals, goals)
 
-        # create new budget
-        if not found:
-            budgets.append({
-                "username": user,
-                "category": category,
-                "amount": amount
-            })
+        return redirect(url_for("goals"))
 
-        save_data(f_budget, budgets)
-
-        return redirect(url_for("budget"))
-
-    # ================= GET =================
-    user_budgets = [b for b in budgets if b["username"] == user]
-
+    # ================= RENDER =================
     return render_template(
-        "budget.html",
-        budgets=user_budgets,
-        categories=CATEGORY_MAP["expense"],
+
+        "edit_goal.html",
+
+        goal=goal,
+
         wallpaper=get_user_wallpaper(),
-        user=get_current_user(),
+
     )

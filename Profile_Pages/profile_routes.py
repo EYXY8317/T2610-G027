@@ -1,4 +1,4 @@
-from flask import render_template, session, request, redirect
+from flask import app, render_template, session, request, redirect
 from password_system.password_hashing import hash_password
 import json
 import os
@@ -165,5 +165,75 @@ def register_profile_routes(app):
 
         with open("users.json", "w") as f:
             json.dump(users, f, indent=4)
+
+        return redirect("/profile")
+    
+    # =========================
+    # CHANGE THEME
+    # =========================
+
+    @app.route("/change_theme", methods=["POST"])
+    def change_theme():
+
+        if "user" not in session:
+
+            return redirect("/login")
+
+        current_user = session["user"]
+
+        selected_theme = request.form.get("theme")
+
+        if not selected_theme:
+
+            return redirect("/profile")
+
+        with open("users.json", "r") as file:
+
+            users = json.load(file)
+
+        for user in users:
+
+            if user["username"] == current_user:
+
+                user["theme"] = selected_theme
+
+                break
+
+        with open("users.json", "w") as file:
+
+            json.dump(users, file, indent=4)
+
+        return redirect("/profile")
+    
+    # =========================
+    # CHANGE UI STYLE
+    # =========================
+
+    @app.route("/change_ui_style", methods=["POST"])
+    def change_ui_style():
+
+        if "user" not in session:
+
+            return redirect("/login")
+
+        current_user = session["user"]
+
+        selected_style = request.form.get("ui_style")
+
+        with open("users.json", "r") as file:
+
+            users = json.load(file)
+
+        for user in users:
+
+            if user["username"] == current_user:
+
+                user["ui_style"] = selected_style
+
+                break
+
+        with open("users.json", "w") as file:
+
+            json.dump(users, file, indent=4)
 
         return redirect("/profile")

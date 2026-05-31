@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Edit Goal</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
+</head>
+
+<body
+
+{% if wallpaper %}
+
+style="
+background-image:
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+>
+
+<div class="wallpaper-overlay"></div>
+
+<!-- ================= TOPBAR ================= -->
+
+<div class="topbar">
+
+    <div class="topbar-title">
+        ✏️ Edit Goal
+    </div>
+
+    <div class="topbar-links">
+
+        <a href="/view">View</a>
+
+        <a href="/add">Add</a>
+
+        <a href="/summary">Summary</a>
+
+        <a href="/budget">Budget</a>
+
+        <a href="/goals"
+        class="active-link">
+            Goals
+        </a>
+
+    </div>
+
+    <div class="topbar-actions">
+
+        <a href="/calendar">Calendar</a>
+
+        <a href="/diary">Diary</a>
+
+        <a href="/profile">Profile</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+</div>
+
+<!-- ================= CARD ================= -->
+
+<div class="summary-card">
+
+    <h1>Edit Goal</h1>
+
+    <p>
+        Update your financial goal.
+    </p>
+
+    <form method="POST">
+
+        <!-- NAME -->
+
+        <label>
+            Goal Name
+        </label>
+
+        <input
+            type="text"
+            name="name"
+            value="{{ goal.name }}"
+            required
+        >
+
+        <br><br>
+
+        <!-- TARGET -->
+
+        <label>
+            Target Amount (RM)
+        </label>
+
+        <input
+            type="number"
+            name="target"
+            value="{{ goal.target }}"
+            step="0.01"
+            required
+        >
+
+        <br><br>
+
+        <!-- BUTTONS -->
+
+        <div class="action-buttons">
+
+            <button type="submit">
+
+                Save Changes
+
+            </button>
+
+            <a
+                href="/goals"
+                class="edit-btn"
+            >
+                Back
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>
