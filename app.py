@@ -1482,6 +1482,14 @@ def finance_home():
         ui_style=current_user.get("ui_style", "premium"),
     )
 
+# ================= CALENDAR STATIC =================
+@app.route('/calendar_static/<path:filename>')
+def calendar_static(filename):
+    return send_from_directory(
+        os.path.join('Calendar_Pages', 'static'),
+        filename
+    )
+
 # ================= CALENDAR =================
 @app.route("/calendar")
 def calendar():
