@@ -527,10 +527,6 @@ function saveTaskChanges() {
     alert("✅ Changes saved successfully!");
 }
 
-function closeDetailPanel() {
-    document.getElementById("taskDetailPanel").style.right = "-420px";
-}
-
 function deleteCurrentTask() {
     if (confirm("Delete this task?")) {
         deleteTask(currentTaskListType, currentTaskId);
