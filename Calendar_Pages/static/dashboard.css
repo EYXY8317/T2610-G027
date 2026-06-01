@@ -139,7 +139,7 @@ body{
 
     background:white;
 
-    border:none;
+    border:1px solid transparent;
 
     border-radius:28px;
 
@@ -160,6 +160,8 @@ body{
 
     box-shadow:
     0 14px 30px rgba(181,148,120,0.12);
+
+    border:1px solid #d8b89c;
 
 }
 
