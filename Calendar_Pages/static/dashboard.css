@@ -308,6 +308,8 @@ body{
 
     overflow:hidden;
 
+    cursor:pointer;
+
     background:
     radial-gradient(circle,
     #2f2f2f 12%,
@@ -315,7 +317,9 @@ body{
     #000 68%,
     #1d1d1d 100%);
 
-    animation:spin 20s linear infinite;
+   animation:spin 20s linear infinite;
+
+   animation-play-state:paused;
 
     box-shadow:
     0 6px 16px rgba(86,58,38,0.14);
@@ -388,6 +392,12 @@ body{
     transform:translate(-50%,-50%);
 
     z-index:3;
+
+}
+
+.vinyl.playing{
+
+    animation-play-state:running;
 
 }
 
