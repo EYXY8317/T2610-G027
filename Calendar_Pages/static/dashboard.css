@@ -1,0 +1,389 @@
+/* ================= RESET ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    padding:20px;
+    background:#fafafa;
+    color:#222;
+}
+
+/* ================= MAIN CONTAINER ================= */
+
+.dashboard{
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    border:1px solid #d6d6d6;
+
+    border-radius:12px;
+
+    padding:18px 25px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* ================= LEFT SIDE ================= */
+
+.logo-section{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+/* ICON PLACEHOLDER */
+
+.logo-box{
+    width:42px;
+    height:42px;
+
+    border:1px solid #cfcfcf;
+
+    border-radius:10px;
+}
+
+/* APP NAME */
+
+.logo-text{
+    font-size:30px;
+    font-weight:600;
+}
+
+/* ================= NAVIGATION ================= */
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#333;
+
+    border:1px solid #d2d2d2;
+
+    border-radius:8px;
+
+    padding:10px 16px;
+
+    transition:0.2s;
+}
+
+.nav-links a:hover{
+    background:#f3f3f3;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    text-align:center;
+    margin-top:40px;
+}
+
+.hero h1{
+    font-size:42px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#666;
+}
+
+/* ================= CARDS ================= */
+
+.cards-container{
+    margin-top:40px;
+
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+    border:1px solid #d6d6d6;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    min-height:420px;
+}
+
+/* CARD TOP */
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+/* LEFT */
+
+.card-left{
+    display:flex;
+    gap:15px;
+}
+
+/* ICON */
+
+.icon-box{
+    width:55px;
+    height:55px;
+
+    border:1px solid #d0d0d0;
+
+    border-radius:10px;
+}
+
+/* TEXT */
+
+.card-text h2{
+    margin-bottom:5px;
+}
+
+.card-text p{
+    color:#666;
+    font-size:14px;
+    line-height:1.5;
+}
+
+/* PREVIEW BOX */
+
+.preview-box{
+    width:100%;
+    height:220px;
+
+    border:1px dashed #c8c8c8;
+
+    border-radius:12px;
+
+    margin-top:30px;
+}
+
+/* BUTTON */
+
+.card-btn{
+    width:100%;
+    height:50px;
+
+    margin-top:25px;
+
+    border:1px solid #d0d0d0;
+
+    border-radius:10px;
+
+    background:none;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+.card-btn:hover{
+    background:#f5f5f5;
+}
+
+/* ================= MUSIC SECTION ================= */
+
+.music-section{
+    margin-top:30px;
+
+    border:1px solid #d6d6d6;
+
+    border-radius:14px;
+
+    padding:30px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:30px;
+}
+
+/* ================= LEFT SIDE ================= */
+
+.music-left{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+/* ================= VINYL ================= */
+
+.vinyl-container{
+    width:220px;
+    height:220px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.vinyl{
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    border:3px solid #555;
+
+    position:relative;
+
+    animation:spin 8s linear infinite;
+    animation-play-state:paused;
+}
+
+/* CENTER CIRCLE */
+
+.vinyl::before{
+    content:"";
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    border:2px solid #777;
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+}
+
+/* ROTATION */
+
+@keyframes spin{
+
+    from{
+        transform:rotate(0deg);
+    }
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+.vinyl.playing{
+    animation-play-state:running;
+}
+
+/* ================= PLAYER INFO ================= */
+
+.player-info h2{
+    margin-bottom:10px;
+}
+
+.player-info p{
+    color:#666;
+}
+
+/* ================= PROGRESS BAR ================= */
+
+.progress-bar{
+    width:350px;
+    height:10px;
+
+    border:1px solid #cfcfcf;
+
+    border-radius:10px;
+
+    margin:20px 0;
+
+    overflow:hidden;
+}
+
+.progress{
+    width:35%;
+    height:100%;
+
+    background:#999;
+}
+
+/* ================= CONTROLS ================= */
+
+.controls{
+    display:flex;
+    gap:10px;
+}
+
+.controls button{
+    width:50px;
+    height:50px;
+
+    border:1px solid #d0d0d0;
+
+    border-radius:10px;
+
+    background:none;
+
+    cursor:pointer;
+
+    transition:0.2s;
+}
+
+.controls button:hover{
+    background:#f4f4f4;
+}
+
+/* ================= RIGHT SIDE ================= */
+
+.music-right{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+/* INPUT */
+
+.music-right input{
+    padding:12px;
+
+    border:1px solid #d0d0d0;
+
+    border-radius:10px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+    .cards-container{
+        grid-template-columns:1fr;
+    }
+
+    .music-section{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .music-left{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .progress-bar{
+        width:100%;
+    }
+
+}
