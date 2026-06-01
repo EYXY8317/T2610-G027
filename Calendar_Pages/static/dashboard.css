@@ -690,29 +690,51 @@ body{
 
 }
 
-
-
 /* ================= CALENDAR PREVIEW ================= */
 
 .calendar-preview{
 
+    background:#f5f8ed;
+
     padding:18px;
 
-    background:#f5f8ed;
+    display:flex;
+
+    flex-direction:column;
+
+    height:100%;
 
 }
 
-/* HEADER */
+/* TOP */
 
-.calendar-header{
+.calendar-top{
 
     text-align:center;
 
+    margin-bottom:16px;
+
     font-weight:600;
 
-    margin-bottom:18px;
+    color:#55663a;
 
-    color:#5c6b3d;
+}
+
+/* WEEK DAYS */
+
+.week-days{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    text-align:center;
+
+    font-size:10px;
+
+    color:#95a07b;
+
+    margin-bottom:12px;
 
 }
 
@@ -722,25 +744,21 @@ body{
 
     display:grid;
 
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(7,1fr);
 
-    gap:14px;
+    gap:10px;
 
     text-align:center;
 
-    font-size:14px;
+    font-size:13px;
 
     color:#444;
 
 }
 
-/* ACTIVE DAY */
+/* DAYS */
 
-.active-day{
-
-    background:#7c9b4d;
-
-    color:white;
+.calendar-grid span{
 
     width:28px;
 
@@ -758,26 +776,32 @@ body{
 
 }
 
+/* ACTIVE DAY */
+
+.active-day{
+
+    background:#8aa05a;
+
+    color:white !important;
+
+    box-shadow:
+    0 4px 10px rgba(138,160,90,0.25);
+
+}
+
 /* EVENT */
 
 .event-box{
 
-    margin-top:25px;
+    margin-top:auto;
 
-    background:#e8f0d8;
+    padding-top:18px;
 
-    color:#6f8a3d;
+    font-size:12px;
 
-    padding:10px;
-
-    border-radius:10px;
-
-    text-align:center;
-
-    font-size:13px;
-
-    font-weight:600;
+    color:#7c9b4d;
 
 }
+
 
 
