@@ -10,7 +10,7 @@
 
 <div class="dashboard">
 
-    <!-- ================= NAVBAR ================= -->
+<!-- ================= NAVBAR ================= -->
 
     <nav class="navbar">
 
@@ -37,7 +37,7 @@
 
     </nav>
 
-    <!-- ================= HERO ================= -->
+<!-- ================= HERO ================= -->
 
     <section class="hero">
 
@@ -49,7 +49,7 @@
 
     </section>
 
-    <!-- ================= CARDS ================= -->
+<!-- ================= CARDS ================= -->
 
     <section class="cards-container">
 
@@ -81,13 +81,7 @@
 
             <div class="preview-box"></div>
 
-           <button
-            class="card-btn"
-            onclick="window.location.href='/add'">
-
-             Go to Finance
-
-            </button>
+           <button class="card-btn" onclick="window.location.href='/add'">Go to Finance</button>
 
         </div>
 
@@ -119,13 +113,7 @@
 
             <div class="preview-box"></div>
 
-            <button
-            class="card-btn"
-            onclick="window.location.href='/diary'">
-
-            Go to Diary
-
-            </button>
+            <button class="card-btn" onclick="window.location.href='/diary'">Go to Diary</button>
 
         </div>
 
@@ -157,92 +145,48 @@
 
             <div class="preview-box"></div>
 
-            <button
-            class="card-btn"
-            onclick="window.location.href='/calendar'">
-
-            Go to Calendar
-
-            </button>
+            <button class="card-btn" onclick="window.location.href='/calendar'">Go to Calendar</button>
 
         </div>
 
     </section>
 
-  <!-- ================= MUSIC SECTION ================= -->
+<!-- ================= MUSIC SECTION ================= -->
 
-    <section class="music-section">
+<section class="music-section">
 
-        <!-- LEFT -->
+    <div class="music-left">
 
-        <div class="music-left">
+        <!-- VINYL -->
 
-            <!-- VINYL -->
+        <div class="vinyl-container">
 
-            <div class="vinyl-container">
+            <div class="vinyl">
 
-                <div class="vinyl" id="vinyl"></div>
+                <!-- CENTER LOGO PLACEHOLDER -->
+
+                <div class="vinyl-center"></div>
 
             </div>
 
-            <!-- PLAYER INFO -->
+            <!-- FLOATING MUSIC NOTES -->
 
-            <div class="player-info">
+            <div class="music-notes">
 
-                <h2 id="songTitle">
-                    No Music Selected
-                </h2>
+                <span class="note note1">♪</span>
 
-                <p>
-                    Upload MP3 
-                </p>
+                <span class="note note2">♫</span>
 
-                <!-- PROGRESS -->
-
-                <div class="progress-bar">
-
-                    <div class="progress"></div>
-
-                </div>
-
-                <!-- CONTROLS -->
-
-                <div class="controls">
-
-                    <button onclick="playMusic()">
-                        ▶
-                    </button>
-
-                    <button onclick="pauseMusic()">
-                        ❚❚
-                    </button>
-
-                </div>
+                <span class="note note3">♪</span>
 
             </div>
 
         </div>
 
-        <!-- RIGHT -->
+    </div>
 
-        <div class="music-right">
+</section>
 
-            <label>Upload MP3</label>
-
-            <input
-            type="file"
-            id="musicUpload"
-            accept="audio/*">
-
-        </div>
-
-        <!-- AUDIO -->
-
-        <audio id="audioPlayer"></audio>
-
-    </section>
-
-</div>
 
 <script>
 // Select important elements from the DOM
