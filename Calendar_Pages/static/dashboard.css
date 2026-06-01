@@ -267,7 +267,7 @@ body{
 
     position:relative;
 
-    min-height:120px;
+    min-height:160px;
 
 }
 
@@ -280,7 +280,7 @@ body{
 
     left:70px;
 
-    bottom:20px;
+    bottom:-20px;
 
     cursor:grab;
 
