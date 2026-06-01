@@ -257,98 +257,97 @@ body{
 
 }
 
-/* ================= VINYL ================= */
+/* ================= MUSIC CARD ================= */
 
 .vinyl-section{
 
-    margin-top:10px;
+    margin-top:25px;
 
-    padding:0;
+    display:flex;
 
-    position:relative;
-
-    min-height:160px;
+    justify-content:center;
 
 }
+
+/* MUSIC CONTAINER */
+
+.music-card{
+
+    width:520px;
+
+    height:150px;
+
+    background:#f8f1ea;
+
+    border:2px solid #c79c74;
+
+    border-radius:999px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+    padding:0 35px;
+
+}
+
+/* VINYL CONTAINER */
 
 .vinyl-container{
 
-    width:180px;
-    height:160px;
+    width:130px;
 
-    position:absolute;
+    height:130px;
 
-    left:70px;
+    position:relative;
 
-    bottom:10px;
-
-    cursor:grab;
-
-    user-select:none;
+    flex-shrink:0;
 
 }
 
-.vinyl-container:active{
-
-    cursor:grabbing;
-
-}
+/* VINYL */
 
 .vinyl{
 
-    width:140px;
-    height:140px;
+    width:120px;
+
+    height:120px;
 
     border-radius:50%;
-
-    position:absolute;
-
-    left:0;
-    bottom:0;
 
     overflow:hidden;
 
     cursor:pointer;
 
+    position:absolute;
+
+    top:5px;
+
+    left:0;
+
     background:
+
+    url("/calendar_static/images/flower-pattern.png")
+    center/55% no-repeat,
+
     radial-gradient(circle,
     #2f2f2f 12%,
     #121212 38%,
     #000 68%,
     #1d1d1d 100%);
 
-   animation:spin 20s linear infinite;
+    animation:spin 20s linear infinite;
 
-   animation-play-state:paused;
+    animation-play-state:paused;
 
     box-shadow:
-    0 6px 16px rgba(86,58,38,0.14);
-    
-}
-
-.vinyl::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:48px;
-    height:48px;
-
-    border-radius:50%;
-
-    background:#f3e6d9;
-
-    top:50%;
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    border:3px solid white;
-
-    z-index:2;
+    0 6px 16px rgba(86,58,38,0.16);
 
 }
+
+/* VINYL LINES */
 
 .vinyl::after{
 
@@ -375,9 +374,12 @@ body{
 
 }
 
+/* CENTER DOT */
+
 .vinyl-center{
 
     width:8px;
+
     height:8px;
 
     border-radius:50%;
@@ -387,6 +389,7 @@ body{
     position:absolute;
 
     top:50%;
+
     left:50%;
 
     transform:translate(-50%,-50%);
@@ -395,11 +398,59 @@ body{
 
 }
 
+/* PLAYING */
+
 .vinyl.playing{
 
     animation-play-state:running;
 
 }
+
+/* TEXT AREA */
+
+.music-text{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    color:#5b463f;
+
+}
+
+/* NOTE */
+
+.music-note{
+
+    font-size:28px;
+
+    margin-bottom:6px;
+
+    color:#b7855f;
+
+}
+
+/* TEXT */
+
+.music-text p{
+
+    font-size:16px;
+
+    line-height:1.5;
+
+    font-weight:500;
+
+}
+
+/* ROTATION */
 
 @keyframes spin{
 
