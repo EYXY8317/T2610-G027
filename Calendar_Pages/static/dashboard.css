@@ -88,6 +88,16 @@ body{
     transition:0.2s;
 }
 
+.nav-links a.active{
+
+    background:#8b5e3c;
+
+    color:white;
+
+    border:none;
+
+}
+
 .nav-links a:hover{
 
     background:#c9a88a;
