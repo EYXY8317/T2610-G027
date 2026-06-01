@@ -326,17 +326,15 @@ body{
     top:5px;
 
     left:0;
-
+     
     background:
 
-    url("/calendar_static/images/flower-pattern.png")
-    center/55% no-repeat,
-
     radial-gradient(circle,
-    #2f2f2f 12%,
-    #121212 38%,
-    #000 68%,
-    #1d1d1d 100%);
+
+    #453630 10%,
+    #1f1917 34%,
+    #0c0c0c 68%,
+    #2b2420 100%);
 
     animation:spin 20s linear infinite;
 
@@ -348,6 +346,36 @@ body{
 }
 
 /* VINYL LINES */
+
+.vinyl::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:80px;
+    height:80px;
+
+    border-radius:50%;
+
+    background:
+
+    linear-gradient(
+
+        130deg,
+
+        rgba(255,255,255,0.12),
+
+        transparent 50%
+
+    );
+
+    top:8px;
+    left:8px;
+
+    z-index:1;
+
+}
 
 .vinyl::after{
 
@@ -364,11 +392,11 @@ body{
 
         circle,
 
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.05) 2px,
+        rgba(255,255,255,0.03) 0px,
+        rgba(255,255,255,0.03) 1px,
 
-        transparent 2px,
-        transparent 4px
+        transparent 1px,
+        transparent 5px
 
     );
 
