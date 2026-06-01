@@ -9,8 +9,8 @@
 
 body{
     padding:20px;
-    background:#fafafa;
-    color:#222;
+    background:#f7f3ee;
+    color:#3b2f2a;
 }
 
 /* ================= MAIN CONTAINER ================= */
@@ -24,7 +24,10 @@ body{
 /* ================= NAVBAR ================= */
 
 .navbar{
-    border:1px solid #d6d6d6;
+    
+    background:white;
+
+    border:1px solid #eee4da;
 
     border-radius:12px;
 
@@ -46,12 +49,15 @@ body{
 /* ICON PLACEHOLDER */
 
 .logo-box{
-    width:42px;
-    height:42px;
+    width:46px;
+    height:46px;
 
-    border:1px solid #cfcfcf;
+    background:#f2e5d8;
 
-    border-radius:10px;
+    border:none;
+
+    border-radius:14px;
+
 }
 
 /* APP NAME */
@@ -83,10 +89,14 @@ body{
 }
 
 .nav-links a:hover{
-    background:#f3f3f3;
+
+    background:#c9a88a;
+
+    color:white;
+
 }
 
-/* ================= HERO ================= */
+/* ================= HERO字体 ================= */
 
 .hero{
     text-align:center;
@@ -99,7 +109,7 @@ body{
 }
 
 .hero p{
-    color:#666;
+    color:#8b7767;
 }
 
 /* ================= CARDS ================= */
@@ -116,13 +126,31 @@ body{
 /* ================= CARD ================= */
 
 .card{
-    border:1px solid #d6d6d6;
 
-    border-radius:14px;
+    background:white;
+
+    border:none;
+
+    border-radius:28px;
 
     padding:20px;
 
     min-height:420px;
+
+    box-shadow:
+    0 8px 24px rgba(181,148,120,0.08);
+
+    transition:0.3s ease;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 14px 30px rgba(181,148,120,0.12);
+
 }
 
 /* CARD TOP */
@@ -143,12 +171,16 @@ body{
 /* ICON */
 
 .icon-box{
-    width:55px;
-    height:55px;
 
-    border:1px solid #d0d0d0;
+    width:58px;
+    height:58px;
 
-    border-radius:10px;
+    border:none;
+
+    border-radius:16px;
+
+    background:#f4ede4;
+
 }
 
 /* TEXT */
@@ -166,101 +198,134 @@ body{
 /* PREVIEW BOX */
 
 .preview-box{
+
     width:100%;
     height:220px;
 
-    border:1px dashed #c8c8c8;
+    border:none;
 
-    border-radius:12px;
+    border-radius:18px;
 
     margin-top:30px;
+
+    background:#faf6f1;
+
 }
 
 /* BUTTON */
 
 .card-btn{
+
     width:100%;
-    height:50px;
+    height:52px;
 
     margin-top:25px;
 
-    border:1px solid #d0d0d0;
+    border:none;
 
-    border-radius:10px;
+    border-radius:14px;
 
-    background:none;
+    background:#f1e6dc;
+
+    color:#7d5f49;
 
     cursor:pointer;
 
-    transition:0.2s;
+    transition:0.3s ease;
+
+    font-weight:600;
+
 }
 
 .card-btn:hover{
-    background:#f5f5f5;
+
+    background:#c9a88a;
+
+    color:white;
+
 }
 
 /* ================= MUSIC SECTION ================= */
 
 .music-section{
-    margin-top:30px;
 
-    border:1px solid #d6d6d6;
+    margin-top:20px;
 
-    border-radius:14px;
+    padding:10px 0;
 
-    padding:30px;
+    position:relative;
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    gap:30px;
+    min-height:250px;
 }
 
 /* ================= LEFT SIDE ================= */
 
 .music-left{
-    display:flex;
-    align-items:center;
-    gap:30px;
+
+    position:relative;
+
 }
 
 /* ================= VINYL ================= */
 
 .vinyl-container{
-    width:220px;
-    height:220px;
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.vinyl{
-    width:180px;
-    height:180px;
-
-    border-radius:50%;
-
-    border:3px solid #555;
+    width:280px;
+    height:240px;
 
     position:relative;
 
-    animation:spin 8s linear infinite;
-    animation-play-state:paused;
 }
 
-/* CENTER CIRCLE */
+.vinyl{
 
-.vinyl::before{
-    content:"";
+    width:220px;
 
-    width:45px;
-    height:45px;
+    height:220px;
 
     border-radius:50%;
 
-    border:2px solid #777;
+    position:absolute;
+
+    left:0;
+    bottom:0;
+
+    background:
+    radial-gradient(circle,
+    #2d2d2d 15%,
+    #151515 40%,
+    #000 70%,
+    #1f1f1f 100%);
+
+    animation:spin 10s linear infinite;
+
+    box-shadow:
+    0 10px 24px rgba(0,0,0,0.18);
+
+}
+
+.vinyl::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:12px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,0.08);
+
+}
+
+.vinyl-center{
+
+    width:78px;
+    height:78px;
+
+    border-radius:50%;
+
+    background:#f3e6d9;
 
     position:absolute;
 
@@ -268,7 +333,35 @@ body{
     left:50%;
 
     transform:translate(-50%,-50%);
+
+    border:4px solid white;
+
 }
+
+.music-notes{
+
+    position:absolute;
+
+    left:220px;
+    bottom:90px;
+
+}
+
+.note{
+
+    position:absolute;
+
+    font-size:36px;
+
+    color:#c89d7a;
+
+    opacity:0;
+
+    animation:
+    floatMusic 4s linear infinite;
+
+}
+
 
 /* ROTATION */
 
@@ -282,10 +375,6 @@ body{
         transform:rotate(360deg);
     }
 
-}
-
-.vinyl.playing{
-    animation-play-state:running;
 }
 
 /* ================= PLAYER INFO ================= */
