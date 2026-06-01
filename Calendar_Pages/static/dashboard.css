@@ -492,5 +492,292 @@ body{
 
 }
 
+/* ================= FINANCE PREVIEW ================= */
+
+.finance-preview{
+
+    background:#f7f1ff;
+
+    padding:18px;
+
+}
+
+/* HEADER */
+
+.finance-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+}
+
+/* SMALL TEXT */
+
+.finance-header span{
+
+    font-size:12px;
+
+    color:#777;
+
+}
+
+/* MONEY */
+
+.finance-header h3{
+
+    margin-top:8px;
+
+    font-size:30px;
+
+    color:#2f2521;
+
+}
+
+/* SUBTEXT */
+
+.finance-header p{
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    color:#666;
+
+}
+
+/* BADGE */
+
+.finance-badge{
+
+    background:#ece0ff;
+
+    color:#7f5bc2;
+
+    padding:6px 10px;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* CHART */
+
+.finance-chart{
+
+    margin-top:28px;
+
+    height:110px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-end;
+
+}
+
+/* GROUP */
+
+.finance-bar-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+/* BAR */
+
+.bar{
+
+    width:26px;
+
+    background:#b292ea;
+
+    border-radius:10px 10px 0 0;
+
+}
+
+.bar1{ height:40px; }
+
+.bar2{ height:75px; }
+
+.bar3{ height:50px; }
+
+.bar4{ height:95px; }
+
+/* LABEL */
+
+.finance-bar-group span{
+
+    font-size:11px;
+
+    color:#777;
+
+}
+
+/* ================= DIARY PREVIEW ================= */
+
+.diary-preview{
+
+    padding:18px;
+
+    background:#fff2f4;
+
+}
+
+/* LABEL */
+
+.diary-label{
+
+    color:#ff6f8f;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* TITLE */
+
+.diary-preview h3{
+
+    margin-top:14px;
+
+    font-size:28px;
+
+    line-height:1.4;
+
+    font-family:cursive;
+
+    color:#3b2f2a;
+
+}
+
+/* DATE */
+
+.diary-date{
+
+    margin-top:10px;
+
+    font-size:12px;
+
+    color:#777;
+
+}
+
+/* TEXT */
+
+.diary-text{
+
+    margin-top:18px;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    color:#555;
+
+}
+
+
+
+/* ================= CALENDAR PREVIEW ================= */
+
+.calendar-preview{
+
+    padding:18px;
+
+    background:#f5f8ed;
+
+}
+
+/* HEADER */
+
+.calendar-header{
+
+    text-align:center;
+
+    font-weight:600;
+
+    margin-bottom:18px;
+
+    color:#5c6b3d;
+
+}
+
+/* GRID */
+
+.calendar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:14px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#444;
+
+}
+
+/* ACTIVE DAY */
+
+.active-day{
+
+    background:#7c9b4d;
+
+    color:white;
+
+    width:28px;
+
+    height:28px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+}
+
+/* EVENT */
+
+.event-box{
+
+    margin-top:25px;
+
+    background:#e8f0d8;
+
+    color:#6f8a3d;
+
+    padding:10px;
+
+    border-radius:10px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
 
 
