@@ -362,117 +362,18 @@ body{
 
 }
 
-
-/* ROTATION */
-
-@keyframes spin{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
-
+.note1{
+    left:0;
+    animation-delay:0s;
 }
 
-/* ================= PLAYER INFO ================= */
-
-.player-info h2{
-    margin-bottom:10px;
+.note2{
+    left:60px;
+    animation-delay:1.2s;
 }
 
-.player-info p{
-    color:#666;
+.note3{
+    left:120px;
+    animation-delay:2.2s;
 }
 
-/* ================= PROGRESS BAR ================= */
-
-.progress-bar{
-    width:350px;
-    height:10px;
-
-    border:1px solid #cfcfcf;
-
-    border-radius:10px;
-
-    margin:20px 0;
-
-    overflow:hidden;
-}
-
-.progress{
-    width:35%;
-    height:100%;
-
-    background:#999;
-}
-
-/* ================= CONTROLS ================= */
-
-.controls{
-    display:flex;
-    gap:10px;
-}
-
-.controls button{
-    width:50px;
-    height:50px;
-
-    border:1px solid #d0d0d0;
-
-    border-radius:10px;
-
-    background:none;
-
-    cursor:pointer;
-
-    transition:0.2s;
-}
-
-.controls button:hover{
-    background:#f4f4f4;
-}
-
-/* ================= RIGHT SIDE ================= */
-
-.music-right{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-/* INPUT */
-
-.music-right input{
-    padding:12px;
-
-    border:1px solid #d0d0d0;
-
-    border-radius:10px;
-}
-
-/* ================= RESPONSIVE ================= */
-
-@media(max-width:1000px){
-
-    .cards-container{
-        grid-template-columns:1fr;
-    }
-
-    .music-section{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .music-left{
-        flex-direction:column;
-        align-items:flex-start;
-    }
-
-    .progress-bar{
-        width:100%;
-    }
-
-}
