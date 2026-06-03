@@ -264,6 +264,43 @@ def add_financial():
         except:
             return render_template("add.html", error="Invalid amount", accounts=user_accounts)
 
+        if form.get("type") == "transfer":
+
+            to_account = form.get("to_account")
+
+            if not to_account:
+                return render_template(
+                    "add.html",
+                    error="Transfer account required",
+                    accounts=user_accounts
+                )
+
+            records = load_data(f_expense, [])
+
+            records.append({
+                "username": session["user"],
+                "date": form.get("date"),
+                "type": "expense",
+                "category": "Transfer Out",
+                "account": account,
+                "item": f"Transfer to {to_account}",
+                "amount": amount
+            })
+
+            records.append({
+                "username": session["user"],
+                "date": form.get("date"),
+                "type": "income",
+                "category": "Transfer In",
+                "account": to_account,
+                "item": f"Transfer from {account}",
+                "amount": amount
+            })
+
+            save_data(f_expense, records)
+
+            return redirect(url_for("view_financial"))
+
         record = {
             "username": session["user"],
             "date": form.get("date"),
