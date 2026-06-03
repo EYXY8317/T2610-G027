@@ -698,11 +698,7 @@ body{
 
     padding:18px;
 
-    display:flex;
-
-    flex-direction:column;
-
-    height:100%;
+    border-radius:18px;
 
 }
 
@@ -717,6 +713,8 @@ body{
     font-weight:600;
 
     color:#55663a;
+
+    font-size:16px;
 
 }
 
@@ -734,7 +732,7 @@ body{
 
     color:#95a07b;
 
-    margin-bottom:12px;
+    margin-bottom:14px;
 
 }
 
@@ -774,6 +772,16 @@ body{
 
     margin:auto;
 
+    transition:0.2s ease;
+
+}
+
+/* HOVER */
+
+.calendar-grid span:hover{
+
+    background:#edf3df;
+
 }
 
 /* ACTIVE DAY */
@@ -784,6 +792,8 @@ body{
 
     color:white !important;
 
+    font-weight:600;
+
     box-shadow:
     0 4px 10px rgba(138,160,90,0.25);
 
@@ -793,15 +803,21 @@ body{
 
 .event-box{
 
-    margin-top:auto;
-
-    padding-top:18px;
+    margin-top:18px;
 
     font-size:12px;
 
     color:#7c9b4d;
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
 }
+
+
 
 
 
