@@ -127,6 +127,9 @@ body{
 
     padding:0 70px;
 
+    gap:10px;
+
+
 }
 
 /* ===== LOGIN TITLE ===== */
@@ -165,3 +168,85 @@ body{
 
 }
 
+/* ===== INPUT ICON ===== */
+.input-box i{
+
+    color:#8c8c8c;
+
+    font-size:20px;
+
+}
+
+/* ===== INPUT ===== */
+.input-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    font-size:18px;
+
+    margin-left:15px;
+
+    font-family:'Poppins', sans-serif;
+
+}
+
+/* ===== EYE ICON ===== */
+.eye{
+
+    cursor:pointer;
+
+}
+
+/* ===== FORGOT ===== */
+.forgot{
+
+    display:block;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:#7a4e33;
+
+    font-size:17px;
+
+    margin-top:-5px;
+
+    margin-bottom:30px;
+
+}
+
+/* ===== LOGIN BUTTON ===== */
+button{
+
+    width:100%;
+
+    height:70px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#7a4e33;
+
+    color:white;
+
+    font-size:24px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+}
+
+button:hover{
+
+    background:#5e3924;
+
+}
