@@ -40,7 +40,7 @@ CARDS.forEach(
         ) {
 
             card.innerHTML =
-                createWeatherWeek();
+                await createWeatherWeek();
 
         }
 
