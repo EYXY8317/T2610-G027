@@ -1256,6 +1256,7 @@ def edit_goal(goal_id):
                 goal=goal,
                 error="All fields required",
                 wallpaper=get_user_wallpaper(),
+                user=get_current_user()
             )
 
         try:
@@ -1268,6 +1269,7 @@ def edit_goal(goal_id):
                 goal=goal,
                 error="Invalid target amount",
                 wallpaper=get_user_wallpaper(),
+                user=get_current_user()
             )
 
         # update data
@@ -1286,6 +1288,8 @@ def edit_goal(goal_id):
         goal=goal,
 
         wallpaper=get_user_wallpaper(),
+
+        user=get_current_user()
 
     )
 

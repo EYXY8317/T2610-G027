@@ -1,0 +1,12 @@
+[
+    {
+        "username": "Ethan",
+        "category": "Food",
+        "amount": 200.0
+    },
+    {
+        "username": "Ethan",
+        "category": "Entertainment",
+        "amount": 500.0
+    }
+]
