@@ -817,6 +817,28 @@ body{
 
 }
 
+/* ================= ICON IMAGE ================= */
+
+.icon-box{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.icon-box img{
+
+    width:75%;
+
+    height:75%;
+
+    object-fit:contain;
+
+}
+
 
 
 
