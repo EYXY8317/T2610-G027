@@ -2,31 +2,72 @@
 <html>
 <head>
     <title>Life Pages</title>
+
+<!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ICON -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 
 <body>
 
-    <!-- 上方选项 -->
-    <a href="log in.html">Login</a> |
-    <a href="register.html">Register</a>
+<!-- MAIN CONTAINER -->
+<div class="container"> 
+        
+     <!-- LEFT PANEL -->
+     <div class="left-panel">
 
-    <hr>
+        <img src="logo.png" class="logo">
 
-    <h1>Life Pages</h1>
-    <p>Log in to organize every page of your life</p>
+        <h1>Log in to organize every page of your life!</h1>
 
-    <!-- 登录表单 -->
-    <h3>Log in</h3>
+        <p>Don't have an account?</p>
 
-    <form action="dashboard.html">
-        <label>Username:</label><br>
-        <input type="text" required><br><br>
+        <a href="register.html" class="register-btn">Register</a>
 
-        <label>Password:</label><br>
-        <input type="password" required><br><br>
+     </div>
 
-        <button type="submit">Login</button>
-    </form>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
 
+      <h2>Login</h2>
+
+        <!-- LOGIN FORM -->
+        <form action="dashboard.html">
+
+         <!-- USERNAME -->
+         <div class="input-box">
+
+            <i class="fa-regular fa-user"></i>
+
+                <input type="text" placeholder="Username" required>
+
+            </div>
+
+                <!-- PASSWORD -->
+                <div class="input-box">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input type="password" placeholder="Password" required>
+
+                    <i class="fa-regular fa-eye eye"></i>
+
+                </div>
+           
+            <!-- FORGOT -->
+            <a href="#" class="forgot">Forgot password?</a>
+
+            <!-- LOGIN BUTTON -->
+            <button type="submit">Login</button>
+
+        </form>
+
+    </div>
+
+</div>
 </body>
 </html>

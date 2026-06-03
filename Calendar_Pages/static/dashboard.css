@@ -273,9 +273,9 @@ body{
 
 .music-card{
 
-    width:520px;
+    width:540px;
 
-    height:150px;
+    height:160px;
 
     background:#f8f1ea;
 
@@ -287,7 +287,7 @@ body{
 
     align-items:center;
 
-    gap:30px;
+    gap:36px;
 
     padding:0 35px;
 
@@ -311,9 +311,9 @@ body{
 
 .vinyl{
 
-    width:120px;
+    width:128px;
 
-    height:120px;
+    height:128px;
 
     border-radius:50%;
 
@@ -331,9 +331,9 @@ body{
 
     radial-gradient(circle,
 
-    #453630 10%,
-    #1f1917 34%,
-    #0c0c0c 68%,
+    #453630 6%,
+    #1f1917 30%,
+    #0c0c0c 65%,
     #2b2420 100%);
 
     animation:spin 20s linear infinite;
@@ -458,11 +458,11 @@ body{
 
 .music-note{
 
-    font-size:28px;
+    font-size:34px;
 
-    margin-bottom:6px;
+    margin-bottom:10px;
 
-    color:#b7855f;
+    color:#c59772;
 
 }
 
@@ -470,12 +470,13 @@ body{
 
 .music-text p{
 
-    font-size:16px;
+    font-size:20px;
 
     line-height:1.5;
 
     font-weight:500;
 
+    color:#6b4d3d;
 }
 
 /* ROTATION */
