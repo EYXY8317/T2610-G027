@@ -29,6 +29,21 @@ function getWeatherInfo(
             condition: "Cloudy"
         },
 
+        45: {
+            icon: "🌫️",
+            condition: "Fog"
+        },
+
+        48: {
+            icon: "🌫️",
+            condition: "Fog"
+        },
+
+        51: {
+            icon: "🌦️",
+            condition: "Light Drizzle"
+        },
+
         61: {
             icon: "🌧️",
             condition: "Rain"
@@ -42,17 +57,43 @@ function getWeatherInfo(
         65: {
             icon: "⛈️",
             condition: "Heavy Rain"
+        },
+
+        80: {
+            icon: "🌦️",
+            condition: "Rain Showers"
+        },
+
+        81: {
+            icon: "🌧️",
+            condition: "Rain Showers"
+        },
+
+        82: {
+            icon: "⛈️",
+            condition: "Heavy Showers"
+        },
+
+        95: {
+            icon: "⛈️",
+            condition: "Thunderstorm"
         }
 
     };
 
     return (
-        weatherMap[weatherCode]
+
+        weatherMap[
+            weatherCode
+        ]
+
         ||
+
         {
             icon: "☁️",
             condition: "Unknown"
         }
+
     );
 
 }
@@ -86,18 +127,96 @@ export async function getWeatherDay() {
             weatherInfo.condition,
 
         temperature:
-            data.current.temperature_2m,
+            Math.round(
+                data.current.temperature_2m
+            ),
 
         humidity:
             data.current.relative_humidity_2m,
 
         feelsLike:
-            data.current.apparent_temperature,
+            Math.round(
+                data.current.apparent_temperature
+            ),
 
         updated:
             "Now"
 
     };
+
+}
+
+export async function getWeatherHour() {
+
+    const location =
+        await getCurrentLocation();
+
+    const response =
+        await fetch(
+
+            `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&hourly=temperature_2m,weather_code&timezone=auto`
+
+        );
+
+    const data =
+        await response.json();
+
+    return data.hourly.time
+        .slice(0, 24)
+        .map(
+
+            (
+                time,
+                index
+            ) => {
+
+                const weatherInfo =
+                    getWeatherInfo(
+
+                        data.hourly.weather_code[index]
+
+                    );
+
+                return {
+
+                    time:
+
+                        new Date(time)
+                            .toLocaleTimeString(
+
+                                "en-US",
+
+                                {
+                                    hour:
+                                        "numeric",
+
+                                    hour12:
+                                        true
+
+                                }
+
+                            ),
+
+                    icon:
+                        weatherInfo.icon,
+
+                    condition:
+                        weatherInfo.condition,
+
+                    temperature:
+
+                        Math.round(
+
+                            data.hourly
+                                .temperature_2m[index]
+
+                        )
+
+                };
+
+            }
+
+        );
 
 }
 
@@ -150,6 +269,9 @@ export async function getWeatherWeek() {
 
                     icon:
                         weatherInfo.icon,
+
+                    condition:
+                        weatherInfo.condition,
 
                     temperature:
 

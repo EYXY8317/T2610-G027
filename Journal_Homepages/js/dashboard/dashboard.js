@@ -1,4 +1,14 @@
 import {
+    renderWeatherHourChart
+}
+from "../widgets/weather/renderWeatherHourChart.js";
+
+import {
+    createWeatherHour
+}
+from "../widgets/weather/weatherHour.js";
+
+import {
     createWeatherWeek
 }
 from "../widgets/weather/weatherWeek.js";
@@ -51,6 +61,28 @@ CARDS.forEach(
 
             card.innerHTML =
                 await createWeatherDay();
+
+        }
+
+        if (
+            cardData.id ===
+            "weatherHour"
+        ) {
+
+            card.innerHTML =
+                await createWeatherHour();
+
+            setTimeout(
+
+                () => {
+
+                    renderWeatherHourChart();
+
+                },
+
+                0
+
+            );
 
         }
 

@@ -1,0 +1,49 @@
+.weather-hour {
+
+    height: 100%;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+}
+
+.weather-hour-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+.weather-hour {
+
+    height: 100%;
+
+    display: flex;
+
+    justify-content: space-around;
+
+    align-items: center;
+
+    padding: 20px;
+
+}
+
+.weather-hour-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 6px;
+
+}

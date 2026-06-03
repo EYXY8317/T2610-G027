@@ -18,6 +18,16 @@ export const CARDS = [
 
         x: 0,
         y: 0
+    },
+
+    {
+        id: "weatherHour",
+        type: "weather",
+
+        title: "Weather Hour",
+
+        x: 0,
+        y: 0
     }
 
 ];
