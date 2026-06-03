@@ -51,25 +51,27 @@ body{
 
     text-align:center;
 
-    padding:40px;
+    padding:60px;
 
 }
 
 /* ===== LOGO ===== */
 .logo{
 
-    width:220px;
+    width:170px;
 
-    margin-bottom:20px;
+    margin-bottom:25px;
 
 }
 
 /* ===== LEFT TITLE ===== */
 .left-panel h1{
 
-    font-size:55px;
+    font-size:38px;
 
-    margin:10px 0;
+    line-height:1.4;
+
+    margin:15px 0;
 
 }
 
