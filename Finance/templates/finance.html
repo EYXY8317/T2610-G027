@@ -185,45 +185,131 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         <div class="summary-card hover-card">
 
-            <h2 class="section-title">
+        <h2 class="section-title">
+            Analysis
+        </h2>
 
-                Analysis
+        <div class="analysis-list">
 
-            </h2>
+            <div class="analysis-row">
 
-            {% if warning_budgets %}
+                <div class="analysis-left">
 
-                {% for b in warning_budgets %}
+                    <div class="analysis-icon">
+                        💰
+                    </div>
 
-                <div class="insight-box">
+                    <div>
 
-                    <p class="negative">
+                        <div class="analysis-title">
+                            Current Balance
+                        </div>
 
-                        {{ b.category }}
-                        budget at
-                        {{ "%.0f"|format(b.percent) }}%
+                        <div class="analysis-desc">
+                            Your total account balance
+                        </div>
 
-                    </p>
-
-                </div>
-
-                {% endfor %}
-
-            {% else %}
-
-                <div class="insight-box">
-
-                    <p class="positive">
-
-                        Budget health looks stable.
-
-                    </p>
+                    </div>
 
                 </div>
 
-            {% endif %}
+                <div class="analysis-value">
+                    RM {{ "%.2f"|format(balance) }}
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        📊
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Top Spending Category
+                        </div>
+
+                        <div class="analysis-desc">
+                            You spend the most on this category
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    {{ top_category if top_category else "None" }}
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Savings Rate
+                        </div>
+
+                        <div class="analysis-desc">
+                            Percentage of income saved
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    {{ savings_rate }}%
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Budget Health
+                        </div>
+
+                        <div class="analysis-desc">
+                            Status of your budget
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    {% if warning_budgets %}
+                        Warning
+                    {% else %}
+                        Healthy
+                    {% endif %}
+                </div>
+
+            </div>
 
         </div>
+
+    </div>
 
         <!-- QUICK ACTIONS -->
 
@@ -242,7 +328,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 class="quick-action-card"
                 >
 
-                    ➕ Add Record
+                    <div class="quick-icon">
+                        ➕
+                    </div>
+
+                    <div class="quick-title">
+                        Add Record
+                    </div>
+
+                    <div class="quick-desc">
+                        Add income or expense
+                    </div>
 
                 </a>
 
@@ -251,7 +347,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 class="quick-action-card"
                 >
 
-                    📊 Manage Budget
+                    <div class="quick-icon">
+                        📊
+                    </div>
+
+                    <div class="quick-title">
+                        Manage Budget
+                    </div>
+
+                    <div class="quick-desc">
+                        View and edit your budgets
+                    </div>
 
                 </a>
 
@@ -260,7 +366,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 class="quick-action-card"
                 >
 
-                    🎯 Savings Goals
+                    <div class="quick-icon">
+                        🎯
+                    </div>
+
+                    <div class="quick-title">
+                        Savings Goals
+                    </div>
+
+                    <div class="quick-desc">
+                        Track your savings progress
+                    </div>
 
                 </a>
 
@@ -269,7 +385,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 class="quick-action-card"
                 >
 
-                    📈 Analytics
+                    <div class="quick-icon">
+                        📈
+                    </div>
+
+                    <div class="quick-title">
+                        Analytics
+                    </div>
+
+                    <div class="quick-desc">
+                        View detailed financial insights
+                    </div>
 
                 </a>
 

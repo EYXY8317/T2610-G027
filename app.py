@@ -353,13 +353,28 @@ def view_financial():
 # ================= DELETE =================
 @app.route("/delete/<int:idx>")
 def delete_financial(idx):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
     records = load_data(f_expense, [])
     user = session["user"]
 
-    user_records = [r for r in records if r["username"] == user]
+    user_records = [
+
+        r for r in records
+
+        if r["username"] == user
+
+    ]
+
+    if idx < 0 or idx >= len(user_records):
+        return redirect(url_for("view_financial"))
+
     target = user_records[idx]
 
     records.remove(target)
+
     save_data(f_expense, records)
 
     return redirect(url_for("view_financial"))
@@ -1449,6 +1464,15 @@ def finance_home():
 
         })
 
+    # ===============================
+    # SAVINGS RATE
+    # ===============================
+
+    savings_rate = 0
+
+    if income > 0:
+        savings_rate = round((saving / income) * 100)
+
     # =================================================
     # RENDER
     # =================================================
@@ -1476,6 +1500,8 @@ def finance_home():
         wallpaper=get_user_wallpaper(),
 
         user=get_current_user(),
+
+        savings_rate=savings_rate,
 
         theme=current_user.get("theme", "adaptive"),
 
