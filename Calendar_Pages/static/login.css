@@ -33,7 +33,6 @@ body{
 }
 
 /* ===== LEFT PANEL ===== */
-
 .left-panel{
 
     width:45%;
@@ -53,5 +52,62 @@ body{
     text-align:center;
 
     padding:40px;
+
+}
+
+/* ===== LOGO ===== */
+.logo{
+
+    width:220px;
+
+    margin-bottom:20px;
+
+}
+
+/* ===== LEFT TITLE ===== */
+.left-panel h1{
+
+    font-size:55px;
+
+    margin:10px 0;
+
+}
+
+/* ===== LEFT TEXT ===== */
+.left-panel p{
+
+    font-size:20px;
+
+    margin-bottom:35px;
+
+}
+
+/* ===== REGISTER BUTTON ===== */
+.register-btn{
+
+    width:220px;
+
+    padding:15px 0;
+
+    border:2px solid white;
+
+    border-radius:14px;
+
+    text-decoration:none;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+}
+
+.register-btn:hover{
+
+    background:white;
+    color:#9a6d4f;
 
 }
