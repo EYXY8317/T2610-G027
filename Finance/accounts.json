@@ -1,10 +1,21 @@
 [
     {
         "username": "Ethan",
-        "name": "TnG"
+        "name": "TnG",
+        "purpose": "spending"
     },
     {
         "username": "Ethan",
-        "name": "CIMB"
+        "name": "CIMB",
+        "purpose": "savings"
+    },
+    {
+        "username": "Ethan",
+        "name": "MAE",
+        "purpose": "spending"
+    },
+    {
+        "username": "Ethan",
+        "name": "MAE Wallet"
     }
 ]

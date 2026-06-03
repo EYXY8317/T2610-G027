@@ -34,5 +34,14 @@
         "account": "CIMB",
         "item": "Transfer from TnG",
         "amount": 200.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Bonus",
+        "account": "MAE",
+        "item": "Minimum cash",
+        "amount": 10.0
     }
 ]
