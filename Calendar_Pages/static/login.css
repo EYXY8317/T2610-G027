@@ -35,7 +35,7 @@ body{
 /* ===== LEFT PANEL ===== */
 .left-panel{
 
-    width:45%;
+    width:42%;
 
     background:#9a6d4f;
 
@@ -117,7 +117,7 @@ body{
 /* ===== RIGHT PANEL ===== */
 .right-panel{
 
-    width:55%;
+    width:58%;
 
     display:flex;
 
@@ -135,7 +135,7 @@ body{
 /* ===== LOGIN TITLE ===== */
 .right-panel h2{
 
-    font-size:55px;
+    font-size:48px;
 
     color:#4d2e1d;
 
@@ -192,6 +192,8 @@ body{
 
     font-family:'Poppins', sans-serif;
 
+    background:transparent;
+
 }
 
 /* ===== EYE ICON ===== */
@@ -238,6 +240,8 @@ button{
     font-size:24px;
 
     font-weight:600;
+
+    letter-spacing:0.5px;
 
     cursor:pointer;
 
