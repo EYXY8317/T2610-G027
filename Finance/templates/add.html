@@ -201,7 +201,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         >
 
                             Saving
+                        </option>
 
+                        <option
+                        value="transfer"
+                        {{ 'selected' if form_data and form_data.type == 'transfer' else '' }}
+                        >
+                            Transfer
                         </option>
 
                     </select>
@@ -214,14 +220,10 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <div class="summary-grid">
 
-                <!-- CATEGORY -->
-
-                <div>
+                <div id="categoryBlock">
 
                     <label>
-
                         Category
-
                     </label>
 
                     <select
@@ -232,38 +234,35 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     >
 
                         <option value="">
-
                             -- Select Category --
-
                         </option>
 
                     </select>
 
                 </div>
 
-                <!-- ACCOUNT -->
-
                 <div>
 
                     <label>
-
                         Account
-
                     </label>
 
-                    <select name="account">
+                    <select
+                    name="account"
+                    id="accountSelect"
+                    >
 
                         <option value="">
-
                             -- Select Account --
-
                         </option>
 
                         {% for acc in accounts %}
 
                         <option
-                            value="{{ acc.name }}"
-                            {% if form_data and form_data.account == acc.name %}selected{% endif %}
+                        value="{{ acc.name }}"
+                        {% if form_data and form_data.account == acc.name %}
+                        selected
+                        {% endif %}
                         >
 
                             {{ acc.name }}
@@ -272,41 +271,84 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                         {% endfor %}
 
+                        <option value="__new__">
+                            ➕ Create New Account
+                        </option>
+
                     </select>
 
                 </div>
 
             </div>
 
-            <!-- NEW ACCOUNT -->
+                <!-- TRANSFER TO -->
 
-            <label>
+                <div
+                id="transferSection"
+                style="display:none;"
+                >
 
-                New Account (Optional)
+                    <label>
+                        Transfer To
+                    </label>
 
-            </label>
+                    <select
+                        name="to_account"
+                        id="toAccountSelect"
+                    >
 
-            <input
-                type="text"
-                name="new_account"
-                value="{{ form_data.new_account if form_data else '' }}"
-                placeholder="Create new account"
+                        <option value="">
+                            -- Select Account --
+                        </option>
+
+                        {% for acc in accounts %}
+
+                        <option value="{{ acc.name }}">
+                            {{ acc.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            <div
+            id="newAccountSection"
+            style="display:none;"
             >
+
+                <label>
+
+                    New Account Name
+
+                </label>
+
+                <input
+                    type="text"
+                    name="new_account"
+                    value="{{ form_data.new_account if form_data else '' }}"
+                    placeholder="Enter account name"
+                >
+
+            </div>
 
             <!-- ITEM -->
 
-            <label>
+            <div id="itemBlock">
+                <label>
 
-                Item
+                    Item
 
-            </label>
+                </label>
 
-            <input
-                type="text"
-                name="item"
-                value="{{ form_data.item if form_data else '' }}"
-                placeholder="Example: Lunch, Salary, Grab..."
-            >
+                <input
+                    type="text"
+                    name="item"
+                    value="{{ form_data.item if form_data else '' }}"
+                    placeholder="Example: Lunch, Salary, Grab..."
+                >
+            </div>
 
             <!-- AMOUNT -->
 
@@ -378,6 +420,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const typeSelect =
         document.getElementById("typeSelect");
 
+    const accountSelect =
+        document.getElementById(
+            "accountSelect"
+        );
+
+    const newAccountSection =
+        document.getElementById(
+            "newAccountSection"
+        );
+
     const categorySelect =
         document.getElementById("categorySelect");
 
@@ -435,6 +487,68 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function updateTransferUI() {
+
+        const transferSection =
+            document.getElementById("transferSection");
+
+        const type =
+            typeSelect.value;
+
+        const categoryBlock =
+            document.getElementById("categoryBlock");
+
+        const itemBlock =
+            document.getElementById("itemBlock");
+
+        const categorySelect =
+            document.getElementById("categorySelect");
+
+        const itemInput =
+            document.querySelector("input[name='item']");
+
+        if (type === "transfer") {
+
+            transferSection.style.display = "block";
+
+            categoryBlock.style.display = "none";
+
+            itemBlock.style.display = "none";
+
+            categorySelect.removeAttribute("required");
+
+            itemInput.removeAttribute("required");
+
+        }
+
+        else {
+
+            transferSection.style.display = "none";
+
+            categoryBlock.style.display = "block";
+
+            itemBlock.style.display = "block";
+
+            categorySelect.setAttribute(
+                "required",
+                "required"
+            );
+        }
+    }
+
+    function updateAccountUI() {
+
+        if (!accountSelect) return;
+
+        newAccountSection.style.display =
+
+            accountSelect.value === "__new__"
+
+            ? "block"
+
+            : "none";
+    }
+
     typeSelect.addEventListener("change", function () {
 
         selectedCategory = "";
@@ -443,11 +557,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         updateItemRequired();
 
+        updateTransferUI();
+
+        updateAccountUI();
     });
+
+    accountSelect.addEventListener(
+        "change",
+        updateAccountUI
+    );
 
     updateCategory();
 
     updateItemRequired();
+
+    updateTransferUI();
+
+    updateAccountUI();
 
     // ================= TNG INPUT =================
 
