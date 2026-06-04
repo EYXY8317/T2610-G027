@@ -93,12 +93,89 @@
         {% if request.args.get("success") %}
         <p class="success-message">{{ request.args.get("success") }}</p>
         {% endif %}
-        
+
         </div>
     
     </div>
 
 </div>
+
+  <!-- REGISTER PANEL -->
+    <div class="register-panel">
+
+        <div class="left-panel">
+
+        <img src="/calendar_static/logo.png" class="logo">
+
+        <h1>Create your Life Pages account!</h1>
+
+        <p>Already have an account?</p>
+
+        <button type="button" id="loginBtn" class="register-btn">
+            Login
+        </button>
+
+    </div>
+
+    <div class="right-panel">
+
+        <h2>Register</h2>
+
+        <form action="/register" method="POST">
+
+            <!-- USERNAME -->
+            <div class="input-box">
+
+                <i class="fa-regular fa-user"></i>
+
+                <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                required
+                autocomplete="username">
+
+            </div>
+
+            <!-- EMAIL -->
+            <div class="input-box">
+
+                <i class="fa-regular fa-envelope"></i>
+
+                <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+                autocomplete="email">
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 function togglePassword() {
