@@ -98,5 +98,15 @@
         "account": "MAE",
         "item": "Transfer from TnG",
         "amount": 50.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 6,
+        "account": "TnG",
+        "item": "Goal: House",
+        "amount": 1234.56
     }
 ]

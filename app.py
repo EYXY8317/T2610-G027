@@ -1243,7 +1243,21 @@ def goals():
 
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        records = load_data(f_expense, [])
+
+        saved = sum(
+
+            r.get("amount", 0)
+
+            for r in records
+
+            if (
+                r.get("username") == user
+                and r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g.get("id")
+            )
+
+        )
         target = g.get("target", 0)
 
         percent = (

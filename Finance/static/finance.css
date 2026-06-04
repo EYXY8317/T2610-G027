@@ -1424,7 +1424,17 @@ body.dark .goal-card select{
 
 .table-actions{
 
-    white-space:nowrap;
+    display:flex;
+
+    gap:12px;
+}
+
+.table-actions .edit-btn,
+.table-actions .delete-btn{
+
+    padding:4px 8px;
+
+    font-size:.85rem;
 }
 
 /* ================================================= */
@@ -1533,9 +1543,48 @@ body.dark .goal-card select{
     margin-top:10px;
 }
 
+.action-buttons{
 
+    display:flex;
 
+    gap:10px;
 
+    align-items:center;
+}
+
+.edit-btn,
+.delete-btn{
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:all .2s ease;
+}
+
+.edit-btn{
+
+    background:var(--edit-bg);
+
+    color:var(--edit-text);
+}
+
+.delete-btn{
+
+    background:var(--delete-bg);
+
+    color:var(--delete-text);
+}
+
+.edit-btn:hover,
+.delete-btn:hover{
+
+    transform:translateY(-2px);
+}
 
 /* ================================================= */
 /* ================================================= */
@@ -1704,6 +1753,15 @@ body.dark{
     --accent:#7c5a43;
 
     --accent-hover:#946b4f;
+
+
+    --edit-bg:rgba(100,130,255,.18);
+
+    --edit-text:#8ea0ff;
+
+    --delete-bg:rgba(255,90,90,.18);
+
+    --delete-text:#ff7d7d;
 }
 
 
@@ -1952,6 +2010,14 @@ body.cozy{
     --accent:#b88b5f;
 
     --accent-hover:#9f744c;
+
+    --edit-bg:rgba(168,134,102,.15);
+
+    --edit-text:#8b6a4e;
+
+    --delete-bg:rgba(200,120,120,.15);
+
+    --delete-text:#b35c5c;
 }
 
 body.cozy .summary-card,
@@ -2002,6 +2068,14 @@ body.sakura{
     --accent:#e68aa6;
 
     --accent-hover:#d97d99;
+
+    --edit-bg:rgba(255,170,210,.18);
+
+    --edit-text:#d86ca0;
+
+    --delete-bg:rgba(255,120,150,.15);
+
+    --delete-text:#d94f7d;
 }
 
 body.sakura .summary-card,
@@ -2058,6 +2132,14 @@ body.frosted{
     --accent-hover:rgba(255,255,255,0.36);
 
     --border:rgba(255,255,255,0.16);
+
+    --edit-bg:rgba(90,120,255,.15);
+
+    --edit-text:#6c7cff;
+
+    --delete-bg:rgba(255,90,90,.15);
+
+    --delete-text:#ff5b5b;
 }
 
 body.frosted .active-link{
