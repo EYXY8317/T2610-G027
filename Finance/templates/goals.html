@@ -94,6 +94,18 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 value="create"
             >
 
+            <input
+                type="hidden"
+                name="goal_name"
+                value="{{ g.name }}"
+            >
+
+            <input
+                type="hidden"
+                name="goal_id"
+                value="{{ g.id }}"
+            >
+
             <div class="summary-grid">
 
                 <!-- GOAL NAME -->
@@ -319,6 +331,12 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         value="{{ g.name }}"
                     >
 
+                    <input
+                        type="hidden"
+                        name="goal_id"
+                        value="{{ g.id }}"
+                    >
+                    
                     <div class="goal-add-savings-row">
 
                         <div class="goal-account-group">
