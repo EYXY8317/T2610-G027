@@ -2,11 +2,11 @@
     {
         "username": "Ethan",
         "category": "Food",
-        "amount": 200.0
+        "amount": 2000.0
     },
     {
         "username": "Ethan",
         "category": "Entertainment",
-        "amount": 500.0
+        "amount": 2000.0
     }
 ]

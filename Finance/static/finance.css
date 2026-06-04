@@ -311,6 +311,12 @@ body.dark .wallpaper-overlay{
     margin-bottom:24px;
 }
 
+#pieChart{
+
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
 
 
 /* ================================================= */
@@ -370,7 +376,7 @@ body.dark .wallpaper-overlay{
 
     color:var(--text-soft);
 
-    font-size:0.9rem;
+    font-size:1rem;
 
     text-transform:uppercase;
 
@@ -682,7 +688,7 @@ label{
 
     letter-spacing:2px;
 
-    font-size:0.82rem;
+    font-size:0.95rem;
 
     color:var(--text-secondary);
 
@@ -817,7 +823,7 @@ label{
 
 .quick-title{
 
-    font-size:1.05rem;
+    font-size:1.12rem;
 
     font-weight:700;
 
@@ -830,9 +836,9 @@ label{
 
     margin-top:8px;
 
-    font-size:0.85rem;
+    font-size:1rem;
 
-    line-height:1.4;
+    line-height:1.5;
 
     color:var(--text-soft);
 
@@ -914,7 +920,9 @@ label{
 
 .analysis-title{
 
-    font-weight:700;
+    font-weight:800;
+
+    font-size:1.08rem;
 
     margin-bottom:4px;
 }
@@ -923,7 +931,9 @@ label{
 
     color:var(--text-soft);
 
-    font-size:0.9rem;
+    font-size:1rem;
+
+    line-height:1.5;
 }
 
 .analysis-value{
@@ -2014,6 +2024,80 @@ body.sakura .secondary-btn{
     border:1px solid #f0ccd8;
 
     color:#4d3740;
+}
+
+/* ================================================= */
+/* =================== FROSTED ===================== */
+/* ================================================= */
+
+body.frosted{
+
+    --card-bg:rgba(255,255,255,0.65);
+
+    --card-bg-2:rgba(255,255,255,0.55);
+
+    --text-main:#2f2f2f;
+
+    --text-soft:#5f5f5f;
+
+    --text-primary:#2f2f2f;
+
+    --text-secondary:#5f5f5f;
+
+    --accent:rgba(255,255,255,0.24);
+
+    --accent-hover:rgba(255,255,255,0.36);
+
+    --border:rgba(255,255,255,0.16);
+}
+
+body.frosted .active-link{
+
+    background:#7b8cff;
+
+    color:white !important;
+
+    border:
+    1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,0.08);
+}
+
+body.frosted .section-title,
+body.frosted .summary-main-title{
+
+    color:#2f2f2f;
+
+    text-shadow:none;
+}
+
+body.frosted .summary-card,
+body.frosted .goal-card,
+body.frosted .overview-box,
+body.frosted .budget-modern,
+body.frosted .amount-card,
+body.frosted .insight-box,
+body.frosted .records-table,
+body.frosted .quick-action-card,
+body.frosted .analysis-row{
+
+    backdrop-filter:blur(24px);
+
+    box-shadow:
+    0 12px 40px rgba(0,0,0,0.24);
+}
+
+body.frosted .topbar{
+
+    background:
+    rgba(255,255,255,0.18);
+
+    backdrop-filter:
+    blur(24px);
+
+    border:
+    1px solid rgba(255,255,255,0.16);
 }
 
 /* ================================================= */
