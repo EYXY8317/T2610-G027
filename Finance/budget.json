@@ -1,17 +1,12 @@
 [
     {
-        "username": "test",
+        "username": "Ethan",
         "category": "Food",
-        "amount": 900.0
+        "amount": 200.0
     },
     {
-        "username": "test",
+        "username": "Ethan",
         "category": "Entertainment",
-        "amount": 300.0
-    },
-    {
-        "username": "test",
-        "category": "Travel",
-        "amount": 100.0
+        "amount": 500.0
     }
 ]

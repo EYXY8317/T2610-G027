@@ -249,11 +249,30 @@ def add_financial():
 
         account = form.get("account")
         new_account = form.get("new_account")
+        purpose = form.get("purpose", "spending")
 
         if new_account:
+
             account = new_account
-            if not any(a["name"] == account for a in accounts):
-                accounts.append({"username": session["user"], "name": account})
+
+            if not any(
+
+                a["name"] == account
+                and a["username"] == session["user"]
+
+                for a in accounts
+            ):
+
+                accounts.append({
+
+                    "username": session["user"],
+
+                    "name": account,
+
+                    "purpose": purpose
+
+                })
+
                 save_data(f_accounts, accounts)
 
         if not account:
@@ -263,6 +282,43 @@ def add_financial():
             amount = float(form.get("amount"))
         except:
             return render_template("add.html", error="Invalid amount", accounts=user_accounts)
+
+        if form.get("type") == "transfer":
+
+            to_account = form.get("to_account")
+
+            if not to_account:
+                return render_template(
+                    "add.html",
+                    error="Transfer account required",
+                    accounts=user_accounts
+                )
+
+            records = load_data(f_expense, [])
+
+            records.append({
+                "username": session["user"],
+                "date": form.get("date"),
+                "type": "expense",
+                "category": "Transfer Out",
+                "account": account,
+                "item": f"Transfer to {to_account}",
+                "amount": amount
+            })
+
+            records.append({
+                "username": session["user"],
+                "date": form.get("date"),
+                "type": "income",
+                "category": "Transfer In",
+                "account": to_account,
+                "item": f"Transfer from {account}",
+                "amount": amount
+            })
+
+            save_data(f_expense, records)
+
+            return redirect(url_for("view_financial"))
 
         record = {
             "username": session["user"],
@@ -409,6 +465,7 @@ def update_financial(idx):
 
         form = request.form
 
+        purpose = form.get("purpose", "spending")
         date = form.get("date") or record["date"]
         type_ = form.get("type") or record["type"]
         category = form.get("category") or record.get("category", "-")
@@ -424,7 +481,8 @@ def update_financial(idx):
             if not any(a["name"] == account and a["username"] == user for a in accounts):
                 accounts.append({
                     "username": user,
-                    "name": account
+                    "name": account,
+                    "purpose": "spending"
                 })
                 save_data(f_accounts, accounts)
 
@@ -603,15 +661,17 @@ def summary():
 
     # ================= TOTALS =================
     income = sum(
-        r.get("amount", 0)
+        r["amount"]
         for r in month_records
-        if r.get("type") == "income"
+        if r["type"] == "income"
+        and r.get("category") != "Transfer In"
     )
 
     expense = sum(
-        r.get("amount", 0)
+        r["amount"]
         for r in month_records
-        if r.get("type") == "expense"
+        if r["type"] == "expense"
+        and r.get("category") != "Transfer Out"
     )
 
     saving = sum(
@@ -1196,6 +1256,7 @@ def edit_goal(goal_id):
                 goal=goal,
                 error="All fields required",
                 wallpaper=get_user_wallpaper(),
+                user=get_current_user()
             )
 
         try:
@@ -1208,6 +1269,7 @@ def edit_goal(goal_id):
                 goal=goal,
                 error="Invalid target amount",
                 wallpaper=get_user_wallpaper(),
+                user=get_current_user()
             )
 
         # update data
@@ -1226,6 +1288,8 @@ def edit_goal(goal_id):
         goal=goal,
 
         wallpaper=get_user_wallpaper(),
+
+        user=get_current_user()
 
     )
 
@@ -1274,6 +1338,8 @@ def finance_home():
 
     goals = load_data(f_goals, [])
 
+    accounts = load_data(f_accounts, [])
+
     now = datetime.now()
 
     current_month = now.strftime("%Y-%m")
@@ -1309,6 +1375,7 @@ def finance_home():
         for r in month_records
 
         if r.get("type") == "income"
+        and r.get("category") != "Transfer In"
 
     )
 
@@ -1319,18 +1386,48 @@ def finance_home():
         for r in month_records
 
         if r.get("type") == "expense"
+        and r.get("category") != "Transfer Out"
 
     )
 
-    saving = sum(
+    saving = 0
 
-        r.get("amount", 0)
+    user_accounts = [
 
-        for r in month_records
+        a for a in accounts
 
-        if r.get("type") == "saving"
+        if a.get("username") == user
 
-    )
+    ]
+
+    savings_accounts = [
+
+        a["name"]
+
+        for a in user_accounts
+
+        if a.get("purpose") == "savings"
+
+    ]
+
+    for acc in savings_accounts:
+
+        balance_acc = 0
+
+        for r in user_records:
+
+            if r.get("account") != acc:
+                continue
+
+            if r.get("type") == "income":
+
+                balance_acc += r.get("amount", 0)
+
+            elif r.get("type") == "expense":
+
+                balance_acc -= r.get("amount", 0)
+
+        saving += balance_acc
 
     balance = income - expense
 
@@ -1356,7 +1453,10 @@ def finance_home():
 
     for r in month_records:
 
-        if r.get("type") == "expense":
+        if (
+            r.get("type") == "expense"
+            and r.get("category") != "Transfer Out"
+        ):
 
             cat = r.get("category", "Other")
 
@@ -1470,8 +1570,11 @@ def finance_home():
 
     savings_rate = 0
 
-    if income > 0:
-        savings_rate = round((saving / income) * 100)
+    if saving > 0 and income > 0:
+
+        savings_rate = round(
+            (saving / income) * 100
+        )
 
     # =================================================
     # RENDER
@@ -1503,9 +1606,9 @@ def finance_home():
 
         savings_rate=savings_rate,
 
-        theme=current_user.get("theme", "adaptive"),
+        theme=(current_user or {}).get("theme", "adaptive"),
 
-        ui_style=current_user.get("ui_style", "premium"),
+        ui_style=(current_user or {}).get("ui_style", "premium"),
     )
 
 # ================= CALENDAR STATIC =================

@@ -1,47 +1,47 @@
 [
     {
-        "username": "test",
-        "date": "2026-05-01",
+        "username": "Ethan",
+        "date": "2026-06-01",
         "type": "income",
         "category": "Salary",
+        "account": "TnG",
+        "item": "Salary",
+        "amount": 10000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Bonus",
         "account": "CIMB",
-        "item": "",
-        "amount": 3500.0
+        "item": "Minimum cash",
+        "amount": 20.0
     },
     {
-        "username": "test",
-        "date": "2026-05-02",
-        "type": "saving",
-        "category": "Savings",
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "expense",
+        "category": "Transfer Out",
+        "account": "TnG",
+        "item": "Transfer to CIMB",
+        "amount": 200.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Transfer In",
+        "account": "CIMB",
+        "item": "Transfer from TnG",
+        "amount": 200.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Bonus",
         "account": "MAE",
-        "item": "",
-        "amount": 500.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-14",
-        "type": "expense",
-        "category": "Entertainment",
-        "account": "TnG",
-        "item": "pokemon",
-        "amount": 300.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-29",
-        "type": "expense",
-        "category": "Travel",
-        "account": "TnG",
-        "item": "Grab",
-        "amount": 50.0
-    },
-    {
-        "username": "test",
-        "date": "2026-05-15",
-        "type": "expense",
-        "category": "Food",
-        "account": "TnG",
-        "item": "lunch",
-        "amount": 800.0
+        "item": "Minimum cash",
+        "amount": 10.0
     }
 ]
