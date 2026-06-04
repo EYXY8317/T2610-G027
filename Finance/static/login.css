@@ -221,12 +221,18 @@ body{
 
 }
 
-/* ===== FORGOT PASSWORD ===== */
-.forgot{
-
-    display:block;
+/* ===== FORGOT LINKS ===== */
+.forgot-links{
 
     text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.forgot-links a{
+
+    display:block;
 
     text-decoration:none;
 
@@ -234,13 +240,11 @@ body{
 
     font-size:17px;
 
-    margin-top:-5px;
-
-    margin-bottom:30px;
+    margin-bottom:8px;
 
 }
 
-.forgot:hover{
+.forgot-links a:hover{
 
     text-decoration:underline;
 
@@ -276,31 +280,6 @@ button{
 button:hover{
 
     background:#5e3924;
-
-}
-
-/* ===== FORGOT USERNAME ===== */
-.extra-links{
-
-    text-align:center;
-
-    margin-top:18px;
-
-}
-
-.extra-links a{
-
-    text-decoration:none;
-
-    color:#7a4e33;
-
-    font-size:15px;
-
-}
-
-.extra-links a:hover{
-
-    text-decoration:underline;
 
 }
 

@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Life Pages</title>
-<link rel="stylesheet" href="/Finance_static/login.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 
 <!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -63,24 +63,23 @@
 
             </div>
 
-            <!-- FORGOT PASSWORD -->
+           <div class="forgot-links">
+
             <a href="/forgot" class="forgot">
-                Forgot Password?
+               Forgot Password?
             </a>
 
-            <!-- LOGIN BUTTON -->
-            <button type="submit">
+            <a href="/forgot_username" class="forgot-username">
+               Forgot Username?
+            </a>
+
+        </div>
+
+        <button type="submit">
                 Login
-            </button>
+        </button>
 
-        </form>
-
-        <!-- FORGOT USERNAME -->
-        <div class="extra-links">
-
-            <a href="/forgot_username">
-                Forgot Username?
-            </a>
+</form>
 
         </div>
 
