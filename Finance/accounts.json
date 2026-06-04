@@ -16,6 +16,7 @@
     },
     {
         "username": "Ethan",
-        "name": "MAE Wallet"
+        "name": "MAE Wallet",
+        "purpose": "spending"
     }
 ]

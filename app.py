@@ -247,6 +247,14 @@ def add_financial():
     if request.method == "POST":
         form = request.form
 
+        template_data = {
+            "accounts": user_accounts,
+            "categories": CATEGORY_MAP,
+            "wallpaper": get_user_wallpaper(),
+            "user": get_current_user(),
+            "form_data": form
+        }
+        
         account = form.get("account")
         new_account = form.get("new_account")
         purpose = form.get("purpose", "spending")
@@ -276,12 +284,33 @@ def add_financial():
                 save_data(f_accounts, accounts)
 
         if not account:
-            return render_template("add.html", error="Account required", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Account required",
+                **template_data
+            )
+
+        amount_raw = form.get("amount")
+
+        if not amount_raw:
+            return render_template(
+                "add.html",
+                error="Amount is required",
+                **template_data
+            )
 
         try:
-            amount = float(form.get("amount"))
+            amount = float(amount_raw)
+
+            if amount <= 0:
+                raise ValueError
+
         except:
-            return render_template("add.html", error="Invalid amount", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Amount must be greater than 0",
+                **template_data
+            )
 
         if form.get("type") == "transfer":
 
@@ -291,7 +320,7 @@ def add_financial():
                 return render_template(
                     "add.html",
                     error="Transfer account required",
-                    accounts=user_accounts
+                    **template_data
                 )
 
             records = load_data(f_expense, [])
@@ -337,11 +366,11 @@ def add_financial():
         return redirect(url_for("view_financial"))
 
     return render_template(
-    "add.html",
-    accounts=user_accounts,
-    categories=CATEGORY_MAP,
-    wallpaper=get_user_wallpaper(),
-    user=get_current_user(),
+        "add.html",
+        accounts=user_accounts,
+        categories=CATEGORY_MAP,
+        wallpaper=get_user_wallpaper(),
+        user=get_current_user()
     )
 
 # ================= VIEW =================
@@ -470,7 +499,29 @@ def update_financial(idx):
         type_ = form.get("type") or record["type"]
         category = form.get("category") or record.get("category", "-")
         item = form.get("item") or record.get("item", "-")
-        amount = form.get("amount") or record["amount"]
+        amount_raw = form.get("amount")
+
+        if not amount_raw:
+            return render_template(
+                "update.html",
+                record=record,
+                accounts=user_accounts,
+                error="Amount is required"
+            )
+
+        try:
+            amount = float(amount_raw)
+
+            if amount <= 0:
+                raise ValueError
+
+        except:
+            return render_template(
+                "update.html",
+                record=record,
+                accounts=user_accounts,
+                error="Amount must be greater than 0"
+            )
 
         account = form.get("account")
         new_account = form.get("new_account")
@@ -674,12 +725,6 @@ def summary():
         and r.get("category") != "Transfer Out"
     )
 
-    saving = sum(
-        r.get("amount", 0)
-        for r in month_records
-        if r.get("type") == "saving"
-    )
-
     balance = income - expense
 
     # ================= CATEGORY TOTALS =================
@@ -687,7 +732,10 @@ def summary():
 
     for r in month_records:
 
-        if r.get("type") == "expense":
+        if (
+            r.get("type") == "expense"
+            and r.get("category") != "Transfer Out"
+        ):
 
             category = r.get(
                 "category",
@@ -815,13 +863,19 @@ def summary():
     yearly_income = sum(
         r.get("amount", 0)
         for r in year_records
-        if r.get("type") == "income"
+        if (
+            r.get("type") == "income"
+            and r.get("category") != "Transfer In"
+        )
     )
 
     yearly_expense = sum(
         r.get("amount", 0)
         for r in year_records
-        if r.get("type") == "expense"
+        if (
+            r.get("type") == "expense"
+            and r.get("category") != "Transfer Out"
+        )
     )
 
     yearly_balance = yearly_income - yearly_expense
@@ -841,6 +895,7 @@ def summary():
 
             if (
                 r.get("type") == "income"
+                and r.get("category") != "Transfer In"
                 and r.get("date", "").startswith(key)
             )
 
@@ -854,6 +909,7 @@ def summary():
 
             if (
                 r.get("type") == "expense"
+                and r.get("category") != "Transfer Out"
                 and r.get("date", "").startswith(key)
             )
 
@@ -872,6 +928,8 @@ def summary():
     # ================= GOALS =================
     goals_data = load_data(f_goals, [])
 
+    accounts = load_data(f_accounts, [])
+
     user_goals = [
 
         g for g in goals_data
@@ -880,6 +938,50 @@ def summary():
 
     ]
 
+    # ================= SAVINGS ACCOUNTS =================
+
+    saving = 0
+
+    user_accounts = [
+
+        a for a in accounts
+
+        if a.get("username") == user
+
+    ]
+
+    savings_accounts = [
+
+        a["name"]
+
+        for a in user_accounts
+
+        if a.get("purpose") == "savings"
+
+    ]
+
+    for acc in savings_accounts:
+
+        balance_acc = 0
+
+        for r in records:
+
+            if (
+                r.get("username") != user
+                or r.get("account") != acc
+            ):
+                continue
+
+            if r.get("type") == "income":
+
+                balance_acc += r.get("amount", 0)
+
+            elif r.get("type") == "expense":
+
+                balance_acc -= r.get("amount", 0)
+
+        saving += balance_acc
+    
     short_goals = []
     long_goals = []
 

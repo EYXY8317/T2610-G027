@@ -93,22 +93,6 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         </div>
 
-        <!-- ===== ERROR ===== -->
-
-        {% if error %}
-
-        <div class="insight-box">
-
-            <p class="negative">
-
-                {{ error }}
-
-            </p>
-
-        </div>
-
-        {% endif %}
-
         <!-- ===== SUCCESS ===== -->
 
         {% if success %}
@@ -130,6 +114,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <form
         method="POST"
         class="add-form"
+        onsubmit="return validateAmount()"
         >
 
             <!-- ROW 1 -->
@@ -250,6 +235,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     <select
                     name="account"
                     id="accountSelect"
+                    required
                     >
 
                         <option value="">
@@ -388,6 +374,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     name="amount"
                     value="{{ form_data.amount if form_data else '0.00' }}"
                     readonly
+                    required
                 >
 
             </div>
@@ -651,6 +638,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     amountInput.focus();
+
+    function validateAmount() {
+
+        const amount =
+            parseFloat(
+                document.getElementById("amountInput").value
+            );
+
+        if (amount <= 0) {
+
+            document
+                .getElementById("amountInput")
+                .setCustomValidity(
+                    "Please enter an amount greater than RM 0.00"
+                );
+
+            document
+                .getElementById("amountInput")
+                .reportValidity();
+
+            return false;
+        }
+
+        document
+            .getElementById("amountInput")
+            .setCustomValidity("");
+
+        return true;
+    }
 
 });
 
