@@ -496,14 +496,14 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% if short_goals or long_goals %}
 
-            {% for goal in short_goals %}
+            {% for goal in all_goals %}
 
             <div class="budget-modern hover-card">
 
                 <div class="budget-top">
 
                     <strong>
-                        {{ goal.name }}
+                        🟢 {{ goal.name }}
                     </strong>
 
                     <strong>
@@ -538,14 +538,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     {{ goal.percent|round(0) }}%
 
-                    {% if goal.percent >= 100 %}
-                        🎉 Completed
+                    {% if goal.goal_type == "short" %}
 
-                    {% elif goal.percent >= 80 %}
-                        ⚠ Almost there
+                        🟢 Short Term
 
                     {% else %}
-                        🚀 In Progress
+
+                        🔵 Long Term
 
                     {% endif %}
 
@@ -556,7 +555,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             <br>
 
             {% endfor %}
-
+            
         {% else %}
 
             <p>

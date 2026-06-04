@@ -1032,7 +1032,9 @@ def summary():
 
             "display_percent": min(percent, 100),
 
-            "status": status
+            "status": status,
+
+            "goal_type": g.get("type")
 
         }
 
@@ -1043,6 +1045,8 @@ def summary():
         else:
 
             long_goals.append(goal_data)
+
+    all_goals = short_goals + long_goals
 
     # ================= RENDER =================
     return render_template(
@@ -1086,6 +1090,8 @@ def summary():
 
         long_goals=long_goals,
 
+        all_goals=all_goals,
+        
         wallpaper=get_user_wallpaper(),
 
         user=get_current_user(),
