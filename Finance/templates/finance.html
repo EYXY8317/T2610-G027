@@ -93,7 +93,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <p>
 
-                Current Balance
+                Available Balance
 
             </p>
 
@@ -102,6 +102,12 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 RM {{ "%.2f"|format(balance) }}
 
             </h2>
+
+            <span class="hero-balance-caption">
+
+                Ready to spend
+
+            </span>
 
         </div>
 
@@ -114,15 +120,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <div class="overview-box hover-card">
 
             <p>
-
-                Monthly Income
-
+                Available Balance
             </p>
 
             <h3>
-
-                RM {{ "%.2f"|format(income) }}
-
+                RM {{ "%.2f"|format(balance) }}
             </h3>
 
         </div>
@@ -130,31 +132,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <div class="overview-box hover-card">
 
             <p>
-
-                Monthly Expense
-
+                Savings Balance
             </p>
 
             <h3>
-
-                RM {{ "%.2f"|format(expense) }}
-
-            </h3>
-
-        </div>
-
-        <div class="overview-box hover-card">
-
-            <p>
-
-                Savings
-
-            </p>
-
-            <h3>
-
                 RM {{ "%.2f"|format(saving) }}
-
             </h3>
 
         </div>
@@ -162,15 +144,23 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <div class="overview-box hover-card">
 
             <p>
-
-                Top Spending Category
-
+                Monthly Income
             </p>
 
             <h3>
+                RM {{ "%.2f"|format(income) }}
+            </h3>
 
-                {{ top_category if top_category else "None" }}
+        </div>
 
+        <div class="overview-box hover-card">
+
+            <p>
+                Monthly Expense
+            </p>
+
+            <h3>
+                RM {{ "%.2f"|format(expense) }}
             </h3>
 
         </div>
@@ -202,11 +192,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     <div>
 
                         <div class="analysis-title">
-                            Current Balance
+                            Available Balance
                         </div>
 
                         <div class="analysis-desc">
-                            Your total account balance
+                            Money available to spend
                         </div>
 
                     </div>
@@ -224,17 +214,17 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 <div class="analysis-left">
 
                     <div class="analysis-icon">
-                        📊
+                        🏦
                     </div>
 
                     <div>
 
                         <div class="analysis-title">
-                            Top Spending Category
+                            Savings Balance
                         </div>
 
                         <div class="analysis-desc">
-                            You spend the most on this category
+                            Stored in savings accounts
                         </div>
 
                     </div>
@@ -242,7 +232,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 </div>
 
                 <div class="analysis-value">
-                    {{ top_category if top_category else "None" }}
+                    RM {{ "%.2f"|format(saving) }}
                 </div>
 
             </div>
@@ -298,11 +288,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 </div>
 
                 <div class="analysis-value">
+
                     {% if warning_budgets %}
                         Warning
                     {% else %}
                         Healthy
                     {% endif %}
+
                 </div>
 
             </div>
