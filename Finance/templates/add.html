@@ -327,13 +327,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     <option value="spending">
 
-                        Spending
+                        Spending Account
 
                     </option>
 
                     <option value="savings">
 
-                        Savings
+                        Savings Account
 
                     </option>
 
@@ -608,34 +608,60 @@ document.addEventListener("DOMContentLoaded", function () {
             formatted;
     }
 
-    document.addEventListener("keydown", function(e) {
-
-        if (e.key >= "0" && e.key <= "9") {
-
-            value =
-                value * 10 + parseInt(e.key);
-
-        }
-
-        else if (e.key === "Backspace") {
-
-            value =
-                Math.floor(value / 10);
-
-        }
-
-        else {
-
-            return;
-        }
-
-        e.preventDefault();
-
-        updateAmount();
-
-    });
-
     updateAmount();
+
+    amountDisplay.setAttribute(
+        "tabindex",
+        "0"
+    );
+
+    amountDisplay.addEventListener(
+        "keydown",
+        function(e) {
+
+            if (
+                e.key >= "0"
+                &&
+                e.key <= "9"
+            ) {
+
+                value =
+                    value * 10 +
+                    parseInt(e.key);
+
+            }
+
+            else if (
+                e.key === "Backspace"
+            ) {
+
+                value =
+                    Math.floor(
+                        value / 10
+                    );
+
+            }
+
+            else {
+
+                return;
+            }
+
+            e.preventDefault();
+
+            updateAmount();
+
+        }
+    );
+
+    amountDisplay.addEventListener(
+        "click",
+        function() {
+
+            amountDisplay.focus();
+
+        }
+    );
 
     function validateAmount() {
 

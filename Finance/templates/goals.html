@@ -376,13 +376,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         <input
                             type="number"
                             name="amount"
-                            placeholder="Add savings"
-                            value="0.00"
+                            class="goal-amount-input"
+                            placeholder="0.00"
                             step="0.01"
                             min="0.01"
                             required
                         >
-
+                        
                     </div>
 
                     <br><br>
@@ -598,8 +598,8 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         <input
                             type="number"
                             name="amount"
-                            placeholder="Add savings"
-                            value="0.00"
+                            class="goal-amount-input"
+                            placeholder="0.00"
                             step="0.01"
                             min="0.01"
                             required
@@ -706,10 +706,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-</script>
-
-<script>
-
 (function () {
 
     const body = document.body;
@@ -808,10 +804,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })();
 
-</script>
-
-<script>
-
 document.addEventListener("DOMContentLoaded", function () {
 
     const accountSelects =
@@ -859,6 +851,80 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+const goalAmountInput =
+    document.getElementById(
+        "goalAmountInput"
+    );
+
+const goalAmountDisplay =
+    document.getElementById(
+        "goalAmountDisplay"
+    );
+
+let goalValue = 0;
+
+function updateGoalAmount() {
+
+    const formatted =
+        (goalValue / 100).toFixed(2);
+
+    goalAmountInput.value =
+        formatted;
+
+    goalAmountDisplay.textContent =
+        formatted;
+}
+
+updateGoalAmount();
+
+goalAmountDisplay.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (
+            e.key >= "0"
+            &&
+            e.key <= "9"
+        ) {
+
+            goalValue =
+                goalValue * 10 +
+                parseInt(e.key);
+
+        }
+
+        else if (
+            e.key === "Backspace"
+        ) {
+
+            goalValue =
+                Math.floor(
+                    goalValue / 10
+                );
+
+        }
+
+        else {
+
+            return;
+        }
+
+        e.preventDefault();
+
+        updateGoalAmount();
+
+    }
+);
+
+goalAmountDisplay.addEventListener(
+    "click",
+    function() {
+
+        goalAmountDisplay.focus();
+
+    }
+);
 
 </script>
 </body>
