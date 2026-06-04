@@ -105,6 +105,8 @@ body{
 
     transition:0.3s;
 
+    text-align:center;
+
 }
 
 .register-btn:hover{
@@ -128,7 +130,6 @@ body{
     padding:0 70px;
 
     gap:10px;
-
 
 }
 
@@ -166,6 +167,17 @@ body{
 
     box-sizing:border-box;
 
+    transition:0.3s;
+
+}
+
+/* ===== INPUT FOCUS ===== */
+.input-box:focus-within{
+
+    border-color:#9a6d4f;
+
+    box-shadow:0 0 0 4px rgba(154,109,79,0.12);
+
 }
 
 /* ===== INPUT ICON ===== */
@@ -196,14 +208,20 @@ body{
 
 }
 
-/* ===== EYE ICON ===== */
-.eye{
+/* ===== TOGGLE EYE ===== */
+.toggle-eye{
 
     cursor:pointer;
 
+    user-select:none;
+
+    font-size:20px;
+
+    margin-left:10px;
+
 }
 
-/* ===== FORGOT ===== */
+/* ===== FORGOT PASSWORD ===== */
 .forgot{
 
     display:block;
@@ -219,6 +237,12 @@ body{
     margin-top:-5px;
 
     margin-bottom:30px;
+
+}
+
+.forgot:hover{
+
+    text-decoration:underline;
 
 }
 
@@ -252,5 +276,56 @@ button{
 button:hover{
 
     background:#5e3924;
+
+}
+
+/* ===== FORGOT USERNAME ===== */
+.extra-links{
+
+    text-align:center;
+
+    margin-top:18px;
+
+}
+
+.extra-links a{
+
+    text-decoration:none;
+
+    color:#7a4e33;
+
+    font-size:15px;
+
+}
+
+.extra-links a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error-message{
+
+    color:red;
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:15px;
+
+}
+
+/* ===== SUCCESS MESSAGE ===== */
+.success-message{
+
+    color:green;
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:15px;
 
 }
