@@ -203,100 +203,6 @@ input[type="file"]{
     }
 }
 
-.theme-select{
-
-    width:100%;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    border:none;
-
-    margin-top:15px;
-
-    margin-bottom:12px;
-
-    background:white;
-
-    color:#2c241b;
-}
-
-.mini-btn{
-
-    width:100%;
-
-    border:none;
-
-    background:#7b5e4a;
-
-    color:white;
-
-    padding:12px;
-
-    border-radius:12px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:0.25s;
-}
-
-.mini-btn:hover{
-
-    background:#654a38;
-}
-
-.theme-select{
-
-    width:100%;
-
-    padding:12px;
-
-    border-radius:14px;
-
-    border:none;
-
-    margin-top:15px;
-
-    margin-bottom:12px;
-
-    background:white;
-
-    color:#2c241b;
-
-    font-weight:bold;
-}
-
-.mini-btn{
-
-    width:100%;
-
-    border:none;
-
-    background:#7b5e4a;
-
-    color:white;
-
-    padding:12px;
-
-    border-radius:14px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:0.25s;
-}
-
-.mini-btn:hover{
-
-    background:#654a38;
-
-    transform:translateY(-2px);
-}
-
 /* ================================================= */
 /* ================= THEME ENGINE ================== */
 /* ================================================= */
@@ -522,22 +428,14 @@ body.cozy{
 body.frosted{
 
     --bg-card:
-    rgba(255,255,255,0.22);
+    rgba(255,255,255,0.26);
 
     --bg-card-2:
-    rgba(255,255,255,0.14);
+    rgba(255,255,255,0.18);
 
-    --text-primary:
-    #f4f4f4;
+    --text-primary:#2f2f2f;
 
-    --text-secondary:
-    rgba(255,255,255,0.84);
-
-    --button-bg:
-    rgba(255,255,255,0.24);
-
-    --button-hover:
-    rgba(255,255,255,0.36);
+    --text-secondary:#5f5f5f;
 
     --border-color:
     rgba(255,255,255,0.16);
@@ -547,6 +445,18 @@ body.frosted{
 
     --shadow:
     0 12px 40px rgba(0,0,0,0.24);
+}
+
+body.frosted .topbar-links a:hover,
+body.frosted .topbar-actions a:hover{
+
+    background:
+    rgba(255,255,255,0.22);
+
+    color:
+    var(--text-primary);
+
+    border-radius:14px;
 }
 
 body.frosted .topbar-title,

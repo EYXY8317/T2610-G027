@@ -245,7 +245,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             <div class="overview-box hover-card">
 
-                <p>Savings</p>
+                <p>Total Saved</p>
 
                 <h3 class="saving-text">
                     RM {{ "%.2f"|format(saving) }}
@@ -496,14 +496,14 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% if short_goals or long_goals %}
 
-            {% for goal in short_goals %}
+            {% for goal in all_goals %}
 
             <div class="budget-modern hover-card">
 
                 <div class="budget-top">
 
                     <strong>
-                        {{ goal.name }}
+                        🟢 {{ goal.name }}
                     </strong>
 
                     <strong>
@@ -538,14 +538,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     {{ goal.percent|round(0) }}%
 
-                    {% if goal.percent >= 100 %}
-                        🎉 Completed
+                    {% if goal.goal_type == "short" %}
 
-                    {% elif goal.percent >= 80 %}
-                        ⚠ Almost there
+                        🟢 Short Term
 
                     {% else %}
-                        🚀 In Progress
+
+                        🔵 Long Term
 
                     {% endif %}
 
@@ -556,7 +555,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             <br>
 
             {% endfor %}
-
+            
         {% else %}
 
             <p>
@@ -601,6 +600,16 @@ new Chart(document.getElementById("pieChart"), {
 
         datasets: [{
 
+            borderColor:
+            document.body.classList.contains("frosted")
+            ? 'rgba(255,255,255,0.55)'
+            : '#ffffff',
+
+            borderWidth:
+            document.body.classList.contains("frosted")
+            ? 2
+            : 3,
+
             data: amounts,
 
             backgroundColor:
@@ -638,11 +647,11 @@ new Chart(document.getElementById("pieChart"), {
             : document.body.classList.contains("frosted")
 
             ? [
-                '#E0F2FE',
-                '#BAE6FD',
-                '#C4B5FD',
-                '#DDD6FE',
-                '#BFDBFE'
+                '#8FAFC8',
+                '#A3B8D8',
+                '#9AA7E8',
+                '#B4A7E8',
+                '#7FA3C9'
             ]
 
             : [
@@ -658,6 +667,7 @@ new Chart(document.getElementById("pieChart"), {
     },
 
     options: {
+        cutout: '72%',
 
         responsive: true,
 

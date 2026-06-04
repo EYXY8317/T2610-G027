@@ -240,13 +240,22 @@ def reset_password():
 def add_financial():
     if "user" not in session:
         return redirect(url_for("login"))
-
+    
     accounts = load_data(f_accounts, [])
+
     user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
     if request.method == "POST":
         form = request.form
 
+        template_data = {
+            "accounts": user_accounts,
+            "categories": CATEGORY_MAP,
+            "wallpaper": get_user_wallpaper(),
+            "user": get_current_user(),
+            "form_data": form
+        }
+        
         account = form.get("account")
         new_account = form.get("new_account")
         purpose = form.get("purpose", "spending")
@@ -276,12 +285,33 @@ def add_financial():
                 save_data(f_accounts, accounts)
 
         if not account:
-            return render_template("add.html", error="Account required", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Account required",
+                **template_data
+            )
+
+        amount_raw = form.get("amount")
+
+        if not amount_raw:
+            return render_template(
+                "add.html",
+                error="Amount is required",
+                **template_data
+            )
 
         try:
-            amount = float(form.get("amount"))
+            amount = float(amount_raw)
+
+            if amount <= 0:
+                raise ValueError
+
         except:
-            return render_template("add.html", error="Invalid amount", accounts=user_accounts)
+            return render_template(
+                "add.html",
+                error="Amount must be greater than 0",
+                **template_data
+            )
 
         if form.get("type") == "transfer":
 
@@ -291,7 +321,7 @@ def add_financial():
                 return render_template(
                     "add.html",
                     error="Transfer account required",
-                    accounts=user_accounts
+                    **template_data
                 )
 
             records = load_data(f_expense, [])
@@ -337,11 +367,11 @@ def add_financial():
         return redirect(url_for("view_financial"))
 
     return render_template(
-    "add.html",
-    accounts=user_accounts,
-    categories=CATEGORY_MAP,
-    wallpaper=get_user_wallpaper(),
-    user=get_current_user(),
+        "add.html",
+        accounts=user_accounts,
+        categories=CATEGORY_MAP,
+        wallpaper=get_user_wallpaper(),
+        user=get_current_user()
     )
 
 # ================= VIEW =================
@@ -470,7 +500,29 @@ def update_financial(idx):
         type_ = form.get("type") or record["type"]
         category = form.get("category") or record.get("category", "-")
         item = form.get("item") or record.get("item", "-")
-        amount = form.get("amount") or record["amount"]
+        amount_raw = form.get("amount")
+
+        if not amount_raw:
+            return render_template(
+                "update.html",
+                record=record,
+                accounts=user_accounts,
+                error="Amount is required"
+            )
+
+        try:
+            amount = float(amount_raw)
+
+            if amount <= 0:
+                raise ValueError
+
+        except:
+            return render_template(
+                "update.html",
+                record=record,
+                accounts=user_accounts,
+                error="Amount must be greater than 0"
+            )
 
         account = form.get("account")
         new_account = form.get("new_account")
@@ -674,12 +726,6 @@ def summary():
         and r.get("category") != "Transfer Out"
     )
 
-    saving = sum(
-        r.get("amount", 0)
-        for r in month_records
-        if r.get("type") == "saving"
-    )
-
     balance = income - expense
 
     # ================= CATEGORY TOTALS =================
@@ -687,7 +733,10 @@ def summary():
 
     for r in month_records:
 
-        if r.get("type") == "expense":
+        if (
+            r.get("type") == "expense"
+            and r.get("category") != "Transfer Out"
+        ):
 
             category = r.get(
                 "category",
@@ -815,13 +864,19 @@ def summary():
     yearly_income = sum(
         r.get("amount", 0)
         for r in year_records
-        if r.get("type") == "income"
+        if (
+            r.get("type") == "income"
+            and r.get("category") != "Transfer In"
+        )
     )
 
     yearly_expense = sum(
         r.get("amount", 0)
         for r in year_records
-        if r.get("type") == "expense"
+        if (
+            r.get("type") == "expense"
+            and r.get("category") != "Transfer Out"
+        )
     )
 
     yearly_balance = yearly_income - yearly_expense
@@ -841,6 +896,7 @@ def summary():
 
             if (
                 r.get("type") == "income"
+                and r.get("category") != "Transfer In"
                 and r.get("date", "").startswith(key)
             )
 
@@ -854,6 +910,7 @@ def summary():
 
             if (
                 r.get("type") == "expense"
+                and r.get("category") != "Transfer Out"
                 and r.get("date", "").startswith(key)
             )
 
@@ -872,6 +929,8 @@ def summary():
     # ================= GOALS =================
     goals_data = load_data(f_goals, [])
 
+    accounts = load_data(f_accounts, [])
+
     user_goals = [
 
         g for g in goals_data
@@ -880,12 +939,68 @@ def summary():
 
     ]
 
+    # ================= SAVINGS ACCOUNTS =================
+
+    saving = 0
+
+    user_accounts = [
+
+        a for a in accounts
+
+        if a.get("username") == user
+
+    ]
+
+    savings_accounts = [
+
+        a["name"]
+
+        for a in user_accounts
+
+        if a.get("purpose") == "savings"
+
+    ]
+
+    for acc in savings_accounts:
+
+        balance_acc = 0
+
+        for r in records:
+
+            if (
+                r.get("username") != user
+                or r.get("account") != acc
+            ):
+                continue
+
+            if r.get("type") == "income":
+
+                balance_acc += r.get("amount", 0)
+
+            elif r.get("type") == "expense":
+
+                balance_acc -= r.get("amount", 0)
+
+        saving += balance_acc
+    
     short_goals = []
     long_goals = []
 
+    records = load_data(f_expense, [])
+
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        saved = 0
+
+        for r in records:
+
+            if (
+                r.get("username") == user
+                and r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g["id"]
+            ):
+
+                saved += r.get("amount", 0)
 
         target = g.get("target", 0)
 
@@ -917,7 +1032,9 @@ def summary():
 
             "display_percent": min(percent, 100),
 
-            "status": status
+            "status": status,
+
+            "goal_type": g.get("type")
 
         }
 
@@ -928,6 +1045,8 @@ def summary():
         else:
 
             long_goals.append(goal_data)
+
+    all_goals = short_goals + long_goals
 
     # ================= RENDER =================
     return render_template(
@@ -971,6 +1090,8 @@ def summary():
 
         long_goals=long_goals,
 
+        all_goals=all_goals,
+        
         wallpaper=get_user_wallpaper(),
 
         user=get_current_user(),
@@ -1043,9 +1164,7 @@ def goals():
 
                 "type": goal_type,
 
-                "target": target,
-
-                "saved": 0
+                "target": target
             })
 
             save_data(f_goals, goals)
@@ -1055,6 +1174,7 @@ def goals():
         # ===== SAVE MONEY INTO GOAL =====
         elif action == "save":
 
+            goal_id = int(request.form.get("goal_id"))
             goal_name = request.form.get("goal_name")
             amount = request.form.get("amount")
             account = request.form.get("account")
@@ -1088,17 +1208,29 @@ def goals():
 
                     save_data(f_accounts, accounts)
 
-            for g in goals:
+            records = load_data(f_expense, [])
 
-                if (
-                    g.get("username") == user
-                    and g.get("name") == goal_name
-                ):
+            records.append({
 
-                    g["saved"] = g.get("saved", 0) + amount
-                    break
+                "username": user,
 
-            save_data(f_goals, goals)
+                "date": datetime.now().strftime("%Y-%m-%d"),
+
+                "type": "expense",
+
+                "category": "Goal Savings",
+
+                "goal_id": goal_id,
+
+                "account": account,
+
+                "item": f"Goal: {goal_name}",
+
+                "amount": amount
+
+            })
+
+            save_data(f_expense, records)
 
             return redirect(url_for("goals"))
 
@@ -1117,7 +1249,21 @@ def goals():
 
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        records = load_data(f_expense, [])
+
+        saved = sum(
+
+            r.get("amount", 0)
+
+            for r in records
+
+            if (
+                r.get("username") == user
+                and r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g.get("id")
+            )
+
+        )
         target = g.get("target", 0)
 
         percent = (
@@ -1540,7 +1686,16 @@ def finance_home():
 
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        saved = 0
+
+        for r in user_records:
+
+            if (
+                r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g["id"]
+            ):
+
+                saved += r.get("amount", 0)
 
         target = g.get("target", 0)
 
