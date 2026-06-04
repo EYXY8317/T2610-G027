@@ -167,3 +167,26 @@
 
 }
 
+#weather-hour-widget {
+
+    left: 100px;
+
+    top: 100px;
+
+}
+
+#weather-day-widget {
+
+    left: 550px;
+
+    top: 100px;
+
+}
+
+#quote-widget {
+
+    left: 100px;
+
+    top: 400px;
+
+}

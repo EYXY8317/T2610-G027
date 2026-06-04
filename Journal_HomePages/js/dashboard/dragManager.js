@@ -1,3 +1,8 @@
+import {
+    applyGapSnap
+}
+from "./gapSnap.js";
+
 export function enableDrag(
     widget,
     handle
@@ -13,6 +18,10 @@ export function enableDrag(
 
     const PADDING = 20;
 
+    const CENTER_SNAP = 12;
+
+    const WIDGET_SNAP = 12;
+
     handle.addEventListener(
         "pointerdown",
         (event) => {
@@ -20,6 +29,7 @@ export function enableDrag(
             isDragging = true;
 
             startX = event.clientX;
+
             startY = event.clientY;
 
             startLeft =
@@ -44,29 +54,30 @@ export function enableDrag(
             }
 
             const deltaX =
-                event.clientX -
-                startX;
+                event.clientX - startX;
 
             const deltaY =
-                event.clientY -
-                startY;
+                event.clientY - startY;
 
             let newLeft =
-                startLeft +
-                deltaX;
+                startLeft + deltaX;
 
             let newTop =
-                startTop +
-                deltaY;
+                startTop + deltaY;
 
             const dashboard =
                 document.getElementById(
                     "dashboard"
                 );
 
-            const snapLine =
+            const verticalLine =
                 document.getElementById(
                     "snap-line"
+                );
+
+            const horizontalLine =
+                document.getElementById(
+                    "snap-line-horizontal"
                 );
 
             const maxLeft =
@@ -104,32 +115,299 @@ export function enableDrag(
             const dashboardCenter =
                 dashboard.clientWidth / 2;
 
+            const widgetMiddle =
+                newTop +
+                widget.offsetHeight / 2;
+
+            const dashboardMiddle =
+                dashboard.clientHeight / 2;
+
             if (
                 Math.abs(
                     widgetCenter -
                     dashboardCenter
-                ) < 15
+                ) < CENTER_SNAP
             ) {
 
                 newLeft =
                     dashboardCenter -
                     widget.offsetWidth / 2;
 
-                snapLine.style.display =
+                verticalLine.style.display =
                     "block";
 
-                snapLine.style.left =
-                    dashboardCenter +
-                    "px";
+                verticalLine.style.left =
+                    dashboardCenter + "px";
 
             }
 
             else {
 
-                snapLine.style.display =
+                verticalLine.style.display =
                     "none";
 
             }
+
+            if (
+                Math.abs(
+                    widgetMiddle -
+                    dashboardMiddle
+                ) < CENTER_SNAP
+            ) {
+
+                newTop =
+                    dashboardMiddle -
+                    widget.offsetHeight / 2;
+
+                horizontalLine.style.display =
+                    "block";
+
+                horizontalLine.style.top =
+                    dashboardMiddle + "px";
+
+            }
+
+            else {
+
+                horizontalLine.style.display =
+                    "none";
+
+            }
+
+            const widgets =
+                document.querySelectorAll(
+                    ".widget"
+                );
+
+            widgets.forEach(
+                otherWidget => {
+
+                    if (
+                        otherWidget === widget
+                    ) {
+                        return;
+                    }
+
+                    const otherTop =
+                        otherWidget.offsetTop;
+
+                    const otherLeft =
+                        otherWidget.offsetLeft;
+
+                    const otherRight =
+                        otherLeft +
+                        otherWidget.offsetWidth;
+
+                    const otherBottom =
+                        otherTop +
+                        otherWidget.offsetHeight;
+
+                    const otherCenter =
+                        otherLeft +
+                        otherWidget.offsetWidth / 2;
+
+                    const otherMiddle =
+                        otherTop +
+                        otherWidget.offsetHeight / 2;
+
+                    const currentRight =
+                        newLeft +
+                        widget.offsetWidth;
+
+                    const currentBottom =
+                        newTop +
+                        widget.offsetHeight;
+
+                    const currentCenter =
+                        newLeft +
+                        widget.offsetWidth / 2;
+
+                    const currentMiddle =
+                        newTop +
+                        widget.offsetHeight / 2;
+
+                    if (
+                        Math.abs(
+                            newLeft -
+                            otherLeft
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherLeft;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentRight -
+                            otherRight
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherRight -
+                            widget.offsetWidth;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentCenter -
+                            otherCenter
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherCenter -
+                            widget.offsetWidth / 2;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            newTop -
+                            otherTop
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherTop;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentMiddle -
+                            otherMiddle
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherMiddle -
+                            widget.offsetHeight / 2;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            newTop -
+                            otherBottom
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherBottom;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            newTop -
+                            (
+                                otherBottom + 20
+                            )
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherBottom + 20;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentBottom -
+                            otherTop
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherTop -
+                            widget.offsetHeight;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentBottom -
+                            (
+                                otherTop - 20
+                            )
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newTop =
+                            otherTop -
+                            widget.offsetHeight -
+                            20;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            newLeft -
+                            otherRight
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherRight;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            newLeft -
+                            (
+                                otherRight + 20
+                            )
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherRight + 20;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentRight -
+                            otherLeft
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherLeft -
+                            widget.offsetWidth;
+
+                    }
+
+                    if (
+                        Math.abs(
+                            currentRight -
+                            (
+                                otherLeft - 20
+                            )
+                        ) < WIDGET_SNAP
+                    ) {
+
+                        newLeft =
+                            otherLeft -
+                            widget.offsetWidth -
+                            20;
+
+                    }
+
+                }
+
+            );
+
+            newLeft =
+                applyGapSnap(
+                    widget,
+                    newLeft
+                );
 
             widget.style.left =
                 newLeft + "px";
@@ -138,23 +416,23 @@ export function enableDrag(
                 newTop + "px";
 
         }
+
     );
 
     handle.addEventListener(
         "pointerup",
         () => {
 
-            const snapLine =
-                document.getElementById(
-                    "snap-line"
-                );
+            verticalLine.style.display =
+                "none";
 
-            snapLine.style.display =
+            horizontalLine.style.display =
                 "none";
 
             isDragging = false;
 
         }
+
     );
 
 }

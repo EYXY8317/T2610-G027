@@ -8,6 +8,11 @@ import {
 }
 from "./weatherDay.js";
 
+import {
+    createQuoteWidget
+}
+from "./quote.js";
+
 export const widgets = [
 
     {
@@ -26,6 +31,12 @@ export const widgets = [
 
         create:
             createWeatherDayWidget
-    }
+    },
+
+    {
+        id: "quote",
+        name: "Quote",
+        create: createQuoteWidget
+    }   
 
 ];

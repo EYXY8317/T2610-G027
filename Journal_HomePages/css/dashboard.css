@@ -132,9 +132,26 @@ body {
 
 }
 
-#snap-line {
+#snap-line,
+#snap-line-horizontal {
 
     display: none;
+
+    background:
+        rgba(
+            148,
+            163,
+            184,
+            0.45
+        );
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+}
+
+#snap-line {
 
     position: absolute;
 
@@ -144,16 +161,38 @@ body {
 
     width: 1.5px;
 
-    background:
-    rgba(
-        148,
-        163,
-        184,
-        0.4
-    );
+}
 
-    pointer-events: none;
+#snap-line-horizontal {
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    height: 1.5px;
+
+}
+
+#gap-guide {
+
+    display: none;
+
+    position: absolute;
+
+    height: 2px;
+
+    background:
+        rgba(
+            148,
+            163,
+            184,
+            0.6
+        );
 
     z-index: 9999;
+
+    pointer-events: none;
 
 }
