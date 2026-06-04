@@ -288,6 +288,39 @@ function togglePassword(inputId, eyeId) {
     }
 }
 
+/* ========================================= */
+/* ELEMENTS */
+/* ========================================= */
+
+const container =
+document.querySelector(".container"); // Main container
+
+const registerBtn =
+document.getElementById("registerBtn"); // Register button on Login panel
+
+const loginBtn =
+document.getElementById("loginBtn"); // Login button on Register panel
+
+/* ========================================= */
+/* SHOW REGISTER PANEL */
+/* ========================================= */
+
+registerBtn.addEventListener("click", () => {
+
+    container.classList.add("active"); // Add "active" class to trigger slide animation
+
+});
+
+/* ========================================= */
+/* SHOW LOGIN PANEL */
+/* ========================================= */
+
+loginBtn.addEventListener("click", () => {
+
+    container.classList.remove("active"); // Remove "active" class to return to Login panel
+
+});
+
 </script>
 
 </body>
