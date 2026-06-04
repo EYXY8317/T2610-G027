@@ -58,20 +58,20 @@ body{
 /* ===== LOGO ===== */
 .logo{
 
-    width:170px;
+    width:220px;
 
-    margin-bottom:25px;
+    margin-bottom:15px;
 
 }
 
 /* ===== LEFT TITLE ===== */
 .left-panel h1{
 
-    font-size:38px;
+    font-size:30px;
 
-    line-height:1.4;
+    line-height:1.25;
 
-    margin:15px 0;
+    margin:10px 0;
 
 }
 
