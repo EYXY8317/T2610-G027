@@ -1,25 +1,34 @@
 [
     {
         "username": "Ethan",
-        "date": "2026-06-01",
+        "date": "2026-05-01",
         "type": "income",
-        "category": "Bonus",
+        "category": "Salary",
         "account": "CIMB",
         "item": "",
         "amount": 20.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-01",
+        "date": "2026-05-01",
         "type": "income",
-        "category": "Bonus",
+        "category": "Salary",
         "account": "MAE",
         "item": "",
         "amount": 10.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-01",
+        "date": "2026-06-02",
+        "type": "income",
+        "category": "Salary",
+        "account": "TnG",
+        "item": "work",
+        "amount": 6000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-02",
         "type": "expense",
         "category": "Transfer Out",
         "account": "TnG",
@@ -28,7 +37,7 @@
     },
     {
         "username": "Ethan",
-        "date": "2026-06-01",
+        "date": "2026-06-02",
         "type": "income",
         "category": "Transfer In",
         "account": "CIMB",
@@ -42,111 +51,24 @@
         "category": "Food",
         "account": "TnG",
         "item": "Lunch",
-        "amount": 1000.0
+        "amount": 1500.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-19",
+        "date": "2026-06-04",
         "type": "expense",
         "category": "Entertainment",
         "account": "TnG",
         "item": "Pokemon",
-        "amount": 1700.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-24",
-        "type": "expense",
-        "category": "Food",
-        "account": "TnG",
-        "item": "Breakfast",
-        "amount": 20.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "income",
-        "category": "Salary",
-        "account": "CIMB",
-        "item": "",
-        "amount": 5000.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 4,
-        "account": "CIMB",
-        "item": "Goal: laptop",
-        "amount": 100.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Transfer Out",
-        "account": "TnG",
-        "item": "Transfer to MAE",
-        "amount": 50.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "income",
-        "category": "Transfer In",
-        "account": "MAE",
-        "item": "Transfer from TnG",
-        "amount": 50.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 6,
-        "account": "TnG",
-        "item": "Goal: House",
-        "amount": 1234.56
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 4,
-        "account": "TnG",
-        "item": "Goal: laptop",
-        "amount": 3000.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 7,
-        "account": "TnG",
-        "item": "Goal: Japan",
-        "amount": 5000.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 7,
-        "account": "TnG",
-        "item": "Goal: Japan",
         "amount": 2000.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-04",
+        "date": "2026-06-12",
         "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 8,
+        "category": "Transport",
         "account": "TnG",
-        "item": "Goal: phone",
-        "amount": 4999.0
+        "item": "a",
+        "amount": 10.0
     }
 ]

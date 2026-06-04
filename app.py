@@ -1575,7 +1575,29 @@ def finance_home():
 
         saving += balance_acc
 
-    balance = income - expense
+    spending_accounts = [
+
+        a["name"]
+
+        for a in user_accounts
+
+        if a.get("purpose") == "spending"
+    ]
+
+    balance = 0
+
+    for r in user_records:
+
+        if r.get("account") not in spending_accounts:
+            continue
+
+        if r.get("type") == "income":
+
+            balance += r.get("amount", 0)
+
+        elif r.get("type") == "expense":
+
+            balance -= r.get("amount", 0)
 
     # =================================================
     # RECENT RECORDS

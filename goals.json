@@ -42,5 +42,12 @@
         "name": "phone",
         "type": "short",
         "target": 4999.0
+    },
+    {
+        "id": 9,
+        "username": "Ethan",
+        "name": "House",
+        "type": "long",
+        "target": 500000.0
     }
 ]
