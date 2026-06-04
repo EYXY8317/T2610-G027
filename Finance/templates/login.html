@@ -22,9 +22,9 @@
     <!-- LEFT PANEL -->
     <div class="left-panel">
 
-        <img src="/calendar_static/logo.png" class="logo">
+        <img src="{{ url_for('img', filename='Life Pages Logo.png') }}" class="logo">
 
-        <h1>Log in to organize every page of your life!</h1>
+        <h1>Organize every page of your life!</h1>
 
         <p>Don't have an account?</p>
 
@@ -188,14 +188,8 @@
 
             </div>
 
-            <div class="password-rules"> 
-                Password must contain: 
-                <br> 
-                 • 8+ characters 
-                 • uppercase letter
-                <br> 
-                 • lowercase letter 
-                 • number 
+            <div class="password-rules">
+              Password:8+ chars • Uppercase • Lowercase • Number
             </div>
 
             <!-- SECURITY QUESTION -->
