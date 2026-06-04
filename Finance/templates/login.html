@@ -28,9 +28,14 @@
 
         <p>Don't have an account?</p>
 
-        <a href="/register" class="register-btn">
+        <button
+           type="button"
+           id="registerBtn"
+           class="register-btn">
+
             Register
-        </a>
+
+        </button>
 
     </div>
 
@@ -94,13 +99,11 @@
         <p class="success-message">{{ request.args.get("success") }}</p>
         {% endif %}
 
-        </div>
-    
     </div>
 
 </div>
 
-  <!-- REGISTER PANEL -->
+    <!-- REGISTER PANEL -->
     <div class="register-panel">
 
         <div class="left-panel">
@@ -167,10 +170,12 @@
 
             <div class="password-rules"> 
                 Password must contain: 
-                <br> • 8+ characters 
-                <br> • 1 uppercase letter
-                <br> • 1 lowercase letter 
-                <br> • 1 number 
+                <br> 
+                 • 8+ characters 
+                 • uppercase letter
+                <br> 
+                 • lowercase letter 
+                 • number 
             </div>
 
             <!-- SECURITY QUESTION -->
@@ -239,7 +244,13 @@
 
     </div>
 
+  </div>
+
 </div>
+
+</body>
+</html>
+
 
 
 
