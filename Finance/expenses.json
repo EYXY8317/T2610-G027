@@ -70,5 +70,33 @@
         "account": "CIMB",
         "item": "",
         "amount": 5000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 4,
+        "account": "CIMB",
+        "item": "Goal: laptop",
+        "amount": 100.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "expense",
+        "category": "Transfer Out",
+        "account": "TnG",
+        "item": "Transfer to MAE",
+        "amount": 50.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "income",
+        "category": "Transfer In",
+        "account": "MAE",
+        "item": "Transfer from TnG",
+        "amount": 50.0
     }
 ]
