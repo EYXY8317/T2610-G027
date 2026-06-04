@@ -311,6 +311,12 @@ body.dark .wallpaper-overlay{
     margin-bottom:24px;
 }
 
+#pieChart{
+
+    margin-top:20px;
+    margin-bottom:10px;
+}
+
 
 
 /* ================================================= */
@@ -370,7 +376,7 @@ body.dark .wallpaper-overlay{
 
     color:var(--text-soft);
 
-    font-size:0.9rem;
+    font-size:1rem;
 
     text-transform:uppercase;
 
@@ -682,7 +688,7 @@ label{
 
     letter-spacing:2px;
 
-    font-size:0.82rem;
+    font-size:0.95rem;
 
     color:var(--text-secondary);
 
@@ -817,7 +823,7 @@ label{
 
 .quick-title{
 
-    font-size:1.05rem;
+    font-size:1.12rem;
 
     font-weight:700;
 
@@ -830,9 +836,9 @@ label{
 
     margin-top:8px;
 
-    font-size:0.85rem;
+    font-size:1rem;
 
-    line-height:1.4;
+    line-height:1.5;
 
     color:var(--text-soft);
 
@@ -914,7 +920,9 @@ label{
 
 .analysis-title{
 
-    font-weight:700;
+    font-weight:800;
+
+    font-size:1.08rem;
 
     margin-bottom:4px;
 }
@@ -923,7 +931,9 @@ label{
 
     color:var(--text-soft);
 
-    font-size:0.9rem;
+    font-size:1rem;
+
+    line-height:1.5;
 }
 
 .analysis-value{
@@ -1414,7 +1424,17 @@ body.dark .goal-card select{
 
 .table-actions{
 
-    white-space:nowrap;
+    display:flex;
+
+    gap:12px;
+}
+
+.table-actions .edit-btn,
+.table-actions .delete-btn{
+
+    padding:4px 8px;
+
+    font-size:.85rem;
 }
 
 /* ================================================= */
@@ -1503,6 +1523,15 @@ body.dark .goal-card select{
     color:var(--text-main);
 }
 
+#amountDisplay{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    color:var(--text-main);
+
+}
 
 
 /* ================================================= */
@@ -1514,9 +1543,48 @@ body.dark .goal-card select{
     margin-top:10px;
 }
 
+.action-buttons{
 
+    display:flex;
 
+    gap:10px;
 
+    align-items:center;
+}
+
+.edit-btn,
+.delete-btn{
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+    transition:all .2s ease;
+}
+
+.edit-btn{
+
+    background:var(--edit-bg);
+
+    color:var(--edit-text);
+}
+
+.delete-btn{
+
+    background:var(--delete-bg);
+
+    color:var(--delete-text);
+}
+
+.edit-btn:hover,
+.delete-btn:hover{
+
+    transform:translateY(-2px);
+}
 
 /* ================================================= */
 /* ================================================= */
@@ -1685,6 +1753,15 @@ body.dark{
     --accent:#7c5a43;
 
     --accent-hover:#946b4f;
+
+
+    --edit-bg:rgba(100,130,255,.18);
+
+    --edit-text:#8ea0ff;
+
+    --delete-bg:rgba(255,90,90,.18);
+
+    --delete-text:#ff7d7d;
 }
 
 
@@ -1924,7 +2001,7 @@ body.dark .amount-card{
 /* ================= COZY BEIGE ==================== */
 /* ================================================= */
 
-body.cozy-beige{
+body.cozy{
 
     --text-main:#2c241b;
 
@@ -1933,22 +2010,30 @@ body.cozy-beige{
     --accent:#b88b5f;
 
     --accent-hover:#9f744c;
+
+    --edit-bg:rgba(168,134,102,.15);
+
+    --edit-text:#8b6a4e;
+
+    --delete-bg:rgba(200,120,120,.15);
+
+    --delete-text:#b35c5c;
 }
 
-body.cozy-beige .summary-card,
-body.cozy-beige .goal-card,
-body.cozy-beige .overview-box,
-body.cozy-beige .budget-modern,
-body.cozy-beige .amount-card{
+body.cozy .summary-card,
+body.cozy .goal-card,
+body.cozy .overview-box,
+body.cozy .budget-modern,
+body.cozy .amount-card{
 
     background:#f8f1e8;
 
     border:1px solid #dcc9b4;
 }
 
-body.cozy-beige input,
-body.cozy-beige textarea,
-body.cozy-beige select{
+body.cozy input,
+body.cozy textarea,
+body.cozy select{
 
     background:#fffaf5;
 
@@ -1957,7 +2042,7 @@ body.cozy-beige select{
     color:#2c241b;
 }
 
-body.cozy-beige .secondary-btn{
+body.cozy .secondary-btn{
 
     background:#fffaf5;
 
@@ -1983,6 +2068,14 @@ body.sakura{
     --accent:#e68aa6;
 
     --accent-hover:#d97d99;
+
+    --edit-bg:rgba(255,170,210,.18);
+
+    --edit-text:#d86ca0;
+
+    --delete-bg:rgba(255,120,150,.15);
+
+    --delete-text:#d94f7d;
 }
 
 body.sakura .summary-card,
@@ -2014,6 +2107,88 @@ body.sakura .secondary-btn{
     border:1px solid #f0ccd8;
 
     color:#4d3740;
+}
+
+/* ================================================= */
+/* =================== FROSTED ===================== */
+/* ================================================= */
+
+body.frosted{
+
+    --card-bg:rgba(255,255,255,0.65);
+
+    --card-bg-2:rgba(255,255,255,0.55);
+
+    --text-main:#2f2f2f;
+
+    --text-soft:#5f5f5f;
+
+    --text-primary:#2f2f2f;
+
+    --text-secondary:#5f5f5f;
+
+    --accent:rgba(255,255,255,0.24);
+
+    --accent-hover:rgba(255,255,255,0.36);
+
+    --border:rgba(255,255,255,0.16);
+
+    --edit-bg:rgba(90,120,255,.15);
+
+    --edit-text:#6c7cff;
+
+    --delete-bg:rgba(255,90,90,.15);
+
+    --delete-text:#ff5b5b;
+}
+
+body.frosted .active-link{
+
+    background:#7b8cff;
+
+    color:white !important;
+
+    border:
+    1px solid rgba(255,255,255,0.35);
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,0.08);
+}
+
+body.frosted .section-title,
+body.frosted .summary-main-title{
+
+    color:#2f2f2f;
+
+    text-shadow:none;
+}
+
+body.frosted .summary-card,
+body.frosted .goal-card,
+body.frosted .overview-box,
+body.frosted .budget-modern,
+body.frosted .amount-card,
+body.frosted .insight-box,
+body.frosted .records-table,
+body.frosted .quick-action-card,
+body.frosted .analysis-row{
+
+    backdrop-filter:blur(24px);
+
+    box-shadow:
+    0 12px 40px rgba(0,0,0,0.24);
+}
+
+body.frosted .topbar{
+
+    background:
+    rgba(255,255,255,0.18);
+
+    backdrop-filter:
+    blur(24px);
+
+    border:
+    1px solid rgba(255,255,255,0.16);
 }
 
 /* ================================================= */

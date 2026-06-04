@@ -27,15 +27,20 @@
         "username": "Ethan",
         "name": "laptop",
         "type": "short",
-        "target": 8000.0,
-        "saved": 4000.0
+        "target": 5000.0
     },
     {
-        "id": 5,
+        "id": 7,
         "username": "Ethan",
         "name": "Japan",
         "type": "long",
-        "target": 7000.0,
-        "saved": 2500.0
+        "target": 8000.0
+    },
+    {
+        "id": 8,
+        "username": "Ethan",
+        "name": "phone",
+        "type": "short",
+        "target": 4999.0
     }
 ]

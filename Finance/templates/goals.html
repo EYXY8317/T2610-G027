@@ -94,6 +94,18 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 value="create"
             >
 
+            <input
+                type="hidden"
+                name="goal_name"
+                value="{{ g.name }}"
+            >
+
+            <input
+                type="hidden"
+                name="goal_id"
+                value="{{ g.id }}"
+            >
+
             <div class="summary-grid">
 
                 <!-- GOAL NAME -->
@@ -231,18 +243,14 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     <div class="action-buttons">
 
-                        <a
-                        href="/edit_goal/{{ g.id }}"
-                        class="edit-btn"
-                        >
-                            Edit
+                        <a href="/edit_goal/{{ g.id }}"
+                        class="edit-btn">
+                        ✏️ Edit
                         </a>
 
-                        <a
-                        href="/delete_goal/{{ g.id }}"
-                        class="delete-btn"
-                        >
-                            Delete
+                        <a href="/delete_goal/{{ g.id }}"
+                        class="delete-btn">
+                        🗑 Delete
                         </a>
 
                     </div>
@@ -319,6 +327,12 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         value="{{ g.name }}"
                     >
 
+                    <input
+                        type="hidden"
+                        name="goal_id"
+                        value="{{ g.id }}"
+                    >
+                    
                     <div class="goal-add-savings-row">
 
                         <div class="goal-account-group">
@@ -539,6 +553,12 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         value="{{ g.name }}"
                     >
 
+                    <input
+                        type="hidden"
+                        name="goal_id"
+                        value="{{ g.id }}"
+                    >
+
                     <div class="goal-add-savings-row">
 
                         <select name="account" required>
@@ -579,8 +599,10 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                             type="number"
                             name="amount"
                             placeholder="Add savings"
-                            value="{{ form_data.amount if form_data else '0.00' }}"
-                            readonly
+                            value="0.00"
+                            step="0.01"
+                            min="0.01"
+                            required
                         >
 
                     </div>

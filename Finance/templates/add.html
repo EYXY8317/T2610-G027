@@ -93,22 +93,6 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         </div>
 
-        <!-- ===== ERROR ===== -->
-
-        {% if error %}
-
-        <div class="insight-box">
-
-            <p class="negative">
-
-                {{ error }}
-
-            </p>
-
-        </div>
-
-        {% endif %}
-
         <!-- ===== SUCCESS ===== -->
 
         {% if success %}
@@ -130,6 +114,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <form
         method="POST"
         class="add-form"
+        onsubmit="return validateAmount()"
         >
 
             <!-- ROW 1 -->
@@ -250,6 +235,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     <select
                     name="account"
                     id="accountSelect"
+                    required
                     >
 
                         <option value="">
@@ -377,17 +363,18 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             <div class="amount-card">
 
                 <p>
-
                     Amount (RM)
-
                 </p>
 
+                <div id="amountDisplay">
+                    {{ form_data.amount if form_data else '0.00' }}
+                </div>
+
                 <input
-                    type="text"
+                    type="hidden"
                     id="amountInput"
                     name="amount"
                     value="{{ form_data.amount if form_data else '0.00' }}"
-                    readonly
                 >
 
             </div>
@@ -597,44 +584,43 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateAccountUI();
 
-    // ================= TNG INPUT =================
-
-    let value = 0;
-
-    let active = false;
+    // ================= AMOUNT DISPLAY =================
 
     const amountInput =
         document.getElementById("amountInput");
 
-    value = Math.round(
+    const amountDisplay =
+        document.getElementById("amountDisplay");
+
+    let value = Math.round(
         parseFloat(amountInput.value || "0") * 100
-    ) || 0;
-
-    amountInput.addEventListener(
-        "focus",
-        () => active = true
     );
 
-    amountInput.addEventListener(
-        "blur",
-        () => active = false
-    );
+    function updateAmount() {
+
+        const formatted =
+            (value / 100).toFixed(2);
+
+        amountInput.value =
+            formatted;
+
+        amountDisplay.textContent =
+            formatted;
+    }
 
     document.addEventListener("keydown", function(e) {
-
-        if (!active) return;
 
         if (e.key >= "0" && e.key <= "9") {
 
             value =
-            value * 10 + parseInt(e.key);
+                value * 10 + parseInt(e.key);
 
         }
 
         else if (e.key === "Backspace") {
 
             value =
-            Math.floor(value / 10);
+                Math.floor(value / 10);
 
         }
 
@@ -645,12 +631,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
         e.preventDefault();
 
-        amountInput.value =
-            (value / 100).toFixed(2);
+        updateAmount();
 
     });
 
-    amountInput.focus();
+    updateAmount();
+
+    function validateAmount() {
+
+        const amount =
+            parseFloat(
+                document.getElementById("amountInput").value
+            );
+
+        if (amount <= 0) {
+
+            document
+                .getElementById("amountInput")
+                .setCustomValidity(
+                    "Please enter an amount greater than RM 0.00"
+                );
+
+            document
+                .getElementById("amountInput")
+                .reportValidity();
+
+            return false;
+        }
+
+        document
+            .getElementById("amountInput")
+            .setCustomValidity("");
+
+        return true;
+    }
 
 });
 
