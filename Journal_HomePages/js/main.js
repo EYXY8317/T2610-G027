@@ -38,9 +38,8 @@ document.addEventListener(
                 "dashboard"
             );
 
-        console.log(
-            renderWidgets()
-        );
+        dashboard.innerHTML =
+            renderWidgets();
 
         const settingsButton =
             document.getElementById(
@@ -57,36 +56,44 @@ document.addEventListener(
                 "edit-layout-btn"
             );
 
-        const widget =
-            document.getElementById(
-                "weather-hour-widget"
+        const widgets =
+            document.querySelectorAll(
+                ".widget"
             );
 
-        const dragHandle =
-            document.getElementById(
-                "weather-hour-drag-handle"
-            );
+        widgets.forEach(
 
-        const resizeHandle =
-            document.querySelector(
-                ".resize-handle"
-            );
+            widget => {
 
-        loadLayout(
-            widget
-        );
+                loadLayout(
+                    widget
+                );
 
-        widget.style.visibility =
-            "visible";
+                const dragHandle =
+                    widget.querySelector(
+                        ".drag-handle"
+                    );
 
-        enableDrag(
-            widget,
-            dragHandle
-        );
+                const resizeHandle =
+                    widget.querySelector(
+                        ".resize-handle"
+                    );
 
-        enableResize(
-            widget,
-            resizeHandle
+                widget.style.visibility =
+                    "visible";
+
+                enableDrag(
+                    widget,
+                    dragHandle
+                );
+
+                enableResize(
+                    widget,
+                    resizeHandle
+                );
+
+            }
+
         );
 
         setupEditMode(
@@ -94,12 +101,7 @@ document.addEventListener(
             settingsButton,
             menu,
             editLayoutButton,
-            widget,
-            dragHandle,
-            resizeHandle,
-
-            enableDrag,
-            enableResize
+            widgets
 
         );
 

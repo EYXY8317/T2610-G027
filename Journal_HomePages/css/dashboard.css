@@ -131,3 +131,29 @@ body {
     background: #f5f5f5;
 
 }
+
+#snap-line {
+
+    display: none;
+
+    position: absolute;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 1.5px;
+
+    background:
+    rgba(
+        148,
+        163,
+        184,
+        0.4
+    );
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+}

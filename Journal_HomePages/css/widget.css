@@ -1,5 +1,7 @@
 .widget {
 
+    visibility: hidden;
+
     position: absolute;
 
     left: 100px;
@@ -22,6 +24,16 @@
     flex-direction: column;
 
     overflow: hidden;
+
+}
+
+#weather-day-widget {
+
+    left: 550px;
+
+    top: 100px;
+
+    visibility: visible;
 
 }
 
@@ -97,6 +109,8 @@
 
     opacity: 0.25;
 
+    cursor: move;
+
     grid-template-columns:
         repeat(3, 4px);
 
@@ -152,3 +166,4 @@
     display: block;
 
 }
+

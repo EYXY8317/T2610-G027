@@ -11,7 +11,7 @@ export function enableDrag(
     let startLeft = 0;
     let startTop = 0;
 
-    const PADDING = 15;
+    const PADDING = 20;
 
     handle.addEventListener(
         "pointerdown",
@@ -64,6 +64,11 @@ export function enableDrag(
                     "dashboard"
                 );
 
+            const snapLine =
+                document.getElementById(
+                    "snap-line"
+                );
+
             const maxLeft =
                 dashboard.clientWidth -
                 widget.offsetWidth -
@@ -92,6 +97,40 @@ export function enableDrag(
                     )
                 );
 
+            const widgetCenter =
+                newLeft +
+                widget.offsetWidth / 2;
+
+            const dashboardCenter =
+                dashboard.clientWidth / 2;
+
+            if (
+                Math.abs(
+                    widgetCenter -
+                    dashboardCenter
+                ) < 15
+            ) {
+
+                newLeft =
+                    dashboardCenter -
+                    widget.offsetWidth / 2;
+
+                snapLine.style.display =
+                    "block";
+
+                snapLine.style.left =
+                    dashboardCenter +
+                    "px";
+
+            }
+
+            else {
+
+                snapLine.style.display =
+                    "none";
+
+            }
+
             widget.style.left =
                 newLeft + "px";
 
@@ -104,6 +143,14 @@ export function enableDrag(
     handle.addEventListener(
         "pointerup",
         () => {
+
+            const snapLine =
+                document.getElementById(
+                    "snap-line"
+                );
+
+            snapLine.style.display =
+                "none";
 
             isDragging = false;
 
