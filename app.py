@@ -240,8 +240,9 @@ def reset_password():
 def add_financial():
     if "user" not in session:
         return redirect(url_for("login"))
-
+    
     accounts = load_data(f_accounts, [])
+
     user_accounts = [a for a in accounts if a["username"] == session["user"]]
 
     if request.method == "POST":
@@ -985,9 +986,21 @@ def summary():
     short_goals = []
     long_goals = []
 
+    records = load_data(f_expense, [])
+
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        saved = 0
+
+        for r in records:
+
+            if (
+                r.get("username") == user
+                and r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g["id"]
+            ):
+
+                saved += r.get("amount", 0)
 
         target = g.get("target", 0)
 
@@ -1145,9 +1158,7 @@ def goals():
 
                 "type": goal_type,
 
-                "target": target,
-
-                "saved": 0
+                "target": target
             })
 
             save_data(f_goals, goals)
@@ -1157,6 +1168,7 @@ def goals():
         # ===== SAVE MONEY INTO GOAL =====
         elif action == "save":
 
+            goal_id = int(request.form.get("goal_id"))
             goal_name = request.form.get("goal_name")
             amount = request.form.get("amount")
             account = request.form.get("account")
@@ -1190,17 +1202,29 @@ def goals():
 
                     save_data(f_accounts, accounts)
 
-            for g in goals:
+            records = load_data(f_expense, [])
 
-                if (
-                    g.get("username") == user
-                    and g.get("name") == goal_name
-                ):
+            records.append({
 
-                    g["saved"] = g.get("saved", 0) + amount
-                    break
+                "username": user,
 
-            save_data(f_goals, goals)
+                "date": datetime.now().strftime("%Y-%m-%d"),
+
+                "type": "expense",
+
+                "category": "Goal Savings",
+
+                "goal_id": goal_id,
+
+                "account": account,
+
+                "item": f"Goal: {goal_name}",
+
+                "amount": amount
+
+            })
+
+            save_data(f_expense, records)
 
             return redirect(url_for("goals"))
 
@@ -1642,7 +1666,16 @@ def finance_home():
 
     for g in user_goals:
 
-        saved = g.get("saved", 0)
+        saved = 0
+
+        for r in user_records:
+
+            if (
+                r.get("category") == "Goal Savings"
+                and r.get("goal_id") == g["id"]
+            ):
+
+                saved += r.get("amount", 0)
 
         target = g.get("target", 0)
 

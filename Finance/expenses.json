@@ -61,5 +61,14 @@
         "account": "TnG",
         "item": "Breakfast",
         "amount": 20.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "income",
+        "category": "Salary",
+        "account": "CIMB",
+        "item": "",
+        "amount": 5000.0
     }
 ]

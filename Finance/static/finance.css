@@ -1934,7 +1934,7 @@ body.dark .amount-card{
 /* ================= COZY BEIGE ==================== */
 /* ================================================= */
 
-body.cozy-beige{
+body.cozy{
 
     --text-main:#2c241b;
 
@@ -1945,20 +1945,20 @@ body.cozy-beige{
     --accent-hover:#9f744c;
 }
 
-body.cozy-beige .summary-card,
-body.cozy-beige .goal-card,
-body.cozy-beige .overview-box,
-body.cozy-beige .budget-modern,
-body.cozy-beige .amount-card{
+body.cozy .summary-card,
+body.cozy .goal-card,
+body.cozy .overview-box,
+body.cozy .budget-modern,
+body.cozy .amount-card{
 
     background:#f8f1e8;
 
     border:1px solid #dcc9b4;
 }
 
-body.cozy-beige input,
-body.cozy-beige textarea,
-body.cozy-beige select{
+body.cozy input,
+body.cozy textarea,
+body.cozy select{
 
     background:#fffaf5;
 
@@ -1967,7 +1967,7 @@ body.cozy-beige select{
     color:#2c241b;
 }
 
-body.cozy-beige .secondary-btn{
+body.cozy .secondary-btn{
 
     background:#fffaf5;
 
