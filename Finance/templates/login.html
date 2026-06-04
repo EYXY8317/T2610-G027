@@ -16,6 +16,9 @@
 <!-- MAIN CONTAINER -->
 <div class="container">
 
+ <!-- LOGIN --> 
+ <div class="login-panel">
+
     <!-- LEFT PANEL -->
     <div class="left-panel">
 
@@ -90,7 +93,9 @@
         {% if request.args.get("success") %}
         <p class="success-message">{{ request.args.get("success") }}</p>
         {% endif %}
-
+        
+        </div>
+    
     </div>
 
 </div>
