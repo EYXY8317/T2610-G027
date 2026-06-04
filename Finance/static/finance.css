@@ -1513,6 +1513,15 @@ body.dark .goal-card select{
     color:var(--text-main);
 }
 
+#amountDisplay{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    color:var(--text-main);
+
+}
 
 
 /* ================================================= */
