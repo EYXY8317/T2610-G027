@@ -151,6 +151,96 @@
 
             </div>
 
+             <!-- PASSWORD -->
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                required
+                autocomplete="new-password">
+
+            </div>
+
+            <div class="password-rules"> 
+                Password must contain: 
+                <br> • 8+ characters 
+                <br> • 1 uppercase letter
+                <br> • 1 lowercase letter 
+                <br> • 1 number 
+            </div>
+
+            <!-- SECURITY QUESTION -->
+            <div class="input-box">
+
+                <i class="fa-solid fa-circle-question"></i>
+
+                <select name="question" required>
+
+                    <option value="">
+                        Security Question
+                    </option>
+
+                    <option value="nickname">
+                        What is your nickname?
+                    </option>
+
+                    <option value="birth_city">
+                        Where is your birth city?
+                    </option>
+
+                    <option value="favourite_subject">
+                        What is your favourite subject?
+                    </option>
+
+                    <option value="mother_name">
+                        What is your mother's name?
+                    </option>
+
+                    <option value="best_friend">
+                        What is your best friend's name?
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- ANSWER -->
+            <div class="input-box">
+
+                <i class="fa-regular fa-comment"></i>
+
+                <input
+                type="text"
+                name="answer"
+                placeholder="Answer"
+                required>
+
+            </div>
+
+            <button type="submit">
+                Register
+            </button>
+
+        </form>
+
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        {% if request.args.get("success") %}
+        <p class="success-message">
+            {{ request.args.get("success") }}
+        </p>
+        {% endif %}
+
+    </div>
+
+</div>
+
 
 
 
