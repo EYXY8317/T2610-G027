@@ -35,10 +35,6 @@
 
     <div class="menu-group">
 
-    <div class="section-title">
-        CALENDAR PAGES
-    </div>
-
     <div class="menu-item active" onclick="showPage('today', this)">
 
         <span class="material-symbols-rounded">
@@ -244,11 +240,14 @@
 
             </div>
 
-            <div class="progress-badge">
-                ⭐ Great Job!
-            </div>
-
+        <div
+            class="progress-badge"
+            id="progressBadge"
+        >
+            🚀 Ready to Start
         </div>
+
+    </div>
 
         <div class="progress-content">
 
@@ -1084,6 +1083,7 @@
             class="panel-input"
         >
 
+         <option value="" selected>Select Priority</option>
          <option value="red">🔴 High</option>
          <option value="orange">🟠 Medium</option>
          <option value="blue">🔵 Low</option>
