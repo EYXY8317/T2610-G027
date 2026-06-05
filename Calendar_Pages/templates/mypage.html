@@ -184,7 +184,7 @@
       <!-- TODAY PAGE -->
       <div id="today" class="page active">
 
-    <!-- HEADER -->
+    <!-- TODAY HEADER -->
     <div class="today-header">
 
         <h1 class="today-title">
@@ -353,7 +353,11 @@
 
     <div class="task-input">
 
-        <input type="text" id="workTaskText">
+        <input
+          type="text"
+          id="workTaskText"
+          placeholder="Add a task..."
+        >
 
         <!-- Open Schedule Popup -->
         <button class="calendar-btn" onclick="toggleCalendar(this, event)">
@@ -409,7 +413,11 @@
 
     <div class="task-input">
 
-        <input type="text" id="shoppingTaskText">
+        <input
+          type="text"
+          id="shoppingTaskText"
+          placeholder="Add an item..."
+        >
 
         <button class="calendar-btn" onclick="toggleCalendar(this, event)">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -450,7 +458,11 @@
 
     <div class="task-input">
 
-        <input type="text" id="studyTaskText">
+        <input
+          type="text"
+          id="studyTaskText"
+          placeholder="Add a study task..."
+        >
 
         <button class="calendar-btn" onclick="toggleCalendar(this, event)">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -491,7 +503,11 @@
 
     <div class="task-input">
 
-        <input type="text" id="personalTaskText">
+        <input
+          type="text"
+          id="personalTaskText"
+          placeholder="Add a memo..."
+        >
 
         <button class="calendar-btn" onclick="toggleCalendar(this, event)">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -532,7 +548,11 @@
 
     <div class="task-input">
 
-        <input type="text" id="workoutTaskText">
+        <input
+         type="text"
+         id="workoutTaskText"
+         placeholder="Add a workout..."
+        >
 
         <button class="calendar-btn" onclick="toggleCalendar(this, event)">
             <span class="material-symbols-rounded">calendar_month</span>
@@ -632,7 +652,7 @@
     </div>
 
     <!-- Year View -->
-    <div id="yearView" style="display:none;">
+    <div id="yearView" class="year-view">
         <div class="year-header">
             <h2 id="yearTitle"></h2>
         </div>
@@ -772,7 +792,7 @@
 
         </select>
 
-        <div id="customReminderBox" style="display:none;">
+        <div id="customReminderBox" class="hidden-box">
 
             <input
                 type="number"
@@ -810,7 +830,7 @@
 
         </select>
 
-        <div id="customRepeatBox" style="display:none;">
+        <div id="customRepeatBox" class="hidden-box">
 
             <input
                 type="number"
@@ -892,11 +912,11 @@
             </span>
 
             <span onclick="setPriority('blue', event)">
-                🔵 Normal
+                🔵 Low
             </span>
 
             <span onclick="setPriority('gray', event)">
-                ⚫ Low
+                ⚫ No Priority
             </span>
 
         </div>
@@ -1064,11 +1084,10 @@
             class="panel-input"
         >
 
-            <option value="">None</option>
-            <option value="red">🔴 High </option>
-            <option value="orange">🟠 Medium </option>
-            <option value="blue">🔵 Low </option>
-            <option value="gray">⚫ No Priority</option>
+         <option value="red">🔴 High</option>
+         <option value="orange">🟠 Medium</option>
+         <option value="blue">🔵 Low</option>
+         <option value="gray">⚫ No Priority</option>
 
         </select>
 
