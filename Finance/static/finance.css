@@ -43,9 +43,9 @@
 
     --shadow:var(--shadow);
 
-    --text-main:var(--text-primary);
+    --text-main:var(--text-main);
 
-    --text-soft:var(--text-secondary);
+    --text-soft:var(--text-soft);
 
     --accent:var(--button-bg);
 
@@ -168,13 +168,13 @@ body.dark .wallpaper-overlay{
 
 .topbar-title{
 
-    color:white;
+    font-weight:800;
 
     font-size:2rem;
 
-    font-weight:800;
+    letter-spacing:-0.5px;
 
-    white-space:nowrap;
+    color:var(--text-main);
 }
 
 
@@ -690,7 +690,7 @@ label{
 
     font-size:0.95rem;
 
-    color:var(--text-secondary);
+    color:var(--text-soft);
 
     margin-bottom:12px;
 }
@@ -701,7 +701,7 @@ label{
 
 .hero-subtitle{
 
-    color:var(--text-secondary);
+    color:var(--text-soft);
 
     margin-top:10px;
 }
@@ -717,7 +717,7 @@ label{
 
 .hero-balance p{
 
-    color:var(--text-secondary);
+    color:var(--text-soft);
 
     margin-bottom:8px;
 }
@@ -807,7 +807,7 @@ label{
 
     text-decoration:none;
 
-    color:var(--text-primary);
+    color:var(--text-main);
 
     transition:0.25s ease;
 }
@@ -997,11 +997,11 @@ label{
 
 .budget-amount{
 
-    font-size:2rem;
+    color:var(--text-main) !important;
+
+    font-size:3rem;
 
     font-weight:800;
-
-    color:var(--text-main);
 }
 
 .budget-limit{
@@ -1965,6 +1965,11 @@ body.dark .records-table tr:hover{
     background:#2a2622;
 }
 
+body.dark .records-table td,
+body.dark .records-table th{
+
+    border-right:none;
+}
 
 
 /* ================================================= */
@@ -2095,6 +2100,15 @@ body.cozy .secondary-btn{
     color:#2c241b;
 }
 
+body.cozy .records-table th{
+
+    background:#f1e5d8;
+}
+
+body.cozy .records-table tr:hover{
+
+    background:#fdf7f2;
+}
 
 
 
@@ -2151,6 +2165,12 @@ body.sakura .secondary-btn{
     border:1px solid #f0ccd8;
 
     color:#4d3740;
+}
+
+body.sakura .records-table td{
+
+    border-top:
+    1px solid #f3d8e2;
 }
 
 /* ================================================= */
@@ -2233,6 +2253,12 @@ body.frosted .topbar{
 
     border:
     1px solid rgba(255,255,255,0.16);
+}
+
+body.frosted .records-table td{
+
+    border-top:
+    1px solid rgba(255,255,255,.12);
 }
 
 /* ================================================= */
