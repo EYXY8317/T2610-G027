@@ -7,7 +7,7 @@
     <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"/>
 
     <link rel="stylesheet" href="/calendar_static/mystyle.css">
-    
+
 </head>
 
 <body>
@@ -30,204 +30,535 @@
     <div class="sidebar">
 
         <div class="logo">
-            Life Pages
+            Calendar Pages
         </div>
 
-        <div class="menu-item active" onclick="showPage('today', this)">Today</div>
+    <div class="menu-group">
 
-        <div class="section-title">To-Do Lists</div>
-        <div class="menu-item" onclick="showPage('work', this)">Work Tasks</div>
-        <div class="menu-item" onclick="showPage('shopping', this)">Shopping List</div>
-        <div class="menu-item" onclick="showPage('study', this)">Study Plan</div>
-        <div class="menu-item" onclick="showPage('personal', this)">Personal Memos</div>
-        <div class="menu-item" onclick="showPage('workout', this)">Workout Plan</div>
+    <div class="section-title">
+        CALENDAR PAGES
+    </div>
 
-        <div class="section-title">Calendar</div>
-        <div class="menu-item" onclick="showPage('calendar', this)">Calendar</div>
+    <div class="menu-item active" onclick="showPage('today', this)">
 
-        <div class="section-title">Others</div>
-        <div class="menu-item" onclick="showPage('completed', this)">✔ Completed</div>
-        <div class="menu-item" onclick="showPage('trash', this)">🗑 Trash</div>
+        <span class="material-symbols-rounded">
+            today
+        </span>
+
+        <span>Today</span>
 
     </div>
 
+    <div class="menu-item" onclick="showPage('calendar', this)">
+
+        <span class="material-symbols-rounded">
+            calendar_month
+        </span>
+
+        <span>Calendar</span>
+
+    </div>
+
+</div>
+
+     <div class="menu-group">
+
+    <div class="section-title">
+        TO-DO LISTS
+    </div>
+
+    <div class="menu-item" onclick="showPage('work', this)">
+
+        <span class="material-symbols-rounded">
+            work
+        </span>
+
+        <span>Work Tasks</span>
+
+    </div>
+
+    <div class="menu-item" onclick="showPage('shopping', this)">
+
+        <span class="material-symbols-rounded">
+            shopping_cart
+        </span>
+
+        <span>Shopping List</span>
+
+    </div>
+
+    <div class="menu-item" onclick="showPage('study', this)">
+
+        <span class="material-symbols-rounded">
+            menu_book
+        </span>
+
+        <span>Study Plan</span>
+
+    </div>
+
+    <div class="menu-item" onclick="showPage('personal', this)">
+
+        <span class="material-symbols-rounded">
+            person
+        </span>
+
+        <span>Personal Memos</span>
+
+    </div>
+
+    <div class="menu-item" onclick="showPage('workout', this)">
+
+        <span class="material-symbols-rounded">
+            fitness_center
+        </span>
+
+        <span>Workout Plan</span>
+
+    </div>
+
+</div>
+
+<div class="menu-group">
+
+    <div class="section-title">
+        OTHERS
+    </div>
+
+    <div class="menu-item" onclick="showPage('completed', this)">
+
+        <span class="material-symbols-rounded">
+            task_alt
+        </span>
+
+        <span>Completed</span>
+
+    </div>
+
+    <div class="menu-item" onclick="showPage('trash', this)">
+
+        <span class="material-symbols-rounded">
+            delete
+        </span>
+
+        <span>Trash</span>
+
+    </div>
+
+</div>
+
+</div> 
+        
     <!-- Main Content -->
     <div class="main">
 
-        <!-- Today -->
-        <div id="today" class="page active">
-            <h2>Today</h2>
-            <p id="date"></p>
+        <div class="topbar">
 
-            <h3>Today Tasks</h3>
-            <ul id="todayTasks"></ul>
-        </div>
+    <div class="search-box">
 
-        <!-- Work -->
-        <div id="work" class="page">
-            <h2>Work Tasks</h2>
+        <span class="material-symbols-rounded">
+            search
+        </span>
 
-            <div class="task-input">
-                <input type="text" id="workTaskText">
+        <input
+          type="text"
+          placeholder="Search"
+          class="search-input"
+        >
+       
+    </div>
 
-       <!-- 📅 -->
-       <button onclick="toggleCalendar(this, event)">
-       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+   <button
+    class="notification-btn"
+    onclick="toggleNotification()"
+    >
 
-       <!-- ⋯ -->
-       <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
+    <span class="material-symbols-rounded">
+        notifications
+    </span>
 
-                <button onclick="addTask('work')">Add</button>
+</button>
+
+</div>
+
+      <!-- TODAY PAGE -->
+      <div id="today" class="page active">
+
+    <!-- HEADER -->
+    <div class="today-header">
+
+        <h1 class="today-title">
+            Today
+        </h1>
+
+        <p class="today-date" id="date"></p>
+
+    </div>
+
+    <!-- TODAY TASKS -->
+    <div class="dashboard-card task-section">
+
+        <div class="card-header">
+
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">
+                        today
+                    </span>
+
+                </div>
+
+                <h2 class="card-title">
+                    Today's Tasks
+                </h2>
+
             </div>
 
-            <div id="workEmptyMsg" class="empty">No tasks yet</div>
-            <div id="workTaskList"></div>
         </div>
 
-        <!-- Shopping -->
-        <div id="shopping" class="page">
-            <h2>Shopping List</h2>
+        <!-- TASK LIST -->
+        <div id="todayTasks"></div>
 
-            <div class="task-input">
-                <input type="text" id="shoppingTaskText">
+    </div>
 
-        <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+    <!-- PROGRESS -->
+    <div class="dashboard-card progress-card">
 
-        <!-- ⋯ -->
-        <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>    
+        <div class="card-header">
 
-                <button onclick="addTask('shopping')">Add</button>
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">
+                        donut_large
+                    </span>
+
+                </div>
+
+                <h2 class="card-title">
+                    Progress Overview
+                </h2>
+
             </div>
 
-            <div id="shoppingEmptyMsg" class="empty">No tasks yet</div>
-            <div id="shoppingTaskList"></div>
-        </div>
-
-        <!-- Study -->
-        <div id="study" class="page">
-            <h2>Study Plan</h2>
-
-            <div class="task-input">
-                <input type="text" id="studyTaskText">
-
-        <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
-
-        <!-- ⋯ -->
-        <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
-
-                <button onclick="addTask('study')">Add</button>
+            <div class="progress-badge">
+                ⭐ Great Job!
             </div>
 
-            <div id="studyEmptyMsg" class="empty">No tasks yet</div>
-            <div id="studyTaskList"></div>
         </div>
 
-        <!-- Personal -->
-        <div id="personal" class="page">
-            <h2>Personal Memos</h2>
+        <div class="progress-content">
 
-            <div class="task-input">
-                <input type="text" id="personalTaskText">
+            <div>
 
-        <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+                <h1
+                class="progress-number"
+                id="progressPercent"
+                >
+                    0%
+                </h1>
 
-        <!-- ⋯ -->
-       <button onclick="toggleExtra(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
+                <p class="progress-label">
+                    Overall Progress
+                </p>
 
-                <button onclick="addTask('personal')">Add</button>
             </div>
 
-            <div id="personalEmptyMsg" class="empty">No tasks yet</div>
-            <div id="personalTaskList"></div>
-        </div>
+            <div class="progress-right">
 
-        <!-- Workout -->
-        <div id="workout" class="page">
-            <h2>Workout Plan</h2>
+                <div class="progress-bar">
 
-            <div class="task-input">
-                <input type="text" id="workoutTaskText">
+                    <div
+                    class="progress-fill"
+                    id="progressFill"
+                    ></div>
 
-        <!-- 📅 -->
-        <button onclick="toggleCalendar(this, event)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2">
-            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-        </svg>
-    </button>
+                </div>
 
-         <!-- ⋯ -->
-         <button onclick="toggleExtra(this, event)">
-         <svg width="20" height="20" viewBox="0 0 24 24" fill="black">
-            <circle cx="5" cy="12" r="2"></circle>
-            <circle cx="12" cy="12" r="2"></circle>
-            <circle cx="19" cy="12" r="2"></circle>
-        </svg>
-    </button>
-                <button onclick="addTask('workout')">Add</button>
+                <p class="progress-task-text">
+
+                    <span id="completedTasksCount">
+                        0
+                    </span>
+
+                    of
+
+                    <span id="totalTasksCount">
+                        0
+                    </span>
+
+                    tasks completed
+
+                </p>
+
             </div>
 
-            <div id="workoutEmptyMsg" class="empty">No tasks yet</div>
-            <div id="workoutTaskList"></div>
         </div>
 
-      <!-- Calendar -->
+    </div>
+
+    <!-- DAILY QUOTE -->
+    <div class="dashboard-card quote-card">
+
+        <div class="quote-left">
+
+            <div class="header-left">
+
+                <div class="card-icon">
+
+                    <span class="material-symbols-rounded">
+                        auto_awesome
+                    </span>
+
+                </div>
+
+                <h2 class="card-title">
+                    Daily Quote
+                </h2>
+
+            </div>
+
+            <h2
+            class="quote-text"
+            id="dailyQuote"
+            >
+                “Small progress is still progress.”
+            </h2>
+
+            <p class="quote-sub">
+                Keep going! You're doing great. 💜
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Work -->
+<div id="work" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            work
+        </span>
+
+        Work Tasks
+
+    </h2>
+
+    <div class="task-input">
+
+        <input type="text" id="workTaskText">
+
+        <!-- Open Schedule Popup -->
+        <button class="calendar-btn" onclick="toggleCalendar(this, event)">
+
+            <span class="material-symbols-rounded">
+                calendar_month
+            </span>
+
+        </button>
+
+        <!-- Open Extra Options Popup -->
+        <button class="more-btn" onclick="toggleExtra(this, event)">
+
+            <span class="material-symbols-rounded">
+                more_horiz
+            </span>
+
+        </button>
+
+        <button
+            class="add-task-btn"
+            onclick="addTask('work')"
+        >
+
+            <span class="material-symbols-rounded">
+                add
+            </span>
+
+            Add
+
+        </button>
+
+    </div>
+
+    <div id="workEmptyMsg" class="empty">No tasks yet</div>
+
+    <div id="workTaskList"></div>
+
+</div>
+
+<!-- Shopping -->
+<div id="shopping" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            shopping_cart
+        </span>
+
+        Shopping List
+
+    </h2>
+
+    <div class="task-input">
+
+        <input type="text" id="shoppingTaskText">
+
+        <button class="calendar-btn" onclick="toggleCalendar(this, event)">
+            <span class="material-symbols-rounded">calendar_month</span>
+        </button>
+
+        <button class="more-btn" onclick="toggleExtra(this, event)">
+            <span class="material-symbols-rounded">more_horiz</span>
+        </button>
+
+        <button
+            class="add-task-btn"
+            onclick="addTask('shopping')"
+        >
+            <span class="material-symbols-rounded">add</span>
+            Add
+        </button>
+
+    </div>
+
+    <div id="shoppingEmptyMsg" class="empty">No tasks yet</div>
+
+    <div id="shoppingTaskList"></div>
+
+</div>
+
+<!-- Study -->
+<div id="study" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            menu_book
+        </span>
+
+        Study Plan
+
+    </h2>
+
+    <div class="task-input">
+
+        <input type="text" id="studyTaskText">
+
+        <button class="calendar-btn" onclick="toggleCalendar(this, event)">
+            <span class="material-symbols-rounded">calendar_month</span>
+        </button>
+
+        <button class="more-btn" onclick="toggleExtra(this, event)">
+            <span class="material-symbols-rounded">more_horiz</span>
+        </button>
+
+        <button
+            class="add-task-btn"
+            onclick="addTask('study')"
+        >
+            <span class="material-symbols-rounded">add</span>
+            Add
+        </button>
+
+    </div>
+
+    <div id="studyEmptyMsg" class="empty">No tasks yet</div>
+
+    <div id="studyTaskList"></div>
+
+</div>
+
+<!-- Personal -->
+<div id="personal" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            person
+        </span>
+
+        Personal Memos
+
+    </h2>
+
+    <div class="task-input">
+
+        <input type="text" id="personalTaskText">
+
+        <button class="calendar-btn" onclick="toggleCalendar(this, event)">
+            <span class="material-symbols-rounded">calendar_month</span>
+        </button>
+
+        <button class="more-btn" onclick="toggleExtra(this, event)">
+            <span class="material-symbols-rounded">more_horiz</span>
+        </button>
+
+        <button
+            class="add-task-btn"
+            onclick="addTask('personal')"
+        >
+            <span class="material-symbols-rounded">add</span>
+            Add
+        </button>
+
+    </div>
+
+    <div id="personalEmptyMsg" class="empty">No tasks yet</div>
+
+    <div id="personalTaskList"></div>
+
+</div>
+
+<!-- Workout -->
+<div id="workout" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            fitness_center
+        </span>
+
+        Workout Plan
+
+    </h2>
+
+    <div class="task-input">
+
+        <input type="text" id="workoutTaskText">
+
+        <button class="calendar-btn" onclick="toggleCalendar(this, event)">
+            <span class="material-symbols-rounded">calendar_month</span>
+        </button>
+
+        <button class="more-btn" onclick="toggleExtra(this, event)">
+            <span class="material-symbols-rounded">more_horiz</span>
+        </button>
+
+        <button
+            class="add-task-btn"
+            onclick="addTask('workout')"
+        >
+            <span class="material-symbols-rounded">add</span>
+            Add
+        </button>
+
+    </div>
+
+    <div id="workoutEmptyMsg" class="empty">No tasks yet</div>
+
+    <div id="workoutTaskList"></div>
+
+</div>
+
+<!-- Calendar -->
 <div id="calendar" class="page">
 
     <!-- Header（两个视图都显示） -->
@@ -238,17 +569,60 @@
         </div>
 
         <div class="view-buttons">
-            <button onclick="setView('month')">Month view</button>
-            <button onclick="setView('year')">Year view</button>
-        </div>
 
-        <div class="calendar-actions">
-            <button onclick="goPrev()">❮</button>
-            <button onclick="goToday()">Today</button>
-            <button onclick="goNext()">❯</button>
-        </div>
+    <button class="view-btn" onclick="setView('month')">
 
-    </div>
+        <span class="material-symbols-rounded">
+            calendar_view_month
+        </span>
+
+        Month
+
+    </button>
+
+    <button class="view-btn" onclick="setView('year')">
+
+        <span class="material-symbols-rounded">
+            calendar_view_day
+        </span>
+
+        Year
+
+    </button>
+
+</div>
+
+<div class="calendar-actions">
+
+    <button class="calendar-nav-btn" onclick="goPrev()">
+
+        <span class="material-symbols-rounded">
+            chevron_left
+        </span>
+
+    </button>
+
+    <button class="calendar-today-btn" onclick="goToday()">
+
+        <span class="material-symbols-rounded">
+            today
+        </span>
+
+        Today
+
+    </button>
+
+    <button class="calendar-nav-btn" onclick="goNext()">
+
+        <span class="material-symbols-rounded">
+            chevron_right
+        </span>
+
+    </button>
+
+</div>
+
+</div>
 
     <!-- Month View -->
     <div id="monthView">
@@ -266,175 +640,493 @@
     </div>
 
 </div>
-        <!-- Completed -->
-       <div id="completed" class="page">
-       <h2>Completed Tasks</h2>
-       <div id="completedList"></div>
-   </div>
+       <!-- COMPLETED PAGE -->
+<div id="completed" class="page">
 
-        <!-- Trash -->
-        <div id="trash" class="page">
-        <h2>Trash</h2>
-        <div id="trashList"></div>
-   </div>
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            task_alt
+        </span>
+
+        Completed Tasks
+
+    </h2>
+
+    <div id="completedList"></div>
+
+</div>
+
+<!-- TRASH PAGE -->
+<div id="trash" class="page">
+
+    <h2 class="page-title">
+
+        <span class="material-symbols-rounded">
+            delete
+        </span>
+
+        Trash
+
+    </h2>
+
+    <div id="trashList"></div>
+
+</div>
 
     </div>
 
 </div>
 
-    <div id="calendarPopup" style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc; width:260px;">
+    <!-- CALENDAR POPUP -->
+<div id="calendarPopup" class="calendar-popup">
 
     <!-- Header -->
-    <div>
-        <span>Schedule</span>
-        <button onclick="closeCalendar()">✕</button>
+    <div class="popup-header">
+
+        <h3>
+
+            <span class="material-symbols-rounded">
+                calendar_month
+            </span>
+
+            Schedule
+
+        </h3>
+
+        <button
+            onclick="closeCalendar()"
+            class="popup-close-btn"
+        >
+            ✕
+        </button>
+
     </div>
 
     <!-- Date -->
-    <div>
-        <label>Date</label><br>
-        <input type="date" id="popupDate">
+    <div class="popup-section">
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                event
+            </span>
+
+            Date
+
+        </label>
+
+        <input
+            type="date"
+            id="popupDate"
+        >
+
     </div>
 
     <!-- Time -->
-    <div>
-        <label>Time</label><br>
-        <input type="time" id="startTime">
-        →
-        <input type="time" id="endTime">
+    <div class="popup-section">
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                schedule
+            </span>
+
+            Time
+
+        </label>
+
+        <div class="time-row">
+
+            <input type="time" id="startTime">
+
+            <span>→</span>
+
+            <input type="time" id="endTime">
+
+        </div>
+
     </div>
 
     <!-- Reminder -->
-    <div>
-        <label>Reminder</label><br>
+    <div class="popup-section">
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                notifications
+            </span>
+
+            Reminder
+
+        </label>
+
         <select id="reminder">
+
             <option value="none">None</option>
             <option value="1day">1 day before</option>
             <option value="1hour">1 hour before</option>
             <option value="30min">30 min before</option>
             <option value="10min">10 min before</option>
             <option value="custom">Custom</option>
+
         </select>
 
         <div id="customReminderBox" style="display:none;">
-            <input type="number" id="reminderMinutes" placeholder="10">
+
+            <input
+                type="number"
+                id="reminderMinutes"
+                placeholder="10"
+            >
+
             minutes before
+
         </div>
+
     </div>
 
     <!-- Repeat -->
-    <div>
-        <label>Repeat</label><br>
+    <div class="popup-section">
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                repeat
+            </span>
+
+            Repeat
+
+        </label>
+
         <select id="repeat">
+
             <option value="none">None</option>
             <option value="daily">Every day</option>
             <option value="weekly">Every week</option>
             <option value="monthly">Every month</option>
             <option value="yearly">Every year</option>
             <option value="custom">Custom</option>
+
         </select>
 
         <div id="customRepeatBox" style="display:none;">
-            <input type="number" id="repeatInterval" placeholder="1">
+
+            <input
+                type="number"
+                id="repeatInterval"
+                placeholder="1"
+            >
+
             days
+
         </div>
+
     </div>
 
     <!-- Buttons -->
-    <div>
-        <button onclick="closeCalendar()">Cancel</button>
-        <button onclick="applyDate()">Save</button>
+    <div class="popup-buttons">
+
+        <button
+            onclick="closeCalendar()"
+            class="cancel-btn"
+        >
+            Cancel
+        </button>
+
+        <button
+            onclick="applyDate()"
+            class="save-btn"
+        >
+
+            <span class="material-symbols-rounded">
+                save
+            </span>
+
+            Save
+
+        </button>
+
     </div>
 
 </div>
 
-<!-- ^ Extra Popup -->
-<div id="extraPopup" 
-     onclick="event.stopPropagation()" 
-     style="display:none; position:absolute; background:white; padding:12px; border:1px solid #ccc;">
+<!-- EXTRA OPTIONS POPUP -->
+<div
+    id="extraPopup"
+    class="extra-popup"
+    onclick="event.stopPropagation()"
+>
 
-    <h4>Options</h4>
+    <h4 class="popup-title">
+
+        <span class="material-symbols-rounded">
+            tune
+        </span>
+
+        Options
+
+    </h4>
 
     <!-- Priority -->
     <div class="popup-section">
-       <label>Priority</label>
-         <div class="priority-box">
-           <span onclick="setPriority('red', event)">🔴 Must</span>
-           <span onclick="setPriority('orange', event)">🟠 Should</span>
-           <span onclick="setPriority('blue', event)">🔵 Nice</span>
-           <span onclick="setPriority('gray', event)">⚫ Ignore</span>
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                flag
+            </span>
+
+            Priority
+
+        </label>
+
+        <div class="priority-box">
+
+            <span onclick="setPriority('red', event)">
+                🔴 High
+            </span>
+
+            <span onclick="setPriority('orange', event)">
+                🟠 Medium
+            </span>
+
+            <span onclick="setPriority('blue', event)">
+                🔵 Normal
+            </span>
+
+            <span onclick="setPriority('gray', event)">
+                ⚫ Low
+            </span>
+
+        </div>
+
     </div>
-</div>
 
     <!-- Tag -->
     <div class="popup-section">
-        <label>Tag</label>
-        <input type="text" id="taskTag">
+
+        <label>
+
+            <span class="material-symbols-rounded">
+                sell
+            </span>
+
+            Tag
+
+        </label>
+
+        <input
+            type="text"
+            id="taskTag"
+        >
+
     </div>
 
-    <button onclick="closeExtra()">Done</button>
+    <button
+        onclick="closeExtra()"
+        class="popup-done-btn"
+    >
+
+        <span class="material-symbols-rounded">
+            check
+        </span>
+
+        Done
+
+    </button>
 
 </div>
 
 <!-- Editable Task Detail Panel -->
-<div id="taskDetailPanel" style="position: fixed; top: 0; right: -450px; width: 420px; height: 100vh; background: white; box-shadow: -4px 0 25px rgba(0,0,0,0.25); transition: right 0.35s ease; z-index: 9999; padding: 20px; overflow-y: auto; visibility: hidden; opacity: 0;">
+<div id="taskDetailPanel" class="task-detail-panel">
 
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <input type="text" id="panelTitleInput" style="font-size: 22px; font-weight: bold; width: 100%; border: none; border-bottom: 2px solid #4a90e2; outline: none; padding: 5px 0;">
-        <button onclick="closeDetailPanel()" style="font-size: 28px; background: none; border: none; cursor: pointer; margin-left: 15px;">✕</button>
+    <!-- Panel Header -->
+    <div class="panel-header">
+
+        <input
+            type="text"
+            id="panelTitleInput"
+            class="panel-title-input"
+        >
+
+        <button
+            onclick="closeDetailPanel()"
+            class="panel-close-btn"
+        >
+            ✕
+        </button>
+
     </div>
-    
+
     <!-- Description -->
-    <div style="margin-bottom: 20px;">
-        <label style="font-weight: bold; display: block; margin-bottom: 6px;">Description / Notes</label>
-        <textarea id="panelDescription" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical;"></textarea>
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">
+                notes
+            </span>
+
+            Description / Notes
+
+        </label>
+
+        <textarea
+            id="panelDescription"
+            rows="4"
+            class="panel-textarea"
+        ></textarea>
+
     </div>
 
     <!-- Due Date -->
-    <div style="margin-bottom: 16px;">
-        <label>📅 Due Date</label><br>
-        <input type="date" id="panelDateInput" style="width: 100%; padding: 8px; margin-top: 6px;">
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">
+                calendar_month
+            </span>
+
+            Due Date
+
+        </label>
+
+        <input
+            type="date"
+            id="panelDateInput"
+            class="panel-input"
+        >
+
     </div>
 
-    <!-- Time Range -->
-    <div style="display: flex; gap: 12px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <label>Start Time</label><br>
-            <input type="time" id="panelStartTime" style="width: 100%; padding: 8px; margin-top: 6px;">
+    <!-- Time -->
+    <div class="panel-time-row">
+
+        <div class="panel-section">
+
+            <label class="panel-label">
+
+                <span class="material-symbols-rounded">
+                    schedule
+                </span>
+
+                Start Time
+
+            </label>
+
+            <input
+                type="time"
+                id="panelStartTime"
+                class="panel-input"
+            >
+
         </div>
-        <div style="flex: 1;">
-            <label>End Time</label><br>
-            <input type="time" id="panelEndTime" style="width: 100%; padding: 8px; margin-top: 6px;">
+
+        <div class="panel-section">
+
+            <label class="panel-label">
+
+                <span class="material-symbols-rounded">
+                    schedule
+                </span>
+
+                End Time
+
+            </label>
+
+            <input
+                type="time"
+                id="panelEndTime"
+                class="panel-input"
+            >
+
         </div>
+
     </div>
 
-    <!-- Priority (颜色图标版) -->
-    <div style="margin-bottom: 16px;">
-        <label>⭐ Priority</label><br>
-        <select id="panelPrioritySelect" style="width: 100%; padding: 10px; margin-top: 6px; font-size: 16px;">
+    <!-- Priority -->
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">
+                star
+            </span>
+
+            Priority
+
+        </label>
+
+        <select
+            id="panelPrioritySelect"
+            class="panel-input"
+        >
+
             <option value="">None</option>
-            <option value="red">🔴 High (Must)</option>
-            <option value="orange">🟠 Medium (Should)</option>
-            <option value="blue">🔵 Low (Nice)</option>
+            <option value="red">🔴 High </option>
+            <option value="orange">🟠 Medium </option>
+            <option value="blue">🔵 Low </option>
             <option value="gray">⚫ No Priority</option>
+
         </select>
+
     </div>
 
     <!-- Tag -->
-    <div style="margin-bottom: 20px;">
-        <label>🏷️ Tag</label><br>
-        <input type="text" id="panelTagInput" style="width: 100%; padding: 8px; margin-top: 6px;" placeholder="e.g. work, study">
+    <div class="panel-section">
+
+        <label class="panel-label">
+
+            <span class="material-symbols-rounded">
+                sell
+            </span>
+
+            Tag
+
+        </label>
+
+        <input
+            type="text"
+            id="panelTagInput"
+            class="panel-input"
+            placeholder="e.g. work, study"
+        >
+
     </div>
 
     <!-- Buttons -->
-    <div style="display: flex; gap: 10px; margin-top: 30px;">
-        <button onclick="saveTaskChanges()" style="flex: 1; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-            💾 Save Changes
+    <div class="panel-buttons">
+
+        <button
+            onclick="saveTaskChanges()"
+            class="panel-save-btn"
+        >
+
+            <span class="material-symbols-rounded">
+                save
+            </span>
+
+            Save Changes
+
         </button>
-        <button onclick="deleteCurrentTask()" style="flex: 1; padding: 12px; background: #ff4444; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
-            🗑 Delete Task
+
+        <button
+            onclick="deleteCurrentTask()"
+            class="panel-delete-btn"
+        >
+
+            <span class="material-symbols-rounded">
+                delete
+            </span>
+
+            Delete Task
+
         </button>
+
     </div>
+
 </div>
 
 <!-- JS FILE -->
