@@ -322,591 +322,1453 @@ function deleteTask(listType, id) {
 
 
 
-// Render task
-function renderTasks(listType) {
-    let taskList = document.getElementById(listType + "TaskList");
-    let emptyMsg = document.getElementById(listType + "EmptyMsg");
+// ===============================
+// RENDER TASKS
+// Display all active tasks
+// for the selected category
+// ===============================
 
+function renderTasks(listType) {
+
+    // Get task container
+    let taskList =
+        document.getElementById(
+            listType + "TaskList"
+        );
+
+    // Get empty message
+    let emptyMsg =
+        document.getElementById(
+            listType + "EmptyMsg"
+        );
+
+    // Stop if elements don't exist
     if (!taskList || !emptyMsg) return;
 
+    // Clear existing tasks
     taskList.innerHTML = "";
 
-    let activeTasks = taskData[listType].filter(t => t.status === "active");
+    // Get active tasks only
+    let activeTasks =
+        taskData[listType].filter(
+            task => task.status === "active"
+        );
 
-    emptyMsg.style.display = activeTasks.length === 0 ? "block" : "none";
+    // Show / hide empty message
+    emptyMsg.style.display =
+        activeTasks.length === 0
+        ? "block"
+        : "none";
 
+    // Create task cards
     activeTasks.forEach(task => {
-        const card = document.createElement("div");
-        card.className = `task-card ${task.status === "completed" ? "completed" : ""}`;
+
+        const card =
+            document.createElement("div");
+
+        card.className = "task-card";
+
         card.dataset.id = task.id;
+
         card.dataset.list = listType;
 
-        const checked = task.status === "completed" ? "checked" : "";
-
         card.innerHTML = `
-            <input type="checkbox" class="task-checkbox" ${checked} 
-                   onchange="toggleComplete('${listType}', ${task.id}, this)">
+
+            <input
+                type="checkbox"
+                class="task-checkbox"
+                onchange="toggleComplete('${listType}', ${task.id}, this)"
+            >
 
             <div class="task-info">
 
-    <div class="task-title">
-        ${task.text}
-    </div>
+                <div class="task-title">
 
-    <div class="task-meta">
+                    ${task.text}
 
-        <span class="task-date">
+                </div>
 
-            <span class="material-symbols-rounded">
-                calendar_month
-            </span>
+                <div class="task-meta">
 
-            ${task.date || "No Date"}
+                    <span class="task-date">
 
-        </span>
+                        <span class="material-symbols-rounded">
+                            calendar_month
+                        </span>
 
-        ${
-            task.startTime || task.endTime
-            ? `
-            <span class="task-time">
+                        ${task.date || "No Date"}
 
-                <span class="material-symbols-rounded">
-                    schedule
-                </span>
+                    </span>
 
-                ${task.startTime || "--:--"}
-                -
-                ${task.endTime || "--:--"}
+                    ${
+                        task.startTime || task.endTime
+                        ? `
+                        <span class="task-time">
 
-            </span>
-            `
-            : ""
-        }
+                            <span class="material-symbols-rounded">
+                                schedule
+                            </span>
 
-        ${
-            task.priority
-            ? `
-            <span class="task-priority">
+                            ${task.startTime || "--:--"}
+                            -
+                            ${task.endTime || "--:--"}
 
-                ${getPriorityDot(task.priority)}
+                        </span>
+                        `
+                        : ""
+                    }
 
-                ${
-                    task.priority === "red"
-                    ? "High"
-                    : task.priority === "orange"
-                    ? "Medium"
-                    : task.priority === "blue"
-                    ? "Low"
-                    : "No Priority"
-                }
+                    ${
+                        task.priority
+                        ? `
+                        <span class="task-priority">
 
-            </span>
-            `
-            : ""
-        }
+                            ${getPriorityDot(task.priority)}
 
-    </div>
+                            ${
+                                task.priority === "red"
+                                ? "High"
+                                : task.priority === "orange"
+                                ? "Medium"
+                                : task.priority === "blue"
+                                ? "Low"
+                                : "No Priority"
+                            }
 
-</div>
+                        </span>
+                        `
+                        : ""
+                    }
 
-<div class="task-actions">
+                </div>
 
-    <button
-        class="task-action-btn"
-        onclick="deleteTask('${listType}', ${task.id}); event.stopImmediatePropagation();"
-    >
+            </div>
 
-        <span class="material-symbols-rounded">
-            delete
-        </span>
+            <div class="task-actions">
 
-    </button>
+                <button
+                    class="task-action-btn"
+                    onclick="deleteTask('${listType}', ${task.id}); event.stopPropagation();"
+                >
 
-    <button
-        class="task-action-btn"
-        onclick="showTaskDetail('${listType}', ${task.id}); event.stopImmediatePropagation();"
-    >
+                    <span class="material-symbols-rounded">
+                        delete
+                    </span>
 
-        <span class="material-symbols-rounded">
-            chevron_right
-        </span>
+                </button>
 
-    </button>
+                <button
+                    class="task-action-btn"
+                    onclick="showTaskDetail('${listType}', ${task.id}); event.stopPropagation();"
+                >
 
-</div>
+                    <span class="material-symbols-rounded">
+                        chevron_right
+                    </span>
+
+                </button>
+
+            </div>
+
         `;
 
         taskList.appendChild(card);
+
     });
+
 }
 
-// Render Completed (按列表分组) 
+
+
+
+// ===============================
+// RENDER COMPLETED TASKS
+// Group completed tasks by category
+// ===============================
+
 function renderCompleted() {
-    let container = document.getElementById("completedList");
+
+    // Get completed page container
+    let container =
+        document.getElementById(
+            "completedList"
+        );
+
     container.innerHTML = "";
 
+    // Track whether completed tasks exist
     let hasCompleted = false;
 
+    // Loop through all categories
     Object.keys(taskData).forEach(listType => {
-        let completedTasks = taskData[listType].filter(t => t.status === "completed");
-        
+
+        let completedTasks =
+            taskData[listType].filter(
+                task => task.status === "completed"
+            );
+
         if (completedTasks.length === 0) return;
 
         hasCompleted = true;
 
-        const section = document.createElement("div");
+        // Create category section
+        const section =
+            document.createElement("div");
+
         section.style.marginBottom = "25px";
 
-section.innerHTML = `
-    <h3 class="completed-section-title">
+        section.innerHTML = `
 
-        <span class="material-symbols-rounded">
-            task_alt
-        </span>
-
-        ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${completedTasks.length})
-
-    </h3>
-`;
-
-        const taskContainer = document.createElement("div");
-
-        completedTasks.forEach(task => {
-            const card = document.createElement("div");
-            card.className = "task-card completed";
-            card.style.marginBottom = "8px";
-
-            card.innerHTML = `
-                <div class="task-info" style="flex:1;">
-                <div class="task-title">${task.text}</div>
-                <div class="task-meta">
-
-                <span class="task-date">
+            <h3 class="completed-section-title">
 
                 <span class="material-symbols-rounded">
-                    calendar_month
+                    task_alt
                 </span>
-                ${task.date || "No Date"}
 
-                </span>
+                ${
+                    listType.charAt(0).toUpperCase()
+                    + listType.slice(1)
+                }
+
+                Tasks (${completedTasks.length})
+
+            </h3>
+
+        `;
+
+        const taskContainer =
+            document.createElement("div");
+
+        // Create completed task cards
+        completedTasks.forEach(task => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "task-card completed";
+
+            card.style.marginBottom =
+                "8px";
+
+            card.innerHTML = `
+
+                <div class="task-info">
+
+                    <div class="task-title">
+
+                        ${task.text}
+
+                    </div>
+
+                    <div class="task-meta">
+
+                        <span class="task-date">
+
+                            <span class="material-symbols-rounded">
+                                calendar_month
+                            </span>
+
+                            ${task.date || "No Date"}
+
+                        </span>
+
+                        ${
+                            task.startTime || task.endTime
+                            ? `
+                            <span class="task-time">
+
+                                <span class="material-symbols-rounded">
+                                    schedule
+                                </span>
+
+                                ${task.startTime || "--:--"}
+                                -
+                                ${task.endTime || "--:--"}
+
+                            </span>
+                            `
+                            : ""
+                        }
+
+                        ${
+                            task.priority
+                            ? `
+                            <span class="task-priority">
+
+                                ${getPriorityDot(task.priority)}
+
+                                ${
+                                    task.priority === "red"
+                                    ? "High"
+                                    : task.priority === "orange"
+                                    ? "Medium"
+                                    : task.priority === "blue"
+                                    ? "Low"
+                                    : "No Priority"
+                                }
+
+                            </span>
+                            `
+                            : ""
+                        }
+
+                    </div>
 
                 </div>
-                
-                <button
-                 class="task-action-btn"
-                 onclick="restoreFromCompleted('${listType}', ${task.id})"
-                >
 
-    <span class="material-symbols-rounded">
-        undo
-    </span>
+                <div class="task-actions">
 
-</button>
+                    <button
+                        class="task-action-btn"
+                        onclick="restoreFromCompleted('${listType}', ${task.id})"
+                    >
 
-<button
-    class="task-action-btn"
-    onclick="deleteTask('${listType}', ${task.id});"
->
+                        <span class="material-symbols-rounded">
+                            undo
+                        </span>
 
-    <span class="material-symbols-rounded">
-        delete
-    </span>
+                    </button>
 
-</button>
+                    <button
+                        class="task-action-btn"
+                        onclick="deleteTask('${listType}', ${task.id})"
+                    >
+
+                        <span class="material-symbols-rounded">
+                            delete
+                        </span>
+
+                    </button>
+
+                </div>
+
             `;
 
             taskContainer.appendChild(card);
+
         });
 
         section.appendChild(taskContainer);
+
         container.appendChild(section);
+
     });
 
+    // Show empty message
     if (!hasCompleted) {
-        container.innerHTML = `<p style="text-align:center; color:#888; padding:60px 20px;">No completed tasks yet.</p>`;
+
+        container.innerHTML = `
+
+            <p
+                style="
+                    text-align:center;
+                    color:#888;
+                    padding:60px 20px;
+                "
+            >
+
+                No completed tasks yet.
+
+            </p>
+
+        `;
+
     }
+
 }
 
-// Render Trash (按列表分组) 
+
+
+
+// ===============================
+// RENDER TRASH TASKS
+// Group trashed tasks by category
+// ===============================
+
 function renderTrash() {
-    let container = document.getElementById("trashList");
+
+    // Get Trash page container
+    let container =
+        document.getElementById(
+            "trashList"
+        );
+
+    // Clear existing content
     container.innerHTML = "";
 
+    // Track whether Trash contains tasks
     let hasTrash = false;
 
+    // Loop through all task categories
     Object.keys(taskData).forEach(listType => {
-        let trashTasks = taskData[listType].filter(t => t.status === "trash");
-        
+
+        let trashTasks =
+            taskData[listType].filter(
+                task => task.status === "trash"
+            );
+
+        // Skip empty categories
         if (trashTasks.length === 0) return;
 
         hasTrash = true;
 
-        const section = document.createElement("div");
+        // Create category section
+        const section =
+            document.createElement("div");
+
         section.style.marginBottom = "25px";
 
         section.innerHTML = `
-       <h3 class="trash-section-title">
 
-        <span class="material-symbols-rounded">
-            delete
-        </span>
+            <h3 class="trash-section-title">
 
-        ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${trashTasks.length})
+                <span class="material-symbols-rounded">
+                    delete
+                </span>
 
-       </h3>
-    `;
+                ${
+                    listType.charAt(0).toUpperCase()
+                    + listType.slice(1)
+                }
 
-        const taskContainer = document.createElement("div");
+                Tasks (${trashTasks.length})
 
+            </h3>
+
+        `;
+
+        // Task container
+        const taskContainer =
+            document.createElement("div");
+
+        // Render each trashed task
         trashTasks.forEach(task => {
-            const card = document.createElement("div");
+
+            const card =
+                document.createElement("div");
+
             card.className = "task-card";
+
             card.style.opacity = "0.75";
+
             card.style.marginBottom = "8px";
 
             card.innerHTML = `
-                <div class="task-info" style="flex:1;">
-                <div class="task-title">${task.text}</div>
-                <div class="task-meta">
 
-                <span class="task-date">
-                <span class="material-symbols-rounded">
-                   calendar_month
-                </span>
+                <div class="task-info">
 
-                ${task.date || "No Date"}
+                    <div class="task-title">
 
-                </span>
+                        ${task.text}
+
+                    </div>
+
+                    <div class="task-meta">
+
+                        <!-- Date -->
+
+                        <span class="task-date">
+
+                            <span class="material-symbols-rounded">
+                                calendar_month
+                            </span>
+
+                            ${task.date || "No Date"}
+
+                        </span>
+
+                        <!-- Time -->
+
+                        ${
+                            task.startTime || task.endTime
+                            ? `
+                            <span class="task-time">
+
+                                <span class="material-symbols-rounded">
+                                    schedule
+                                </span>
+
+                                ${task.startTime || "--:--"}
+                                -
+                                ${task.endTime || "--:--"}
+
+                            </span>
+                            `
+                            : ""
+                        }
+
+                        <!-- Priority -->
+
+                        ${
+                            task.priority
+                            ? `
+                            <span class="task-priority">
+
+                                ${getPriorityDot(task.priority)}
+
+                                ${
+                                    task.priority === "red"
+                                    ? "High"
+                                    : task.priority === "orange"
+                                    ? "Medium"
+                                    : task.priority === "blue"
+                                    ? "Low"
+                                    : "No Priority"
+                                }
+
+                            </span>
+                            `
+                            : ""
+                        }
+
+                    </div>
 
                 </div>
 
-                <button
-                class="restore-btn"
-                onclick="restoreTask('${listType}', ${task.id})"
-                >
+                <div class="task-actions">
 
-                <span class="material-symbols-rounded">
-                undo
-                </span>
+                    <button
+                        class="restore-btn"
+                        onclick="restoreTask('${listType}', ${task.id})"
+                    >
 
-                 Restore
+                        <span class="material-symbols-rounded">
+                            undo
+                        </span>
 
-                </button>
+                        Restore
+
+                    </button>
+
+                </div>
+
             `;
 
             taskContainer.appendChild(card);
+
         });
 
+        // Add task list into section
         section.appendChild(taskContainer);
+
+        // Add section into page
         container.appendChild(section);
+
     });
 
+    // Show empty state
     if (!hasTrash) {
-        container.innerHTML = `<p style="text-align:center; color:#888; padding:60px 20px;">Trash is empty.</p>`;
+
+        container.innerHTML = `
+
+            <p
+                style="
+                    text-align:center;
+                    color:#888;
+                    padding:60px 20px;
+                "
+            >
+
+                Trash is empty.
+
+            </p>
+
+        `;
+
     }
+
 }
 
-// Restore Task
+
+
+// ===============================
+// RESTORE TASK
+// Move task from Trash
+// back to Active Tasks
+// ===============================
+
 function restoreTask(listType, id) {
-    let task = taskData[listType].find(t => t.id === id);
-    if (!task) return;
 
-    task.status = "active";
-
-    renderTrash();
-    renderTasks(listType);
-    renderToday();
-}
-
-// Render Today
-function renderToday() {
-    let container = document.getElementById("todayTasks");
-
-    container.innerHTML = "";
-
-    let today = new Date().toISOString().split("T")[0];
-
-    Object.keys(taskData).forEach(list => {
-        let tasks = taskData[list].filter(t =>
-            t.status === "active" && t.date === today
+    // Find selected task
+    let task =
+        taskData[listType].find(
+            t => t.id === id
         );
 
-        tasks.forEach(task => {
-            let li = document.createElement("li");
+    // Stop if task doesn't exist
+    if (!task) return;
 
-            li.innerHTML = `[${list}] ${task.text} ${getPriorityDot(task.priority)}`;
+    // Restore task to active status
+    task.status = "active";
 
-            container.appendChild(li);
-        });
-    });
+    // Refresh Trash page
+    renderTrash();
 
-    // 没任务时提示
-    if (container.innerHTML === "") {
-        container.innerHTML = "<li>No tasks for today</li>";
+    // Refresh task list page
+    renderTasks(listType);
+
+    // Refresh Today Dashboard
+    updateTodayDashboard();
+
+    // Save changes
+    saveTasks();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+        .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
     }
+
 }
+
+
+
 
 // ===============================
 // ENTER KEY SUPPORT
+// Press Enter to add a task
 // ===============================
-document.addEventListener("DOMContentLoaded", function () {
-    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
-        let input = document.getElementById(list + "TaskText");
 
-        if (input) {
-            input.addEventListener("keypress", function (e) {
-                if (e.key === "Enter") {
-                    addTask(list);
-                }
-            });
-        }
-    });
-});
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-// ToggleCalendar
+        [
+            "work",
+            "shopping",
+            "study",
+            "personal",
+            "workout"
+        ].forEach(list => {
+
+            let input =
+                document.getElementById(
+                    list + "TaskText"
+                );
+
+            if (input) {
+
+                input.addEventListener(
+                    "keypress",
+                    function (e) {
+
+                        if (e.key === "Enter") {
+
+                            addTask(list);
+
+                        }
+
+                    }
+                );
+
+            }
+
+        });
+
+    }
+);
+
+// ===============================
+// TOGGLE CALENDAR POPUP
+// Show or hide date popup
+// ===============================
+
 function toggleCalendar(btn, e) {
-    if (e) e.stopPropagation(); 
 
-    let popup = document.getElementById("calendarPopup");
+    if (e) e.stopPropagation();
+
+    let popup =
+        document.getElementById(
+            "calendarPopup"
+        );
+
+    if (!popup) return;
 
     document.body.appendChild(popup);
 
-    let extra = document.getElementById("extraPopup");
-    if (extra) extra.style.display = "none";
+    let extra =
+        document.getElementById(
+            "extraPopup"
+        );
 
-    let rect = btn.getBoundingClientRect();
+    if (extra) {
 
-    popup.style.position = "absolute";
-    popup.style.top = rect.bottom + window.scrollY + "px";
-    popup.style.left = rect.left + window.scrollX + "px";
+        extra.style.display = "none";
+
+    }
+
+    let rect =
+        btn.getBoundingClientRect();
+
+    popup.style.position =
+        "absolute";
+
+    popup.style.top =
+        rect.bottom +
+        window.scrollY +
+        "px";
+
+    popup.style.left =
+        rect.left +
+        window.scrollX +
+        "px";
 
     popup.style.display =
-        popup.style.display === "block" ? "none" : "block";
+        popup.style.display === "block"
+        ? "none"
+        : "block";
+
 }
 
-// ToggleCalendar
+// ===============================
+// TOGGLE EXTRA POPUP
+// Show or hide extra options popup
+// ===============================
+
 function toggleExtra(btn, e) {
-    if (e) e.stopPropagation(); 
 
-    let popup = document.getElementById("extraPopup");
+    if (e) e.stopPropagation();
+
+    let popup =
+        document.getElementById(
+            "extraPopup"
+        );
+
+    if (!popup) return;
 
     document.body.appendChild(popup);
 
-    let cal = document.getElementById("calendarPopup");
-    if (cal) cal.style.display = "none";
+    let cal =
+        document.getElementById(
+            "calendarPopup"
+        );
 
-    let rect = btn.getBoundingClientRect();
+    if (cal) {
 
-    popup.style.position = "absolute";
-    popup.style.top = rect.bottom + window.scrollY + "px";
-    popup.style.left = rect.right + window.scrollX - 200 + "px";
+        cal.style.display = "none";
+
+    }
+
+    let rect =
+        btn.getBoundingClientRect();
+
+    popup.style.position =
+        "absolute";
+
+    popup.style.top =
+        rect.bottom +
+        window.scrollY +
+        "px";
+
+    popup.style.left =
+        rect.right +
+        window.scrollX -
+        200 +
+        "px";
 
     popup.style.display =
-        popup.style.display === "block" ? "none" : "block";
+        popup.style.display === "block"
+        ? "none"
+        : "block";
+
 }
 
-// Close
+// ===============================
+// CLOSE CALENDAR POPUP
+// ===============================
+
 function closeCalendar() {
-    document.getElementById("calendarPopup").style.display = "none";
+
+    const popup =
+        document.getElementById(
+            "calendarPopup"
+        );
+
+    if (popup) {
+
+        popup.style.display =
+            "none";
+
+    }
+
 }
+
+// ===============================
+// CLOSE EXTRA POPUP
+// ===============================
 
 function closeExtra() {
-    document.getElementById("extraPopup").style.display = "none";
+
+    const popup =
+        document.getElementById(
+            "extraPopup"
+        );
+
+    if (popup) {
+
+        popup.style.display =
+            "none";
+
+    }
+
 }
 
-// GetPriorityDot
+
+
+
+// ===============================
+// GET PRIORITY ICON
+// Return priority emoji
+// ===============================
+
 function getPriorityDot(priority) {
-    if (priority === "red") return "🔴";
-    if (priority === "orange") return "🟠";
-    if (priority === "blue") return "🔵";
-    if (priority === "gray") return "⚫";
+
+    if (priority === "red") {
+
+        return "🔴";
+
+    }
+
+    if (priority === "orange") {
+
+        return "🟠";
+
+    }
+
+    if (priority === "blue") {
+
+        return "🔵";
+
+    }
+
+    if (priority === "gray") {
+
+        return "⚫";
+
+    }
+
     return "";
+
 }
+
+// ===============================
+// SET PRIORITY
+// Highlight selected priority
+// ===============================
+
 function setPriority(icon, e) {
+
     selectedPriority = icon;
 
-    // reset all
-    let all = document.querySelectorAll(".priority-box span");
+    let all =
+        document.querySelectorAll(
+            ".priority-box span"
+        );
+
     all.forEach(el => {
-        el.style.opacity = "0.5";
-        el.style.fontWeight = "normal";
+
+        el.style.opacity =
+            "0.5";
+
+        el.style.fontWeight =
+            "normal";
+
     });
 
-    // highlight selected
     if (e) {
-        e.target.style.opacity = "1";
-        e.target.style.fontWeight = "bold";
+
+        e.target.style.opacity =
+            "1";
+
+        e.target.style.fontWeight =
+            "bold";
+
     }
+
 }
 
-// Apply Date
+// ===============================
+// APPLY DATE SETTINGS
+// Save selected task options
+// ===============================
+
 function applyDate() {
-    let dateInput = document.getElementById("popupDate");
-    let startInput = document.getElementById("startTime");
-    let endInput = document.getElementById("endTime");
-    let reminderInput = document.getElementById("reminder");
 
-    selectedDate = dateInput.value;
-    selectedStart = startInput.value;
-    selectedEnd = endInput.value;
-    selectedReminder = reminderInput.value;
+    let dateInput =
+        document.getElementById(
+            "popupDate"
+        );
 
-    // 关闭 popup
+    let startInput =
+        document.getElementById(
+            "startTime"
+        );
+
+    let endInput =
+        document.getElementById(
+            "endTime"
+        );
+
+    let reminderInput =
+        document.getElementById(
+            "reminder"
+        );
+
+    let repeatInput =
+        document.getElementById(
+            "repeat"
+        );
+
+    // Save date
+    selectedDate =
+        dateInput
+        ? dateInput.value
+        : "";
+
+    // Save start time
+    selectedStart =
+        startInput
+        ? startInput.value
+        : "";
+
+    // Save end time
+    selectedEnd =
+        endInput
+        ? endInput.value
+        : "";
+
+    // Save reminder option
+    selectedReminder =
+        reminderInput
+        ? reminderInput.value
+        : "";
+
+    // Save repeat option
+    selectedRepeat =
+        repeatInput
+        ? repeatInput.value
+        : "";
+
+    // Close popup
     closeCalendar();
+
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+// ===============================
+// CUSTOM REMINDER / REPEAT
+// Show custom input fields
+// ===============================
 
-    let reminder = document.getElementById("reminder");
-    let repeat = document.getElementById("repeat");
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    if (reminder) {
-        reminder.addEventListener("change", function() {
-            let box = document.getElementById("customReminderBox");
-            box.style.display = this.value === "custom" ? "flex" : "none";
-        });
+        let reminder =
+            document.getElementById(
+                "reminder"
+            );
+
+        let repeat =
+            document.getElementById(
+                "repeat"
+            );
+
+        if (reminder) {
+
+            reminder.addEventListener(
+                "change",
+                function () {
+
+                    let box =
+                        document.getElementById(
+                            "customReminderBox"
+                        );
+
+                    if (box) {
+
+                        box.style.display =
+                            this.value === "custom"
+                            ? "flex"
+                            : "none";
+
+                    }
+
+                }
+            );
+
+        }
+
+        if (repeat) {
+
+            repeat.addEventListener(
+                "change",
+                function () {
+
+                    let box =
+                        document.getElementById(
+                            "customRepeatBox"
+                        );
+
+                    if (box) {
+
+                        box.style.display =
+                            this.value === "custom"
+                            ? "flex"
+                            : "none";
+
+                    }
+
+                }
+            );
+
+        }
+
     }
+);
 
-    if (repeat) {
-        repeat.addEventListener("change", function() {
-            let box = document.getElementById("customRepeatBox");
-            box.style.display = this.value === "custom" ? "flex" : "none";
-        });
-    }
 
-});
+
 
 // ===============================
-// PERSISTENCE - localStorage
+// PERSISTENCE - LOCAL STORAGE
+// Save and load task data
 // ===============================
+
 function saveTasks() {
-    localStorage.setItem("taskData", JSON.stringify(taskData));
+
+    localStorage.setItem(
+        "taskData",
+        JSON.stringify(taskData)
+    );
+
 }
 
 function loadTasks() {
-    const saved = localStorage.getItem("taskData");
-    if (saved) taskData = JSON.parse(saved);
+
+    const saved =
+        localStorage.getItem(
+            "taskData"
+        );
+
+    try {
+
+        if (saved) {
+
+            taskData =
+                JSON.parse(saved);
+
+        }
+
+    }
+
+    catch {
+
+        console.error(
+            "Failed to load task data"
+        );
+
+        localStorage.removeItem(
+            "taskData"
+        );
+
+    }
+
 }
+
+// ===============================
+// GET PRIORITY COLOR
+// Return color for calendar badges
+// ===============================
 
 function getPriorityColor(priority) {
-    if (priority === "red") return "#ef4444";
-    if (priority === "orange") return "#f59e0b";
-    if (priority === "blue") return "#3b82f6";
+
+    if (priority === "red") {
+
+        return "#ef4444";
+
+    }
+
+    if (priority === "orange") {
+
+        return "#f59e0b";
+
+    }
+
+    if (priority === "blue") {
+
+        return "#3b82f6";
+
+    }
+
     return "#6b7280";
+
 }
 
-// Load data when page loads
-document.addEventListener("DOMContentLoaded", () => {
-    loadTasks();
-    
-    // 重要：加载后重新渲染所有列表
-    renderToday();
-    
-    // 渲染所有任务列表
-    ["work", "shopping", "study", "personal", "workout"].forEach(list => {
-        renderTasks(list);
-    });
-});
+// ===============================
+// LOAD SAVED TASKS
+// Restore tasks when page loads
+// ===============================
 
-// Auto save after changes
-const originalCompleteTask = completeTask;
-completeTask = function(listType, id) {
-    originalCompleteTask.call(this, listType, id);
-    saveTasks();
-    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
-};
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-const originalDeleteTask = deleteTask;
-deleteTask = function(listType, id) {
-    originalDeleteTask.call(this, listType, id);
-    saveTasks();
-    if (document.getElementById("calendar").classList.contains("active")) generateCalendar();
-};
+        // Load saved task data
+        loadTasks();
 
-// Toggle complete status
-function toggleComplete(listType, id, checkbox) {
-    let task = taskData[listType].find(t => t.id === id);
+        // Render all task categories
+        [
+            "work",
+            "shopping",
+            "study",
+            "personal",
+            "workout"
+        ].forEach(list => {
+
+            renderTasks(list);
+
+        });
+
+        // Refresh Completed page
+        renderCompleted();
+
+        // Refresh Trash page
+        renderTrash();
+
+        // Refresh Today dashboard
+        updateTodayDashboard();
+
+    }
+);
+
+// ===============================
+// TOGGLE COMPLETE STATUS
+// Move task between Active
+// and Completed
+// ===============================
+
+function toggleComplete(
+    listType,
+    id,
+    checkbox
+) {
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
     if (!task) return;
 
-    task.status = checkbox.checked ? "completed" : "active";
+    // Update task status
+    task.status =
+        checkbox.checked
+        ? "completed"
+        : "active";
 
+    // Refresh pages
     renderTasks(listType);
-    renderToday();
+
     renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    // Save changes
     saveTasks();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+        .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
+    }
+
 }
 
-// Show Editable Detail Panel 
+
+
+
+// ===============================
+// TASK DETAIL PANEL
+// Manage task editing panel
+// ===============================
+
+// Store currently selected task
 let currentTaskListType = "";
+
 let currentTaskId = null;
 
-function showTaskDetail(listType, id) {
-    currentTaskListType = listType;
-    currentTaskId = id;
+// ===============================
+// SHOW TASK DETAIL PANEL
+// Display task information
+// inside editable side panel
+// ===============================
 
-    let task = taskData[listType].find(t => t.id === id);
+function showTaskDetail(
+    listType,
+    id
+) {
+
+    currentTaskListType =
+        listType;
+
+    currentTaskId =
+        id;
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
     if (!task) return;
 
-    // 填充可编辑字段
-    document.getElementById("panelTitleInput").value = task.text || "";
-    document.getElementById("panelDescription").value = task.description || "";
-    document.getElementById("panelDateInput").value = task.date || "";
-    document.getElementById("panelStartTime").value = task.startTime || "";
-    document.getElementById("panelEndTime").value = task.endTime || "";
-    document.getElementById("panelPrioritySelect").value = task.priority || "";
-    document.getElementById("panelTagInput").value = task.tag || "";
+    // Fill editable fields
+    document.getElementById(
+        "panelTitleInput"
+    ).value =
+        task.text || "";
 
-  // 完全显示面板
-    const panel = document.getElementById("taskDetailPanel");
-    panel.style.visibility = "visible";
-    panel.style.opacity = "1";
-    panel.style.right = "0";
+    document.getElementById(
+        "panelDescription"
+    ).value =
+        task.description || "";
+
+    document.getElementById(
+        "panelDateInput"
+    ).value =
+        task.date || "";
+
+    document.getElementById(
+        "panelStartTime"
+    ).value =
+        task.startTime || "";
+
+    document.getElementById(
+        "panelEndTime"
+    ).value =
+        task.endTime || "";
+
+    document.getElementById(
+        "panelPrioritySelect"
+    ).value =
+        task.priority || "";
+
+    document.getElementById(
+        "panelTagInput"
+    ).value =
+        task.tag || "";
+
+    // Show panel
+    const panel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    panel.style.visibility =
+        "visible";
+
+    panel.style.opacity =
+        "1";
+
+    panel.style.right =
+        "0";
+
 }
+
+
+
+
+// ===============================
+// CLOSE TASK DETAIL PANEL
+// Hide side panel smoothly
+// ===============================
 
 function closeDetailPanel() {
-    const panel = document.getElementById("taskDetailPanel");
-    panel.style.right = "-450px";
-    // 延迟隐藏，防止闪烁
+
+    const panel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    if (!panel) return;
+
+    panel.style.right =
+        "-450px";
+
     setTimeout(() => {
-        panel.style.visibility = "hidden";
-        panel.style.opacity = "0";
+
+        panel.style.visibility =
+            "hidden";
+
+        panel.style.opacity =
+            "0";
+
     }, 350);
+
 }
 
-// Save Changes from Detail Panel 
+// ===============================
+// SAVE TASK CHANGES
+// Save edited task information
+// ===============================
+
 function saveTaskChanges() {
-    let task = taskData[currentTaskListType].find(t => t.id === currentTaskId);
+
+    let task =
+        taskData[currentTaskListType]
+        .find(
+            t => t.id === currentTaskId
+        );
+
     if (!task) return;
 
-    task.text = document.getElementById("panelTitleInput").value.trim();
-    task.description = document.getElementById("panelDescription").value.trim();
-    task.date = document.getElementById("panelDateInput").value;
-    task.startTime = document.getElementById("panelStartTime").value;
-    task.endTime = document.getElementById("panelEndTime").value;
-    task.priority = document.getElementById("panelPrioritySelect").value;
-    task.tag = document.getElementById("panelTagInput").value.trim();
+    // Update task data
+    task.text =
+        document.getElementById(
+            "panelTitleInput"
+        ).value.trim();
 
+    task.description =
+        document.getElementById(
+            "panelDescription"
+        ).value.trim();
+
+    task.date =
+        document.getElementById(
+            "panelDateInput"
+        ).value;
+
+    task.startTime =
+        document.getElementById(
+            "panelStartTime"
+        ).value;
+
+    task.endTime =
+        document.getElementById(
+            "panelEndTime"
+        ).value;
+
+    task.priority =
+        document.getElementById(
+            "panelPrioritySelect"
+        ).value;
+
+    task.tag =
+        document.getElementById(
+            "panelTagInput"
+        ).value.trim();
+
+    // Save data
     saveTasks();
-    renderTasks(currentTaskListType);   // 刷新列表
+
+    // Refresh pages
+    renderTasks(
+        currentTaskListType
+    );
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById(
+            "calendar"
+        ).classList.contains(
+            "active"
+        )
+    ) {
+
+        generateCalendar();
+
+    }
+
+    // Close panel
     closeDetailPanel();
 
-    alert("✅ Changes saved successfully!");
+    alert(
+        "✅ Changes saved successfully!"
+    );
+
 }
+
+// ===============================
+// DELETE CURRENT TASK
+// Move current task to Trash
+// ===============================
 
 function deleteCurrentTask() {
-    if (confirm("Delete this task?")) {
-        deleteTask(currentTaskListType, currentTaskId);
+
+    if (
+        confirm(
+            "Delete this task?"
+        )
+    ) {
+
+        deleteTask(
+            currentTaskListType,
+            currentTaskId
+        );
+
         closeDetailPanel();
+
     }
+
 }
 
-// Restore from Completed
-function restoreFromCompleted(listType, id) {
-    let task = taskData[listType].find(t => t.id === id);
+// ===============================
+// RESTORE FROM COMPLETED
+// Move task back to active list
+// ===============================
+
+function restoreFromCompleted(
+    listType,
+    id
+) {
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
     if (!task) return;
+
+    // Restore task
     task.status = "active";
+
+    // Refresh pages
     renderCompleted();
+
     renderTasks(listType);
-    renderToday();
+
+    updateTodayDashboard();
+
+    // Save changes
     saveTasks();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById(
+            "calendar"
+        ).classList.contains(
+            "active"
+        )
+    ) {
+
+        generateCalendar();
+
+    }
+
 }
