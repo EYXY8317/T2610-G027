@@ -1,102 +1,326 @@
 // ===============================
 // PAGE SWITCH (Sidebar Navigation)
+// Handle page navigation and
+// refresh page-specific content
 // ===============================
+
 function showPage(pageId, element) {
+
+    // Close all popups
+    closeCalendar();
+    closeExtra();
+
+    // Close detail panel
+    closeDetailPanel();
+
     // Hide all pages
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll(".page")
+        .forEach(page => {
 
-    // Update active menu item
-    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-    if (element) element.classList.add('active');
+            page.classList.remove("active");
 
-    // Render specific pages
-    if (pageId === "completed") renderCompleted();
-    if (pageId === "trash") renderTrash();
-    if (pageId === "today") renderToday();
-    if (pageId === "calendar") {
-        generateCalendar();
+        });
+
+    // Show selected page
+    document.getElementById(pageId)
+        .classList.add("active");
+
+    // Remove active state from all menu items
+    document.querySelectorAll(".menu-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
+        });
+
+    // Highlight selected menu item
+    if (element) {
+
+        element.classList.add("active");
+
     }
+
+    // ===============================
+    // Refresh page content
+    // ===============================
+
+    if (pageId === "completed") {
+
+        renderCompleted();
+
+    }
+
+    else if (pageId === "trash") {
+
+        renderTrash();
+
+    }
+
+    else if (pageId === "today") {
+
+        updateTodayDashboard();
+
+    }
+
+    else if (
+        ["work", "shopping", "study", "personal", "workout"]
+        .includes(pageId)
+    ) {
+
+        renderTasks(pageId);
+
+    }
+
+    else if (pageId === "calendar") {
+
+        generateCalendar();
+
+    }
+
 }
+
+
+
 
 // ===============================
 // GLOBAL STATE
+// Store temporary values used
+// across the application
 // ===============================
+
+// Current calendar date
 let today = new Date();
+
+// Selected schedule information
 let selectedDate = "";
 let selectedStart = "";
 let selectedEnd = "";
+
+// Selected reminder settings
 let selectedReminder = "";
 let selectedRepeat = "";
+
+// Selected task settings
 let selectedPriority = "";
 let selectedTag = "";
 
+// ===============================
+// TASK STORAGE
+// Store all task categories
+// ===============================
+
 let taskData = {
-    work: [], shopping: [], study: [], personal: [], workout: []
+
+    work: [],
+
+    shopping: [],
+
+    study: [],
+
+    personal: [],
+
+    workout: []
+
 };
 
+
+
+
 // ===============================
-// TASK MANAGEMENT
+// ADD NEW TASK
+// Create and save a new task
 // ===============================
+
 function addTask(listType) {
-    let text = document.getElementById(listType + "TaskText").value.trim();
+
+    // Get task title
+    let text =
+        document.getElementById(
+            listType + "TaskText"
+        ).value.trim();
+
+    // Prevent empty task
     if (!text) return;
+
+    // Date is required
     if (!selectedDate) {
+
         alert("Please select a date first");
+
         return;
+
     }
 
+    // Create task object
     let task = {
+
         id: Date.now(),
+
         text: text,
+
         date: selectedDate,
+
         startTime: selectedStart,
+
         endTime: selectedEnd,
+
         reminder: selectedReminder,
+
+        repeat: selectedRepeat,
+
         priority: selectedPriority,
+
         tag: selectedTag || "",
+
+        description: "",
+
         status: "active"
+
     };
 
+    // Save task into category
     taskData[listType].push(task);
 
+    // Refresh task list
     renderTasks(listType);
-    renderToday();
+
+    // Refresh Today Dashboard
+    updateTodayDashboard();
+
+    // Save to localStorage
     saveTasks();
 
-    if (document.getElementById("calendar").classList.contains("active")) {
+    // Refresh calendar if currently open
+    if (
+        document.getElementById("calendar")
+        .classList.contains("active")
+    ) {
+
         generateCalendar();
+
     }
 
-    // Clear input
-    document.getElementById(listType + "TaskText").value = "";
-    selectedDate = selectedStart = selectedEnd = selectedReminder = selectedPriority = selectedTag = "";
+// ===============================
+// RESET INPUT AND TEMPORARY DATA
+// ===============================
+
+   // Clear task title input
+    document.getElementById(
+    listType + "TaskText"
+    ).value = "";
+
+    // Reset selected date and time
+    selectedDate = "";
+    selectedStart = "";
+    selectedEnd = "";
+
+    // Reset reminder settings
+    selectedReminder = "";
+    selectedRepeat = "";
+
+    // Reset task settings
+    selectedPriority = "";
+    selectedTag = "";
+
 }
 
 
-// CompleteTask
+
+
+// ===============================
+// COMPLETE TASK
+// Move task to completed status
+// ===============================
+
 function completeTask(listType, id) {
-    let task = taskData[listType].find(t => t.id === id);
+
+    // Find selected task
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    // Stop if task doesn't exist
     if (!task) return;
 
+    // Update task status
     task.status = "completed";
 
+    // Refresh active task list
     renderTasks(listType);
-    renderCompleted(); 
-    renderToday(); 
+
+    // Refresh completed page
+    renderCompleted();
+
+    // Refresh Today Dashboard
+    updateTodayDashboard();
+
+    // Save changes
+    saveTasks();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+        .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
+    }
+
 }
 
-// Delete Task
+
+
+// ===============================
+// MOVE TASK TO TRASH
+// Move task from active/completed
+// to Trash page
+// ===============================
+
 function deleteTask(listType, id) {
-    let task = taskData[listType].find(t => t.id === id);
+
+    // Find selected task
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    // Stop if task doesn't exist
     if (!task) return;
 
+    // Move task to trash
     task.status = "trash";
 
+    // Refresh active task list
     renderTasks(listType);
-    renderCompleted();   
-    renderToday(); 
+
+    // Refresh completed page
+    renderCompleted();
+
+    // Refresh trash page
+    renderTrash();
+
+    // Refresh Today Dashboard
+    updateTodayDashboard();
+
+    // Save changes
+    saveTasks();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+        .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
+    }
+
 }
+
+
+
 
 // Render task
 function renderTasks(listType) {
@@ -254,8 +478,18 @@ section.innerHTML = `
 
             card.innerHTML = `
                 <div class="task-info" style="flex:1;">
-                    <div class="task-title">${task.text}</div>
-                    <div class="task-date">📅 ${task.date || "No Date"}</div>
+                <div class="task-title">${task.text}</div>
+                <div class="task-meta">
+
+                <span class="task-date">
+
+                <span class="material-symbols-rounded">
+                    calendar_month
+                </span>
+                ${task.date || "No Date"}
+
+                </span>
+
                 </div>
                 
                 <button
@@ -332,9 +566,20 @@ function renderTrash() {
 
             card.innerHTML = `
                 <div class="task-info" style="flex:1;">
-                    <div class="task-title">${task.text}</div>
-                    <div class="task-date">📅 ${task.date || "No Date"}</div>
+                <div class="task-title">${task.text}</div>
+                <div class="task-meta">
+
+                <span class="task-date">
+                <span class="material-symbols-rounded">
+                   calendar_month
+                </span>
+
+                ${task.date || "No Date"}
+
+                </span>
+
                 </div>
+
                 <button
                 class="restore-btn"
                 onclick="restoreTask('${listType}', ${task.id})"
