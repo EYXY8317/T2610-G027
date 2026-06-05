@@ -376,3 +376,354 @@ body{
     display:block;
 
 }
+
+/* ==================================================
+   TODAY PAGE HEADER
+================================================== */
+
+.today-header{
+
+    margin-bottom:28px;
+
+}
+
+.today-title{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+    margin-bottom:8px;
+
+}
+
+.today-date{
+
+    color:#8f8cab;
+
+    font-size:15px;
+
+}
+
+
+/* ==================================================
+   DASHBOARD CARD
+================================================== */
+
+.dashboard-card{
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:30px;
+
+    margin-bottom:24px;
+
+    border:1px solid #f0ebff;
+
+    box-shadow:
+    0 8px 30px rgba(124,92,255,0.05);
+
+}
+
+
+/* ==================================================
+   CARD HEADER
+================================================== */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.header-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+/* ==================================================
+   CARD ICON
+================================================== */
+
+.card-icon{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:14px;
+
+    background:#f3ecff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.card-icon .material-symbols-rounded{
+
+    color:#7c5cff;
+
+    font-size:24px;
+
+}
+
+
+/* ==================================================
+   CARD TITLE
+================================================== */
+
+.card-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+}
+
+
+/* ==================================================
+   TODAY TASK LIST
+================================================== */
+
+#todayTasks{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+/* ==================================================
+   PROGRESS CARD
+================================================== */
+
+.progress-card{
+
+    overflow:hidden;
+
+}
+
+
+/* ==================================================
+   PROGRESS BADGE
+================================================== */
+
+.progress-badge{
+
+    background:#f4efff;
+
+    color:#7c5cff;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+/* ==================================================
+   PROGRESS CONTENT
+================================================== */
+
+.progress-content{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+
+/* ==================================================
+   PROGRESS NUMBER
+================================================== */
+
+.progress-number{
+
+    margin:0;
+
+    font-size:60px;
+
+    font-weight:700;
+
+    color:#7c5cff;
+
+}
+
+
+/* ==================================================
+   PROGRESS LABEL
+================================================== */
+
+.progress-label{
+
+    margin-top:8px;
+
+    color:#8f8cab;
+
+    font-size:15px;
+
+}
+
+
+/* ==================================================
+   PROGRESS RIGHT
+================================================== */
+
+.progress-right{
+
+    flex:1;
+
+}
+
+
+/* ==================================================
+   PROGRESS BAR
+================================================== */
+
+.progress-bar{
+
+    height:14px;
+
+    background:#efe8ff;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+}
+
+
+/* ==================================================
+   PROGRESS FILL
+================================================== */
+
+.progress-fill{
+
+    width:0%;
+
+    height:100%;
+
+    border-radius:30px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #c08cff,
+        #7c5cff
+    );
+
+    transition:0.35s ease;
+
+}
+
+
+/* ==================================================
+   PROGRESS TEXT
+================================================== */
+
+.progress-task-text{
+
+    margin-top:12px;
+
+    color:#8f8cab;
+
+    font-size:14px;
+
+}
+
+
+/* ==================================================
+   QUOTE CARD
+================================================== */
+
+.quote-card{
+
+    background:
+    linear-gradient(
+        135deg,
+        #fff8fd,
+        #f7f2ff
+    );
+
+}
+
+
+/* ==================================================
+   QUOTE TEXT
+================================================== */
+
+.quote-text{
+
+    margin-top:24px;
+
+    margin-bottom:14px;
+
+    font-size:32px;
+
+    font-style:italic;
+
+    line-height:1.5;
+
+    color:#353558;
+
+}
+
+
+/* ==================================================
+   QUOTE SUBTEXT
+================================================== */
+
+.quote-sub{
+
+    color:#8f8cab;
+
+    font-size:15px;
+
+}
+
+
+/* ==================================================
+   EMPTY MESSAGE
+================================================== */
+
+.empty{
+
+    text-align:center;
+
+    color:#a4a1bf;
+
+    padding:40px 20px;
+
+}
