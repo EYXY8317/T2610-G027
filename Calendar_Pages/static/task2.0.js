@@ -124,17 +124,64 @@ function renderTasks(listType) {
                    onchange="toggleComplete('${listType}', ${task.id}, this)">
 
             <div class="task-info">
-                <div class="task-title">${task.text}</div>
-                <div class="task-date">📅 ${task.date || "No Date"}</div>
-            </div>
 
-           <div class="task-date">
+    <div class="task-title">
+        ${task.text}
+    </div>
 
-    <span class="material-symbols-rounded">
-        calendar_month
-    </span>
+    <div class="task-meta">
 
-    ${task.date || "No Date"}
+        <span class="task-date">
+
+            <span class="material-symbols-rounded">
+                calendar_month
+            </span>
+
+            ${task.date || "No Date"}
+
+        </span>
+
+        ${
+            task.startTime || task.endTime
+            ? `
+            <span class="task-time">
+
+                <span class="material-symbols-rounded">
+                    schedule
+                </span>
+
+                ${task.startTime || "--:--"}
+                -
+                ${task.endTime || "--:--"}
+
+            </span>
+            `
+            : ""
+        }
+
+        ${
+            task.priority
+            ? `
+            <span class="task-priority">
+
+                ${getPriorityDot(task.priority)}
+
+                ${
+                    task.priority === "red"
+                    ? "High"
+                    : task.priority === "orange"
+                    ? "Medium"
+                    : task.priority === "blue"
+                    ? "Low"
+                    : "No Priority"
+                }
+
+            </span>
+            `
+            : ""
+        }
+
+    </div>
 
 </div>
 
