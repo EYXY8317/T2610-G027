@@ -251,3 +251,40 @@ function renderTodayTasks() {
     }
 
 }
+
+// =====================================
+// TODAY DASHBOARD CONTROLLER
+// Refresh all Today page components
+// Components:
+// 1. Today's Tasks
+// 2. Progress Overview
+// =====================================
+
+function updateTodayDashboard() {
+
+    renderTodayTasks();
+
+    updateProgress();
+
+}
+
+// =====================================
+// INITIALIZE TODAY PAGE
+// Run when page is fully loaded
+// =====================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        // Display current date
+        loadTodayDate();
+
+        // Display daily quote
+        loadDailyQuote();
+
+        // Load Today dashboard data
+        updateTodayDashboard();
+
+    }
+);
