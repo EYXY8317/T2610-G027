@@ -98,7 +98,7 @@ function deleteTask(listType, id) {
     renderToday(); 
 }
 
-// Better Task Cards (Render task）
+// Render task
 function renderTasks(listType) {
     let taskList = document.getElementById(listType + "TaskList");
     let emptyMsg = document.getElementById(listType + "EmptyMsg");
@@ -128,10 +128,41 @@ function renderTasks(listType) {
                 <div class="task-date">📅 ${task.date || "No Date"}</div>
             </div>
 
-            <div class="task-actions">
-                <button onclick="deleteTask('${listType}', ${task.id}); event.stopImmediatePropagation();">🗑</button>
-                <button onclick="showTaskDetail('${listType}', ${task.id}); event.stopImmediatePropagation();">▼</button>
-            </div>
+           <div class="task-date">
+
+    <span class="material-symbols-rounded">
+        calendar_month
+    </span>
+
+    ${task.date || "No Date"}
+
+</div>
+
+<div class="task-actions">
+
+    <button
+        class="task-action-btn"
+        onclick="deleteTask('${listType}', ${task.id}); event.stopImmediatePropagation();"
+    >
+
+        <span class="material-symbols-rounded">
+            delete
+        </span>
+
+    </button>
+
+    <button
+        class="task-action-btn"
+        onclick="showTaskDetail('${listType}', ${task.id}); event.stopImmediatePropagation();"
+    >
+
+        <span class="material-symbols-rounded">
+            chevron_right
+        </span>
+
+    </button>
+
+</div>
         `;
 
         taskList.appendChild(card);
@@ -155,11 +186,17 @@ function renderCompleted() {
         const section = document.createElement("div");
         section.style.marginBottom = "25px";
 
-        section.innerHTML = `
-            <h3 style="margin: 0 0 12px 0; color: #333; font-size: 17px;">
-                ✅ ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${completedTasks.length})
-            </h3>
-        `;
+section.innerHTML = `
+    <h3 class="completed-section-title">
+
+        <span class="material-symbols-rounded">
+            task_alt
+        </span>
+
+        ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${completedTasks.length})
+
+    </h3>
+`;
 
         const taskContainer = document.createElement("div");
 
@@ -173,8 +210,28 @@ function renderCompleted() {
                     <div class="task-title">${task.text}</div>
                     <div class="task-date">📅 ${task.date || "No Date"}</div>
                 </div>
-                <button onclick="restoreFromCompleted('${listType}', ${task.id})" style="background:none;border:none;font-size:22px;cursor:pointer;margin-right:8px;">↩</button>
-                <button onclick="deleteTask('${listType}', ${task.id});" style="background:none;border:none;font-size:22px;cursor:pointer;">🗑</button>
+                
+                <button
+                 class="task-action-btn"
+                 onclick="restoreFromCompleted('${listType}', ${task.id})"
+                >
+
+    <span class="material-symbols-rounded">
+        undo
+    </span>
+
+</button>
+
+<button
+    class="task-action-btn"
+    onclick="deleteTask('${listType}', ${task.id});"
+>
+
+    <span class="material-symbols-rounded">
+        delete
+    </span>
+
+</button>
             `;
 
             taskContainer.appendChild(card);
@@ -207,10 +264,16 @@ function renderTrash() {
         section.style.marginBottom = "25px";
 
         section.innerHTML = `
-            <h3 style="margin: 0 0 12px 0; color: #333; font-size: 17px;">
-                🗑 ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${trashTasks.length})
-            </h3>
-        `;
+       <h3 class="trash-section-title">
+
+        <span class="material-symbols-rounded">
+            delete
+        </span>
+
+        ${listType.charAt(0).toUpperCase() + listType.slice(1)} Tasks (${trashTasks.length})
+
+       </h3>
+    `;
 
         const taskContainer = document.createElement("div");
 
@@ -225,7 +288,18 @@ function renderTrash() {
                     <div class="task-title">${task.text}</div>
                     <div class="task-date">📅 ${task.date || "No Date"}</div>
                 </div>
-                <button onclick="restoreTask('${listType}', ${task.id})" style="background:none;border:none;font-size:22px;cursor:pointer;">↩ Restore</button>
+                <button
+                class="restore-btn"
+                onclick="restoreTask('${listType}', ${task.id})"
+                >
+
+                <span class="material-symbols-rounded">
+                undo
+                </span>
+
+                 Restore
+
+                </button>
             `;
 
             taskContainer.appendChild(card);
