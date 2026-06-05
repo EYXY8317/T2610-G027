@@ -12,7 +12,8 @@
         "password": "5cf4d310a12495134a24d5ea4fbb347b50a447840d14d1a0b458947f2b10f922",
         "email": "yxin683@gmail.com",
         "security_question": "birth_city",
-        "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4"
+        "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4",
+        "theme": "adaptive"
     },
     {
         "username": "User7763",
