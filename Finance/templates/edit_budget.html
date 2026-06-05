@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>Edit Budget</title>
+
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+>
+
+</head>
+
+<body
+class="{{ user.theme if user else 'adaptive' }}"
+
+{% if wallpaper %}
+style="
+background-image:
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+{% endif %}
+
+>
+
+<div class="wallpaper-overlay"></div>
+
+<div class="page-container">
+
+<div class="summary-card">
+
+    <h1>
+        ✏️ Edit Budget
+    </h1>
+
+    <form method="POST">
+
+        <label>
+            Category
+        </label>
+
+        <input
+            type="text"
+            value="{{ budget.category }}"
+            readonly
+        >
+
+        <label>
+            Budget Amount (RM)
+        </label>
+
+            <input
+                type="number"
+                name="amount"
+                class="goal-amount-input"
+                placeholder="0.00"
+                step="0.01"
+                min="0.01"
+                required
+            >
+
+        <br><br>
+
+        <button
+            type="submit"
+            class="primary-btn"
+        >
+            Save Changes
+        </button>
+
+        <a
+            href="/budget"
+            class="secondary-btn"
+        >
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+</div>
+
+<script>
+// ================= AMOUNT DISPLAY =================
+
+    const amountInput =
+        document.getElementById("amountInput");
+
+    const amountDisplay =
+        document.getElementById("amountDisplay");
+
+    let value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    );
+
+    function updateAmount() {
+
+        const formatted =
+            (value / 100).toFixed(2);
+
+        amountInput.value =
+            formatted;
+
+        amountDisplay.textContent =
+            formatted;
+    }
+
+    updateAmount();
+
+    amountDisplay.setAttribute(
+        "tabindex",
+        "0"
+    );
+
+    amountDisplay.addEventListener(
+        "keydown",
+        function(e) {
+
+            if (
+                e.key >= "0"
+                &&
+                e.key <= "9"
+            ) {
+
+                value =
+                    value * 10 +
+                    parseInt(e.key);
+
+            }
+
+            else if (
+                e.key === "Backspace"
+            ) {
+
+                value =
+                    Math.floor(
+                        value / 10
+                    );
+
+            }
+
+            else {
+
+                return;
+            }
+
+            e.preventDefault();
+
+            updateAmount();
+
+        }
+    );
+
+    amountDisplay.addEventListener(
+        "click",
+        function() {
+
+            amountDisplay.focus();
+
+        }
+    );
+
+    function validateAmount() {
+
+        const amount =
+            parseFloat(
+                document.getElementById("amountInput").value
+            );
+
+        if (amount <= 0) {
+
+            document
+                .getElementById("amountInput")
+                .setCustomValidity(
+                    "Please enter an amount greater than RM 0.00"
+                );
+
+            document
+                .getElementById("amountInput")
+                .reportValidity();
+
+            return false;
+        }
+
+        document
+            .getElementById("amountInput")
+            .setCustomValidity("");
+
+        return true;
+    }
+
+</script>
+</body>
+</html>

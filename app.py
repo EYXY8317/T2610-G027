@@ -639,6 +639,73 @@ def budget():
         user=get_current_user(),
     )
 
+# ================= EDIT BUDGET =================
+
+@app.route(
+    "/edit_budget/<category>",
+    methods=["GET", "POST"]
+)
+def edit_budget(category):
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    budgets = load_data(f_budget, [])
+
+    budget = next(
+
+        (
+            b
+            for b in budgets
+
+            if (
+
+                b["username"] == session["user"]
+
+                and
+
+                b["category"] == category
+
+            )
+        ),
+
+        None
+
+    )
+
+    if not budget:
+
+        return redirect(
+            url_for("budget")
+        )
+
+    if request.method == "POST":
+
+        budget["amount"] = float(
+            request.form.get("amount")
+        )
+
+        save_data(
+            f_budget,
+            budgets
+        )
+
+        return redirect(
+            url_for("budget")
+        )
+
+    return render_template(
+
+        "edit_budget.html",
+
+        budget=budget,
+
+        wallpaper=get_user_wallpaper(),
+
+        user=get_current_user()
+
+    )
+
 # ===============DELETE BUDGET ==============
 
 @app.route("/delete_budget/<category>")

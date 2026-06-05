@@ -187,24 +187,33 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     </h3>
 
-                    <a
-                    href="/delete_budget/{{ b.category }}"
-                    class="delete-budget-btn"
-                    >
+                        <div class="budget-actions">
 
-                        Delete
+                            <a
+                                href="/edit_budget/{{ b.category }}"
+                                class="edit-btn"
+                            >
+                                ✏️ Edit
+                            </a>
 
-                    </a>
+                            <a
+                                href="/delete_budget/{{ b.category }}"
+                                class="delete-btn"
+                            >
+                                🗑 Delete
+                            </a>
+
+                        </div>
 
                 </div>
 
                 <div class="budget-amount-wrapper">
 
-                    <p class="budget-amount">
+                    <div class="budget-amount">
 
                         RM {{ "%.2f"|format(b.amount) }}
 
-                    </p>
+                    </div>
 
                 </div>
 
