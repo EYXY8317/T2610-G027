@@ -1,56 +1,103 @@
-/* ===== BODY ===== */
+/* ==================================================
+   GLOBAL SETTINGS
+================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
 body{
-    margin:0;
+
     font-family:Arial, sans-serif;
+
     background:#f7f4ff;
+
     color:#2f2f52;
+
     overflow-x:hidden;
+
 }
 
 
-/* ===== TOP NAV ===== */
+/* ==================================================
+   TOP NAVIGATION
+================================================== */
 
 .top-nav{
+
     display:flex;
+
     justify-content:flex-end;
+
     align-items:center;
+
     gap:14px;
-    padding:18px 32px 0 32px;
+
+    padding:20px 32px 0;
+
 }
 
 .nav-link{
+
     text-decoration:none;
-    color:#78789a;
-    background:rgba(255,255,255,0.85);
-    padding:11px 18px;
-    border-radius:18px;
-    font-size:14px;
+
+    color:#7f7f9f;
+
+    background:#ffffff;
+
+    padding:10px 18px;
+
+    border-radius:16px;
+
     border:1px solid #f0ebff;
+
+    font-size:14px;
+
     transition:0.25s;
-    box-shadow:0 2px 10px rgba(124,92,255,0.04);
+
+    box-shadow:
+    0 2px 10px rgba(124,92,255,0.05);
+
 }
 
 .nav-link:hover{
+
     background:#f3edff;
+
     color:#7c5cff;
+
 }
 
 .logout-link{
+
     color:#ff6b97;
+
 }
 
-/* ===== LAYOUT ===== */
+
+/* ==================================================
+   MAIN LAYOUT
+================================================== */
 
 .container{
+
     display:flex;
+
     min-height:100vh;
+
 }
 
-/* ===== SIDEBAR ===== */
+
+/* ==================================================
+   SIDEBAR
+================================================== */
 
 .sidebar{
-    width:245px;
+
+    width:280px;
+
     background:
     linear-gradient(
         180deg,
@@ -59,1074 +106,273 @@ body{
     );
 
     border-right:1px solid #efe8ff;
-    padding:28px 18px;
+
+    padding:30px 20px;
+
     display:flex;
+
     flex-direction:column;
+
 }
 
-/* ===== LOGO ===== */
 
-.logo-area{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:36px;
-}
-
-.logo-img{
-    width:46px;
-    height:46px;
-    object-fit:contain;
-}
+/* ==================================================
+   SIDEBAR LOGO
+================================================== */
 
 .logo{
-    font-size:28px;
+
+    font-size:30px;
+
     font-weight:700;
-    color:#a174ff;
-    margin:0;
+
+    color:#7c5cff;
+
+    margin-bottom:35px;
+
+    line-height:1.2;
+
 }
 
-/* ===== MENU ===== */
+
+/* ==================================================
+   MENU GROUP
+================================================== */
 
 .menu-group{
+
     display:flex;
+
     flex-direction:column;
+
     gap:8px;
-    margin-bottom:26px;
+
+    margin-bottom:28px;
+
 }
+
+
+/* ==================================================
+   SECTION TITLE
+================================================== */
 
 .section-title{
+
     font-size:11px;
+
     font-weight:700;
+
     letter-spacing:1px;
+
     color:#a4a1bf;
-    margin-bottom:10px;
+
+    margin-bottom:8px;
+
     padding-left:10px;
+
 }
 
+
+/* ==================================================
+   MENU ITEM
+================================================== */
+
 .menu-item{
+
     display:flex;
+
     align-items:center;
+
     gap:14px;
-    padding:13px 14px;
+
+    padding:13px 15px;
+
     border-radius:16px;
+
     cursor:pointer;
+
     color:#4f4f73;
+
     transition:0.25s;
+
     font-size:15px;
+
 }
 
 .menu-item:hover{
+
     background:#f1eaff;
+
 }
 
 .menu-item.active{
+
     background:#ece2ff;
+
     color:#7c5cff;
+
     font-weight:600;
+
 }
 
 .menu-item .material-symbols-rounded{
+
     font-size:21px;
+
 }
 
-/* ===== ICON ===== */
+
+/* ==================================================
+   MATERIAL ICON SETTINGS
+================================================== */
 
 .material-symbols-rounded{
+
     font-variation-settings:
     'FILL' 0,
     'wght' 300,
     'GRAD' 0,
     'opsz' 24;
+
 }
 
-/* ===== MAIN ===== */
+
+/* ==================================================
+   MAIN CONTENT
+================================================== */
 
 .main{
+
     flex:1;
-    padding:30px 34px;
+
+    padding:32px 40px;
+
 }
 
-/* ===== TOPBAR ===== */
+
+/* ==================================================
+   TOPBAR
+================================================== */
 
 .topbar{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    margin-bottom:30px;
+
+    margin-bottom:32px;
+
 }
 
-.page-title{
-    margin:0;
-    font-size:38px;
-    color:#242448;
-    font-weight:700;
-}
 
-.today-date{
-    margin-top:8px;
-    color:#8f8cab;
-    font-size:15px;
-}
-
-/* ===== SEARCH ===== */
-
-.topbar-right{
-    display:flex;
-    align-items:center;
-    gap:18px;
-}
+/* ==================================================
+   SEARCH BOX
+================================================== */
 
 .search-box{
+
     display:flex;
+
     align-items:center;
+
     gap:10px;
+
+    width:320px;
+
     background:white;
+
     border:1px solid #efe8ff;
+
     border-radius:30px;
+
     padding:12px 18px;
-    width:270px;
 
     box-shadow:
-    0 4px 16px rgba(124,92,255,0.04);
+    0 4px 16px rgba(124,92,255,0.05);
+
 }
 
-.search-bar{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:14px;
-    background:transparent;
-    color:#55557a;
-}
+.search-box .material-symbols-rounded{
 
-.search-icon{
     color:#a4a1bf;
+
 }
 
-.notification-icon{
-    color:#7d7a99;
+.search-input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:14px;
+
+    color:#55557a;
+
+}
+
+
+/* ==================================================
+   NOTIFICATION BUTTON
+================================================== */
+
+.notification-btn{
+
+    width:48px;
+
+    height:48px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:white;
+
     cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:1px solid #efe8ff;
+
+    box-shadow:
+    0 4px 14px rgba(124,92,255,0.05);
+
+    transition:0.25s;
+
 }
 
-/* ===== PAGE ===== */
+.notification-btn:hover{
+
+    background:#f4efff;
+
+    color:#7c5cff;
+
+    transform:translateY(-2px);
+
+}
+
+
+/* ==================================================
+   PAGE DISPLAY
+================================================== */
 
 .page{
+
     display:none;
+
 }
 
 .page.active{
+
     display:block;
-}
-
-/* ===== CARD ===== */
-
-.dashboard-card{
-    background:
-    rgba(255,255,255,0.88);
-    border-radius:30px;
-    padding:30px;
-    margin-bottom:24px;
-    border:1px solid #f0ebff;
-    box-shadow:
-    0 8px 30px rgba(124,92,255,0.05);
-}
-
-/* ===== HEADER ===== */
-
-.card-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:24px;
-}
-
-.header-left{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-/* ===== CARD ICON ===== */
-
-.card-icon{
-    width:44px;
-    height:44px;
-    border-radius:14px;
-    background:#f3ecff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.card-icon .material-symbols-rounded{
-    color:#916cff;
-}
-
-/* ===== CARD TITLE ===== */
-
-.card-title{
-    margin:0;
-    font-size:22px;
-    color:#2e2e50;
-}
-
-
-/* ===== ADD BUTTON ===== */
-
-.add-btn{
-    border:none;
-    background:
-    linear-gradient(
-        135deg,
-        #c08cff,
-        #7c5cff
-    );
-    color:white;
-    padding:12px 20px;
-    border-radius:16px;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.25s;
-    box-shadow:
-    0 6px 18px rgba(124,92,255,0.18);
-}
-
-.add-btn:hover{
-    transform:translateY(-1px);
-}
-
-/* ===== TASK INPUT ===== */
-
-.task-input{
-    background:white;
-    border:1px solid #efe8ff;
-    border-radius:24px;
-    padding:18px 20px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:26px;
-    box-shadow:
-    0 6px 24px rgba(124,92,255,0.05);
-}
-
-.task-input input{
-    border:none;
-    outline:none;
-    width:100%;
-    font-size:15px;
-    background:transparent;
-    color:#3b3b5f;
-}
-
-.task-icons{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.icon-btn{
-    width:42px;
-    height:42px;
-    border:none;
-    background:white;
-    border-radius:14px;
-    cursor:pointer;
-    border:1px solid #efe8ff;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    transition:0.2s;
-    box-shadow:
-    0 4px 12px rgba(124,92,255,0.04);
-}
-
-.icon-btn:hover{
-    background:#f6f1ff;
-}
-
-/* =========================
-   TASK CARD
-========================= */
-
-.task-card{
-    background:white;
-    border:1px solid #f0ebff;
-    border-radius:22px;
-    padding:20px;
-    margin-bottom:14px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    transition:0.25s;
-    box-shadow:
-    0 5px 18px rgba(124,92,255,0.04);
-}
-
-.task-card:hover{
-    transform:translateY(-2px);
-}
-
-.task-left{
-    display:flex;
-    align-items:center;
-    gap:16px;
-}
-
-.task-checkbox{
-    width:18px;
-    height:18px;
-    accent-color:#8c6cff;
-}
-
-.task-title{
-    font-size:15px;
-    font-weight:600;
-    color:#303050;
-}
-
-.task-date{
-    margin-top:6px;
-    font-size:13px;
-    color:#9a97b7;
-}
-
-/* ===== PRIORITY ===== */
-
-.task-priority{
-    padding:6px 12px;
-    border-radius:30px;
-    font-size:12px;
-    font-weight:600;
-}
-
-.priority-high{
-    background:#fff0f5;
-    color:#ff5d8f;
-}
-
-.priority-medium{
-    background:#fff7e9;
-    color:#f0a93a;
-}
-
-.priority-low{
-    background:#edf4ff;
-    color:#5d88ff;
-}
-
-/* ===== TASK TIME ===== */
-
-.task-time{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    color:#8b89a6;
-    font-size:13px;
-}
-
-/* ===== PROGRESS ===== */
-
-.progress-content{
-    display:flex;
-    align-items:center;
-    gap:30px;
-}
-
-.progress-number{
-    margin:0;
-    font-size:54px;
-    color:#7c5cff;
-}
-
-.progress-label{
-    margin-top:8px;
-    color:#8787a0;
-}
-
-.progress-right{
-    flex:1;
-}
-
-.progress-bar{
-    height:12px;
-    background:#efe8ff;
-    border-radius:30px;
-    overflow:hidden;
-}
-
-.progress-fill{
-    width:0%;
-    height:100%;
-    border-radius:30px;
-    background:
-    linear-gradient(
-        to right,
-        #c08cff,
-        #7c5cff
-    );
-    transition:0.3s;
-}
-
-.progress-task-text{
-    margin-top:12px;
-    color:#8888a5;
-    font-size:14px;
-}
-
-.progress-badge{
-    background:#f5efff;
-    color:#7c5cff;
-    padding:10px 14px;
-    border-radius:12px;
-    font-size:13px;
-    font-weight:600;
-}
-
-/* ===== QUOTE ===== */
-
-.quote-card{
-    background:
-    linear-gradient(
-        135deg,
-        #fff8fd,
-        #f7f2ff
-    );
-}
-
-.quote-text{
-    font-size:32px;
-    font-style:italic;
-    color:#353558;
-    margin-top:24px;
-    margin-bottom:14px;
-    line-height:1.5;
-}
-
-.quote-sub{
-    color:#8a87a7;
-    font-size:15px;
-}
-
-
-/* ===== EMPTY ===== */
-
-.empty-state{
-    text-align:center;
-    color:#9c99b7;
-    padding:40px 0;
-}
-
-/* =========================
-   POPUP
-========================= */
-
-.calendar-popup,
-.extra-popup{
-    position:fixed;
-    background:white;
-    border-radius:28px;
-    border:1px solid #f0ebff;
-    padding:26px;
-    box-shadow:
-    0 12px 40px rgba(124,92,255,0.12);
-    z-index:1000;
-}
-
-/* =========================
-   POPUP HEADER
-========================= */
-
-.popup-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:26px;
-}
-
-.popup-title-area{
-    display:flex;
-    align-items:center;
-    gap:12px;
-}
-
-.popup-main-icon{
-    width:42px;
-    height:42px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    border-radius:14px;
-    background:#f2ebff;
-    color:#8a68ff;
-}
-
-.popup-title{
-    margin:0;
-    font-size:20px;
-    color:#2e2e50;
-}
-
-.popup-close-btn{
-    border:none;
-    background:none;
-    font-size:20px;
-    cursor:pointer;
-    color:#888;
-}
-
-/* =========================
-   POPUP SECTION
-========================= */
-
-.popup-section{
-    margin-bottom:22px;
-}
-
-.popup-label{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:14px;
-    font-weight:600;
-    color:#5c5c80;
-    margin-bottom:10px;
-}
-
-.popup-input,
-.popup-select{
-    width:100%;
-    padding:13px 15px;
-    border-radius:14px;
-    border:1px solid #eee7ff;
-    background:#faf7ff;
-    outline:none;
-    font-size:14px;
-    color:#4a4a70;
-    box-sizing:border-box;
-}
-
-.popup-input:focus,
-.popup-select:focus{
-    border-color:#b89aff;
-}
-
-/* =========================
-   TIME ROW
-========================= */
-
-.time-row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.time-arrow{
-    color:#8c89a8;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.popup-buttons{
-    display:flex;
-    justify-content:flex-end;
-    gap:12px;
-    margin-top:24px;
-}
-
-.cancel-popup-btn{
-    border:none;
-    background:#f4efff;
-    color:#6f67a5;
-    padding:12px 18px;
-    border-radius:14px;
-    cursor:pointer;
-}
-
-.save-popup-btn,
-.done-popup-btn{
-    border:none;
-
-    background:
-    linear-gradient(
-        135deg,
-        #c08cff,
-        #7c5cff
-    );
-
-    color:white;
-    padding:12px 18px;
-    border-radius:14px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-/* =========================
-   PRIORITY
-========================= */
-
-.priority-box{
-    display:flex;
-    gap:10px;
-}
-
-.priority-option{
-    flex:1;
-    padding:12px;
-    border-radius:14px;
-    cursor:pointer;
-    text-align:center;
-    font-size:14px;
-    font-weight:600;
-    border:1px solid #f0ebff;
-    background:#faf7ff;
-    transition:0.2s;
-}
 
-.priority-option:hover{
-    background:#f4efff;
 }
-
-.priority-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    display:inline-block;
-    margin-right:6px;
-}
-
-.high .priority-dot{
-    background:#ff5d8f;
-}
-
-.medium .priority-dot{
-    background:#f0a93a;
-}
-
-.low .priority-dot{
-    background:#5d88ff;
-}
-
-/* =========================
-   PANEL
-========================= */
-
-.task-detail-panel{
-    position:fixed;
-    top:0;
-    right:0;
-    width:420px;
-    height:100vh;
-    background:white;
-    border-left:1px solid #f0ebff;
-    padding:30px;
-    box-sizing:border-box;
-    overflow-y:auto;
-    z-index:1200;
-    box-shadow:
-    -10px 0 40px rgba(124,92,255,0.08);
-}
-
-/* =========================
-   PANEL TOP
-========================= */
-
-.panel-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
-}
-
-.panel-title-area{
-    display:flex;
-    align-items:center;
-    gap:14px;
-}
-
-.panel-main-icon{
-    width:48px;
-    height:48px;
-    border-radius:16px;
-    background:#f2ebff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:#8a68ff;
-}
-
-.panel-title-input{
-    border:none;
-    outline:none;
-    font-size:28px;
-    font-weight:700;
-    color:#2f2f52;
-    background:transparent;
-}
-
-.close-panel-btn{
-    border:none;
-    background:none;
-    font-size:22px;
-    cursor:pointer;
-    color:#888;
-}
-
-/* =========================
-   PANEL SECTION
-========================= */
-
-.panel-section{
-    margin-bottom:24px;
-}
-
-.panel-label{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:14px;
-    font-weight:600;
-    color:#5d5b7d;
-    margin-bottom:10px;
-}
-
-.panel-input,
-.panel-textarea{
-    width:100%;
-    padding:14px 16px;
-    border-radius:16px;
-    border:1px solid #efe8ff;
-    background:#faf7ff;
-    outline:none;
-    box-sizing:border-box;
-    font-size:14px;
-    color:#44446a;
-}
-
-.panel-textarea{
-    resize:none;
-}
-
-.panel-input:focus,
-.panel-textarea:focus{
-    border-color:#b89aff;
-}
-
-/* =========================
-   PANEL TIME GRID
-========================= */
-
-.panel-time-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-}
-
-/* =========================
-   PANEL BUTTONS
-========================= */
-
-.panel-buttons{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    margin-top:30px;
-}
-
-.save-btn{
-
-    border:none;
-    background:
-    linear-gradient(
-        135deg,
-        #c08cff,
-        #7c5cff
-    );
-
-    color:white;
-    padding:15px;
-    border-radius:16px;
-    cursor:pointer;
-    font-size:15px;
-    font-weight:600;
-}
-
-.delete-btn{
-    border:none;
-    background:#f6f2ff;
-    color:#8b68ff;
-    padding:15px;
-    border-radius:16px;
-    cursor:pointer;
-    font-size:15px;
-    font-weight:600;
-}
-
-
-/* ===== Calendar Styles ===== */
-
-.calendar {
-    margin-top: 20px;
-}
-
-/* ===== WEEKDAYS ===== */
-
-.weekdays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    font-weight:600;
-    color:#9a97b7;
-    padding:12px 0;
-    font-size:14px;
-}
-
-/* ===== DAYS GRID ===== */
-
-.days{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:14px;
-}
-
-/* ===== DAY BOX ===== */
-
-.day,
-.empty{
-    border:1px solid #efe8ff;
-    border-radius:22px;
-    min-height:130px;
-    padding:12px;
-    background:white;
-    box-shadow:
-    0 4px 14px rgba(124,92,255,0.04);
-}
-
-/* ===== EACH DAY ===== */
-
-.day{
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-    position:relative;
-    transition:0.2s;
-}
-
-.day:hover{
-    transform:translateY(-2px);
-    box-shadow:
-    0 8px 22px rgba(124,92,255,0.08);
-}
-
-
-/* ===== DATE ===== */
-
-.date{
-    font-size:15px;
-    font-weight:600;
-
-    color:#5d5b7d;
-
-    margin-bottom:8px;
-}
-
-/* ===== TODAY HIGHLIGHT===== */
-
-.today{
-    background:#f5efff;
-
-    border:1px solid #d8c7ff;
-}
-
-/* ===== HEADER FINAL LAYOUT ===== */
-
-.calendar-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    width:100%;
-    margin-bottom:24px;
-    gap:15px;
-}
-
-/* ===== TITLE ===== */
-
-.calendar-title{
-    flex:1;
-}
-
-.calendar-title h2{
-    margin:0;
-    font-weight:700;
-    font-size:30px;
-    color:#2e2e50;
-}
-
-
-/* ===== VIEW BUTTONS(左） ===== */
-
-.view-buttons{
-    display:flex;
-    gap:10px;
-    justify-content:center;
-    flex:1;
-}
-
-.view-buttons button{
-    padding:10px 16px;
-    border:none;
-    background:#f4efff;
-    color:#6f67a5;
-    border-radius:14px;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.2s;
-    border:1px solid #efe8ff;
-}
-
-.view-buttons button:hover{
-    background:#ece2ff;
-    color:#7c5cff;
-}
-
-/* ===== ACTION BUTTONS（右） ===== */
-
-.calendar-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-shrink:0;
-}
-
-.calendar-actions button{
-    padding:10px 14px;
-    border:none;
-    background:white;
-    color:#6f67a5;
-    border-radius:14px;
-    cursor:pointer;
-    transition:0.2s;
-    border:1px solid #efe8ff;
-    box-shadow:
-    0 4px 12px rgba(124,92,255,0.04);
-}
-
-.calendar-actions button:hover{
-    background:#f5efff;
-}
-
-/* ===== YEAR VIEW ===== */
-
-#yearGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-    margin-top: 24px;
-}
-
-/* ===== MONTH BOX ===== */
-
-.month-box{
-    border:1px solid #efe8ff;
-    border-radius:24px;
-    padding:18px;
-    background:white;
-    cursor:pointer;
-    transition:0.25s;
-    box-shadow:
-    0 4px 18px rgba(124,92,255,0.04);
-}
-
-.month-box:hover{
-    background:#faf7ff;
-    transform:translateY(-2px);
-}
-
-
-/* ===== MONTH TITLE ===== */
-
-.month-title{
-    font-weight:700;
-    font-size:17px;
-    color:#43436a;
-    margin-bottom:12px;
-}
-
-/* ===== MINI WEEKDAYS ===== */
-
-.mini-weekdays{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    font-size:11px;
-    color:#aaa6c3;
-    text-align:center;
-    margin-bottom:8px;
-}
-
-/* ===== MINI CALENDAR ===== */
-
-.mini-calendar{
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    font-size:13px;
-    gap:6px;
-}
-
-/* ===== MINI DAY ===== */
-
-.mini-day{
-    text-align:center;
-    padding:6px;
-    border-radius:10px;
-    transition:0.2s;
-}
-
-.mini-day:hover{
-    background:#f2ebff;
-}
-
-
-/* ===== EMPTY（空白格） ===== */
-
-.mini-empty{
-    visibility:hidden;
-}
-
-
-/* ===== YEAR HEADER ===== */
-
-.year-header{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    gap:20px;
-}
-
-/* ===== TASK BADGE ===== */
-
-.task-badge{
-    position:absolute;
-    top:8px;
-    right:8px;
-    background:#ff6b97;
-    color:white;
-    font-size:10px;
-    font-weight:600;
-    min-width:18px;
-    height:18px;
-    line-height:18px;
-    text-align:center;
-    border-radius:50%;
-    padding:0 4px;
-    box-shadow:
-    0 2px 8px rgba(255,107,151,0.3);
-}
-
-
