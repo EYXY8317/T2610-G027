@@ -55,7 +55,7 @@ function loadDailyQuote() {
 
 // =====================================
 // PROGRESS OVERVIEW SECTION
-// Calculate completed tasks percentage
+// Calculate today's task completion
 // Update:
 // 1. Progress percentage
 // 2. Progress bar width
@@ -66,10 +66,14 @@ function loadDailyQuote() {
 
 function updateProgress() {
 
-    // Total active + completed tasks
+    // Get today's date
+    const today =
+        new Date().toISOString().split("T")[0];
+
+    // Total tasks scheduled for today
     let totalTasks = 0;
 
-    // Total completed tasks
+    // Completed tasks scheduled for today
     let completedTasks = 0;
 
     // Loop through all task categories
@@ -77,17 +81,20 @@ function updateProgress() {
 
         taskData[list].forEach(task => {
 
-            // Ignore tasks inside Trash
-            if (task.status !== "trash") {
+            // Count only today's tasks
+            if (
+                task.date === today &&
+                task.status !== "trash"
+            ) {
 
                 totalTasks++;
 
-            }
+                // Count completed tasks
+                if (task.status === "completed") {
 
-            // Count completed tasks
-            if (task.status === "completed") {
+                    completedTasks++;
 
-                completedTasks++;
+                }
 
             }
 
@@ -95,35 +102,35 @@ function updateProgress() {
 
     });
 
-    // Calculate percentage
+    // Calculate completion percentage
     const progress =
         totalTasks === 0
         ? 0
         : Math.round(
-            completedTasks / totalTasks * 100
+            (completedTasks / totalTasks) * 100
         );
 
     // Update percentage text
     document.getElementById("progressPercent")
         .textContent = progress + "%";
 
-    // Update completed count
+    // Update completed task count
     document.getElementById("completedTasksCount")
         .textContent = completedTasks;
 
-    // Update total count
+    // Update total task count
     document.getElementById("totalTasksCount")
         .textContent = totalTasks;
 
-    // Update progress bar
+    // Update progress bar width
     document.getElementById("progressFill")
         .style.width = progress + "%";
 
-    // Get badge element
+    // Get progress badge element
     const badge =
         document.getElementById("progressBadge");
 
-    // Update badge based on progress
+    // Update motivational message
     if (progress === 0) {
 
         badge.textContent =
