@@ -1147,3 +1147,1009 @@ body{
     color:#a4a1bf;
 
 }
+
+/* ==================================================
+   PAGE TITLE
+================================================== */
+
+.page-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+    margin-bottom:24px;
+
+}
+
+.page-title .material-symbols-rounded{
+
+    font-size:34px;
+
+    color:#7c5cff;
+
+}
+
+
+/* ==================================================
+   TASK INPUT CONTAINER
+================================================== */
+
+.task-input{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:white;
+
+    border:1px solid #efe8ff;
+
+    border-radius:24px;
+
+    padding:16px 18px;
+
+    margin-bottom:24px;
+
+    box-shadow:
+    0 6px 20px rgba(124,92,255,0.05);
+
+}
+
+
+/* ==================================================
+   TASK INPUT FIELD
+================================================== */
+
+.task-input input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:15px;
+
+    color:#3b3b5f;
+
+}
+
+
+/* ==================================================
+   ICON BUTTONS
+================================================== */
+
+.calendar-btn,
+.more-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#faf7ff;
+
+    border:1px solid #efe8ff;
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:0.25s;
+
+}
+
+.calendar-btn:hover,
+.more-btn:hover{
+
+    background:#f1eaff;
+
+}
+
+.calendar-btn .material-symbols-rounded,
+.more-btn .material-symbols-rounded{
+
+    color:#7c5cff;
+
+}
+
+
+/* ==================================================
+   ADD BUTTON
+================================================== */
+
+.add-task-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    color:white;
+
+    font-weight:600;
+
+    background:
+    linear-gradient(
+        135deg,
+        #c08cff,
+        #7c5cff
+    );
+
+    box-shadow:
+    0 6px 18px rgba(124,92,255,0.18);
+
+    transition:0.25s;
+
+}
+
+.add-task-btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/* ==================================================
+   TASK CARD
+================================================== */
+
+.task-card{
+
+    background:white;
+
+    border:1px solid #f0ebff;
+
+    border-radius:24px;
+
+    padding:20px;
+
+    margin-bottom:14px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:16px;
+
+    cursor:pointer;
+
+    transition:0.25s;
+
+    box-shadow:
+    0 5px 18px rgba(124,92,255,0.05);
+
+}
+
+.task-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+    0 10px 24px rgba(124,92,255,0.08);
+
+}
+
+
+/* ==================================================
+   TASK LEFT
+================================================== */
+
+.task-left{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:16px;
+
+    flex:1;
+
+}
+
+
+/* ==================================================
+   CHECKBOX
+================================================== */
+
+.task-checkbox{
+
+    width:18px;
+
+    height:18px;
+
+    margin-top:4px;
+
+    accent-color:#7c5cff;
+
+}
+
+
+/* ==================================================
+   TASK INFO
+================================================== */
+
+.task-info{
+
+    flex:1;
+
+}
+
+
+/* ==================================================
+   TASK TITLE
+================================================== */
+
+.task-title{
+
+    font-size:16px;
+
+    font-weight:600;
+
+    color:#2f2f52;
+
+    margin-bottom:10px;
+
+}
+
+
+/* ==================================================
+   TASK META
+================================================== */
+
+.task-meta{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+/* ==================================================
+   DATE
+================================================== */
+
+.task-date{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#8f8cab;
+
+    font-size:14px;
+
+}
+
+
+/* ==================================================
+   TIME
+================================================== */
+
+.task-time{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#8f8cab;
+
+    font-size:14px;
+
+}
+
+
+/* ==================================================
+   PRIORITY
+================================================== */
+
+.task-priority{
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+/* ==================================================
+   TASK ACTIONS
+================================================== */
+
+.task-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+/* ==================================================
+   ACTION BUTTON
+================================================== */
+
+.task-action-btn{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#faf7ff;
+
+    border:1px solid #efe8ff;
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:0.25s;
+
+}
+
+.task-action-btn:hover{
+
+    background:#f1eaff;
+
+}
+
+.task-action-btn .material-symbols-rounded{
+
+    color:#7c5cff;
+
+}
+
+
+/* ==================================================
+   EMPTY STATE
+================================================== */
+
+.empty{
+
+    background:white;
+
+    border-radius:24px;
+
+    border:1px dashed #d9d0ff;
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#a4a1bf;
+
+}
+
+/* ==================================================
+   CALENDAR POPUP
+================================================== */
+
+.calendar-popup{
+
+    display:none;
+
+    position:absolute;
+
+    width:340px;
+
+    background:white;
+
+    border:1px solid #f0ebff;
+
+    border-radius:28px;
+
+    padding:24px;
+
+    box-shadow:
+    0 12px 40px rgba(124,92,255,0.12);
+
+    z-index:1000;
+
+}
+
+
+/* ==================================================
+   EXTRA POPUP
+================================================== */
+
+.extra-popup{
+
+    display:none;
+
+    position:absolute;
+
+    width:320px;
+
+    background:white;
+
+    border:1px solid #f0ebff;
+
+    border-radius:28px;
+
+    padding:24px;
+
+    box-shadow:
+    0 12px 40px rgba(124,92,255,0.12);
+
+    z-index:1000;
+
+}
+
+
+/* ==================================================
+   POPUP HEADER
+================================================== */
+
+.popup-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.popup-header h3{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:20px;
+
+    color:#2f2f52;
+
+}
+
+
+/* ==================================================
+   CLOSE BUTTON
+================================================== */
+
+.popup-close-btn{
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    color:#8f8cab;
+
+}
+
+
+/* ==================================================
+   POPUP SECTION
+================================================== */
+
+.popup-section{
+
+    margin-bottom:20px;
+
+}
+
+
+/* ==================================================
+   LABEL
+================================================== */
+
+.popup-section label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#5d5b7d;
+
+}
+
+
+/* ==================================================
+   INPUT + SELECT
+================================================== */
+
+.popup-section input,
+.popup-section select{
+
+    width:100%;
+
+    padding:12px 14px;
+
+    border-radius:14px;
+
+    border:1px solid #efe8ff;
+
+    background:#faf7ff;
+
+    outline:none;
+
+}
+
+
+/* ==================================================
+   TIME ROW
+================================================== */
+
+.time-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.time-row input{
+
+    flex:1;
+
+}
+
+
+/* ==================================================
+   CUSTOM BOX
+================================================== */
+
+.hidden-box{
+
+    margin-top:12px;
+
+}
+
+
+/* ==================================================
+   POPUP BUTTONS
+================================================== */
+
+.popup-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:24px;
+
+}
+
+
+/* ==================================================
+   CANCEL BUTTON
+================================================== */
+
+.cancel-btn{
+
+    border:none;
+
+    background:#f4efff;
+
+    color:#6f67a5;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+}
+
+
+/* ==================================================
+   SAVE BUTTON
+================================================== */
+
+.save-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #c08cff,
+        #7c5cff
+    );
+
+}
+
+
+/* ==================================================
+   PRIORITY OPTIONS
+================================================== */
+
+.priority-box{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+.priority-box span{
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    background:#faf7ff;
+
+    border:1px solid #efe8ff;
+
+    cursor:pointer;
+
+    transition:0.25s;
+
+}
+
+.priority-box span:hover{
+
+    background:#f4efff;
+
+}
+
+
+/* ==================================================
+   DONE BUTTON
+================================================== */
+
+.popup-done-btn{
+
+    width:100%;
+
+    margin-top:16px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #c08cff,
+        #7c5cff
+    );
+
+}
+
+
+/* ==================================================
+   TASK DETAIL PANEL
+================================================== */
+
+.task-detail-panel{
+
+    position:fixed;
+
+    top:0;
+
+    right:-450px;
+
+    width:420px;
+
+    height:100vh;
+
+    background:white;
+
+    border-left:1px solid #f0ebff;
+
+    padding:30px;
+
+    overflow-y:auto;
+
+    transition:0.35s ease;
+
+    z-index:1200;
+
+    box-shadow:
+    -10px 0 40px rgba(124,92,255,0.08);
+
+}
+
+
+/* ==================================================
+   PANEL HEADER
+================================================== */
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+
+/* ==================================================
+   PANEL TITLE
+================================================== */
+
+.panel-title-input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+}
+
+
+/* ==================================================
+   PANEL CLOSE
+================================================== */
+
+.panel-close-btn{
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    font-size:22px;
+
+    color:#8f8cab;
+
+}
+
+
+/* ==================================================
+   PANEL SECTION
+================================================== */
+
+.panel-section{
+
+    margin-bottom:20px;
+
+}
+
+
+/* ==================================================
+   PANEL LABEL
+================================================== */
+
+.panel-label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#5d5b7d;
+
+}
+
+
+/* ==================================================
+   PANEL INPUT
+================================================== */
+
+.panel-input,
+.panel-textarea{
+
+    width:100%;
+
+    padding:14px 16px;
+
+    border-radius:16px;
+
+    border:1px solid #efe8ff;
+
+    background:#faf7ff;
+
+    outline:none;
+
+}
+
+.panel-textarea{
+
+    resize:none;
+
+}
+
+
+/* ==================================================
+   PANEL TIME ROW
+================================================== */
+
+.panel-time-row{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:16px;
+
+}
+
+
+/* ==================================================
+   PANEL BUTTONS
+================================================== */
+
+.panel-buttons{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    margin-top:24px;
+
+}
+
+
+/* ==================================================
+   PANEL SAVE BUTTON
+================================================== */
+
+.panel-save-btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #c08cff,
+        #7c5cff
+    );
+
+}
+
+
+/* ==================================================
+   PANEL DELETE BUTTON
+================================================== */
+
+.panel-delete-btn{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:14px;
+
+    border-radius:16px;
+
+    background:#f4efff;
+
+    color:#7c5cff;
+
+}
