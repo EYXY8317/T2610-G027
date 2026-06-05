@@ -1,12 +1,12 @@
 import {
-    applySnap
+    computeSnappedPosition
 }
-from "./core/widgetSnap.js";
+from "./core/snapUtils.js";
 
 import {
-    clampWidgetToDashboard
+    hideGuideLines
 }
-from "./boundaryManager.js";
+from "./core/guideUtils.js";
 
 export function enableDrag(
     widget,
@@ -60,32 +60,20 @@ export function enableDrag(
             const deltaY =
                 event.clientY - startY;
 
-            const newLeft =
-                startLeft + deltaX;
+            const newLeft = startLeft + deltaX;
 
-            const newTop =
-                startTop + deltaY;
+            const newTop = startTop + deltaY;
 
-            const clamped =
-                clampWidgetToDashboard(
-                    widget,
-                    newLeft,
-                    newTop,
-                    PADDING
-                );
+            const snapped = computeSnappedPosition(
+                widget,
+                newLeft,
+                newTop,
+                PADDING
+            );
 
-            const snapped =
-                applySnap(
-                    widget,
-                    clamped.left,
-                    clamped.top
-                );
+            widget.style.left = snapped.left + "px";
 
-            widget.style.left =
-                snapped.left + "px";
-
-            widget.style.top =
-                snapped.top + "px";
+            widget.style.top = snapped.top + "px";
 
         }
 
@@ -95,21 +83,7 @@ export function enableDrag(
         "pointerup",
         () => {
 
-            const verticalLine =
-                document.getElementById(
-                    "snap-line"
-                );
-
-            const horizontalLine =
-                document.getElementById(
-                    "snap-line-horizontal"
-                );
-
-            verticalLine.style.display =
-                "none";
-
-            horizontalLine.style.display =
-                "none";
+            hideGuideLines();
 
             isDragging = false;
 

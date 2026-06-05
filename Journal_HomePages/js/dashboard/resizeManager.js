@@ -1,3 +1,8 @@
+import {
+    computeNewSize
+}
+from "./core/resizeUtils.js";
+
 export function enableResize(
     widget,
     handle
@@ -10,12 +15,6 @@ export function enableResize(
 
     let startWidth = 0;
     let startHeight = 0;
-
-    const MIN_WIDTH = 300;
-    const MIN_HEIGHT = 200;
-
-    const MAX_WIDTH = 800;
-    const MAX_HEIGHT = 500;
 
     handle.addEventListener(
         "pointerdown",
@@ -47,45 +46,21 @@ export function enableResize(
                 return;
             }
 
-            const deltaX =
-                event.clientX -
-                startX;
+            const deltaX = event.clientX - startX;
 
-            const deltaY =
-                event.clientY -
-                startY;
+            const deltaY = event.clientY - startY;
 
-            let newWidth =
-                startWidth +
-                deltaX;
+            const size = computeNewSize(
+                widget,
+                startWidth,
+                startHeight,
+                deltaX,
+                deltaY
+            );
 
-            let newHeight =
-                startHeight +
-                deltaY;
+            widget.style.width = size.width + "px";
 
-            newWidth =
-                Math.max(
-                    MIN_WIDTH,
-                    Math.min(
-                        newWidth,
-                        MAX_WIDTH
-                    )
-                );
-
-            newHeight =
-                Math.max(
-                    MIN_HEIGHT,
-                    Math.min(
-                        newHeight,
-                        MAX_HEIGHT
-                    )
-                );
-
-            widget.style.width =
-                newWidth + "px";
-
-            widget.style.height =
-                newHeight + "px";
+            widget.style.height = size.height + "px";
 
         }
     );

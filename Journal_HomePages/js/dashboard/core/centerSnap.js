@@ -1,3 +1,10 @@
+import {
+    showVerticalLine,
+    showHorizontalLine,
+    hideVerticalLine,
+    hideHorizontalLine
+} from "./guideUtils.js";
+
 export function applyCenterSnap(
     widget,
     newLeft,
@@ -6,93 +13,46 @@ export function applyCenterSnap(
 
     const CENTER_SNAP = 12;
 
-    const dashboard =
-        document.getElementById(
-            "dashboard"
-        );
+    const dashboard = document.getElementById("dashboard");
 
-    const verticalLine =
-        document.getElementById(
-            "snap-line"
-        );
+    const widgetCenter = newLeft + widget.offsetWidth / 2;
 
-    const horizontalLine =
-        document.getElementById(
-            "snap-line-horizontal"
-        );
+    const dashboardCenter = dashboard.clientWidth / 2;
 
-    const dashboardCenter =
-        dashboard.clientWidth / 2;
+    const widgetMiddle = newTop + widget.offsetHeight / 2;
 
-    const dashboardMiddle =
-        dashboard.clientHeight / 2;
+    const dashboardMiddle = dashboard.clientHeight / 2;
 
-    const widgetLeft =
-        newLeft;
+    if (Math.abs(widgetCenter - dashboardCenter) < CENTER_SNAP) {
 
-    const widgetRight =
-        newLeft +
-        widget.offsetWidth;
+        newLeft = dashboardCenter - widget.offsetWidth / 2;
 
-    const widgetCenter =
-        newLeft +
-        widget.offsetWidth / 2;
+        showVerticalLine(dashboardCenter);
 
-    const widgetTop =
-        newTop;
+    } else {
 
-    const widgetBottom =
-        newTop +
-        widget.offsetHeight;
-
-    const widgetMiddle =
-        newTop +
-        widget.offsetHeight / 2;
-
-    let showVertical =
-        false;
-
-    let showHorizontal =
-        false;
-
-    if (
-        Math.abs(
-            widgetCenter -
-            dashboardCenter
-        ) < CENTER_SNAP
-    ) {
-
-        newLeft =
-            dashboardCenter -
-            widget.offsetWidth / 2;
-
-        showVertical = true;
+        hideVerticalLine();
 
     }
 
-    if (
-        Math.abs(
-            widgetLeft -
-            dashboardCenter
-        ) < CENTER_SNAP
-    ) {
+    if (Math.abs(widgetMiddle - dashboardMiddle) < CENTER_SNAP) {
 
-        newLeft =
-            dashboardCenter;
+        newTop = dashboardMiddle - widget.offsetHeight / 2;
 
-        showVertical = true;
+        showHorizontalLine(dashboardMiddle);
+
+    } else {
+
+        hideHorizontalLine();
 
     }
 
-    if (
-        Math.abs(
-            widgetRight -
-            dashboardCenter
-        ) < CENTER_SNAP
-    ) {
+    return {
+        left: newLeft,
+        top: newTop
+    };
 
-        newLeft =
-            dashboardCenter -
+}
             widget.offsetWidth;
 
         showVertical = true;
