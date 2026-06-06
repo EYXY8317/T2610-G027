@@ -1,1 +1,1 @@
-export { hideGuideLines } from "./modules/guideUtils.js";
+export { hideGuideLines } from "./guideUtils.js";

@@ -1,1 +1,1 @@
-export { computeSnappedPosition } from "./modules/snapUtils.js";
+export { computeSnappedPosition } from "./snapUtils.js";
