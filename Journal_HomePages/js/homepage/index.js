@@ -1,32 +1,116 @@
-import { renderWidgets } from "../widgets/renderWidgets.js";
-import { enableDrag, enableResize } from "../dashboard/index.js";
-import { setupEditMode } from "./edit.js";
-import { loadLayout } from "./loadLayout.js";
+import {
+    createSettingPopup
+}
+from "../settings/core/settingPopup.js";
+
+import {
+    renderWidgets
+}
+from "../widgets/renderers/renderWidgets.js";
+
+import {
+    enableDrag,
+    enableResize
+}
+from "../dashboard/index.js";
+
+import {
+    setupEditMode
+}
+from "./edit.js";
+
+import {
+    loadLayout
+}
+from "./loadLayout.js";
 
 export function initializeHomepage() {
-    const dashboard = document.getElementById("dashboard");
+
+    const dashboard =
+        document.getElementById(
+            "dashboard"
+        );
+
     if (!dashboard) {
         return;
     }
 
-    dashboard.innerHTML = renderWidgets();
+    dashboard.innerHTML =
+        renderWidgets();
 
-    const settingsButton = document.getElementById("homepage-settings");
-    const menu = document.getElementById("homepage-menu");
-    const editLayoutButton = document.getElementById("edit-layout-btn");
-    const widgets = Array.from(document.querySelectorAll(".widget"));
+    const settingsButton =
+        document.getElementById(
+            "homepage-settings"
+        );
 
-    widgets.forEach(widget => {
-        loadLayout(widget);
+    const menu =
+        document.getElementById(
+            "homepage-menu"
+        );
 
-        const dragHandle = widget.querySelector(".drag-handle");
-        const resizeHandle = widget.querySelector(".resize-handle");
+    const editLayoutButton =
+        document.getElementById(
+            "edit-layout-btn"
+        );
 
-        widget.style.visibility = "visible";
+    const widgets =
+        Array.from(
+            document.querySelectorAll(
+                ".widget"
+            )
+        );
 
-        enableDrag(widget, dragHandle);
-        enableResize(widget, resizeHandle);
-    });
+    widgets.forEach(
+        widget => {
 
-    setupEditMode(settingsButton, menu, editLayoutButton, widgets);
+            loadLayout(
+                widget
+            );
+
+            const dragHandle =
+                widget.querySelector(
+                    ".drag-handle"
+                );
+
+            const resizeHandle =
+                widget.querySelector(
+                    ".resize-handle"
+                );
+
+            widget.addEventListener(
+                "contextmenu",
+                event => {
+
+                    event.preventDefault();
+
+                    createSettingPopup(
+                        "Widget Settings"
+                    );
+
+                }
+            );
+
+            widget.style.visibility =
+                "visible";
+
+            enableDrag(
+                widget,
+                dragHandle
+            );
+
+            enableResize(
+                widget,
+                resizeHandle
+            );
+
+        }
+    );
+
+    setupEditMode(
+        settingsButton,
+        menu,
+        editLayoutButton,
+        widgets
+    );
+
 }

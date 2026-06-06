@@ -28,12 +28,6 @@ export function createWeatherHourWidget() {
                     Weather Hour
                 </span>
 
-                <button
-                    class="widget-settings"
-                >
-                    ⚙
-                </button>
-
             </div>
 
             <div class="widget-content">

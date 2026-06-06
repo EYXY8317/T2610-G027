@@ -1,17 +1,17 @@
 import {
     createWeatherHourWidget
 }
-from "./weatherHour.js";
+from "../weatherHour.js";
 
 import {
     createWeatherDayWidget
 }
-from "./weatherDay.js";
+from "../weatherDay.js";
 
 import {
     createQuoteWidget
 }
-from "./quote.js";
+from "../quote.js";
 
 export const widgets = [
 

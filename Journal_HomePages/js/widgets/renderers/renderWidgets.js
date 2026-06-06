@@ -1,7 +1,7 @@
 import {
     widgets
 }
-from "./widgetRegistry.js";
+from "../registry/widgetRegistry.js";
 
 export function renderWidgets() {
 
