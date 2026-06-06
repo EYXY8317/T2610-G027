@@ -29,6 +29,11 @@ import {
 }
 from "./loadLayout.js";
 
+import {
+    renderWeatherHour
+}
+from "../widgets/weatherHour.js";
+
 export function initializeHomepage() {
 
     const dashboard =
@@ -116,6 +121,8 @@ export function initializeHomepage() {
     );
 
     updateDigitalClock();
+
+    renderWeatherHour();
     
     setupEditMode(
         settingsButton,

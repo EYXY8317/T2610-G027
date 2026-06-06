@@ -1,7 +1,13 @@
+import {
+    flipClockSize
+}
+from "./updateDigitalClock.js";
+
 export function renderDigitalClock(
 
     showSeconds = true,
-    clockFormat = "24h"
+    clockFormat = "24h",
+    clockType = "digital"
 
 ) {
 
@@ -69,6 +75,83 @@ export function renderDigitalClock(
 
         time +=
             `:${seconds}`;
+
+    }
+
+    if (
+        clockType === "flip"
+    ) {
+
+        clock.innerHTML = `
+
+            <div
+                style="
+                    display:flex;
+                    gap:12px;
+                    justify-content:center;
+                    align-items:center;
+                "
+            >
+
+                <div
+                    style="
+                        width:${flipClockSize}px;
+                        height:${flipClockSize * 1.2}px;
+                        border:1px solid #666;
+                        border-radius:8px;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        font-size:${flipClockSize * 0.45}px;
+                        font-weight:bold;
+                    "
+                >
+                    ${hours}
+                </div>
+
+                <div
+                    style="
+                        width:${flipClockSize}px;
+                        height:${flipClockSize * 1.2}px;
+                        border:1px solid #666;
+                        border-radius:8px;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        font-size:${flipClockSize * 0.45}px;
+                        font-weight:bold;
+                    "
+                >
+                    ${minutes}
+                </div>
+
+                ${
+                    showSeconds
+                        ? `
+                            <div
+                                style="
+                                    width:${flipClockSize}px;
+                                    height:${flipClockSize * 1.2}px;
+                                    border:1px solid #666;
+                                    border-radius:8px;
+                                    display:flex;
+                                    justify-content:center;
+                                    align-items:center;
+                                    font-size:${flipClockSize * 0.45}px;
+                                    font-weight:bold;
+                                "
+                            >
+                                ${seconds}
+                            </div>
+                        `
+                        : ""
+                }
+
+            </div>
+
+        `;
+
+        return;
 
     }
 

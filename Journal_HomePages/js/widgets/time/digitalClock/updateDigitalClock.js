@@ -7,6 +7,8 @@ export let showSeconds = true;
 
 export let clockFormat = "24h";
 
+export let clockType = "digital";
+
 export function setShowSeconds(
     value
 ) {
@@ -23,11 +25,20 @@ export function setClockFormat(
 
 }
 
+export function setClockType(
+    value
+) {
+
+    clockType = value;
+
+}
+
 export function updateDigitalClock() {
 
     renderDigitalClock(
         showSeconds,
-        clockFormat
+        clockFormat,
+        clockType
     );
 
     setInterval(
@@ -35,11 +46,22 @@ export function updateDigitalClock() {
 
             renderDigitalClock(
                 showSeconds,
-                clockFormat
+                clockFormat,
+                clockType
             );
 
         },
         1000
     );
+
+}
+
+export let flipClockSize = 80;
+
+export function setFlipClockSize(
+    value
+) {
+
+    flipClockSize = value;
 
 }

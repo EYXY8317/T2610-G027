@@ -1,6 +1,8 @@
 import {
     setShowSeconds,
-    setClockFormat
+    setClockFormat,
+    setClockType,
+    setFlipClockSize
 }
 from "../../widgets/time/digitalClock/updateDigitalClock.js";
 
@@ -8,6 +10,11 @@ import {
     renderDigitalClock
 }
 from "../../widgets/time/digitalClock/renderDigitalClock.js";
+
+import {
+    renderWeatherHour
+}
+from "../../widgets/weatherHour.js";
 
 import {
     applyBackgroundOpacity
@@ -200,9 +207,70 @@ export function createSettingPopup(
         popup
     );
 
+    const frequencyButtons =
+        popup.querySelectorAll(
+            ".frequency-segment .segment-option"
+        );
+
+    const graphColorPicker =
+        popup.querySelector(
+            ".graph-color-picker"
+        );
+
+    if (
+        graphColorPicker
+    ) {
+
+        graphColorPicker
+            .addEventListener(
+                "input",
+                event => {
+
+                    console.log(
+                        "Graph Color:",
+                        event.target.value
+                    );
+
+                }
+            );
+
+    }
+
+    frequencyButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    frequencyButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    console.log(
+                        "Frequency:",
+                        button.dataset.value
+                    );
+
+                }
+            );
+
+        }
+    );
+
     let showSeconds = true;
 
     let clockFormat = "24h";
+
+    let clockType =
+        "digital";
 
     const showSecondsButtons =
         popup.querySelectorAll(
@@ -237,7 +305,8 @@ export function createSettingPopup(
 
                     renderDigitalClock(
                         showSeconds,
-                        clockFormat
+                        clockFormat,
+                        clockType
                     );
 
                 }
@@ -247,9 +316,103 @@ export function createSettingPopup(
     );
 
     const clockFormatButtons =
+    
         popup.querySelectorAll(
             ".clock-format-segment .segment-option"
         );
+
+    const clockTypeButtons =
+        popup.querySelectorAll(
+            ".clock-type-segment .segment-option"
+        );
+
+    clockTypeButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    clockTypeButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    clockType =
+                        button.dataset.value;
+
+                    setClockType(
+                        clockType
+                    );
+
+                    console.log(
+                        "Clock Type:",
+                        clockType
+                    );
+
+                }
+            );
+
+        }
+    );
+
+    const flipClockSizeSlider =
+        popup.querySelector(
+            ".flip-clock-size-slider"
+        );
+
+    const flipClockSizeValue =
+        popup.querySelector(
+            ".flip-clock-size-value"
+        );
+
+    if (
+        flipClockSizeSlider
+    ) {
+
+        flipClockSizeSlider
+            .addEventListener(
+                "input",
+                event => {
+
+                    const size =
+                        event.target.value;
+
+                    flipClockSizeValue
+                        .textContent =
+                        size + "px";
+
+                    console.log(
+                        "Flip Size:",
+                        size
+                    );
+
+                    setFlipClockSize(
+                        Number(size)
+                    );
+
+                    renderDigitalClock(
+                        showSeconds,
+                        clockFormat,
+                        clockType
+                    );
+
+                    renderDigitalClock(
+                        showSeconds,
+                        clockFormat,
+                        clockType
+                    );
+
+                }
+            );
+
+    }
 
     clockFormatButtons.forEach(
         button => {

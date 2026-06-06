@@ -3,10 +3,7 @@ export function getShowTitleSetting() {
     return `
 
         <div
-            class="
-            setting-row
-            title-setting
-            "
+            class="setting-row"
         >
 
             <span>
@@ -19,7 +16,7 @@ export function getShowTitleSetting() {
 
                 <button
                     class="
-                    segment-option
+                    title-segment-option
                     active
                     "
                     data-value="true"
@@ -29,7 +26,7 @@ export function getShowTitleSetting() {
 
                 <button
                     class="
-                    segment-option
+                    title-segment-option
                     "
                     data-value="false"
                 >
