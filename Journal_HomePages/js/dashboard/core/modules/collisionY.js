@@ -42,6 +42,8 @@ export function computeVerticalSnap(widget, newTop) {
 
             let distance;
 
+            // Top ↔ Top
+
             distance =
                 Math.abs(
                     newTop -
@@ -60,6 +62,30 @@ export function computeVerticalSnap(widget, newTop) {
                     otherTop;
 
             }
+
+            // Bottom ↔ Bottom
+
+            distance =
+                Math.abs(
+                    currentBottom -
+                    otherBottom
+                );
+
+            if (
+                distance <
+                bestTopDistance
+            ) {
+
+                bestTopDistance =
+                    distance;
+
+                bestTop =
+                    otherBottom -
+                    widget.offsetHeight;
+
+            }
+
+            // Middle ↔ Middle
 
             distance =
                 Math.abs(
@@ -81,6 +107,8 @@ export function computeVerticalSnap(widget, newTop) {
 
             }
 
+            // Top ↔ Bottom
+
             distance =
                 Math.abs(
                     newTop -
@@ -99,6 +127,8 @@ export function computeVerticalSnap(widget, newTop) {
                     otherBottom;
 
             }
+
+            // Top ↔ Bottom +20
 
             distance =
                 Math.abs(
@@ -123,6 +153,8 @@ export function computeVerticalSnap(widget, newTop) {
 
             }
 
+            // Bottom ↔ Top
+
             distance =
                 Math.abs(
                     currentBottom -
@@ -142,6 +174,8 @@ export function computeVerticalSnap(widget, newTop) {
                     widget.offsetHeight;
 
             }
+
+            // Bottom ↔ Top +20
 
             distance =
                 Math.abs(
@@ -167,6 +201,8 @@ export function computeVerticalSnap(widget, newTop) {
 
             }
 
+            // Top ↔ Middle
+
             distance =
                 Math.abs(
                     newTop -
@@ -185,6 +221,8 @@ export function computeVerticalSnap(widget, newTop) {
                     otherMiddle;
 
             }
+
+            // Bottom ↔ Middle
 
             distance =
                 Math.abs(

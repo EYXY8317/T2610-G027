@@ -6,7 +6,7 @@ from "./widgetSnap.js";
 import {
     clampWidgetToDashboard
 }
-from "../boundary.js";
+from "../../boundary.js";
 
 export function computeSnappedPosition(widget, newLeft, newTop, padding = 20) {
 

@@ -86,10 +86,6 @@ export function applyGapSnap(
 
             widget.offsetWidth / 2;
 
-        console.log(
-            "Equal Gap Snap"
-        );
-
     }
 
     return newLeft;
