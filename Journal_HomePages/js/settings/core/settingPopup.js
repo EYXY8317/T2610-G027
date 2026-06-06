@@ -12,7 +12,12 @@ import {
 from "../../widgets/time/digitalClock/renderDigitalClock.js";
 
 import {
-    renderWeatherHour
+    renderWeatherHour,
+    setWeatherFrequency,
+    setShowWeatherIcon,
+    setShowWeatherTemperature,
+    setGraphColor,
+    setGraphSize
 }
 from "../../widgets/weatherHour.js";
 
@@ -212,24 +217,73 @@ export function createSettingPopup(
             ".frequency-segment .segment-option"
         );
 
+    const showIconButtons =
+        popup.querySelectorAll(
+            ".show-icon-segment .segment-option"
+        );
+
+    const showTemperatureButtons =
+        popup.querySelectorAll(
+            ".show-temperature-segment .segment-option"
+        );
+
     const graphColorPicker =
         popup.querySelector(
             ".graph-color-picker"
         );
 
+    const graphSizeSlider =
+        popup.querySelector(
+            ".graph-size-slider"
+        );
+
+    const graphSizeValue =
+        popup.querySelector(
+            ".graph-size-value"
+        );
+
     if (
         graphColorPicker
+    ) 
+    if (
+        graphSizeSlider
     ) {
+
+        graphSizeSlider
+            .addEventListener(
+                "input",
+                event => {
+
+                    const size =
+                        Number(
+                            event.target.value
+                        );
+
+                    graphSizeValue
+                        .textContent =
+                        size + "%";
+
+                    setGraphSize(
+                        size
+                    );
+
+                    renderWeatherHour();
+
+                }
+            );
+
+    }{
 
         graphColorPicker
             .addEventListener(
                 "input",
                 event => {
 
-                    console.log(
-                        "Graph Color:",
+                    setGraphColor(
                         event.target.value
                     );
+
+                    renderWeatherHour();
 
                 }
             );
@@ -254,10 +308,73 @@ export function createSettingPopup(
                         "active"
                     );
 
-                    console.log(
-                        "Frequency:",
+                    setWeatherFrequency(
                         button.dataset.value
                     );
+
+                    renderWeatherHour();
+
+                }
+            );
+
+        }
+    );
+
+    showIconButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showIconButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    setShowWeatherIcon(
+                        button.dataset.value
+                        === "true"
+                    );
+
+                    renderWeatherHour();
+
+                }
+            );
+
+        }
+    );
+
+    showTemperatureButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showTemperatureButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    setShowWeatherTemperature(
+                        button.dataset.value
+                        === "true"
+                    );
+
+                    renderWeatherHour();
 
                 }
             );

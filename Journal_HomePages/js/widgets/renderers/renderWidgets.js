@@ -3,6 +3,11 @@ import {
 }
 from "../registry/widgetRegistry.js";
 
+import {
+    createWeatherWeekWidget
+}
+from "../weatherWeek.js";
+
 export function renderWidgets() {
 
     return widgets

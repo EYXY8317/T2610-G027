@@ -28,6 +28,8 @@ export function createWeatherDayWidget() {
                     Weather Day
                 </span>
 
+
+
             </div>
 
             <div class="widget-content">

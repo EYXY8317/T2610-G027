@@ -1,12 +1,12 @@
 import {
     computeHorizontalSnap
 }
-from "../core/modules/collisionX.js";
+from "../core/collisionX.js";
 
 import {
     computeVerticalSnap
 }
-from "../core/modules/collisionY.js";
+from "../core/collisionY.js";
 
 export function applyWidgetCollisionSnap(
     widget,

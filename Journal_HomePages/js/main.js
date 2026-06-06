@@ -1,7 +1,7 @@
 import {
     initializeHomepage
 }
-from "./homepage/index.js";
+from "./home/index.js";
 
 console.clear();
 

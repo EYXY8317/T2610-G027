@@ -11,7 +11,7 @@ from "./gapSnap.js";
 import {
     applyWidgetCollisionSnap
 }
-from "../../interaction/collisionManager.js";
+from "../interaction/collisionManager.js";
 
 export function applySnap(
     widget,

@@ -1,12 +1,12 @@
 import {
     computeNewSize
 }
-from "../core/modules/resizeUtils.js";
+from "../core/resizeUtils.js";
 
 import {
     applyResizeSnap
 }
-from "../core/modules/resizeSnap.js";
+from "../core/resizeSnap.js";
 
 import {
     isOverlapping
