@@ -1,4 +1,8 @@
-export function getFontSizeSetting() {
+console.log(
+    "TITLE SIZE LOADED"
+);
+
+export function getTitleSizeSetting() {
 
     return `
 
@@ -7,7 +11,7 @@ export function getFontSizeSetting() {
         >
 
             <span>
-                Content Size
+                Title Size
             </span>
 
             <button
@@ -22,17 +26,17 @@ export function getFontSizeSetting() {
 
         <div
             class="
-            content-size-value
+            title-size-value
             "
         >
 
-            18px
+            20px
 
         </div>
 
         <div
             class="
-            content-size-slider-row
+            title-size-slider-row
             "
         >
 
@@ -43,15 +47,15 @@ export function getFontSizeSetting() {
             <input
                 type="range"
                 min="12"
-                max="32"
-                value="18"
+                max="40"
+                value="20"
                 class="
-                content-size-slider
+                title-size-slider
                 "
             >
 
             <span>
-                32
+                40
             </span>
 
         </div>
@@ -60,21 +64,21 @@ export function getFontSizeSetting() {
 
 }
 
-export function applyFontSize(
+export function applyTitleSize(
     widget,
     size
 ) {
 
-    const content =
+    const title =
         widget.querySelector(
-            ".widget-content"
+            ".widget-header"
         );
 
-    if (!content) {
+    if (!title) {
         return;
     }
 
-    content.style.fontSize =
+    title.style.fontSize =
         size + "px";
 
 }

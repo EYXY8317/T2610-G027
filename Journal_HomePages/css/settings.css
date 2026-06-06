@@ -64,3 +64,33 @@
     font-size: 18px;
 
 }
+
+.segment-button {
+
+    display: flex;
+
+    gap: 4px;
+
+}
+
+.segment-option {
+
+    border: none;
+
+    padding: 6px 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background: #f1f5f9;
+
+}
+
+.segment-option.active {
+
+    background: #3b82f6;
+
+    color: white;
+
+}

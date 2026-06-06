@@ -1,4 +1,9 @@
-export function renderDigitalClock() {
+export function renderDigitalClock(
+
+    showSeconds = true,
+    clockFormat = "24h"
+
+) {
 
     const clock =
         document.getElementById(
@@ -12,13 +17,8 @@ export function renderDigitalClock() {
     const now =
         new Date();
 
-    const hours =
-        String(
-            now.getHours()
-        ).padStart(
-            2,
-            "0"
-        );
+    let hours =
+        now.getHours();
 
     const minutes =
         String(
@@ -36,7 +36,43 @@ export function renderDigitalClock() {
             "0"
         );
 
+    let suffix = "";
+
+    if (
+        clockFormat === "12h"
+    ) {
+
+        suffix =
+            hours >= 12
+                ? " PM"
+                : " AM";
+
+        hours =
+            hours % 12 || 12;
+
+    }
+
+    hours =
+        String(
+            hours
+        ).padStart(
+            2,
+            "0"
+        );
+
+    let time =
+        `${hours}:${minutes}`;
+
+    if (
+        showSeconds
+    ) {
+
+        time +=
+            `:${seconds}`;
+
+    }
+
     clock.textContent =
-        `${hours}:${minutes}:${seconds}`;
+        time + suffix;
 
 }

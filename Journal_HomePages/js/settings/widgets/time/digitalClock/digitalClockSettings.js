@@ -28,55 +28,84 @@ export function getDigitalClockSettings() {
     return `
 
         <h3>
-            Appearance
-        </h3>
-
-        <label>
-
-            <input
-                type="checkbox"
-                checked
-            >
-
-            Show Title
-
-        </label>
-
-        <h3>
             Content
         </h3>
 
-        <label>
+        <div
+            class="setting-row"
+        >
 
-            <input
-                type="checkbox"
-                checked
+            <span>
+                Show Seconds
+            </span>
+
+            <div
+                class="
+                segment-button
+                show-seconds-segment
+                "
             >
 
-            Show Seconds
+                <button
+                    class="
+                    segment-option
+                    active
+                    "
+                    data-value="true"
+                >
+                    Show
+                </button>
 
-        </label>
+                <button
+                    class="
+                    segment-option
+                    "
+                    data-value="false"
+                >
+                    Hide
+                </button>
 
-        <br>
-        <br>
+            </div>
 
-        <label>
+        </div>
 
-            Clock Format
+        <div
+            class="setting-row"
+        >
 
-        </label>
+            <span>
+                Clock Format
+            </span>
 
-        <select>
+            <div
+                class="
+                segment-button
+                clock-format-segment
+                "
+            >
 
-            <option>
-                24H
-            </option>
+                <button
+                    class="
+                    segment-option
+                    active
+                    "
+                    data-value="24h"
+                >
+                    24H
+                </button>
 
-            <option>
-                12H
-            </option>
+                <button
+                    class="
+                    segment-option
+                    "
+                    data-value="12h"
+                >
+                    12H
+                </button>
 
-        </select>
+            </div>
+
+        </div>
 
     `;
 

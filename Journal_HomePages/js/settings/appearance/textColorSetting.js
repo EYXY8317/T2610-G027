@@ -7,3 +7,4 @@ export const textColorSetting = {
     defaultValue: "#000000"
 
 };
+
