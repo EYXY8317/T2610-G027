@@ -1,4 +1,9 @@
 import {
+    createDigitalClock
+}
+from "../time/digitalClock/createDigitalClock.js";
+
+import {
     createWeatherHourWidget
 }
 from "../weatherHour.js";
@@ -37,6 +42,15 @@ export const widgets = [
         id: "quote",
         name: "Quote",
         create: createQuoteWidget
-    }   
+    },
+
+    {
+        id: "digital-clock",
+
+        name: "Digital Clock",
+
+        create:
+            createDigitalClock
+    },    
 
 ];

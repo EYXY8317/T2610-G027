@@ -1,4 +1,9 @@
 import {
+    updateDigitalClock
+}
+from "../widgets/time/digitalClock/updateDigitalClock.js";
+
+import {
     createSettingPopup
 }
 from "../settings/core/settingPopup.js";
@@ -83,8 +88,12 @@ export function initializeHomepage() {
 
                     event.preventDefault();
 
+                    console.log(
+                        "RIGHT CLICK WORKING"
+                    );
+
                     createSettingPopup(
-                        "Widget Settings"
+                        widget.id
                     );
 
                 }
@@ -106,6 +115,8 @@ export function initializeHomepage() {
         }
     );
 
+    updateDigitalClock();
+    
     setupEditMode(
         settingsButton,
         menu,
