@@ -2212,6 +2212,10 @@ body.frosted{
     --delete-text:#ff5b5b;
 }
 
+body.frosted .topbar-title{
+    color:#ffffff;
+}
+
 body.frosted .topbar{
 
     color:white;
