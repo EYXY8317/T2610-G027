@@ -27,55 +27,105 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 <div class="wallpaper-overlay"></div>
 
-<div class="page-container">
+<!-- ================= TOPBAR ================= -->
+
+<div class="topbar">
+
+    <div class="topbar-title">
+        💰 Budget Tracking
+    </div>
+
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget" class="active-link">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
+
+<!-- ================= MAIN ================= -->
+
+<div class="summary-wrapper">
 
 <div class="summary-card">
 
-    <h1>
-        ✏️ Edit Budget
-    </h1>
+    <div class="page-header">
+
+        <h1>💰 Edit Financial Budget</h1>
+
+        <p>
+            Update your spending limit for this category.
+        </p>
+
+    </div>
 
     <form method="POST">
 
-        <label>
-            Category
-        </label>
+        <div class="form-grid">
 
-        <input
-            type="text"
-            value="{{ budget.category }}"
-            readonly
-        >
+            <div class="form-group">
 
-        <label>
-            Budget Amount (RM)
-        </label>
+                <label>
+                    Category
+                </label>
 
-            <input
-                type="number"
-                name="amount"
-                class="goal-amount-input"
-                placeholder="0.00"
-                step="0.01"
-                min="0.01"
-                required
+                <input
+                    type="text"
+                    value="{{ budget.category }}"
+                    readonly
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Budget Amount (RM)
+                </label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    value="{{ budget.amount }}"
+                    class="goal-amount-input"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0.01"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+        <div class="action-buttons">
+
+            <button
+                type="submit"
+                class="primary-btn"
             >
+                Save Changes
+            </button>
 
-        <br><br>
+            <a
+                href="/budget"
+                class="secondary-btn"
+            >
+                Cancel
+            </a>
 
-        <button
-            type="submit"
-            class="primary-btn"
-        >
-            Save Changes
-        </button>
-
-        <a
-            href="/budget"
-            class="secondary-btn"
-        >
-            Cancel
-        </a>
+        </div>
 
     </form>
 
@@ -83,115 +133,5 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
-<script>
-// ================= AMOUNT DISPLAY =================
-
-    const amountInput =
-        document.getElementById("amountInput");
-
-    const amountDisplay =
-        document.getElementById("amountDisplay");
-
-    let value = Math.round(
-        parseFloat(amountInput.value || "0") * 100
-    );
-
-    function updateAmount() {
-
-        const formatted =
-            (value / 100).toFixed(2);
-
-        amountInput.value =
-            formatted;
-
-        amountDisplay.textContent =
-            formatted;
-    }
-
-    updateAmount();
-
-    amountDisplay.setAttribute(
-        "tabindex",
-        "0"
-    );
-
-    amountDisplay.addEventListener(
-        "keydown",
-        function(e) {
-
-            if (
-                e.key >= "0"
-                &&
-                e.key <= "9"
-            ) {
-
-                value =
-                    value * 10 +
-                    parseInt(e.key);
-
-            }
-
-            else if (
-                e.key === "Backspace"
-            ) {
-
-                value =
-                    Math.floor(
-                        value / 10
-                    );
-
-            }
-
-            else {
-
-                return;
-            }
-
-            e.preventDefault();
-
-            updateAmount();
-
-        }
-    );
-
-    amountDisplay.addEventListener(
-        "click",
-        function() {
-
-            amountDisplay.focus();
-
-        }
-    );
-
-    function validateAmount() {
-
-        const amount =
-            parseFloat(
-                document.getElementById("amountInput").value
-            );
-
-        if (amount <= 0) {
-
-            document
-                .getElementById("amountInput")
-                .setCustomValidity(
-                    "Please enter an amount greater than RM 0.00"
-                );
-
-            document
-                .getElementById("amountInput")
-                .reportValidity();
-
-            return false;
-        }
-
-        document
-            .getElementById("amountInput")
-            .setCustomValidity("");
-
-        return true;
-    }
-
-</script>
 </body>
 </html>
