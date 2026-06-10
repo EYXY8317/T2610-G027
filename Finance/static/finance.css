@@ -932,6 +932,10 @@ label{
 
 .analysis-title{
 
+    color:#1f2937;
+
+    text-shadow:none;
+
     font-weight:800;
 
     font-size:1.08rem;
@@ -1129,9 +1133,17 @@ label{
     margin-top:18px;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
 
-
-
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
 
 /* ================================================= */
 /* ============== GOAL ACCOUNT FIX ================= */
@@ -1165,23 +1177,20 @@ label{
 .goal-card select{
 
     width:100%;
-
     padding:18px 20px;
 
     border-radius:20px;
 
-    border:1px solid #d8c8b5;
+    border:1px solid var(--border);
 
-    background:#f7f3ef;
+    background:var(--card-bg);
 
-    color:#2c241b;
+    color:var(--text-main);
 
     font-size:1rem;
 
     margin-top:14px;
 }
-
-
 
 /* ===== FOCUS ===== */
 
@@ -1192,20 +1201,6 @@ label{
 
     box-shadow:
     0 0 0 3px rgba(124,140,255,0.15);
-}
-
-
-
-/* ===== DARK MODE ===== */
-
-body.dark .goal-card input,
-body.dark .goal-card select{
-
-    background:#2c2824;
-
-    color:#f5f1eb;
-
-    border:1px solid rgba(255,255,255,0.08);
 }
 
 /* ================================================= */
@@ -1286,25 +1281,6 @@ body.dark .goal-card select{
 
     font-size:1rem;
 }
-
-
-
-/* ================================================= */
-/* =============== ACTION BUTTONS ================== */
-/* ================================================= */
-
-.action-buttons{
-
-    display:flex;
-
-    gap:14px;
-
-    margin-top:30px;
-}
-
-
-
-
 
 /* ================================================= */
 /* ================================================= */
@@ -1543,16 +1519,6 @@ body.dark .goal-card select{
 
     color:var(--text-main);
 
-}
-
-#amountDisplay{
-
-    font-size:3rem;
-
-    font-weight:800;
-
-    color:var(--text-main);
-
     cursor:text;
 
     outline:none;
@@ -1600,12 +1566,13 @@ body.dark .goal-card select{
 }
 
 .action-buttons{
-
     display:flex;
 
-    gap:10px;
+    gap:12px;
 
     align-items:center;
+
+    margin-top:30px;
 }
 
 .edit-btn,
@@ -2185,31 +2152,16 @@ body.sakura .records-table td{
 
 body.frosted{
 
-    --card-bg:rgba(255,255,255,0.65);
-
-    --card-bg-2:rgba(255,255,255,0.55);
-
     --text-main:#2f2f2f;
+    --text-soft:#4b5563;
 
-    --text-soft:#555;
+    --card-bg:rgba(255,255,255,.65);
+    --card-bg-2:rgba(255,255,255,.55);
 
-    --text-primary:#2f2f2f;
+    --border:rgba(255,255,255,.16);
 
-    --text-secondary:#777;
-    
-    --accent:rgba(255,255,255,0.24);
-
-    --accent-hover:rgba(255,255,255,0.36);
-
-    --border:rgba(255,255,255,0.16);
-
-    --edit-bg:rgba(90,120,255,.15);
-
-    --edit-text:#6c7cff;
-
-    --delete-bg:rgba(255,90,90,.15);
-
-    --delete-text:#ff5b5b;
+    --accent:#7b8cff;
+    --accent-hover:#93a0ff;
 }
 
 body.frosted .topbar-title{
@@ -2257,9 +2209,7 @@ body.frosted .active-link{
 body.frosted .section-title,
 body.frosted .summary-main-title{
 
-    color:#2f2f2f;
-
-    text-shadow:none;
+    color:#1f2937;
 }
 
 body.frosted .summary-card,
@@ -2298,13 +2248,116 @@ body.frosted button,
 body.frosted .primary-btn,
 body.frosted .add-btn{
 
-    color:#2f2f2f;
+    color:#1f2937;
 }
 
 body.frosted .records-table th,
 body.frosted .records-table td{
-    border-right:1px solid rgba(0,0,0,.08);
-    border-bottom:1px solid rgba(0,0,0,.08);
+    border-right:1px solid rgba(0,0,0,.12);
+    border-bottom:1px solid rgba(0,0,0,.12);
+}
+
+body.frosted h1,
+body.frosted h2,
+body.frosted h3,
+body.frosted h4,
+body.frosted h5,
+body.frosted h6{
+
+    color:#1f2937;
+}
+
+body.frosted p,
+body.frosted label,
+body.frosted span,
+body.frosted td,
+body.frosted th{
+
+    color:#374151;
+}
+
+/* ================= FROSTED BADGES ================= */
+
+body.frosted .badge.income{
+
+    background:#d4f4dd;
+
+    color:#008f4c;
+
+    font-weight:700;
+}
+
+body.frosted .badge.expense{
+
+    background:#ffdede;
+
+    color:#c62828;
+
+    font-weight:700;
+}
+
+body.frosted .badge.saving{
+
+    background:#dce7ff;
+
+    color:#2952cc;
+
+    font-weight:700;
+}
+
+body.frosted .badge{
+
+    text-shadow:none;
+}
+
+body.frosted .amount-card p{
+
+    color:#4b5563;
+
+    text-shadow:none;
+
+    font-weight:700;
+}
+
+/* ========================================= */
+/* FINAL FROSTED TEXT OVERRIDE */
+/* ========================================= */
+
+body.frosted .analysis-title,
+body.frosted .quick-title,
+body.frosted .budget-card-top,
+body.frosted .budget-modern h3,
+body.frosted .goal-card h2,
+body.frosted .overview-box h3,
+body.frosted .analysis-value,
+body.frosted .budget-amount {
+
+    color:#2f2f2f !important;
+    text-shadow:none !important;
+}
+
+body.frosted .analysis-desc,
+body.frosted .quick-desc,
+body.frosted .budget-limit,
+body.frosted .goal-card p,
+body.frosted .overview-box p,
+body.frosted .insight-box p {
+
+    color:#4b5563 !important;
+    text-shadow:none !important;
+}
+
+body.frosted .amount-card p,
+body.frosted .amount-card label {
+
+    color:#4b5563 !important;
+    font-weight:700;
+}
+
+body.frosted #amountDisplay,
+body.frosted .amount-card input {
+
+    color:#2f2f2f !important;
 }
 
 /* ================================================= */
