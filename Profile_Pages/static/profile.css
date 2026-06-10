@@ -427,24 +427,43 @@ body.cozy{
 
 body.frosted{
 
-    --bg-card:
-    rgba(255,255,255,0.26);
+    --bg-card:rgba(25,35,55,0.35);
 
-    --bg-card-2:
-    rgba(255,255,255,0.18);
+    --bg-card-2:rgba(25,35,55,0.22);
 
-    --text-primary:#2f2f2f;
+    --text-primary:#ffffff;
 
-    --text-secondary:#5f5f5f;
+    --text-secondary:rgba(255,255,255,0.85);
 
-    --border-color:
-    rgba(255,255,255,0.16);
+    --border-color:rgba(255,255,255,0.16);
 
-    --blur:
-    24px;
+    --blur: 24px;
 
-    --shadow:
-    0 12px 40px rgba(0,0,0,0.24);
+    --shadow: 0 12px 40px rgba(0,0,0,0.24);
+
+    --button-bg:#7480ff;
+
+    --button-hover:#8d97ff;
+}
+
+body.frosted .section-title,
+body.frosted .dashboard-title,
+body.frosted h1,
+body.frosted h2{
+
+    color:#ffffff;
+
+    text-shadow:
+    0 2px 12px rgba(0,0,0,0.55);
+}
+
+body.frosted .profile-info h1,
+body.frosted .profile-info p{
+
+    color:#ffffff;
+
+    text-shadow:
+    0 2px 12px rgba(0,0,0,0.55);
 }
 
 body.frosted .topbar-links a:hover,
@@ -461,10 +480,31 @@ body.frosted .topbar-actions a:hover{
 
 body.frosted .topbar-title,
 body.frosted .profile-info h1,
-body.frosted .stat-card p{
+body.frosted .stat-card p,
+body.frosted h1,
+body.frosted h2,
+body.frosted h3,
+body.frosted h4,
+body.frosted label,
+body.frosted p,
+body.frosted span,
+body.frosted td,
+body.frosted th{
+
+    color:#ffffff;
 
     text-shadow:
-    0 2px 10px rgba(0,0,0,0.28);
+    0 2px 12px rgba(0,0,0,0.45);
+}
+
+body.frosted .card,
+body.frosted .summary-main,
+body.frosted .goal-card,
+body.frosted .budget-modern,
+body.frosted .records-table{
+
+    background:
+    rgba(30,35,45,0.28);
 }
 
 /* ================================================= */
