@@ -1204,44 +1204,51 @@ label{
 }
 
 /* ================================================= */
-/* ================================================= */
-/* ================= EDIT GOAL PAGE ================ */
-/* ================================================= */
+/* ================= EDIT PAGES ==================== */
 /* ================================================= */
 
+.page-header{
+    margin-bottom:30px;
+}
 
+.page-header h1{
+    font-size:2.5rem;
+    margin-bottom:10px;
+    color:var(--text-main);
+}
 
-/* ================================================= */
-/* ================= PAGE CONTAINER ================ */
-/* ================================================= */
+.page-header p{
+    color:var(--text-soft);
+}
 
-.page-container{
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+}
 
-    width:100%;
-
+.form-group{
     display:flex;
-
-    justify-content:center;
-
-    margin-top:40px;
+    flex-direction:column;
+    gap:10px;
 }
 
-
-
-/* ================================================= */
-/* ================== EDIT GOAL ==================== */
-/* ================================================= */
-
-.edit-goal{
-
-    width:800px;
-
-    max-width:90%;
-
-    padding:40px;
+.form-group input{
+    height:58px;
 }
 
+.action-buttons{
+    display:flex;
+    gap:12px;
+    margin-top:30px;
+}
 
+@media (max-width:900px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
 
 /* ================================================= */
 /* ================= PAGE HEADER =================== */
