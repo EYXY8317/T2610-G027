@@ -8,9 +8,13 @@
 }
 
 body{
+
     padding:20px;
+
     background:#f7f3ee;
+
     color:#3b2f2a;
+
 }
 
 /* ================= MAIN CONTAINER ================= */
@@ -817,8 +821,3 @@ body{
     gap:6px;
 
 }
-
-
-
-
-
