@@ -18,6 +18,11 @@ import {
 }
 from "../quote.js";
 
+import {
+    createTodayEmotionWidget
+}
+from "../todayEmotion.js";
+
 export const widgets = [
 
     {
@@ -42,6 +47,12 @@ export const widgets = [
         id: "quote",
         name: "Quote",
         create: createQuoteWidget
+    },
+
+    {
+        id: "today-emotion",
+        name: "Today Emotion",
+        create: createTodayEmotionWidget
     },
 
     {

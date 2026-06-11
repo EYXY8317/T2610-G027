@@ -1,1 +1,1 @@
-export { applySnap } from "./modules/widgetSnap.js";
+export { applySnap } from "./widgetSnap.js";

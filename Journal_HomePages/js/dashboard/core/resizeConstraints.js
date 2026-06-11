@@ -1,6 +1,6 @@
 export const RESIZE_CONSTRAINTS = {
-    MIN_WIDTH: 300,
-    MIN_HEIGHT: 200,
+    MIN_WIDTH: 180,
+    MIN_HEIGHT: 120,
     MAX_WIDTH: 800,
     MAX_HEIGHT: 500
 };

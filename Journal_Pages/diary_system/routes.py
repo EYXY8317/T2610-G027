@@ -13,7 +13,7 @@ import random
 
 #================================ blueprint ================================
 
-diary_bp = Blueprint("diary", __name__)
+diary_bp = Blueprint("diary", __name__, template_folder="../../templates")
 
 
 #================================ route ================================

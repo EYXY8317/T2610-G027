@@ -7,87 +7,111 @@
 </head>
 
 <body>
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
 
-
-<h1>Diary</h1>
-
-<!-- Search bar -->
-<input type="text" id="searchBox" placeholder="Search diary...">
-<button id="searchBtn">Search</button>
-
-<div id="searchResults"></div>
-
-<button id="prevBtn" style="display:none;">↑</button>
-<button id="nextBtn" style="display:none;">↓</button>
-<span id="resultCount"></span>
-<br><br>
-
-<!-- Display today's date -->
-<h2 id="dateDisplay" style="display:inline; cursor:pointer;">
-    {{ today }}
-</h2>
-<br><br>
-
-<!-- Topic input -->
-<input type="text" id="topic" maxlength="20"
-value="{{ entry.topic if entry else '' }}"
-placeholder="Enter topic (max 20)"
-{{ "readonly" if mode == "view" else "" }}>
-<br><br>
-
-<!-- Mood selection -->
-<label for="mood">Mood:</label>
-
-<select id="mood" name="mood"
-{{ "disabled" if mode == "view" else "" }}>
-    <option value="">Select mood</option>
-    <option value="Happy" {{ "selected" if entry and entry.mood == "Happy" else "" }}>😊 Happy</option>
-    <option value="Sad" {{ "selected" if entry and entry.mood == "Sad" else "" }}>😢 Sad</option>
-    <option value="Angry" {{ "selected" if entry and entry.mood == "Angry" else "" }}>😡 Angry</option>
-</select>
-<br><br>
-
-<!-- Text area for diary entry -->
-<div id="canvas">
-    <div id="box" contenteditable="{{ 'false' if mode == 'view' else 'true' }}">
-        {{ entry.content if entry else '' }}
+<!-- ===== NAVBAR ===== -->
+<div id="navbar">
+    <div id="navLinks">
+        <a href="/view">Finance</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+    <div id="navRight">
+        <div id="searchWidget">
+            <span id="searchIconBtn">🔍</span>
+            <input type="text" id="searchBox" placeholder="Search diary...">
+            <button id="searchBtn">Search</button>
+        </div>
     </div>
 </div>
 
-<input type="file" id="uploadImg">
+<!-- Search results dropdown -->
+<div id="searchResults"></div>
 
-<!-- Save status message -->
-<p id="saveStatus"></p>
+<!-- ===== MAIN CONTENT ===== -->
+<div id="mainContent">
 
-<!-- Edit and Delete buttons -->
-<button id="editBtn">Edit</button>
-<button id="deleteBtn">Delete</button>
+    <!-- Date Section -->
+    <div id="dateSection">
+        <div id="dayName"></div>
+        <h2 id="dateDisplay" style="cursor:pointer;">{{ today }}</h2>
+        <div id="monthYear"></div>
+    </div>
 
-<!-- Pass the mode variable to JavaScript -->
- <script>
+    <!-- Toolbar: topic + mood -->
+    <div id="toolbar">
+        <label for="mood">Mood</label>
+        <select id="mood" name="mood"
+            {{ "disabled" if mode == "view" else "" }}>
+            <option value="">— select —</option>
+            <option value="Happy"  {{ "selected" if entry and entry.mood == "Happy"  else "" }}>😊 Happy</option>
+            <option value="Sad"    {{ "selected" if entry and entry.mood == "Sad"    else "" }}>😢 Sad</option>
+            <option value="Angry"  {{ "selected" if entry and entry.mood == "Angry"  else "" }}>😡 Angry</option>
+        </select>
+
+        <label for="topic">Topic</label>
+        <input type="text" id="topic" maxlength="20"
+            value="{{ entry.topic if entry else '' }}"
+            placeholder="Enter topic (max 20)"
+            {{ "readonly" if mode == "view" else "" }}>
+    </div>
+
+    <!-- Writing area -->
+    <div id="canvas">
+        <div id="box" contenteditable="{{ 'false' if mode == 'view' else 'true' }}">
+            {{ entry.content if entry else '' }}
+        </div>
+    </div>
+
+    <!-- Action bar -->
+    <div id="actionBar">
+        <div id="leftActions">
+            <button id="editBtn">Edit</button>
+            <button id="deleteBtn">Delete</button>
+            <input type="file" id="uploadImg">
+        </div>
+        <p id="saveStatus"></p>
+    </div>
+
+    <!-- Date navigation -->
+    <div id="dateNav">
+        <button id="prevDate">←</button>
+        <button id="nextDate">→</button>
+    </div>
+
+    <!-- Quote section -->
+    <div id="quoteSection">
+        <p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
+    </div>
+
+</div>
+
+<!-- Pass mode to JS -->
+<script>
     let mode = "{{ mode }}";
 </script>
 
-<!-- Build JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="/diary_static/script.js"></script>
 <script src="/diary_static/canvas.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 
-<div style="display:flex; justify-content:space-between; margin-top:20px;">
-    <button id="prevDate">←</button>
-    <button id="nextDate">→</button>
-</div>
-
-<!-- 3) 显示鼓励句（重点） -->
-<p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
+<!-- Day name + month/year display -->
+<script>
+    (function() {
+        const raw = document.getElementById("dateDisplay").innerText.trim();
+        const parts = raw.split("/");
+        if (parts.length === 3) {
+            const d = new Date(parts[2], parts[1] - 1, parts[0]);
+            const days   = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+            const months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+                            "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+            document.getElementById("dayName").innerText   = days[d.getDay()];
+            document.getElementById("monthYear").innerText = months[d.getMonth()] + " " + d.getFullYear();
+        }
+    })();
+</script>
 
 </body>
 </html>

@@ -34,6 +34,11 @@ import {
 }
 from "../widgets/weatherHour.js";
 
+import {
+    initializeTodayEmotion
+}
+from "../widgets/todayEmotion.js";
+
 export function initializeHomepage() {
 
     const dashboard =
@@ -123,6 +128,7 @@ export function initializeHomepage() {
     updateDigitalClock();
 
     renderWeatherHour();
+    initializeTodayEmotion();
     
     setupEditMode(
         settingsButton,
