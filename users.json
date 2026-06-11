@@ -13,7 +13,7 @@
         "email": "yxin683@gmail.com",
         "security_question": "birth_city",
         "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4",
-        "theme": "adaptive"
+        "theme": "cozy"
     },
     {
         "username": "User7763",
@@ -28,7 +28,7 @@
         "email": "testuser@test.com",
         "security_question": "nickname",
         "security_answer": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
-        "theme": "dark",
+        "theme": "cozy",
         "ui_style": "compact"
     },
     {
@@ -39,7 +39,7 @@
         "security_answer": "0925eef828afdd3cfccb4776afa08f9fbda045abeb85d72d66b955b42d342a6b",
         "profile_picture": "download.jpg",
         "wallpaper": "download (2).jpg",
-        "theme": "frosted",
+        "theme": "cozy",
         "ui_style": "premium"
     },
     {

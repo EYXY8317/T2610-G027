@@ -45,7 +45,8 @@ def register():
             "password": hash_password(password),
             "email": request.form["email"],
             "security_question": request.form["question"],
-            "security_answer": hash_password(request.form["answer"])
+            "security_answer": hash_password(request.form["answer"]),
+            "theme": "cozy"
         })
 
         save_data(f_users, users)
