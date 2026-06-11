@@ -16,12 +16,10 @@
 class="{{ user.theme if user else 'adaptive' }}"
 
 {% if wallpaper %}
-
 style="
 background-image:
 url('/profile_static/wallpapers/{{ wallpaper }}');
 "
-
 {% endif %}
 >
 
@@ -32,90 +30,85 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 <div class="topbar">
 
     <div class="topbar-title">
-        ✏️ Edit Goal
+        🎯 Goals
     </div>
 
     <div class="topbar-links">
-
+        <a href="/finance">Dashboard</a>
         <a href="/view">View</a>
-
         <a href="/add">Add</a>
-
         <a href="/summary">Summary</a>
-
         <a href="/budget">Budget</a>
-
-        <a
-            href="/goals"
-            class="active-link"
-        >
-            Goals
-        </a>
-
+        <a href="/goals" class="active-link">Goals</a>
     </div>
 
     <div class="topbar-actions">
-
+        <a href="/dashboard">Home</a>
         <a href="/calendar">Calendar</a>
-
         <a href="/diary">Diary</a>
-
         <a href="/profile">Profile</a>
-
         <a href="/logout">Logout</a>
-
     </div>
 
 </div>
 
-<!-- ================= CONTENT ================= -->
+<!-- ================= MAIN ================= -->
 
-<div class="page-container">
+<div class="summary-wrapper">
 
-    <div class="summary-card edit-goal">
+    <div class="summary-card">
 
         <div class="page-header">
 
-            <h1>Edit Goal</h1>
-
-            <!-- <p>Theme = {{ user.theme }}</p> -->
+            <h1>🎯 Edit Financial Goal</h1>
 
             <p>
-                Update your financial goal.
+                Update your savings target and goal details.
             </p>
 
         </div>
 
         <form method="POST">
 
-            <div class="form-group">
+            <div class="form-grid">
 
-                <label>
-                    Goal Name
-                </label>
+                <div class="form-group">
 
-                <input
-                    type="text"
-                    name="name"
-                    value="{{ goal.name }}"
-                    required
-                >
+                    <label>
+                        Goal Name
+                    </label>
 
-            </div>
+                    <input
+                        type="text"
+                        name="name"
+                        value="{{ goal.name }}"
+                        required
+                    >
 
-            <div class="form-group">
+                </div>
 
-                <label>
-                    Target Amount (RM)
-                </label>
+                <div class="form-group">
 
-                <input
-                    type="number"
-                    name="target"
-                    value="{{ goal.target }}"
-                    step="0.01"
-                    required
-                >
+                    <div class="form-group">
+
+                        <label>
+                            Target Amount (RM)
+                        </label>
+
+                        <input
+                            type="number"
+                            name="target"
+                            value="{{ goal.target }}"
+                            class="goal-amount-input"
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0.01"
+                            required
+                        >
+
+                    </div>
+
+                </div>
 
             </div>
 
