@@ -709,5 +709,4 @@ def finance_home():
         user=get_current_user(),
         savings_rate=savings_rate,
         theme=(current_user or {}).get("theme", "adaptive"),
-        ui_style=(current_user or {}).get("ui_style", "premium"),
     )

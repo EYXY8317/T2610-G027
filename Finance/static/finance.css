@@ -1686,85 +1686,8 @@ label{
 /* ================================================= */
 /* ================================================= */
 
-
-
-/* ================================================= */
-/* ==================== ADAPTIVE =================== */
-/* ================================================= */
-
-
-
-/* ================================================= */
-/* ============ ADAPTIVE GLASS ENGINE ============== */
-/* ================================================= */
-
-body.adaptive .summary-card,
-body.adaptive .topbar,
-body.adaptive .goal-card,
-body.adaptive .overview-box,
-body.adaptive .budget-modern,
-body.adaptive .amount-card,
-body.adaptive .insight-box{
-
-    backdrop-filter:blur(18px);
-}
-
-
-
-/* ================================================= */
-/* ============ ADAPTIVE DARK WALLPAPER ============ */
-/* ================================================= */
-
-body.adaptive.dark-wallpaper .topbar-title,
-body.adaptive.dark-wallpaper .topbar a{
-
-    color:
-    rgba(255,255,255,0.92);
-
-    text-shadow:
-    0 2px 10px rgba(0,0,0,0.45);
-}
-
-body.adaptive.dark-wallpaper .summary-main-title,
-body.adaptive.dark-wallpaper .view-header h2,
-body.adaptive.dark-wallpaper .overview-box h3,
-body.adaptive.dark-wallpaper .goal-card h2,
-body.adaptive.dark-wallpaper .goal-card h3{
-
-    color:#ffffff;
-}
-
-
-
-/* ================================================= */
-/* ============ ADAPTIVE LOADING FIX =============== */
-/* ================================================= */
-
-body.adaptive{
-
-    opacity:1;
-}
-
-body.adaptive.adaptive-ready{
-
-    opacity:1;
-
-    transition:
-    opacity 0.35s ease;
-}
-
-
-
-
-
 /* ================================================= */
 /* ==================== DARK ======================= */
-/* ================================================= */
-
-
-
-/* ================================================= */
-/* ================= DARK TOKENS =================== */
 /* ================================================= */
 
 body.dark{
@@ -1786,12 +1709,6 @@ body.dark{
 
     --delete-text:#ff7d7d;
 }
-
-
-
-/* ================================================= */
-/* ================= DARK TOPBAR =================== */
-/* ================================================= */
 
 body.dark .topbar{
 
@@ -1815,12 +1732,6 @@ body.dark .active-link{
 
     color:white !important;
 }
-
-
-
-/* ================================================= */
-/* ================== DARK CARDS =================== */
-/* ================================================= */
 
 body.dark .summary-card{
 
@@ -1856,20 +1767,12 @@ body.dark .goal-card::before{
     background:#5f78d1;
 }
 
-/* ========================================================= */
-/* =================== DARK ANALYSIS ROW =================== */
-/* ========================================================= */
-
 body.dark .analysis-row{
 
     background:#23201d;
 
     border:1px solid rgba(255,255,255,0.06);
 }
-
-/* ================================================= */
-/* =================== DARK TEXT =================== */
-/* ================================================= */
 
 body.dark h1,
 body.dark h2,
@@ -1901,12 +1804,6 @@ body.dark .add-subtitle{
     color:#b8ada1;
 }
 
-
-
-/* ================================================= */
-/* ================== DARK INPUTS ================== */
-/* ================================================= */
-
 body.dark input,
 body.dark textarea,
 body.dark select{
@@ -1933,21 +1830,10 @@ body.dark textarea::placeholder{
     color:#8f8479;
 }
 
-
-
-/* ================================================= */
-/* ================== DARK TABLE =================== */
-/* ================================================= */
-
 body.dark .records-table tr:hover{
 
     background:#2a2622;
 }
-
-
-/* ================================================= */
-/* ================= DARK BUTTONS ================== */
-/* ================================================= */
 
 body.dark button,
 body.dark .primary-btn,
@@ -1965,22 +1851,10 @@ body.dark .add-btn:hover{
     background:#7480ff;
 }
 
-
-
-/* ================================================= */
-/* ================= DARK HERO ===================== */
-/* ================================================= */
-
 body.dark .hero-balance h2{
 
     color:#ffffff;
 }
-
-
-
-/* ================================================= */
-/* ============= DARK QUICK ACTIONS ================ */
-/* ================================================= */
 
 body.dark .quick-action-card:hover{
 
@@ -1989,22 +1863,10 @@ body.dark .quick-action-card:hover{
     transform:translateY(-4px);
 }
 
-
-
-/* ================================================= */
-/* ================= DARK PROGRESS ================= */
-/* ================================================= */
-
 body.dark .progress-container{
 
     background:rgba(255,255,255,0.08);
 }
-
-
-
-/* ================================================= */
-/* ================= DARK SHADOWS ================== */
-/* ================================================= */
 
 body.dark .overview-box,
 body.dark .goal-card,
@@ -2014,10 +1876,6 @@ body.dark .amount-card{
     box-shadow:
     0 6px 20px rgba(0,0,0,0.22);
 }
-
-
-
-
 
 /* ================================================= */
 /* ================= COZY BEIGE ==================== */
@@ -2082,396 +1940,6 @@ body.cozy .records-table tr:hover{
 
     background:#fdf7f2;
 }
-
-
-
-
-/* ================================================= */
-/* ==================== SAKURA ===================== */
-/* ================================================= */
-
-body.sakura{
-
-    --text-main:#4d3740;
-
-    --text-soft:#8a6a76;
-
-    --accent:#e68aa6;
-
-    --accent-hover:#d97d99;
-
-    --edit-bg:rgba(255,170,210,.18);
-
-    --edit-text:#d86ca0;
-
-    --delete-bg:rgba(255,120,150,.15);
-
-    --delete-text:#d94f7d;
-}
-
-body.sakura .summary-card,
-body.sakura .goal-card,
-body.sakura .overview-box,
-body.sakura .budget-modern,
-body.sakura .amount-card{
-
-    background:#fff2f6;
-
-    border:1px solid #f0ccd8;
-}
-
-body.sakura input,
-body.sakura textarea,
-body.sakura select{
-
-    background:#fff8fb;
-
-    border:1px solid #f0ccd8;
-
-    color:#4d3740;
-}
-
-body.sakura .secondary-btn{
-
-    background:#fff8fb;
-
-    border:1px solid #f0ccd8;
-
-    color:#4d3740;
-}
-
-body.sakura .records-table td{
-
-    border-top:
-    1px solid #f3d8e2;
-}
-
-/* ================================================= */
-/* =================== FROSTED ===================== */
-/* ================================================= */
-
-body.frosted{
-
-    --text-main:#2f2f2f;
-    --text-soft:#4b5563;
-
-    --card-bg:rgba(255,255,255,.65);
-    --card-bg-2:rgba(255,255,255,.55);
-
-    --border:rgba(255,255,255,.16);
-
-    --accent:#7b8cff;
-    --accent-hover:#93a0ff;
-}
-
-body.frosted .topbar-title{
-    color:#ffffff;
-}
-
-body.frosted .topbar{
-
-    color:white;
-
-    text-shadow:
-    0 1px 4px rgba(0,0,0,.6);
-}
-
-body.frosted .topbar-links a,
-body.frosted .topbar-actions a{
-
-    color:#ffffff;
-
-    text-shadow:
-        0 1px 4px rgba(0,0,0,.6);
-}
-
-body.frosted .topbar-links a:hover,
-body.frosted .topbar-actions a:hover{
-
-    color:white;
-
-    opacity:.85;
-}
-
-body.frosted .active-link{
-
-    background:#7b8cff;
-
-    color:white !important;
-
-    border:
-    1px solid rgba(255,255,255,0.35);
-
-    box-shadow:
-    0 4px 12px rgba(0,0,0,0.08);
-}
-
-body.frosted .section-title,
-body.frosted .summary-main-title{
-
-    color:#1f2937;
-}
-
-body.frosted .summary-card,
-body.frosted .goal-card,
-body.frosted .overview-box,
-body.frosted .budget-modern,
-body.frosted .amount-card,
-body.frosted .insight-box,
-body.frosted .records-table,
-body.frosted .quick-action-card,
-body.frosted .analysis-row{
-
-    backdrop-filter:blur(24px);
-
-    box-shadow:
-    0 12px 40px rgba(0,0,0,0.24);
-}
-
-body.frosted .records-table td{
-
-    border-top:
-    1px solid rgba(255,255,255,.12);
-}
-
-body.frosted .edit-btn{
-    background:#dfe4ff;
-    color:#3f51d8;
-}
-
-body.frosted .delete-btn{
-    background:#ffe0e0;
-    color:#c0392b;
-}
-
-body.frosted button,
-body.frosted .primary-btn,
-body.frosted .add-btn{
-
-    color:#1f2937;
-}
-
-body.frosted .records-table th,
-body.frosted .records-table td{
-    border-right:1px solid rgba(0,0,0,.12);
-    border-bottom:1px solid rgba(0,0,0,.12);
-}
-
-body.frosted h1,
-body.frosted h2,
-body.frosted h3,
-body.frosted h4,
-body.frosted h5,
-body.frosted h6{
-
-    color:#1f2937;
-}
-
-body.frosted p,
-body.frosted label,
-body.frosted span,
-body.frosted td,
-body.frosted th{
-
-    color:#374151;
-}
-
-/* ================= FROSTED BADGES ================= */
-
-body.frosted .badge.income{
-
-    background:#d4f4dd;
-
-    color:#008f4c;
-
-    font-weight:700;
-}
-
-body.frosted .badge.expense{
-
-    background:#ffdede;
-
-    color:#c62828;
-
-    font-weight:700;
-}
-
-body.frosted .badge.saving{
-
-    background:#dce7ff;
-
-    color:#2952cc;
-
-    font-weight:700;
-}
-
-body.frosted .badge{
-
-    text-shadow:none;
-}
-
-body.frosted .amount-card p{
-
-    color:#4b5563;
-
-    text-shadow:none;
-
-    font-weight:700;
-}
-
-/* ========================================= */
-/* FINAL FROSTED TEXT OVERRIDE */
-/* ========================================= */
-
-body.frosted .analysis-title,
-body.frosted .quick-title,
-body.frosted .budget-card-top,
-body.frosted .budget-modern h3,
-body.frosted .goal-card h2,
-body.frosted .overview-box h3,
-body.frosted .analysis-value,
-body.frosted .budget-amount {
-
-    color:#2f2f2f !important;
-    text-shadow:none !important;
-}
-
-body.frosted .analysis-desc,
-body.frosted .quick-desc,
-body.frosted .budget-limit,
-body.frosted .goal-card p,
-body.frosted .overview-box p,
-body.frosted .insight-box p {
-
-    color:#4b5563 !important;
-    text-shadow:none !important;
-}
-
-body.frosted .amount-card p,
-body.frosted .amount-card label {
-
-    color:#4b5563 !important;
-    font-weight:700;
-}
-
-body.frosted #amountDisplay,
-body.frosted .amount-card input {
-
-    color:#2f2f2f !important;
-}
-
-/* ================================================= */
-/* ================================================= */
-/* ================= UI STYLE ENGINE =============== */
-/* ================================================= */
-/* ================================================= */
-
-
-
-/* ================================================= */
-/* ==================== PREMIUM ==================== */
-/* ================================================= */
-
-body.premium .summary-card,
-body.premium .topbar{
-
-    backdrop-filter:blur(18px);
-}
-
-
-
-
-
-/* ================================================= */
-/* ====================== SOFT ===================== */
-/* ================================================= */
-
-body.soft .summary-card,
-body.soft .overview-box,
-body.soft .budget-modern{
-
-    border-radius:40px;
-}
-
-body.soft .goal-card{
-
-    border-radius:40px;
-}
-
-body.soft .amount-card{
-
-    border-radius:40px;
-}
-
-body.soft button{
-
-    border-radius:999px;
-}
-
-
-
-
-
-/* ================================================= */
-/* ==================== MINIMAL ==================== */
-/* ================================================= */
-
-body.minimal .summary-card,
-body.minimal .topbar,
-body.minimal .overview-box,
-body.minimal .budget-modern{
-
-    box-shadow:none;
-
-    backdrop-filter:none;
-
-    border:1px solid rgba(0,0,0,0.08);
-}
-
-body.minimal .goal-card{
-
-    box-shadow:none;
-
-    backdrop-filter:none;
-}
-
-body.minimal .records-table{
-
-    box-shadow:none;
-}
-
-
-
-
-
-/* ================================================= */
-/* ==================== COMPACT ==================== */
-/* ================================================= */
-
-body.compact .summary-card{
-
-    padding:24px;
-}
-
-body.compact .overview-box{
-
-    padding:16px;
-}
-
-body.compact .summary-main-title{
-
-    font-size:2rem;
-}
-
-body.compact .records-table th,
-body.compact .records-table td{
-
-    padding:14px;
-}
-
-
-
-
 
 /* ================================================= */
 /* ================================================= */
