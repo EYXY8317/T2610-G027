@@ -1567,6 +1567,11 @@ function showTaskDetail(
         task.endTime || "";
 
     document.getElementById(
+    "panelRepeatSelect"
+    ).value =
+        task.repeat || "none";    
+
+    document.getElementById(
         "panelPrioritySelect"
     ).value =
         task.priority || "";
@@ -1664,6 +1669,11 @@ function saveTaskChanges() {
     task.endTime =
         document.getElementById(
             "panelEndTime"
+        ).value;
+
+    task.repeat =
+        document.getElementById(
+            "panelRepeatSelect"
         ).value;
 
     task.priority =
