@@ -1790,3 +1790,33 @@ function restoreFromCompleted(
     }
 
 }
+
+// ===============================
+// EMPTY TRASH
+// Permanently delete all trashed tasks
+// ===============================
+
+function emptyTrash() {
+
+    if (
+        !confirm(
+            "Permanently delete all tasks in Trash?"
+        )
+    ) {
+        return;
+    }
+
+    Object.keys(taskData).forEach(listType => {
+
+        taskData[listType] =
+            taskData[listType].filter(
+                task => task.status !== "trash"
+            );
+
+    });
+
+    renderTrash();
+
+    saveTasks();
+
+}
