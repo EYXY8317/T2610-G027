@@ -316,51 +316,6 @@ body{
 
 }
 
-
-/* ==================================================
-   NOTIFICATION BUTTON
-================================================== */
-
-.notification-btn{
-
-    width:48px;
-
-    height:48px;
-
-    border:none;
-
-    border-radius:50%;
-
-    background:white;
-
-    cursor:pointer;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    border:1px solid #efe8ff;
-
-    box-shadow:
-    0 4px 14px rgba(124,92,255,0.05);
-
-    transition:0.25s;
-
-}
-
-.notification-btn:hover{
-
-    background:#f4efff;
-
-    color:#7c5cff;
-
-    transform:translateY(-2px);
-
-}
-
-
 /* ==================================================
    PAGE DISPLAY
 ================================================== */
