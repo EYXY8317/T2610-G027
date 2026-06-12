@@ -19,8 +19,10 @@
 </head>
 
 <body
+class="{{ user.theme if user.theme else 'cozy' }}"
+>
 
-class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
+<body
 
 {% if user.wallpaper %}
 style="
@@ -203,13 +205,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
             >
 
                 <option
-                    value="adaptive"
-                    {% if user.theme == "adaptive" %}selected{% endif %}
-                >
-                    Adaptive
-                </option>
-
-                <option
                     value="cozy"
                     {% if user.theme == "cozy" %}selected{% endif %}
                 >
@@ -223,20 +218,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                     Dark Mode
                 </option>
 
-                <option
-                    value="frosted"
-                    {% if user.theme == "frosted" %}selected{% endif %}
-                >
-                    Frosted
-                </option>
-
-                <option
-                    value="sakura"
-                    {% if user.theme == "sakura" %}selected{% endif %}
-                >
-                    Sakura
-                </option>
-
             </select>
 
             <button
@@ -247,83 +228,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
             </button>
 
         </form>
-
-    </div>
-
-    <!-- UI STYLE -->
-
-    <div class="stat-card">
-
-        <h3>🪟 UI Style</h3>
-
-        <p>{{ user.ui_style if user.ui_style else "Premium" }}</p>
-
-        <span>
-            Customize dashboard appearance
-        </span>
-
-        <form
-            action="/change_ui_style"
-            method="POST"
-        >
-
-            <select
-                name="ui_style"
-                class="theme-select"
-            >
-
-                <option
-                    value="premium"
-                    {% if user.ui_style == "premium" %}selected{% endif %}
-                >
-                    Premium
-                </option>
-
-                <option
-                    value="minimal"
-                    {% if user.ui_style == "minimal" %}selected{% endif %}
-                >
-                    Minimal
-                </option>
-
-                <option
-                    value="compact"
-                    {% if user.ui_style == "compact" %}selected{% endif %}
-                >
-                    Compact
-                </option>
-
-                <option
-                    value="soft"
-                    {% if user.ui_style == "soft" %}selected{% endif %}
-                >
-                    Soft
-                </option>
-
-            </select>
-
-            <button
-                type="submit"
-                class="mini-btn"
-            >
-                Apply Style
-            </button>
-
-        </form>
-
-    </div>
-
-    <!-- WALLPAPER -->
-
-    <div class="stat-card">
-
-        <h3>🖼 Wallpaper</h3>
-
-        <p>Custom</p>
-
-        <span>
-            Personalized wallpaper active
-        </span>
 
     </div>
 
@@ -348,29 +252,17 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
 const themeSelect = document.querySelector('select[name="theme"]');
 
-const styleSelect = document.querySelector('select[name="ui_style"]');
-
 function updateBodyClasses(){
 
     const selectedTheme = themeSelect.value;
 
-    const selectedStyle = styleSelect.value;
-
     document.body.className =
-        `${selectedTheme} ${selectedStyle}`;
+        selectedTheme;
 }
 
 if(themeSelect){
 
     themeSelect.addEventListener(
-        "change",
-        updateBodyClasses
-    );
-}
-
-if(styleSelect){
-
-    styleSelect.addEventListener(
         "change",
         updateBodyClasses
     );
