@@ -828,20 +828,31 @@ function renderTrash() {
 
                 <div class="task-actions">
 
-                    <button
-                        class="restore-btn"
-                        onclick="restoreTask('${listType}', ${task.id})"
+                   <button
+                       class="task-action-btn"
+                       onclick="restoreTask('${listType}', ${task.id})"
+                       title="Restore Task"
                     >
 
-                        <span class="material-symbols-rounded">
-                            undo
-                        </span>
-
-                        Restore
+                   <span class="material-symbols-rounded">
+                       undo
+                    </span>
 
                     </button>
 
-                </div>
+                <button
+                     class="task-action-btn"
+                     onclick="permanentlyDeleteTask('${listType}', ${task.id})"
+                     title="Delete Forever"
+                >
+
+                <span class="material-symbols-rounded">
+                    delete_forever
+                </span>
+
+            </button>
+
+        </div>
 
             `;
 
@@ -927,6 +938,31 @@ function restoreTask(listType, id) {
 }
 
 
+// ===============================
+// DELETE TASK PERMANENTLY
+// Remove task forever from storage
+// ===============================
+
+function permanentlyDeleteTask(listType, id) {
+
+    if (
+        !confirm(
+            "Permanently delete this task?"
+        )
+    ) {
+        return;
+    }
+
+    taskData[listType] =
+        taskData[listType].filter(
+            task => task.id !== id
+        );
+
+    renderTrash();
+
+    saveTasks();
+
+}
 
 
 // ===============================
@@ -973,6 +1009,7 @@ document.addEventListener(
     }
 );
 
+
 // ===============================
 // TOGGLE CALENDAR POPUP
 // Show or hide date popup
@@ -989,8 +1026,6 @@ function toggleCalendar(btn, e) {
 
     if (!popup) return;
 
-    document.body.appendChild(popup);
-
     let extra =
         document.getElementById(
             "extraPopup"
@@ -1002,21 +1037,19 @@ function toggleCalendar(btn, e) {
 
     }
 
-    let rect =
+    const rect =
         btn.getBoundingClientRect();
 
     popup.style.position =
-        "absolute";
+        "fixed";
 
     popup.style.top =
-        rect.bottom +
-        window.scrollY +
-        "px";
+        rect.bottom + 10 + "px";
+
+    const popupWidth = 340;
 
     popup.style.left =
-        rect.left +
-        window.scrollX +
-        "px";
+    (rect.right - popupWidth) + "px";
 
     popup.style.display =
         popup.style.display === "block"
@@ -1024,6 +1057,7 @@ function toggleCalendar(btn, e) {
         : "block";
 
 }
+
 
 // ===============================
 // TOGGLE EXTRA POPUP
@@ -1041,8 +1075,6 @@ function toggleExtra(btn, e) {
 
     if (!popup) return;
 
-    document.body.appendChild(popup);
-
     let cal =
         document.getElementById(
             "calendarPopup"
@@ -1054,22 +1086,17 @@ function toggleExtra(btn, e) {
 
     }
 
-    let rect =
+    const rect =
         btn.getBoundingClientRect();
 
     popup.style.position =
-        "absolute";
+        "fixed";
 
     popup.style.top =
-        rect.bottom +
-        window.scrollY +
-        "px";
+        rect.bottom + 10 + "px";
 
     popup.style.left =
-        rect.right +
-        window.scrollX -
-        200 +
-        "px";
+        (rect.right - 280) + "px";
 
     popup.style.display =
         popup.style.display === "block"
@@ -1077,6 +1104,8 @@ function toggleExtra(btn, e) {
         : "block";
 
 }
+
+
 
 // ===============================
 // CLOSE CALENDAR POPUP
