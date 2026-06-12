@@ -1273,47 +1273,6 @@ function applyDate() {
 
 }
 
-// ===============================
-// CUSTOM  REPEAT
-// Show custom input fields
-// ===============================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        let repeat =
-            document.getElementById(
-                "repeat"
-            );
-
-        if (repeat) {
-
-            repeat.addEventListener(
-                "change",
-                function () {
-
-                    let box =
-                        document.getElementById(
-                            "customRepeatBox"
-                        );
-
-                    if (box) {
-
-                        box.style.display =
-                            this.value === "custom"
-                            ? "flex"
-                            : "none";
-
-                    }
-
-                }
-            );
-
-        }
-
-    }
-);
 
 
 
@@ -1449,11 +1408,76 @@ function toggleComplete(
 
     if (!task) return;
 
+// Create next recurring task
+if (
+    checkbox.checked &&
+    task.repeat &&
+    task.repeat !== "none" &&
+    task.date
+) {
+
+    let nextDate =
+        new Date(task.date);
+
+    switch (task.repeat) {
+
+        case "daily":
+
+            nextDate.setDate(
+                nextDate.getDate() + 1
+            );
+
+            break;
+
+        case "weekly":
+
+            nextDate.setDate(
+                nextDate.getDate() + 7
+            );
+
+            break;
+
+        case "monthly":
+
+            nextDate.setMonth(
+                nextDate.getMonth() + 1
+            );
+
+            break;
+
+        case "yearly":
+
+            nextDate.setFullYear(
+                nextDate.getFullYear() + 1
+            );
+
+            break;
+
+    }
+
+    taskData[listType].push({
+
+        ...task,
+
+        id: Date.now(),
+
+        status: "active",
+
+        date:
+            nextDate
+            .toISOString()
+            .split("T")[0]
+
+    });
+
+}
+
     // Update task status
     task.status =
         checkbox.checked
         ? "completed"
         : "active";
+
 
     // Refresh pages
     renderTasks(listType);
