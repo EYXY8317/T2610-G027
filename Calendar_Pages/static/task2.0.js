@@ -96,8 +96,7 @@ let selectedDate = "";
 let selectedStart = "";
 let selectedEnd = "";
 
-// Selected reminder settings
-let selectedReminder = "";
+// Selected repeat settings
 let selectedRepeat = "";
 
 // Selected task settings
@@ -164,8 +163,6 @@ function addTask(listType) {
 
         endTime: selectedEnd,
 
-        reminder: selectedReminder,
-
         repeat: selectedRepeat,
 
         priority: selectedPriority,
@@ -214,8 +211,7 @@ function addTask(listType) {
     selectedStart = "";
     selectedEnd = "";
 
-    // Reset reminder settings
-    selectedReminder = "";
+    // Reset repeat settings
     selectedRepeat = "";
 
     // Reset task settings
@@ -1243,11 +1239,6 @@ function applyDate() {
             "endTime"
         );
 
-    let reminderInput =
-        document.getElementById(
-            "reminder"
-        );
-
     let repeatInput =
         document.getElementById(
             "repeat"
@@ -1271,12 +1262,6 @@ function applyDate() {
         ? endInput.value
         : "";
 
-    // Save reminder option
-    selectedReminder =
-        reminderInput
-        ? reminderInput.value
-        : "";
-
     // Save repeat option
     selectedRepeat =
         repeatInput
@@ -1289,7 +1274,7 @@ function applyDate() {
 }
 
 // ===============================
-// CUSTOM REMINDER / REPEAT
+// CUSTOM  REPEAT
 // Show custom input fields
 // ===============================
 
@@ -1297,40 +1282,10 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        let reminder =
-            document.getElementById(
-                "reminder"
-            );
-
         let repeat =
             document.getElementById(
                 "repeat"
             );
-
-        if (reminder) {
-
-            reminder.addEventListener(
-                "change",
-                function () {
-
-                    let box =
-                        document.getElementById(
-                            "customReminderBox"
-                        );
-
-                    if (box) {
-
-                        box.style.display =
-                            this.value === "custom"
-                            ? "flex"
-                            : "none";
-
-                    }
-
-                }
-            );
-
-        }
 
         if (repeat) {
 
