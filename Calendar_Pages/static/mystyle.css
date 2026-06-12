@@ -2126,3 +2126,59 @@ body{
     color:#7c5cff;
 
 }
+
+/* ==================================================
+   TRASH PAGE HEADER 
+================================================== */
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+
+/* ==================================================
+   EMPTY TRASH BUTTON
+================================================== */
+
+.empty-trash-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ff8aa8,
+        #ff6b97
+    );
+
+    transition:0.25s;
+
+}
+
+.empty-trash-btn:hover{
+
+    transform:translateY(-2px);
+
+}
