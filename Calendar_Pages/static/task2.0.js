@@ -91,6 +91,9 @@ function showPage(pageId, element) {
 // Current calendar date
 let today = new Date();
 
+//Tag Filter
+let currentTagFilter = "all";
+
 // Selected schedule information
 let selectedDate = "";
 let selectedStart = "";
@@ -314,6 +317,48 @@ function deleteTask(listType, id) {
     }
 
 }
+
+
+
+// ===============================
+// RENDER TAG FILTERS
+// ===============================
+
+function renderTagFilters() {
+
+    const pages = [
+        "work",
+        "shopping",
+        "study",
+        "personal",
+        "workout"
+    ];
+
+    pages.forEach(listType => {
+
+        const container =
+            document.getElementById(
+                listType + "TagFilter"
+            );
+
+        if (!container) return;
+
+        container.innerHTML = `
+
+            <button
+                class="tag-chip active"
+            >
+
+                All
+
+            </button>
+
+        `;
+
+    });
+
+}
+
 
 
 
