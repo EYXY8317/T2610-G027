@@ -69,56 +69,210 @@ function generateCalendar() {
     }
 }
 
+
+
 // ==================================================
 // DAY TASKS MODAL
 // ==================================================
+
 function showDayTasks(dateStr) {
-    let html = `<h3>Tasks on ${dateStr}</h3><div style="max-height:400px; overflow-y:auto;">`;
+
+    let html = `
+
+    <div class="calendar-modal-header">
+
+        <h2>
+
+            ${dateStr}
+
+        </h2>
+
+    </div>
+
+    <div class="calendar-modal-content">
+
+    `;
 
     let hasTasks = false;
+
     Object.keys(taskData).forEach(list => {
-        const tasks = taskData[list].filter(t => t.status === "active" && t.date === dateStr);
+
+        const tasks =
+            taskData[list].filter(
+                t =>
+                    t.status === "active" &&
+                    t.date === dateStr
+            );
+
         tasks.forEach(task => {
+
             hasTasks = true;
-            const color = getPriorityColor(task.priority);
+
+            const color =
+                getPriorityColor(
+                    task.priority
+                );
+
             html += `
-                <div style="padding:10px; margin:8px 0; border-left:4px solid ${color}; background:#f9fafb;">
-                    <strong>[${list}]</strong> ${task.text}
-                    <button onclick="completeTask('${list}', ${task.id}); closeDayModal()" style="margin-left:15px; color:green;">✔ Complete</button>
-                    <button onclick="deleteTask('${list}', ${task.id}); closeDayModal()" style="margin-left:8px; color:red;">🗑 Delete</button>
-                </div>`;
+
+            <div
+                class="calendar-task-card"
+                style="
+                    border-left:4px solid ${color};
+                "
+            >
+
+                <div class="calendar-task-category">
+
+                    ${
+                        list.charAt(0).toUpperCase()
+                        + list.slice(1)
+                    }
+
+                </div>
+
+                <div class="calendar-task-title">
+
+                    ${task.text}
+
+                </div>
+
+                <div class="calendar-task-actions">
+
+                    <button
+                        class="calendar-complete-btn"
+                        onclick="
+                            completeTask(
+                                '${list}',
+                                ${task.id}
+                            );
+                            closeDayModal();
+                        "
+                    >
+
+                        Complete
+
+                    </button>
+
+                    <button
+                        class="calendar-delete-btn"
+                        onclick="
+                            deleteTask(
+                                '${list}',
+                                ${task.id}
+                            );
+                            closeDayModal();
+                        "
+                    >
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            `;
+
         });
+
     });
 
-    if (!hasTasks) html += "<p>No tasks on this day.</p>";
+    if (!hasTasks) {
 
-    html += `</div><button onclick="closeDayModal()" style="margin-top:15px; padding:8px 16px;">Close</button>`;
+        html += `
 
-    let modal = document.getElementById("dayModal");
+        <p
+            style="
+                text-align:center;
+                color:#8a8aa3;
+                padding:30px 0;
+            "
+        >
+
+            No tasks on this day
+
+        </p>
+
+        `;
+
+    }
+
+    html += `
+
+    </div>
+
+    <div class="calendar-modal-footer">
+
+        <button
+            class="calendar-close-btn"
+            onclick="closeDayModal()"
+        >
+
+            Close
+
+        </button>
+
+    </div>
+
+    `;
+
+    let modal =
+        document.getElementById(
+            "dayModal"
+        );
+
     if (!modal) {
 
-    modal =
-        document.createElement("div");
+        modal =
+            document.createElement(
+                "div"
+            );
 
-    modal.id = "dayModal";
+        modal.id =
+            "dayModal";
 
-    modal.className =
-        "calendar-day-modal";
+        modal.className =
+            "calendar-day-modal";
 
-    document.body.appendChild(
-        modal
-    );
+        document.body.appendChild(
+            modal
+        );
 
-}
+    }
+
     modal.innerHTML = html;
-    modal.style.display = "block";
+
+    modal.style.display =
+        "block";
+
 }
+
+
+// ==================================================
+// CLOSE DAY MODAL
+// ==================================================
 
 function closeDayModal() {
-    const modal = document.getElementById("dayModal");
-    if (modal) modal.style.display = "none";
+
+    const modal =
+        document.getElementById(
+            "dayModal"
+        );
+
+    if (modal) {
+
+        modal.style.display =
+            "none";
+
+    }
+
     generateCalendar();
+
 }
+
+
 
 // ==================================================
 // VIEW SWITCH
