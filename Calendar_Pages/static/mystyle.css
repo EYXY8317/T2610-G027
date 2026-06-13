@@ -482,6 +482,71 @@ body{
 
 }
 
+/* ==================================================
+   TODAY TASK CARD
+================================================== */
+
+.today-task-card{
+
+    background:#faf8ff;
+
+    border-left:4px solid #8b6cff;
+
+    border-radius:16px;
+
+    padding:12px 16px;
+
+
+}
+
+
+/* ==================================================
+   TODAY TASK TITLE
+================================================== */
+
+.today-task-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#2f3367;
+
+    margin-bottom:4px;
+
+}
+
+
+/* ==================================================
+   TODAY TASK TIME
+================================================== */
+
+.today-task-meta{
+
+    font-size:13px;
+
+    color:#8a8aa3;
+
+}
+
+/* ==================================================
+   MORE TASKS
+================================================== */
+
+.today-more-tasks{
+
+    text-align:center;
+
+    font-size:13px;
+
+    color:#8a8aa3;
+
+    margin-top:10px;
+
+    font-weight:500;
+
+}
+
 
 /* ==================================================
    PROGRESS CARD

@@ -210,6 +210,9 @@ function renderTodayTasks() {
     // Track whether any task exists
     let hasTask = false;
 
+    // Store today's tasks
+    let todayTasks = [];
+
     // Loop through all task categories
     Object.keys(taskData).forEach(list => {
 
@@ -223,35 +226,72 @@ function renderTodayTasks() {
 
                 hasTask = true;
 
-                container.innerHTML += `
-
-                <div class="today-task-card">
-
-                    <div class="today-task-title">
-
-                        ${task.text}
-
-                    </div>
-
-                    <div class="today-task-meta">
-
-                     ${
-                           task.startTime && task.endTime
-                           ? `${task.startTime} - ${task.endTime}`
-                           : task.startTime || ""
-                      }
-
-                        </div>
-
-                    </div>
-
-                `;
+                todayTasks.push(task);
 
             }
 
         });
 
     });
+
+    // Sort by start time
+    todayTasks.sort((a, b) => {
+
+        return (
+            a.startTime || ""
+        ).localeCompare(
+            b.startTime || ""
+        );
+
+    });
+
+    // Show first 3 tasks only
+    todayTasks
+    .slice(0, 3)
+    .forEach(task => {
+
+        container.innerHTML += `
+
+        <div class="today-task-card">
+
+            <div class="today-task-title">
+
+                ${task.text}
+
+            </div>
+
+            <div class="today-task-meta">
+
+                ${
+                    task.startTime &&
+                    task.endTime
+                    ? `${task.startTime} - ${task.endTime}`
+                    : task.startTime || ""
+                }
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    // Show remaining task count
+    if (todayTasks.length > 3) {
+
+        container.innerHTML += `
+
+        <div class="today-more-tasks">
+
+            + ${todayTasks.length - 3}
+            more tasks
+
+        </div>
+
+        `;
+
+    }
 
     // Show message when no task exists
     if (!hasTask) {
