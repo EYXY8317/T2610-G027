@@ -77,17 +77,39 @@ function generateCalendar() {
 
 function showDayTasks(dateStr) {
 
+    const date =
+    new Date(dateStr);
+
+    const displayDate =
+    `${date.getDate()} ${
+        date.toLocaleString(
+            "en-US",
+            { month: "long" }
+        )
+    } ${
+        date.getFullYear()
+    }`;
+
     let html = `
 
     <div class="calendar-modal-header">
 
-        <h2>
+    <h2>
 
-            ${dateStr}
+        ${displayDate}
 
-        </h2>
+    </h2>
 
-    </div>
+    <button
+        class="calendar-close-icon"
+        onclick="closeDayModal()"
+    >
+
+        ✕
+
+    </button>
+
+</div>
 
     <div class="calendar-modal-content">
 
@@ -200,19 +222,6 @@ function showDayTasks(dateStr) {
     }
 
     html += `
-
-    </div>
-
-    <div class="calendar-modal-footer">
-
-        <button
-            class="calendar-close-btn"
-            onclick="closeDayModal()"
-        >
-
-            Close
-
-        </button>
 
     </div>
 
