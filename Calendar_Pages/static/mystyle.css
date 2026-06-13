@@ -1612,35 +1612,7 @@ body{
 
     position:absolute;
 
-    width:340px;
-
-    background:white;
-
-    border:1px solid #f0ebff;
-
-    border-radius:28px;
-
-    padding:24px;
-
-    box-shadow:
-    0 12px 40px rgba(124,92,255,0.12);
-
-    z-index:1000;
-
-}
-
-
-/* ==================================================
-   EXTRA POPUP
-================================================== */
-
-.extra-popup{
-
-    display:none;
-
-    position:absolute;
-
-    width:320px;
+    width:380px;
 
     background:white;
 
@@ -1695,15 +1667,21 @@ body{
 
 .popup-close-btn{
 
+    width:36px;
+
+    height:36px;
+
     border:none;
 
-    background:none;
+    border-radius:12px;
+
+    background:#f4efff;
+
+    color:#a69cc7;
+
+    font-size:20px;
 
     cursor:pointer;
-
-    font-size:18px;
-
-    color:#8f8cab;
 
 }
 
@@ -1802,36 +1780,10 @@ body{
 
 .popup-buttons{
 
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:12px;
-
     margin-top:24px;
 
 }
 
-
-/* ==================================================
-   CANCEL BUTTON
-================================================== */
-
-.cancel-btn{
-
-    border:none;
-
-    background:#f4efff;
-
-    color:#6f67a5;
-
-    padding:12px 18px;
-
-    border-radius:14px;
-
-    cursor:pointer;
-
-}
 
 
 /* ==================================================
@@ -1862,7 +1814,15 @@ body{
         #c08cff,
         #7c5cff
     );
+    
+    .full-width-btn{
 
+    width:100%;
+
+    justify-content:center;
+
+    }
+    
 }
 
 
@@ -1902,43 +1862,6 @@ body{
 
 }
 
-
-/* ==================================================
-   DONE BUTTON
-================================================== */
-
-.popup-done-btn{
-
-    width:100%;
-
-    margin-top:16px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:8px;
-
-    border:none;
-
-    color:white;
-
-    cursor:pointer;
-
-    padding:14px;
-
-    border-radius:16px;
-
-    background:
-    linear-gradient(
-        135deg,
-        #c08cff,
-        #7c5cff
-    );
-
-}
 
 
 /* ==================================================

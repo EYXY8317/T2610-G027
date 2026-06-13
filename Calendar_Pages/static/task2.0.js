@@ -8,7 +8,6 @@ function showPage(pageId, element) {
 
     // Close all popups
     closeCalendar();
-    closeExtra();
 
     // Close detail panel
     closeDetailPanel();
@@ -1195,17 +1194,6 @@ function toggleCalendar(btn, e) {
 
     if (!popup) return;
 
-    let extra =
-        document.getElementById(
-            "extraPopup"
-        );
-
-    if (extra) {
-
-        extra.style.display = "none";
-
-    }
-
     const rect =
         btn.getBoundingClientRect();
 
@@ -1219,53 +1207,6 @@ function toggleCalendar(btn, e) {
 
     popup.style.left =
     (rect.right - popupWidth) + "px";
-
-    popup.style.display =
-        popup.style.display === "block"
-        ? "none"
-        : "block";
-
-}
-
-
-// ===============================
-// TOGGLE EXTRA POPUP
-// Show or hide extra options popup
-// ===============================
-
-function toggleExtra(btn, e) {
-
-    if (e) e.stopPropagation();
-
-    let popup =
-        document.getElementById(
-            "extraPopup"
-        );
-
-    if (!popup) return;
-
-    let cal =
-        document.getElementById(
-            "calendarPopup"
-        );
-
-    if (cal) {
-
-        cal.style.display = "none";
-
-    }
-
-    const rect =
-        btn.getBoundingClientRect();
-
-    popup.style.position =
-        "fixed";
-
-    popup.style.top =
-        rect.bottom + 10 + "px";
-
-    popup.style.left =
-        (rect.right - 280) + "px";
 
     popup.style.display =
         popup.style.display === "block"
@@ -1295,28 +1236,6 @@ function closeCalendar() {
     }
 
 }
-
-// ===============================
-// CLOSE EXTRA POPUP
-// ===============================
-
-function closeExtra() {
-
-    const popup =
-        document.getElementById(
-            "extraPopup"
-        );
-
-    if (popup) {
-
-        popup.style.display =
-            "none";
-
-    }
-
-}
-
-
 
 
 // ===============================
