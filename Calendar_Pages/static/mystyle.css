@@ -1814,15 +1814,20 @@ body{
         #c08cff,
         #7c5cff
     );
-    
-    .full-width-btn{
+
+}
+
+
+/* ==================================================
+   FULL WIDTH SAVE BUTTON
+================================================== */
+
+.full-width-btn{
 
     width:100%;
 
     justify-content:center;
 
-    }
-    
 }
 
 

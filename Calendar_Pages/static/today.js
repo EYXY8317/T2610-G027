@@ -20,7 +20,10 @@ function loadTodayDate() {
 
     // Update Today page date
     document.getElementById("date").textContent =
-        now.toLocaleDateString("en-US", options);
+    now.toLocaleDateString(
+        "en-GB",
+        options
+    );
 
 }
 
@@ -32,13 +35,23 @@ function loadTodayDate() {
 function loadDailyQuote() {
 
     // Available quotes
-    const quotes = [
+   const quotes = [
 
-        "Small progress is still progress.",
+    "Small progress is still progress.",
 
-        "Done is better than perfect."
+    "Done is better than perfect.",
 
-    ];
+    "One task at a time.",
+
+    "Focus on progress, not perfection.",
+
+    "Your future self will thank you.",
+
+    "Consistency beats intensity.",
+
+    "Every day is a fresh start."
+
+];
 
     // Get today's day number
     const today = new Date().getDate();
@@ -222,17 +235,15 @@ function renderTodayTasks() {
 
                     <div class="today-task-meta">
 
-                        ${task.startTime || "--:--"}
+                     ${
+                           task.startTime && task.endTime
+                           ? `${task.startTime} - ${task.endTime}`
+                           : task.startTime || ""
+                      }
 
-                        -
-
-                        ${task.endTime || "--:--"}
-
-                        ${getPriorityDot(task.priority)}
+                        </div>
 
                     </div>
-
-                </div>
 
                 `;
 
