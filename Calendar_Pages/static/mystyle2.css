@@ -1,0 +1,230 @@
+/* ==================================================
+   CALENDAR DAY MODAL
+================================================== */
+
+.calendar-day-modal{
+
+    position:fixed;
+
+    top:50%;
+
+    left:50%;
+
+    transform:
+    translate(-50%, -50%);
+
+    width:450px;
+
+    max-height:75vh;
+
+    overflow-y:auto;
+
+    background:white;
+
+    padding:24px;
+
+    border-radius:24px;
+
+    z-index:10000;
+
+    box-shadow:
+    0 20px 50px rgba(
+        124,
+        92,
+        255,
+        0.18
+    );
+
+}
+
+
+/* ==================================================
+   CALENDAR MODAL HEADER
+================================================== */
+
+.calendar-modal-header{
+
+    margin-bottom:20px;
+
+    padding-bottom:14px;
+
+    border-bottom:1px solid #efe8ff;
+
+}
+
+.calendar-modal-header h2{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#2f3367;
+
+}
+
+
+/* ==================================================
+   CALENDAR MODAL CONTENT
+================================================== */
+
+.calendar-modal-content{
+
+    max-height:400px;
+
+    overflow-y:auto;
+
+}
+
+
+
+/* ==================================================
+   CALENDAR TASK CARD
+================================================== */
+
+.calendar-task-card{
+
+    background:#faf8ff;
+
+    border-radius:16px;
+
+    padding:14px;
+
+    margin-bottom:12px;
+
+}
+
+
+/* ==================================================
+   TASK CATEGORY
+================================================== */
+
+.calendar-task-category{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#7c5cff;
+
+    margin-bottom:6px;
+
+}
+
+
+/* ==================================================
+   TASK TITLE
+================================================== */
+
+.calendar-task-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#2f3367;
+
+    margin-bottom:12px;
+
+}
+
+
+/* ==================================================
+   TASK ACTIONS
+================================================== */
+
+.calendar-task-actions{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+
+/* ==================================================
+   COMPLETE BUTTON
+================================================== */
+
+.calendar-complete-btn{
+
+    border:none;
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    background:#e8f7eb;
+
+    color:#2f9e44;
+
+    cursor:pointer;
+
+}
+
+
+/* ==================================================
+   DELETE BUTTON
+================================================== */
+
+.calendar-delete-btn{
+
+    border:none;
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    background:#ffe9ec;
+
+    color:#e03131;
+
+    cursor:pointer;
+
+}
+
+/* ==================================================
+   MODAL FOOTER
+================================================== */
+
+.calendar-modal-footer{
+
+    margin-top:20px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+}
+
+
+/* ==================================================
+   CLOSE BUTTON
+================================================== */
+
+.calendar-close-btn{
+
+    border:none;
+
+    background:#7c5cff;
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:0.2s;
+
+}
+
+.calendar-close-btn:hover{
+
+    transform:translateY(-2px);
+
+}
