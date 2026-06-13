@@ -127,6 +127,30 @@ let taskData = {
 
 
 
+// ===============================
+// SET TAG FILTER
+// ===============================
+
+function setTagFilter(tag) {
+
+    currentTagFilter = tag;
+
+    renderTagFilters();
+
+    [
+        "work",
+        "shopping",
+        "study",
+        "personal",
+        "workout"
+    ].forEach(list => {
+
+        renderTasks(list);
+
+    });
+
+}
+
 
 // ===============================
 // ADD NEW TASK
@@ -170,7 +194,13 @@ function addTask(listType) {
 
         priority: selectedPriority,
 
-        tag: selectedTag || "",
+        tag:
+            document.getElementById(
+                "taskTag"
+            )
+            .value
+            .trim()
+            .toLowerCase(),
 
         description: "",
 
@@ -181,11 +211,23 @@ function addTask(listType) {
     // Save task into category
     taskData[listType].push(task);
 
+    // Clear inputs
+    document.getElementById(
+        listType + "TaskText"
+    ).value = "";
+
+    document.getElementById(
+        "taskTag"
+    ).value = "";
+
     // Refresh task list
     renderTasks(listType);
 
     // Refresh Today Dashboard
     updateTodayDashboard();
+
+    // Refresh tag filters
+    renderTagFilters();
 
     // Save to localStorage
     saveTasks();
@@ -199,6 +241,8 @@ function addTask(listType) {
         generateCalendar();
 
     }
+
+
 
 // ===============================
 // RESET INPUT AND TEMPORARY DATA
@@ -306,6 +350,9 @@ function deleteTask(listType, id) {
     // Save changes
     saveTasks();
 
+    // Refresh tag filters
+    renderTagFilters();
+
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
@@ -343,10 +390,21 @@ function renderTagFilters() {
 
         if (!container) return;
 
-        container.innerHTML = `
+        container.innerHTML = "";
+
+        // All Button
+        container.innerHTML += `
 
             <button
-                class="tag-chip active"
+                class="
+                    tag-chip
+                    ${
+                        currentTagFilter === "all"
+                        ? "active"
+                        : ""
+                    }
+                "
+                onclick="setTagFilter('all')"
             >
 
                 All
@@ -354,6 +412,54 @@ function renderTagFilters() {
             </button>
 
         `;
+
+        // Collect tags from this category
+        const tags = new Set();
+
+        taskData[listType].forEach(task => {
+
+            if (
+                task.tag &&
+                task.tag.trim()
+            ) {
+
+                tags.add(
+                    task.tag.trim()
+                );
+
+            }
+
+        });
+
+        // Create tag chips
+        [...tags]
+        .sort()
+        .forEach(tag => {
+
+            container.innerHTML += `
+
+                <button
+                    class="
+                        tag-chip
+                        ${
+                            currentTagFilter === tag
+                            ? "active"
+                            : ""
+                        }
+                    "
+                    onclick="setTagFilter('${tag}')"
+                >
+
+                   ${
+                      tag.charAt(0).toUpperCase()
+                      + tag.slice(1)
+                    }
+
+                </button>
+
+            `;
+
+        });
 
     });
 
@@ -391,9 +497,26 @@ function renderTasks(listType) {
 
     // Get active tasks only
     let activeTasks =
-        taskData[listType].filter(
-            task => task.status === "active"
-        );
+    taskData[listType].filter(task => {
+
+        if (task.status !== "active") {
+
+            return false;
+
+        }
+
+        if (
+            currentTagFilter !== "all" &&
+            task.tag !== currentTagFilter
+        ) {
+
+            return false;
+
+        }
+
+        return true;
+
+    });
 
     // Show / hide empty message
     emptyMsg.style.display =
@@ -966,6 +1089,9 @@ function restoreTask(listType, id) {
     // Save changes
     saveTasks();
 
+    // Refresh tag filters
+    renderTagFilters();
+
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
@@ -1000,6 +1126,8 @@ function permanentlyDeleteTask(listType, id) {
         );
 
     renderTrash();
+
+    renderTagFilters();
 
     saveTasks();
 
@@ -1431,8 +1559,33 @@ document.addEventListener(
         // Refresh Today dashboard
         updateTodayDashboard();
 
+        // Refresh Tag filters
+        renderTagFilters();
+
+        // Tag suggestion
+        const tagInput =
+            document.getElementById(
+                "panelTagInput"
+            );
+
+        if (tagInput) {
+
+            tagInput.addEventListener(
+                "input",
+                function () {
+
+                    renderTagSuggestions(
+                        this.value
+                    );
+
+                }
+            );
+
+        }
+
     }
 );
+
 
 // ===============================
 // TOGGLE COMPLETE STATUS
@@ -1532,6 +1685,8 @@ if (
     renderTrash();
 
     updateTodayDashboard();
+
+    renderTagFilters();
 
     // Save changes
     saveTasks();
@@ -1727,9 +1882,12 @@ function saveTaskChanges() {
         ).value;
 
     task.tag =
-        document.getElementById(
-            "panelTagInput"
-        ).value.trim();
+    document.getElementById(
+        "panelTagInput"
+    )
+    .value
+    .trim()
+    .toLowerCase();
 
     // Save data
     saveTasks();
@@ -1738,6 +1896,8 @@ function saveTaskChanges() {
     renderTasks(
         currentTaskListType
     );
+
+    renderTagFilters();
 
     renderCompleted();
 
@@ -1818,6 +1978,8 @@ function restoreFromCompleted(
 
     updateTodayDashboard();
 
+    renderTagFilters();
+
     // Save changes
     saveTasks();
 
@@ -1862,6 +2024,112 @@ function emptyTrash() {
 
     renderTrash();
 
+    renderTagFilters();
+
     saveTasks();
+
+}
+
+// ===============================
+// RENDER TAG SUGGESTIONS
+// ===============================
+
+function renderTagSuggestions(keyword) {
+
+    const container =
+        document.getElementById(
+            "tagSuggestions"
+        );
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    keyword =
+        keyword
+        .trim()
+        .toLowerCase();
+
+    // 没输入就隐藏
+    if (!keyword) {
+
+        container.style.display =
+            "none";
+
+        return;
+
+    }
+
+    const tags =
+        new Set();
+
+    Object.keys(taskData).forEach(list => {
+
+        taskData[list].forEach(task => {
+
+            if (
+                task.tag &&
+                task.tag.includes(keyword)
+            ) {
+
+                tags.add(task.tag);
+
+            }
+
+        });
+
+    });
+
+    // 没匹配结果
+    if (tags.size === 0) {
+
+        container.style.display =
+            "none";
+
+        return;
+
+    }
+
+    [...tags]
+    .sort()
+    .forEach(tag => {
+
+        container.innerHTML += `
+
+            <div
+                class="tag-suggestion"
+                onclick="selectTagSuggestion('${tag}')"
+            >
+
+                ${
+                    tag.charAt(0).toUpperCase()
+                    + tag.slice(1)
+                }
+
+            </div>
+
+        `;
+
+    });
+
+    container.style.display =
+        "block";
+
+}
+
+
+// ===============================
+// SELECT TAG SUGGESTION
+// ===============================
+
+function selectTagSuggestion(tag) {
+
+    document.getElementById(
+        "panelTagInput"
+    ).value = tag;
+
+    document.getElementById(
+        "tagSuggestions"
+    ).style.display = "none";
 
 }

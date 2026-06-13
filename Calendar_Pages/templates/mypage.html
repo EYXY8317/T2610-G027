@@ -1128,7 +1128,13 @@
             id="panelTagInput"
             class="panel-input"
             placeholder="e.g. work, study"
+            oninput="renderTagSuggestions(this.value)"
         >
+        
+        <div
+            id="tagSuggestions"
+            class="tag-suggestions"
+        ></div>
 
     </div>
 
