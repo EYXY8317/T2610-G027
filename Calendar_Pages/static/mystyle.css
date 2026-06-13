@@ -76,6 +76,16 @@ body{
 
 }
 
+/* Active Page */
+.nav-link.active{
+
+    background:#8b6cff;
+
+    color:white;
+
+    font-weight:600;
+
+}
 
 /* ==================================================
    MAIN LAYOUT
