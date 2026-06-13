@@ -725,7 +725,7 @@
 
 </div>
 
-    <!-- CALENDAR POPUP -->
+<!-- CALENDAR POPUP -->
 <div id="calendarPopup" class="calendar-popup">
 
     <!-- Header -->
@@ -824,87 +824,44 @@
 
     </div>
 
-    <!-- Buttons -->
-    <div class="popup-buttons">
+    <!-- Priority -->
+   <div class="popup-section">
 
-        <button
-            onclick="closeCalendar()"
-            class="cancel-btn"
-        >
-            Cancel
-        </button>
+    <label>
 
-        <button
-            onclick="applyDate()"
-            class="save-btn"
-        >
+        <span class="material-symbols-rounded">
+            flag
+        </span>
 
-            <span class="material-symbols-rounded">
-                save
-            </span>
+        Priority
 
-            Save
+    </label>
 
-        </button>
+    <div class="priority-box">
+
+        <span onclick="setPriority('red', event)">
+            🔴 High
+        </span>
+
+        <span onclick="setPriority('orange', event)">
+            🟠 Medium
+        </span>
+
+        <span onclick="setPriority('blue', event)">
+            🔵 Low
+        </span>
+
+        <span onclick="setPriority('gray', event)">
+            ⚫ No Priority
+        </span>
 
     </div>
 
 </div>
 
-<!-- EXTRA OPTIONS POPUP -->
-<div
-    id="extraPopup"
-    class="extra-popup"
-    onclick="event.stopPropagation()"
->
 
-    <h4 class="popup-title">
-
-        <span class="material-symbols-rounded">
-            tune
-        </span>
-
-        Options
-
-    </h4>
-
-    <!-- Priority -->
-    <div class="popup-section">
-
-        <label>
-
-            <span class="material-symbols-rounded">
-                flag
-            </span>
-
-            Priority
-
-        </label>
-
-        <div class="priority-box">
-
-            <span onclick="setPriority('red', event)">
-                🔴 High
-            </span>
-
-            <span onclick="setPriority('orange', event)">
-                🟠 Medium
-            </span>
-
-            <span onclick="setPriority('blue', event)">
-                🔵 Low
-            </span>
-
-            <span onclick="setPriority('gray', event)">
-                ⚫ No Priority
-            </span>
-
-        </div>
-
-    </div>
-
-    <!-- Tag -->
-    <div class="popup-section tag-wrapper">
+  <!-- Tag -->
+  <div class="popup-section tag-wrapper">
 
     <label>
 
@@ -927,22 +884,27 @@
         class="tag-suggestions"
     ></div>
 
-</div>
+ </div>
+
+    <div class="popup-buttons">
 
     <button
-        onclick="closeExtra()"
-        class="popup-done-btn"
+        onclick="applyDate()"
+        class="save-btn full-width-btn"
     >
 
         <span class="material-symbols-rounded">
-            check
+            save
         </span>
 
-        Done
+        Save
 
     </button>
 
+  </div>
+
 </div>
+
 
 <!-- Editable Task Detail Panel -->
 <div id="taskDetailPanel" class="task-detail-panel">
