@@ -96,11 +96,20 @@ function showDayTasks(dateStr) {
 
     let modal = document.getElementById("dayModal");
     if (!modal) {
-        modal = document.createElement("div");
-        modal.id = "dayModal";
-        modal.style = "position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:20px; border:2px solid #333; border-radius:8px; z-index:10000; min-width:350px; max-width:500px;";
-        document.body.appendChild(modal);
-    }
+
+    modal =
+        document.createElement("div");
+
+    modal.id = "dayModal";
+
+    modal.className =
+        "calendar-day-modal";
+
+    document.body.appendChild(
+        modal
+    );
+
+}
     modal.innerHTML = html;
     modal.style.display = "block";
 }
