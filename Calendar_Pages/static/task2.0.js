@@ -2117,6 +2117,21 @@ function renderTagSuggestions(keyword) {
 
 }
 
+// ===============================
+// SELECT POPUP TAG
+// ===============================
+
+function selectPopupTagSuggestion(tag) {
+
+    document.getElementById(
+        "taskTag"
+    ).value = tag;
+
+    document.getElementById(
+        "popupTagSuggestions"
+    ).style.display = "none";
+
+}
 
 // ===============================
 // SELECT TAG SUGGESTION
@@ -2131,5 +2146,92 @@ function selectTagSuggestion(tag) {
     document.getElementById(
         "tagSuggestions"
     ).style.display = "none";
+
+}
+
+// ===============================
+// POPUP TAG SUGGESTIONS
+// ===============================
+
+function renderPopupTagSuggestions(keyword) {
+
+    const container =
+        document.getElementById(
+            "popupTagSuggestions"
+        );
+
+    container.innerHTML = "";
+
+    keyword =
+        keyword
+        .trim()
+        .toLowerCase();
+
+    if (!keyword) {
+
+        container.style.display =
+            "none";
+
+        return;
+
+    }
+
+    const tags =
+        new Set();
+
+    Object.keys(taskData).forEach(list => {
+
+        taskData[list].forEach(task => {
+
+            if (
+                task.tag &&
+                task.tag.startsWith(keyword)
+            ) {
+
+                tags.add(task.tag);
+
+            }
+
+        });
+
+    });
+
+    if (tags.size === 0) {
+
+        container.style.display =
+            "none";
+
+        return;
+
+    }
+
+    [...tags]
+    .sort()
+    .forEach(tag => {
+
+        container.innerHTML += `
+
+            <div
+                class="tag-suggestion"
+                onclick="
+                    selectPopupTagSuggestion(
+                        '${tag}'
+                    )
+                "
+            >
+
+                ${
+                    tag.charAt(0).toUpperCase()
+                    + tag.slice(1)
+                }
+
+            </div>
+
+        `;
+
+    });
+
+    container.style.display =
+        "block";
 
 }

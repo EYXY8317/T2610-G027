@@ -2280,34 +2280,89 @@ body{
 
 }
 
+/* ==================================================
+   TAG INPUT WRAPPER
+   Allows suggestion dropdown positioning
+================================================== */
+
+.tag-wrapper{
+
+    position:relative;
+
+}
+
+
+/* ==================================================
+   TAG SUGGESTION DROPDOWN
+   Appears below tag input field
+================================================== */
+
 .tag-suggestions{
 
     display:none;
 
-    margin-top:8px;
+    position:absolute;
+
+    top:100%;
+
+    left:0;
+
+    width:100%;
+
+    margin-top:6px;
+
+    background:white;
+
+    border:1px solid #efe8ff;
 
     border-radius:14px;
 
     overflow:hidden;
 
-    border:1px solid #efe8ff;
+    max-height:180px;
 
-    background:white;
+    overflow-y:auto;
+
+    z-index:9999;
+
+    box-shadow:
+    0 8px 24px rgba(
+        124,
+        92,
+        255,
+        0.12
+    );
 
 }
 
+
+/* ==================================================
+   TAG SUGGESTION ITEM
+================================================== */
+
 .tag-suggestion{
 
-    padding:10px 14px;
+    padding:12px 16px;
 
     cursor:pointer;
+
+    color:#4f4f73;
+
+    font-size:14px;
 
     transition:0.2s;
 
 }
 
+
+/* ==================================================
+   TAG SUGGESTION HOVER
+================================================== */
+
 .tag-suggestion:hover{
 
-    background:#f4efff;
+    background:#f5efff;
+
+    color:#7c5cff;
 
 }
