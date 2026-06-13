@@ -13,7 +13,7 @@
     transform:
     translate(-50%, -50%);
 
-    width:450px;
+    width:520px;
 
     max-height:75vh;
 
@@ -43,6 +43,12 @@
 ================================================== */
 
 .calendar-modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
 
     margin-bottom:20px;
 
@@ -89,7 +95,7 @@
 
     border-radius:16px;
 
-    padding:14px;
+    padding:18px;
 
     margin-bottom:12px;
 
@@ -102,16 +108,25 @@
 
 .calendar-task-category{
 
-    font-size:12px;
+    display:inline-flex;
 
-    font-weight:600;
+    align-items:center;
+
+    background:#f4efff;
 
     color:#7c5cff;
 
-    margin-bottom:6px;
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    margin-bottom:14px;
 
 }
-
 
 /* ==================================================
    TASK TITLE
@@ -119,13 +134,13 @@
 
 .calendar-task-title{
 
-    font-size:15px;
+    font-size:18px;
 
-    font-weight:600;
+    font-weight:700;
 
     color:#2f3367;
 
-    margin-bottom:12px;
+    margin:12px 0 16px;
 
 }
 
@@ -151,13 +166,17 @@
 
     border:none;
 
-    padding:8px 14px;
+    padding:8px 16px;
 
     border-radius:10px;
 
-    background:#e8f7eb;
+    background:#8b6cff;
 
-    color:#2f9e44;
+    color:white;
+
+    font-size:12px;
+
+    font-weight:500;
 
     cursor:pointer;
 
@@ -172,59 +191,46 @@
 
     border:none;
 
-    padding:8px 14px;
+    padding:8px 16px;
 
     border-radius:10px;
 
-    background:#ffe9ec;
-
-    color:#e03131;
-
-    cursor:pointer;
-
-}
-
-/* ==================================================
-   MODAL FOOTER
-================================================== */
-
-.calendar-modal-footer{
-
-    margin-top:20px;
-
-    display:flex;
-
-    justify-content:flex-end;
-
-}
-
-
-/* ==================================================
-   CLOSE BUTTON
-================================================== */
-
-.calendar-close-btn{
-
-    border:none;
-
-    background:#7c5cff;
+    background:#8b6cff;
 
     color:white;
 
-    padding:10px 18px;
+    font-size:12px;
 
-    border-radius:12px;
+    font-weight:500;
 
     cursor:pointer;
 
-    font-weight:600;
-
-    transition:0.2s;
-
 }
 
-.calendar-close-btn:hover{
 
-    transform:translateY(-2px);
+
+
+
+/* ==================================================
+   MODAL CLOSE ICON
+================================================== */
+
+.calendar-close-icon{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#f4efff;
+
+    color:#a69cc7;
+
+    font-size:20px;
+
+    cursor:pointer;
 
 }
