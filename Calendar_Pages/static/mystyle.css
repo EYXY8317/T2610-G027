@@ -2279,3 +2279,35 @@ body{
     font-size:20px;
 
 }
+
+.tag-suggestions{
+
+    display:none;
+
+    margin-top:8px;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    border:1px solid #efe8ff;
+
+    background:white;
+
+}
+
+.tag-suggestion{
+
+    padding:10px 14px;
+
+    cursor:pointer;
+
+    transition:0.2s;
+
+}
+
+.tag-suggestion:hover{
+
+    background:#f4efff;
+
+}
