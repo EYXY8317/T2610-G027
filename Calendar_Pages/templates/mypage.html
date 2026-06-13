@@ -692,15 +692,19 @@
 <!-- TRASH PAGE -->
 <div id="trash" class="page">
 
-    <h2 class="page-title">
+    <div class="page-header">
 
-        <span class="material-symbols-rounded">
-            delete
-        </span>
+        <h2 class="page-title">
 
-        Trash
+            <span class="material-symbols-rounded">
+                delete
+            </span>
 
-     <button
+            Trash
+
+        </h2>
+
+        <button
             class="empty-trash-btn"
             onclick="emptyTrash()"
         >
@@ -898,24 +902,30 @@
     </div>
 
     <!-- Tag -->
-    <div class="popup-section">
+    <div class="popup-section tag-wrapper">
 
-        <label>
+    <label>
 
-            <span class="material-symbols-rounded">
-                sell
-            </span>
+        <span class="material-symbols-rounded">
+            sell
+        </span>
 
-            Tag
+        Tag
 
-        </label>
+    </label>
 
-        <input
-            type="text"
-            id="taskTag"
-        >
+    <input
+        type="text"
+        id="taskTag"
+        oninput="renderPopupTagSuggestions(this.value)"
+    >
 
-    </div>
+    <div
+        id="popupTagSuggestions"
+        class="tag-suggestions"
+    ></div>
+
+</div>
 
     <button
         onclick="closeExtra()"
@@ -1111,7 +1121,7 @@
     </div>
 
     <!-- Tag -->
-    <div class="panel-section">
+    <div class="panel-section tag-wrapper">
 
         <label class="panel-label">
 
