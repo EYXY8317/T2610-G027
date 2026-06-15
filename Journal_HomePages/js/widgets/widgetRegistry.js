@@ -38,6 +38,11 @@ import {
 }
 from "./highStreak.js";
 
+import {
+    createPictureStreakWidget
+}
+from "./pictureStreak.js";
+
 export const widgets = [
 
     {
@@ -95,6 +100,12 @@ export const widgets = [
         id: "high-streak",
         name: "High Streak",
         create: createHighStreakWidget
+    },
+
+    {
+        id: "picture-streak",
+        name: "Picture Streak",
+        create: createPictureStreakWidget
     },
 
 ];

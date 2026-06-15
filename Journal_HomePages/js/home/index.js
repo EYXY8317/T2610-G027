@@ -55,6 +55,11 @@ import {
 from "../widgets/highStreak.js";
 
 import {
+    initializePictureStreak
+}
+from "../widgets/pictureStreak.js";
+
+import {
     initializeTodayEmotion
 }
 from "../widgets/todayEmotion.js";
@@ -153,6 +158,7 @@ export function initializeHomepage() {
     initializeTodayEmotion();
     initializeNowStreak();
     initializeHighStreak();
+    initializePictureStreak();
     
     setupEditMode(
         settingsButton,

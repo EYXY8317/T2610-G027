@@ -140,6 +140,18 @@ import {
 from "../../widgets/highStreak.js";
 
 import {
+    getPictureStreakSettings
+}
+from "../widgets/pictureStreakSettings.js";
+
+import {
+    updatePictureStreakState,
+    addPictureStreakPhoto,
+    removePictureStreakPhoto
+}
+from "../../widgets/pictureStreak.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -238,6 +250,16 @@ export function createSettingPopup(
 
         widgetContent =
             getHighStreakSettings();
+
+    }
+
+    else if (
+        widgetId ===
+        "picture-streak-widget"
+    ) {
+
+        widgetContent =
+            getPictureStreakSettings();
 
     }
 
@@ -1177,6 +1199,64 @@ if (
                 renderWeatherDay();
             });
         });
+
+    }
+
+    /* ── Picture Streak settings ────────────────────────── */
+
+    if (widgetId === "picture-streak-widget") {
+
+        const psPhotoInput = popup.querySelector(".ps-photo-input");
+        if (psPhotoInput) {
+            psPhotoInput.addEventListener("change", event => {
+                const file = event.target.files[0];
+                if (!file) {
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = () => {
+                    addPictureStreakPhoto(reader.result, file.name);
+                    popup.remove();
+                    createSettingPopup(widgetId);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        const psRemoveBtns = popup.querySelectorAll(".ps-remove-btn");
+        psRemoveBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.dataset.index);
+                removePictureStreakPhoto(idx);
+                popup.remove();
+                createSettingPopup(widgetId);
+            });
+        });
+
+        const psDisplayBtns = popup.querySelectorAll(".ps-display-segment .segment-option");
+        psDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                psDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updatePictureStreakState({ displayMode: btn.dataset.value });
+            });
+        });
+
+        const psDateLabelBtns = popup.querySelectorAll(".ps-date-label-segment .segment-option");
+        psDateLabelBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                psDateLabelBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updatePictureStreakState({ showDateLabel: btn.dataset.value === "true" });
+            });
+        });
+
+        const psIntervalSelect = popup.querySelector(".ps-interval-select");
+        if (psIntervalSelect) {
+            psIntervalSelect.addEventListener("change", event => {
+                updatePictureStreakState({ scrollInterval: event.target.value });
+            });
+        }
 
     }
 
