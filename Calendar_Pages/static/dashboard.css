@@ -64,6 +64,26 @@ body{
 
 }
 
+.icon-box img{
+
+    width:85%;
+    height:85%;
+
+    object-fit:contain;
+
+}
+
+.logo-box img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    border-radius:14px;
+
+}
+
 /* NAME（Life Pages) */
 
 .logo-text{
