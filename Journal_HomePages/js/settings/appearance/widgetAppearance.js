@@ -49,5 +49,6 @@ export function applyWidgetAppearance(widget, app) {
         content.style.color = app.contentColor || "";
     }
 
-    widget.style.border = app.showBorder !== false ? "" : "none";
+    widget.style.border    = app.showBorder !== false ? "" : "none";
+    widget.style.boxShadow = app.showBorder !== false ? "" : "none";
 }
