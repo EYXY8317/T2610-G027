@@ -91,55 +91,6 @@ function checkDailyReset(state) {
 
 }
 
-/* ── Slider helpers ──────────────────────────────────────── */
-
-function rebalance(values, changedIndex, newVal, count) {
-
-    const result = [...values];
-    const clamped = Math.max(0, Math.min(100, newVal));
-    result[changedIndex] = clamped;
-
-    const others = [];
-    for (let i = 0; i < count; i++) {
-        if (i !== changedIndex) {
-            others.push(i);
-        }
-    }
-
-    if (!others.length) {
-        return result;
-    }
-
-    const remaining = 100 - clamped;
-    const oldOthersTotal = others.reduce((s, i) => s + (result[i] || 0), 0);
-
-    if (oldOthersTotal === 0) {
-
-        const each = Math.floor(remaining / others.length);
-        const rem = remaining - each * others.length;
-
-        others.forEach((i, idx) => {
-            result[i] = each + (idx === 0 ? rem : 0);
-        });
-
-    } else {
-
-        others.forEach(i => {
-            result[i] = Math.round((values[i] || 0) / oldOthersTotal * remaining);
-        });
-
-        const actual = others.reduce((s, i) => s + result[i], 0) + clamped;
-        const drift = 100 - actual;
-
-        if (drift !== 0) {
-            result[others[0]] = Math.max(0, result[others[0]] + drift);
-        }
-
-    }
-
-    return result;
-
-}
 
 /* ── Render ──────────────────────────────────────────────── */
 
@@ -216,17 +167,12 @@ function renderSliderMode(state) {
 
 function renderWidget(state) {
 
-    const titleMarkup = state.showTitle
-        ? `<div class="te-title">Today's Emotion</div>`
-        : "";
-
     const contentMarkup = state.displayMode === "slider"
         ? renderSliderMode(state)
         : renderSelectMode(state);
 
     return `
         <div class="te-card">
-            ${titleMarkup}
             ${contentMarkup}
         </div>
     `;
@@ -344,23 +290,11 @@ export function initializeTodayEmotion() {
         const i = Number(slider.dataset.index);
         const cur = getSavedState();
         const count = cur.displayedCount;
-        const newValues = rebalance(cur.sliderValues, i, Number(slider.value), count);
+        const newValues = [...cur.sliderValues];
+        newValues[i] = Number(slider.value);
 
-        /* update sibling sliders + labels live without full re-render */
-        for (let j = 0; j < count; j++) {
-
-            const sib = widget.querySelector(`.te-pct-slider[data-index="${j}"]`);
-            const lbl = widget.querySelector(`.te-pct-label[data-index="${j}"]`);
-
-            if (sib) {
-                sib.value = newValues[j];
-            }
-
-            if (lbl) {
-                lbl.textContent = `${newValues[j]}%`;
-            }
-
-        }
+        const lbl = widget.querySelector(`.te-pct-label[data-index="${i}"]`);
+        if (lbl) lbl.textContent = `${newValues[i]}%`;
 
         const total = newValues.slice(0, count).reduce((s, v) => s + v, 0);
         const totalEl = widget.querySelector(".te-total");
