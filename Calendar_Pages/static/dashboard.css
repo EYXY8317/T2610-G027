@@ -167,7 +167,7 @@ body{
 
     grid-template-columns:repeat(3,minmax(420px,1fr));
 
-    gap:35px;
+    gap:30px;
 }
 
 /* ================= CARD ================= */
@@ -182,7 +182,7 @@ body{
 
     padding:24px;
 
-    min-height:460px;
+    min-height:540px;
 
     box-shadow:
     0 8px 24px rgba(181,148,120,0.08);
@@ -271,7 +271,7 @@ body{
 
     width:100%;
 
-    height:220px;
+    height:290px;
 
     border:none;
 
@@ -398,7 +398,7 @@ body{
 
     margin-top:28px;
 
-    height:110px;
+    height:170px;
 
     display:flex;
 
@@ -434,13 +434,13 @@ body{
 
 }
 
-.bar1{ height:40px; }
+.bar1{ height:60px; }
 
-.bar2{ height:75px; }
+.bar2{ height:110px; }
 
-.bar3{ height:50px; }
+.bar3{ height:80px; }
 
-.bar4{ height:95px; }
+.bar4{ height:140px; }
 
 /* LABEL */
 
@@ -480,7 +480,7 @@ body{
 
     margin-top:14px;
 
-    font-size:28px;
+    font-size:36px;
 
     line-height:1.4;
 
@@ -574,7 +574,7 @@ body{
 
     text-align:center;
 
-    font-size:13px;
+    font-size:16px;
 
     color:#444;
 
@@ -584,9 +584,9 @@ body{
 
 .calendar-grid span{
 
-    width:28px;
+    width:36px;
 
-    height:28px;
+    height:36px;
 
     border-radius:50%;
 
