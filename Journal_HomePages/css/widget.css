@@ -283,6 +283,11 @@
     margin-left: 4px;
 }
 
+.hs-current {
+    font-size: 0.78em;
+    opacity: 0.5;
+}
+
 .streak-checkin-btn {
     border: none;
     padding: 6px 18px;

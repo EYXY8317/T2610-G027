@@ -33,6 +33,11 @@ import {
 }
 from "./nowStreak.js";
 
+import {
+    createHighStreakWidget
+}
+from "./highStreak.js";
+
 export const widgets = [
 
     {
@@ -84,6 +89,12 @@ export const widgets = [
         id: "now-streak",
         name: "Now Streak",
         create: createNowStreakWidget
+    },
+
+    {
+        id: "high-streak",
+        name: "High Streak",
+        create: createHighStreakWidget
     },
 
 ];
