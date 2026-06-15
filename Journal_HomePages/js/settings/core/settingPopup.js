@@ -162,6 +162,13 @@ import {
 from "../../widgets/emotionSummary.js";
 
 import {
+    updateQuoteState,
+    getQuoteState,
+    initializeQuote
+}
+from "../../widgets/quote.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -1217,6 +1224,82 @@ if (
                 btn.classList.add("active");
                 setTempUnit(btn.dataset.value);
                 renderWeatherDay();
+            });
+        });
+
+    }
+
+    /* ── Quote settings ─────────────────────────────────── */
+
+    if (widgetId === "quote-widget") {
+
+        const qCategorySelect = popup.querySelector(".quote-category-select");
+        if (qCategorySelect) {
+            qCategorySelect.addEventListener("change", event => {
+                updateQuoteState({ systemCategory: event.target.value, currentSystemIndex: 0 });
+            });
+        }
+
+        function wireQSegment(selector, stateKey) {
+            const btns = popup.querySelectorAll(`${selector} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    const val = btn.dataset.value === "true" ? true
+                        : btn.dataset.value === "false" ? false
+                        : btn.dataset.value;
+                    updateQuoteState({ [stateKey]: val });
+
+                    if (stateKey === "autoRotate") {
+                        const rotateRow = popup.querySelector(".quote-rotate-daily-segment");
+                        if (rotateRow) {
+                            rotateRow.style.opacity = val ? "1" : "0.4";
+                            rotateRow.style.pointerEvents = val ? "auto" : "none";
+                        }
+                    }
+                });
+            });
+        }
+
+        wireQSegment(".quote-auto-rotate-segment", "autoRotate");
+        wireQSegment(".quote-rotate-daily-segment", "rotateDaily");
+        wireQSegment(".quote-source-segment", "showSource");
+        wireQSegment(".quote-font-segment", "fontStyle");
+
+        const qAddBtn = popup.querySelector(".quote-add-btn");
+        if (qAddBtn) {
+            qAddBtn.addEventListener("click", () => {
+                const textEl = popup.querySelector(".quote-user-text");
+                const authorEl = popup.querySelector(".quote-user-author");
+                const text = textEl?.value.trim();
+                if (!text) {
+                    return;
+                }
+                const author = authorEl?.value.trim() || "";
+                const state = getQuoteState ? getQuoteState() : { userQuotes: [] };
+                updateQuoteState({
+                    userQuotes: [...(state.userQuotes || []), { text, author }]
+                });
+                if (textEl) {
+                    textEl.value = "";
+                }
+                if (authorEl) {
+                    authorEl.value = "";
+                }
+            });
+        }
+
+        const qRemoveBtns = popup.querySelectorAll(".quote-remove-saved");
+        qRemoveBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.dataset.index);
+                const state = getQuoteState ? getQuoteState() : { savedQuotes: [] };
+                updateQuoteState({
+                    savedQuotes: state.savedQuotes.filter((_, i) => i !== idx)
+                });
+                popup.remove();
+                createSettingPopup(widgetId);
             });
         });
 

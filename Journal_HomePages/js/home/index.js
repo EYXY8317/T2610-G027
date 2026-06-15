@@ -65,6 +65,11 @@ import {
 from "../widgets/emotionSummary.js";
 
 import {
+    initializeQuote
+}
+from "../widgets/quote.js";
+
+import {
     initializeTodayEmotion
 }
 from "../widgets/todayEmotion.js";
@@ -165,6 +170,7 @@ export function initializeHomepage() {
     initializeHighStreak();
     initializePictureStreak();
     initializeEmotionSummary();
+    initializeQuote();
     
     setupEditMode(
         settingsButton,
