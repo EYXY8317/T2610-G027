@@ -93,6 +93,9 @@ let today = new Date();
 //Tag Filter
 let currentTagFilter = "all";
 
+// Completed page filter
+let currentCompletedFilter = "all";
+
 // Selected schedule information
 let selectedDate = "";
 let selectedStart = "";
@@ -647,7 +650,33 @@ function renderTasks(listType) {
 
 }
 
+// ===============================
+// FILTER COMPLETED TASKS
+// ===============================
 
+function filterCompleted(type, btn) {
+
+    currentCompletedFilter = type;
+
+    document
+    .querySelectorAll(
+        ".completed-filter-btn"
+    )
+    .forEach(button => {
+
+        button.classList.remove(
+            "active"
+        );
+
+    });
+
+    btn.classList.add(
+        "active"
+    );
+
+    renderCompleted();
+
+}
 
 
 // ===============================
@@ -670,6 +699,19 @@ function renderCompleted() {
 
     // Loop through all categories
     Object.keys(taskData).forEach(listType => {
+
+        // Skip categories not selected
+        if (
+
+            currentCompletedFilter !== "all" &&
+
+            listType !== currentCompletedFilter
+
+         ) {
+
+             return;
+
+        }
 
         let completedTasks =
             taskData[listType].filter(
@@ -1669,11 +1711,20 @@ function toggleComplete(
     }
 
     // Update task status
-    task.status =
-        checkbox.checked
-            ? "completed"
-            : "active";
+    if (checkbox.checked) {
 
+    task.status = "completed";
+
+    task.completedDate =
+        new Date()
+        .toISOString();
+
+    }
+    else {
+
+    task.status = "active";
+
+}
 
     // Refresh pages
     renderTasks(listType);

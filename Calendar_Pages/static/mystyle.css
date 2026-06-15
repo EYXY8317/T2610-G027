@@ -1752,3 +1752,50 @@ body{
 }
 
 
+/* =====================================
+   COMPLETED FILTERS
+===================================== */
+
+.completed-filters{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    margin:20px 0;
+
+}
+
+.completed-filter-btn{
+
+    border:none;
+
+    padding:8px 16px;
+
+    border-radius:999px;
+
+    background:#f4efff;
+
+    color:#666;
+
+    cursor:pointer;
+
+    transition:0.25s;
+
+}
+
+.completed-filter-btn:hover{
+
+    background:#ece4ff;
+
+}
+
+.completed-filter-btn.active{
+
+    background:#7c5cff;
+
+    color:white;
+
+}
