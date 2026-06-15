@@ -2,7 +2,10 @@ import {
     setShowSeconds,
     setClockFormat,
     setClockType,
-    setFlipClockSize
+    setFlipClockSize,
+    setShowDate,
+    setShowWeekday,
+    setTimezone
 }
 from "../../widgets/digitalClock/updateDigitalClock.js";
 
@@ -589,6 +592,92 @@ export function createSettingPopup(
 
         }
     );
+
+    const showDateButtons =
+        popup.querySelectorAll(
+            ".show-date-segment .segment-option"
+        );
+
+    showDateButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showDateButtons.forEach(
+                        item => item.classList.remove("active")
+                    );
+
+                    button.classList.add("active");
+
+                    setShowDate(button.dataset.value === "true");
+
+                    renderDigitalClock(
+                        showSeconds,
+                        clockFormat,
+                        clockType
+                    );
+
+                }
+            );
+
+        }
+    );
+
+    const showWeekdayButtons =
+        popup.querySelectorAll(
+            ".show-weekday-segment .segment-option"
+        );
+
+    showWeekdayButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showWeekdayButtons.forEach(
+                        item => item.classList.remove("active")
+                    );
+
+                    button.classList.add("active");
+
+                    setShowWeekday(button.dataset.value === "true");
+
+                    renderDigitalClock(
+                        showSeconds,
+                        clockFormat,
+                        clockType
+                    );
+
+                }
+            );
+
+        }
+    );
+
+    const timezoneSelect =
+        popup.querySelector(".clock-timezone-select");
+
+    if (timezoneSelect) {
+
+        timezoneSelect.addEventListener(
+            "change",
+            event => {
+
+                setTimezone(event.target.value);
+
+                renderDigitalClock(
+                    showSeconds,
+                    clockFormat,
+                    clockType
+                );
+
+            }
+        );
+
+    }
 
     const titleColorPicker =
         popup.querySelector(
