@@ -20,7 +20,9 @@ from "../home/saveLayout.js";
 
 // Returns how many extra px the widget needs so no content is clipped.
 export function contentOverflow(widget) {
-    // Quote widget: measure every visible element explicitly
+    // Quote widget: quote-main uses overflow:hidden internally, so leaf elements
+    // never escape the widget boundary — getBoundingClientRect can't detect the clip.
+    // Must measure by summing natural heights explicitly.
     const quoteMain    = widget.querySelector(".quote-main");
     const quoteActions = widget.querySelector(".quote-actions");
     if (quoteMain && quoteActions) {
@@ -36,31 +38,34 @@ export function contentOverflow(widget) {
         return Math.max(0, minNeeded - widget.offsetHeight);
     }
 
-    // Weather week: directly compare table natural height vs available space
-    const wwTable = widget.querySelector(".ww-table");
-    if (wwTable) {
-        const header    = widget.querySelector(".widget-header");
-        const headerH   = header ? header.offsetHeight : 0;
-        const available = widget.offsetHeight - headerH;
-        return Math.max(0, wwTable.offsetHeight - available);
-    }
-
-    // Generic fallback: check widget-content itself (scrollHeight vs clientHeight)
+    // Universal fallback: scan every leaf element's bounding rect vs the widget boundary.
+    // Works for flex-start (overflow below), flex-end (above), and center (symmetric above+below),
+    // regardless of whether a height:100% wrapper hides the overflow from scrollHeight.
     const content = widget.querySelector(".widget-content");
     if (!content) return 0;
 
-    const contentOver = content.scrollHeight - content.clientHeight;
-    if (contentOver > 1) return contentOver;
+    const wRect    = widget.getBoundingClientRect();
+    let   maxBelow = 0;
+    let   maxAbove = 0;
 
-    for (const child of content.children) {
-        const over = child.scrollHeight - child.clientHeight;
-        if (over > 1) return over;
-        for (const grandchild of child.children) {
-            const over2 = grandchild.scrollHeight - grandchild.clientHeight;
-            if (over2 > 1) return over2;
+    (function scan(el) {
+        if (el.children.length === 0) {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 || r.height > 0) {
+                const below = r.bottom - wRect.bottom;
+                const above = wRect.top  - r.top;
+                if (below > maxBelow) maxBelow = below;
+                if (above > maxAbove) maxAbove = above;
+            }
+        } else {
+            for (const child of el.children) scan(child);
         }
-    }
-    return 0;
+    })(content);
+
+    // centered layout: clipping is symmetric so total needed = above + below
+    // top/bottom-aligned layout: one side is 0, total = the overflowing side
+    const total = maxAbove + maxBelow;
+    return total > 1 ? Math.ceil(total) : 0;
 }
 
 export function enableResize(
