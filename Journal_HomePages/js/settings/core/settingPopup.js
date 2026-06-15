@@ -57,6 +57,11 @@ import {
 from "../appearance/showTitleSetting.js";
 
 import {
+    applyBorder
+}
+from "../appearance/borderSetting.js";
+
+import {
     enableSettingDrag
 }
 from "./settingDrag.js";
@@ -349,6 +354,12 @@ export function createSettingPopup(widgetId) {
         });
     }
 
+    if (savedApp.showBorder === false) {
+        popup.querySelectorAll(".border-segment-option").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.value === "false");
+        });
+    }
+
     /* ── Weather Hour: graph controls ─────────────────────── */
 
     const frequencyButtons = popup.querySelectorAll(".frequency-segment .segment-option");
@@ -552,6 +563,18 @@ export function createSettingPopup(widgetId) {
             saveWidgetAppearance(widgetId, { showTitle: visible });
             // Header lives outside .widget-content so MutationObserver won't catch this
             autoExpandWidget(widgetId);
+        });
+    });
+
+    const borderButtons = popup.querySelectorAll(".border-segment-option");
+    borderButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            borderButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            const show = button.dataset.value === "true";
+            const widget = document.getElementById(widgetId);
+            applyBorder(widget, show);
+            saveWidgetAppearance(widgetId, { showBorder: show });
         });
     });
 

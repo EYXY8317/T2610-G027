@@ -23,6 +23,11 @@ import {
 }
 from "./showTitleSetting.js";
 
+import {
+    getBorderSetting
+}
+from "./borderSetting.js";
+
 export function getAppearanceSettings() {
 
     return `
@@ -32,6 +37,10 @@ export function getAppearanceSettings() {
         </h3>
 
         ${getShowTitleSetting()}
+
+        <hr>
+
+        ${getBorderSetting()}
 
         <hr>
 
