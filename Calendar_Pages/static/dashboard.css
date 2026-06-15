@@ -20,8 +20,11 @@ body{
 /* ================= MAIN CONTAINER ================= */
 
 .dashboard{
-    width:100%;
-    max-width:1400px;
+
+    width:95%;
+
+    max-width:1800px;
+
     margin:auto;
 }
 
@@ -35,7 +38,7 @@ body{
 
     border-radius:12px;
 
-    padding:18px 25px;
+    padding:22px 45px;
 
     display:flex;
     justify-content:space-between;
@@ -45,33 +48,37 @@ body{
 /* ================= LEFT SIDE ================= */
 
 .logo-section{
+
     display:flex;
+
     align-items:center;
-    gap:12px;
+
+    gap:16px;
 }
 
 /* ICON PLACEHOLDER */
 
 .logo-box{
-    width:46px;
-    height:46px;
+
+    width:79px;
+    height:79px;
 
     background:#f2e5d8;
 
     border:none;
 
-    border-radius:14px;
+    border-radius:21px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
 
 }
 
-.icon-box img{
-
-    width:85%;
-    height:85%;
-
-    object-fit:contain;
-
-}
 
 .logo-box img{
 
@@ -80,15 +87,13 @@ body{
 
     object-fit:cover;
 
-    border-radius:14px;
-
 }
 
 /* NAME（Life Pages) */
 
 .logo-text{
-    font-size:30px;
-    font-weight:600;
+    font-size:42px;
+    font-weight:700;
 }
 
 /* ================= NAVIGATION ================= */
@@ -107,7 +112,9 @@ body{
 
     border-radius:8px;
 
-    padding:10px 16px;
+    padding:12px 22px;
+
+    font-size:15px;
 
     transition:0.2s;
 }
@@ -138,23 +145,29 @@ body{
 }
 
 .hero h1{
-    font-size:42px;
+    font-size:58px;
     margin-bottom:10px;
 }
 
 .hero p{
+
     color:#8b7767;
+
+    font-size:18px;
+
 }
 
 /* ================= CARDS ================= */
 
 .cards-container{
-    margin-top:40px;
+
+    margin-top:50px;
 
     display:grid;
-    grid-template-columns:repeat(3,1fr);
 
-    gap:20px;
+    grid-template-columns:repeat(3,minmax(420px,1fr));
+
+    gap:35px;
 }
 
 /* ================= CARD ================= */
@@ -167,9 +180,9 @@ body{
 
     border-radius:28px;
 
-    padding:20px;
+    padding:24px;
 
-    min-height:420px;
+    min-height:460px;
 
     box-shadow:
     0 8px 24px rgba(181,148,120,0.08);
@@ -205,30 +218,51 @@ body{
 }
 
 /* ICON */
-
 .icon-box{
 
-    width:58px;
-    height:58px;
+    width:80px;
+    height:80px;
 
     border:none;
 
-    border-radius:16px;
+    border-radius:20px;
 
     background:#f4ede4;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.icon-box img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
 
 }
 
 /* TEXT */
-
 .card-text h2{
     margin-bottom:5px;
+    font-size:32px;
 }
 
 .card-text p{
+
     color:#666;
-    font-size:14px;
-    line-height:1.5;
+
+    font-size:15px;
+
+    line-height:1.6;
+
 }
 
 /* PREVIEW BOX */
@@ -236,6 +270,7 @@ body{
 .preview-box{
 
     width:100%;
+
     height:220px;
 
     border:none;
@@ -253,6 +288,7 @@ body{
 .card-btn{
 
     width:100%;
+
     height:52px;
 
     margin-top:25px;
@@ -281,241 +317,6 @@ body{
 
 }
 
-/* ================= MUSIC CARD ================= */
-
-.vinyl-section{
-
-    margin-top:25px;
-
-    display:flex;
-
-    justify-content:center;
-
-}
-
-/* MUSIC CONTAINER */
-
-.music-card{
-
-    width:540px;
-
-    height:160px;
-
-    background:#f8f1ea;
-
-    border:2px solid #c79c74;
-
-    border-radius:999px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:36px;
-
-    padding:0 35px;
-
-}
-
-/* VINYL CONTAINER */
-
-.vinyl-container{
-
-    width:130px;
-
-    height:130px;
-
-    position:relative;
-
-    flex-shrink:0;
-
-}
-
-/* VINYL */
-
-.vinyl{
-
-    width:128px;
-
-    height:128px;
-
-    border-radius:50%;
-
-    overflow:hidden;
-
-    cursor:pointer;
-
-    position:absolute;
-
-    top:5px;
-
-    left:0;
-     
-    background:
-
-    radial-gradient(circle,
-
-    #453630 6%,
-    #1f1917 30%,
-    #0c0c0c 65%,
-    #2b2420 100%);
-
-    animation:spin 20s linear infinite;
-
-    animation-play-state:paused;
-
-    box-shadow:
-    0 6px 16px rgba(86,58,38,0.16);
-
-}
-
-/* VINYL LINES */
-
-.vinyl::before{
-
-    content:"";
-
-    position:absolute;
-
-    width:80px;
-    height:80px;
-
-    border-radius:50%;
-
-    background:
-
-    linear-gradient(
-
-        130deg,
-
-        rgba(255,255,255,0.12),
-
-        transparent 50%
-
-    );
-
-    top:8px;
-    left:8px;
-
-    z-index:1;
-
-}
-
-.vinyl::after{
-
-    content:"";
-
-    position:absolute;
-
-    inset:10px;
-
-    border-radius:50%;
-
-    background:
-    repeating-radial-gradient(
-
-        circle,
-
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 1px,
-
-        transparent 1px,
-        transparent 5px
-
-    );
-
-}
-
-/* CENTER DOT */
-
-.vinyl-center{
-
-    width:8px;
-
-    height:8px;
-
-    border-radius:50%;
-
-    background:#8d735f;
-
-    position:absolute;
-
-    top:50%;
-
-    left:50%;
-
-    transform:translate(-50%,-50%);
-
-    z-index:3;
-
-}
-
-/* PLAYING */
-
-.vinyl.playing{
-
-    animation-play-state:running;
-
-}
-
-/* TEXT AREA */
-
-.music-text{
-
-    flex:1;
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    justify-content:center;
-
-    text-align:center;
-
-    color:#5b463f;
-
-}
-
-/* NOTE */
-
-.music-note{
-
-    font-size:34px;
-
-    margin-bottom:10px;
-
-    color:#c59772;
-
-}
-
-/* TEXT */
-
-.music-text p{
-
-    font-size:20px;
-
-    line-height:1.5;
-
-    font-weight:500;
-
-    color:#6b4d3d;
-}
-
-/* ROTATION */
-
-@keyframes spin{
-
-    from{
-        transform:rotate(0deg);
-    }
-
-    to{
-        transform:rotate(360deg);
-    }
-
-}
 
 /* ================= FINANCE PREVIEW ================= */
 
