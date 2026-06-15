@@ -156,7 +156,7 @@ function setTagFilter(tag) {
 // Create and save a new task
 // ===============================
 
-function addTask(listType) {
+function addTask(listType){
 
     // Get task title
     let text =
@@ -264,8 +264,20 @@ function addTask(listType) {
     selectedPriority = "";
     selectedTag = "";
 
-}
+    // Reset priority button selection
+    document
+    .querySelectorAll(
+         ".priority-box > span"
+    )
+    .forEach(el => {
 
+    el.classList.remove(
+        "priority-selected"
+    );
+
+});
+
+}
 
 
 
@@ -1239,8 +1251,8 @@ function closeCalendar() {
 
 
 // ===============================
-// GET PRIORITY ICON
-// Return priority emoji
+// GET PRIORITY FLAG ICON
+// Return colored Material Symbol
 // ===============================
 
 let panelSelectedPriority = "";
@@ -1271,31 +1283,84 @@ function getPriorityDot(priority) {
 
     if (priority === "red") {
 
-        return "🚩";
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-high
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
 
     }
 
     if (priority === "orange") {
 
-        return "🚩";
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-medium
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
 
     }
 
     if (priority === "blue") {
 
-        return "🚩";
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-low
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
 
     }
 
     if (priority === "gray") {
 
-        return "⚐";
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-none
+            "
+        >
+
+            outlined_flag
+
+        </span>
+
+        `;
 
     }
 
     return "";
 
 }
+
 
 
 // ===============================
@@ -1329,35 +1394,6 @@ function setPriority(priority, e) {
 
 }
 
-
-
-// ===============================
-// PANEL PRIORITY
-// ===============================
-
-let panelSelectedPriority = "";
-
-function setPanelPriority(priority, e) {
-
-    panelSelectedPriority = priority;
-
-    document
-    .querySelectorAll(
-        "#panelPriorityBox > span"
-    )
-    .forEach(el => {
-
-        el.classList.remove(
-            "priority-selected"
-        );
-
-    });
-
-    e.currentTarget.classList.add(
-        "priority-selected"
-    );
-
-}
 
 
 // ===============================
@@ -1741,10 +1777,31 @@ function showTaskDetail(
     ).value =
         task.repeat || "none";    
 
-    document.getElementById(
-        "panelPrioritySelect"
-    ).value =
-        task.priority || "";
+    panelSelectedPriority =
+    task.priority || "";
+
+    document
+    .querySelectorAll(
+    "#panelPriorityBox > span"
+    )
+    .forEach(el => {
+
+    el.classList.remove(
+        "priority-selected"
+    );
+
+    if (
+        el.dataset.priority ===
+        panelSelectedPriority
+    ) {
+
+        el.classList.add(
+            "priority-selected"
+        );
+
+    }
+
+});
 
     document.getElementById(
         "panelTagInput"
@@ -1847,9 +1904,7 @@ function saveTaskChanges() {
         ).value;
 
     task.priority =
-        document.getElementById(
-            "panelPrioritySelect"
-        ).value;
+    panelSelectedPriority;
 
     task.tag =
     document.getElementById(
