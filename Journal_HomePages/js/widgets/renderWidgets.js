@@ -1,12 +1,12 @@
 import {
     widgets
 }
-from "../registry/widgetRegistry.js";
+from "./widgetRegistry.js";
 
 import {
     createWeatherWeekWidget
 }
-from "../weatherWeek.js";
+from "./weatherWeek.js";
 
 export function renderWidgets() {
 

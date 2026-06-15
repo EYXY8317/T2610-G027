@@ -1,1 +1,1 @@
-export { enableResize } from "./interaction/resizeManager.js";
+export { enableResize } from "./resizeManager.js";

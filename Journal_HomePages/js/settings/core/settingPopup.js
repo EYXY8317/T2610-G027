@@ -4,12 +4,12 @@ import {
     setClockType,
     setFlipClockSize
 }
-from "../../widgets/time/digitalClock/updateDigitalClock.js";
+from "../../widgets/digitalClock/updateDigitalClock.js";
 
 import {
     renderDigitalClock
 }
-from "../../widgets/time/digitalClock/renderDigitalClock.js";
+from "../../widgets/digitalClock/renderDigitalClock.js";
 
 import {
     renderWeatherHour,
@@ -75,27 +75,27 @@ from "../appearance/appearanceSettings.js";
 import {
     getDigitalClockSettings
 }
-from "../widgets/time/digitalClock/digitalClockSettings.js";
+from "../widgets/digitalClockSettings.js";
 
 import {
     getWeatherDaySettings
 }
-from "../widgets/weather/weatherDay/weatherDaySettings.js";
+from "../widgets/weatherDaySettings.js";
 
 import {
     getWeatherHourSettings
 }
-from "../widgets/weather/weatherHour/weatherHourSettings.js";
+from "../widgets/weatherHourSettings.js";
 
 import {
     getQuoteSettings
 }
-from "../widgets/quote/quoteSettings.js";
+from "../widgets/quoteSettings.js";
 
 import {
     getTodayEmotionSettings
 }
-from "../widgets/todayEmotion/todayEmotionSettings.js";
+from "../widgets/todayEmotionSettings.js";
 
 import {
     getTodayEmotionState,

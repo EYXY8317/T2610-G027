@@ -1,1 +1,1 @@
-export { isOverlapping } from "./interaction/overlapManager.js";
+export { isOverlapping } from "./overlapManager.js";

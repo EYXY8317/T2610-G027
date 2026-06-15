@@ -1,1 +1,1 @@
-export { enableDrag } from "./interaction/dragManager.js";
+export { enableDrag } from "./dragManager.js";

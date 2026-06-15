@@ -1,27 +1,27 @@
 import {
     createDigitalClock
 }
-from "../time/digitalClock/createDigitalClock.js";
+from "./digitalClock/createDigitalClock.js";
 
 import {
     createWeatherHourWidget
 }
-from "../weatherHour.js";
+from "./weatherHour.js";
 
 import {
     createWeatherDayWidget
 }
-from "../weatherDay.js";
+from "./weatherDay.js";
 
 import {
     createQuoteWidget
 }
-from "../quote.js";
+from "./quote.js";
 
 import {
     createTodayEmotionWidget
 }
-from "../todayEmotion.js";
+from "./todayEmotion.js";
 
 export const widgets = [
 
@@ -62,6 +62,6 @@ export const widgets = [
 
         create:
             createDigitalClock
-    },    
+    },
 
 ];

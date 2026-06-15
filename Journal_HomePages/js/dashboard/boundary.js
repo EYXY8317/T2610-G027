@@ -1,1 +1,1 @@
-export { clampWidgetToDashboard } from "./interaction/boundaryManager.js";
+export { clampWidgetToDashboard } from "./boundaryManager.js";

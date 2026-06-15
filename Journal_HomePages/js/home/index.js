@@ -1,7 +1,7 @@
 import {
     updateDigitalClock
 }
-from "../widgets/time/digitalClock/updateDigitalClock.js";
+from "../widgets/digitalClock/updateDigitalClock.js";
 
 import {
     createSettingPopup
@@ -11,7 +11,7 @@ from "../settings/core/settingPopup.js";
 import {
     renderWidgets
 }
-from "../widgets/renderers/renderWidgets.js";
+from "../widgets/renderWidgets.js";
 
 import {
     enableDrag,

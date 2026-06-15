@@ -1,1 +1,1 @@
-export { applyWidgetCollisionSnap } from "./interaction/collisionManager.js";
+export { applyWidgetCollisionSnap } from "./collisionManager.js";
