@@ -234,16 +234,16 @@ function renderTodayTasks() {
 
     });
 
-    // Sort by start time
+    // Sort tasks by start time
     todayTasks.sort((a, b) => {
 
-        return (
-            a.startTime || ""
-        ).localeCompare(
-            b.startTime || ""
-        );
+      return (
+         a.startTime || "99:99"
+     ).localeCompare(
+         b.startTime || "99:99"
+     );
 
-    });
+});
 
     // Show first 3 tasks only
     todayTasks
