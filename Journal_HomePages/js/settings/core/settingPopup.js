@@ -84,6 +84,12 @@ import {
 from "../appearance/appearanceSettings.js";
 
 import {
+    getWidgetAppearance,
+    saveWidgetAppearance
+}
+from "../appearance/widgetAppearance.js";
+
+import {
     getDigitalClockSettings
 }
 from "../widgets/digitalClockSettings.js";
@@ -289,6 +295,52 @@ export function createSettingPopup(widgetId) {
 
     document.body.append(popup);
 
+    /* ── Pre-fill appearance controls from saved state ───────── */
+
+    const savedApp = getWidgetAppearance(widgetId) || {};
+
+    const _bgColorEl = popup.querySelector(".background-color-picker");
+    if (_bgColorEl && savedApp.backgroundColor) {
+        _bgColorEl.value = savedApp.backgroundColor;
+    }
+
+    const _bgOpEl = popup.querySelector(".background-opacity-slider");
+    if (_bgOpEl && savedApp.backgroundOpacity !== undefined) {
+        _bgOpEl.value = savedApp.backgroundOpacity;
+        const _bgOpVal = popup.querySelector(".background-opacity-value");
+        if (_bgOpVal) _bgOpVal.textContent = savedApp.backgroundOpacity + "%";
+    }
+
+    const _titleColorEl = popup.querySelector(".title-color-picker");
+    if (_titleColorEl && savedApp.titleColor) {
+        _titleColorEl.value = savedApp.titleColor;
+    }
+
+    const _titleSizeEl = popup.querySelector(".title-size-slider");
+    if (_titleSizeEl && savedApp.titleSize !== undefined) {
+        _titleSizeEl.value = savedApp.titleSize;
+        const _titleSizeVal = popup.querySelector(".title-size-value");
+        if (_titleSizeVal) _titleSizeVal.textContent = savedApp.titleSize + "px";
+    }
+
+    const _contentColorEl = popup.querySelector(".content-color-picker");
+    if (_contentColorEl && savedApp.contentColor) {
+        _contentColorEl.value = savedApp.contentColor;
+    }
+
+    const _contentSizeEl = popup.querySelector(".content-size-slider");
+    if (_contentSizeEl && savedApp.contentSize !== undefined) {
+        _contentSizeEl.value = savedApp.contentSize;
+        const _contentSizeVal = popup.querySelector(".content-size-value");
+        if (_contentSizeVal) _contentSizeVal.textContent = savedApp.contentSize + "px";
+    }
+
+    if (savedApp.showTitle === false) {
+        popup.querySelectorAll(".title-segment-option").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.value === "false");
+        });
+    }
+
     /* ── Weather Hour: graph controls ─────────────────────── */
 
     const frequencyButtons = popup.querySelectorAll(".frequency-segment .segment-option");
@@ -459,6 +511,7 @@ export function createSettingPopup(widgetId) {
         titleColorPicker.addEventListener("input", event => {
             const widget = document.getElementById(widgetId);
             applyTitleColor(widget, event.target.value);
+            saveWidgetAppearance(widgetId, { titleColor: event.target.value });
         });
     }
 
@@ -470,6 +523,7 @@ export function createSettingPopup(widgetId) {
             titleSizeValue.textContent = size + "px";
             const widget = document.getElementById(widgetId);
             applyTitleSize(widget, size);
+            saveWidgetAppearance(widgetId, { titleSize: Number(size) });
         });
     }
 
@@ -478,6 +532,7 @@ export function createSettingPopup(widgetId) {
         contentColorPicker.addEventListener("input", event => {
             const widget = document.getElementById(widgetId);
             applyContentColor(widget, event.target.value);
+            saveWidgetAppearance(widgetId, { contentColor: event.target.value });
         });
     }
 
@@ -486,6 +541,7 @@ export function createSettingPopup(widgetId) {
         backgroundColorPicker.addEventListener("input", event => {
             const widget = document.getElementById(widgetId);
             applyBackgroundColor(widget, event.target.value);
+            saveWidgetAppearance(widgetId, { backgroundColor: event.target.value });
         });
     }
 
@@ -497,6 +553,7 @@ export function createSettingPopup(widgetId) {
             backgroundOpacityValue.textContent = opacity + "%";
             const widget = document.getElementById(widgetId);
             applyBackgroundOpacity(widget, opacity);
+            saveWidgetAppearance(widgetId, { backgroundOpacity: Number(opacity) });
         });
     }
 
@@ -508,6 +565,7 @@ export function createSettingPopup(widgetId) {
             contentSizeValue.textContent = size + "px";
             const widget = document.getElementById(widgetId);
             applyFontSize(widget, size);
+            saveWidgetAppearance(widgetId, { contentSize: Number(size) });
 
             if (widgetId === "weather-hour-widget") {
                 setChartFontSize(Number(size));
@@ -521,8 +579,10 @@ export function createSettingPopup(widgetId) {
         button.addEventListener("click", () => {
             titleButtons.forEach(item => item.classList.remove("active"));
             button.classList.add("active");
+            const visible = button.dataset.value === "true";
             const widget = document.getElementById(widgetId);
-            applyShowTitle(widget, button.dataset.value === "true");
+            applyShowTitle(widget, visible);
+            saveWidgetAppearance(widgetId, { showTitle: visible });
         });
     });
 
