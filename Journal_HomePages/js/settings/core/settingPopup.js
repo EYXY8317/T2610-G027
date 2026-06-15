@@ -93,6 +93,12 @@ import {
 from "../widgets/weatherDaySettings.js";
 
 import {
+    renderWeatherDay,
+    updateWeatherDayState
+}
+from "../../widgets/weatherDay.js";
+
+import {
     getWeatherHourSettings
 }
 from "../widgets/weatherHourSettings.js";
@@ -1015,6 +1021,55 @@ if (
 
         }
     );
+
+    /* ── Weather Day settings ───────────────────────────── */
+
+    if (widgetId === "weather-day-widget") {
+
+        function wireWdSegment(selector, stateKey) {
+            const btns = popup.querySelectorAll(`${selector} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    const val = btn.dataset.value === "true"
+                        ? true
+                        : btn.dataset.value === "false"
+                            ? false
+                            : btn.dataset.value;
+                    updateWeatherDayState({ [stateKey]: val });
+                });
+            });
+        }
+
+        wireWdSegment(".wd-temp-display-segment", "tempDisplay");
+        wireWdSegment(".wd-feels-segment", "showFeelsLike");
+        wireWdSegment(".wd-humidity-segment", "showHumidity");
+        wireWdSegment(".wd-icon-segment", "showIcon");
+        wireWdSegment(".wd-update-time-segment", "showUpdateTime");
+
+        const wdCitySelect = popup.querySelector(".weather-city-select");
+
+        if (wdCitySelect) {
+            wdCitySelect.addEventListener("change", event => {
+                const [lat, lon] = event.target.value.split(",").map(Number);
+                const cityName = event.target.options[event.target.selectedIndex].text;
+                setWeatherCity(cityName, lat, lon);
+                renderWeatherDay();
+            });
+        }
+
+        const wdTempUnit = popup.querySelectorAll(".temp-unit-segment .segment-option");
+        wdTempUnit.forEach(btn => {
+            btn.addEventListener("click", () => {
+                wdTempUnit.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                setTempUnit(btn.dataset.value);
+                renderWeatherDay();
+            });
+        });
+
+    }
 
     /* ── Today Emotion settings ─────────────────────────── */
 

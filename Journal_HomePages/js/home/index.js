@@ -35,6 +35,11 @@ import {
 from "../widgets/weatherHour.js";
 
 import {
+    renderWeatherDay
+}
+from "../widgets/weatherDay.js";
+
+import {
     initializeTodayEmotion
 }
 from "../widgets/todayEmotion.js";
@@ -128,6 +133,7 @@ export function initializeHomepage() {
     updateDigitalClock();
 
     renderWeatherHour();
+    renderWeatherDay();
     initializeTodayEmotion();
     
     setupEditMode(
