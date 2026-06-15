@@ -5,6 +5,11 @@ import {
 }
 from "./weatherConfig.js";
 
+import {
+    autoExpandWidget
+}
+from "../dashboard/expandWidget.js";
+
 const STATE_KEY = "weather-day-state";
 
 const DEFAULT_STATE = {
@@ -148,6 +153,9 @@ export async function renderWeatherDay() {
                 ${updateLine}
             </div>
         `;
+
+        // After render: expand if content overflows, warn if no space available
+        requestAnimationFrame(() => autoExpandWidget("weather-day-widget"));
 
     }
     catch (err) {

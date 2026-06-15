@@ -6,14 +6,9 @@ import {
 from "./weatherConfig.js";
 
 import {
-    contentOverflow
+    autoExpandWidget
 }
-from "../dashboard/resizeManager.js";
-
-import {
-    saveLayout
-}
-from "../home/saveLayout.js";
+from "../dashboard/expandWidget.js";
 
 const STATE_KEY = "weather-week-state";
 
@@ -153,16 +148,8 @@ export async function renderWeatherWeek() {
 
         container.innerHTML = `<div class="ww-table">${rows}</div>`;
 
-        // After render, auto-expand if the saved widget height is too small
-        requestAnimationFrame(() => {
-            const widget = document.getElementById("weather-week-widget");
-            if (!widget) return;
-            const over = contentOverflow(widget);
-            if (over > 1) {
-                widget.style.height = (widget.offsetHeight + over) + "px";
-                saveLayout(widget);
-            }
-        });
+        // After render: expand if content overflows, warn if no space available
+        requestAnimationFrame(() => autoExpandWidget("weather-week-widget"));
 
     }
     catch (err) {
