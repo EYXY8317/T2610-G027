@@ -817,25 +817,48 @@
     <div class="priority-box">
 
         <span onclick="setPriority('red', event)">
-            🔴 High
+
+            <span class="material-symbols-rounded priority-high">
+                flag
+            </span>
+
+            High
+
         </span>
 
         <span onclick="setPriority('orange', event)">
-            🟠 Medium
+
+            <span class="material-symbols-rounded priority-medium">
+                flag
+            </span>
+
+            Medium
+
         </span>
 
         <span onclick="setPriority('blue', event)">
-            🔵 Low
+
+            <span class="material-symbols-rounded priority-low">
+                flag
+            </span>
+
+            Low
+
         </span>
 
         <span onclick="setPriority('gray', event)">
-            ⚫ No Priority
+
+            <span class="material-symbols-rounded priority-none">
+                outlined_flag
+            </span>
+
+            No Priority
+
         </span>
 
     </div>
 
-</div>
-
+ </div>
 
   <!-- Tag -->
   <div class="popup-section tag-wrapper">
@@ -1036,30 +1059,74 @@
     <!-- Priority -->
     <div class="panel-section">
 
-        <label class="panel-label">
+    <label class="panel-label">
 
-            <span class="material-symbols-rounded">
-                star
-            </span>
+        <span class="material-symbols-rounded">
+            flag
+        </span>
 
-            Priority
+        Priority
 
-        </label>
+    </label>
 
-        <select
-            id="panelPrioritySelect"
-            class="panel-input"
+    <div class="priority-box" id="panelPriorityBox">
+
+        <span
+            data-priority="red"
+            onclick="setPanelPriority('red', event)"
         >
 
-         <option value="" selected>Select Priority</option>
-         <option value="red">🔴 High</option>
-         <option value="orange">🟠 Medium</option>
-         <option value="blue">🔵 Low</option>
-         <option value="gray">⚫ No Priority</option>
+            <span class="material-symbols-rounded priority-high">
+                flag
+            </span>
 
-        </select>
+            High
+
+        </span>
+
+        <span
+            data-priority="orange"
+            onclick="setPanelPriority('orange', event)"
+        >
+
+            <span class="material-symbols-rounded priority-medium">
+                flag
+            </span>
+
+            Medium
+
+        </span>
+
+        <span
+            data-priority="blue"
+            onclick="setPanelPriority('blue', event)"
+        >
+
+            <span class="material-symbols-rounded priority-low">
+                flag
+            </span>
+
+            Low
+
+        </span>
+
+        <span
+            data-priority="gray"
+            onclick="setPanelPriority('gray', event)"
+        >
+
+            <span class="material-symbols-rounded priority-none">
+                outlined_flag
+            </span>
+
+            No Priority
+
+        </span>
 
     </div>
+
+</div>
+
 
     <!-- Tag -->
     <div class="panel-section tag-wrapper">

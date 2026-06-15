@@ -1243,29 +1243,53 @@ function closeCalendar() {
 // Return priority emoji
 // ===============================
 
+let panelSelectedPriority = "";
+
+function setPanelPriority(priority, e) {
+
+    panelSelectedPriority = priority;
+
+    document
+    .querySelectorAll(
+        "#panelPriorityBox > span"
+    )
+    .forEach(el => {
+
+        el.classList.remove(
+            "priority-selected"
+        );
+
+    });
+
+    e.currentTarget.classList.add(
+        "priority-selected"
+    );
+
+}
+
 function getPriorityDot(priority) {
 
     if (priority === "red") {
 
-        return "🔴";
+        return "🚩";
 
     }
 
     if (priority === "orange") {
 
-        return "🟠";
+        return "🚩";
 
     }
 
     if (priority === "blue") {
 
-        return "🔵";
+        return "🚩";
 
     }
 
     if (priority === "gray") {
 
-        return "⚫";
+        return "⚐";
 
     }
 
@@ -1273,41 +1297,68 @@ function getPriorityDot(priority) {
 
 }
 
+
 // ===============================
 // SET PRIORITY
 // Highlight selected priority
 // ===============================
 
-function setPriority(icon, e) {
+function setPriority(priority, e) {
 
-    selectedPriority = icon;
+    selectedPriority = priority;
 
-    let all =
-        document.querySelectorAll(
-            ".priority-box span"
+    document
+    .querySelectorAll(
+        ".priority-box > span"
+    )
+    .forEach(el => {
+
+        el.classList.remove(
+            "priority-selected"
         );
-
-    all.forEach(el => {
-
-        el.style.opacity =
-            "0.5";
-
-        el.style.fontWeight =
-            "normal";
 
     });
 
     if (e) {
 
-        e.target.style.opacity =
-            "1";
-
-        e.target.style.fontWeight =
-            "bold";
+        e.currentTarget.classList.add(
+            "priority-selected"
+        );
 
     }
 
 }
+
+
+
+// ===============================
+// PANEL PRIORITY
+// ===============================
+
+let panelSelectedPriority = "";
+
+function setPanelPriority(priority, e) {
+
+    panelSelectedPriority = priority;
+
+    document
+    .querySelectorAll(
+        "#panelPriorityBox > span"
+    )
+    .forEach(el => {
+
+        el.classList.remove(
+            "priority-selected"
+        );
+
+    });
+
+    e.currentTarget.classList.add(
+        "priority-selected"
+    );
+
+}
+
 
 // ===============================
 // APPLY DATE SETTINGS
