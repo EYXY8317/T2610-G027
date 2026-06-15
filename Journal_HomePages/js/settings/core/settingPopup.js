@@ -1402,6 +1402,28 @@ if (
                 }
             );
         }
+
+        const resetHourSelect =
+            popup.querySelector(
+                ".emotion-reset-hour-select"
+            );
+
+        if (
+            resetHourSelect
+        ) {
+            resetHourSelect.value =
+                todayEmotionState.resetHour ?? 0;
+
+            resetHourSelect.addEventListener(
+                "change",
+                event => {
+                    updateTodayEmotionState({
+                        resetHour: Number(event.target.value)
+                    });
+                }
+            );
+        }
+
     }
 
     const header =
