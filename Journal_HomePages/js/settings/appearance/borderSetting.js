@@ -12,5 +12,6 @@ export function getBorderSetting() {
 
 export function applyBorder(widget, show) {
     if (!widget) return;
-    widget.style.border = show ? "" : "none";
+    widget.style.border    = show ? "" : "none";
+    widget.style.boxShadow = show ? "" : "none";
 }
