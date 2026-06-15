@@ -1,12 +1,12 @@
 import {
     computeSnappedPosition
 }
-from "../core/position.js";
+from "./position.js";
 
 import {
     hideGuideLines
 }
-from "../core/guide.js";
+from "./guide.js";
 
 import {
     isOverlapping
