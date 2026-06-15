@@ -63,7 +63,7 @@ function showPage(pageId, element) {
 
     else if (
         ["work", "shopping", "study", "personal", "workout"]
-        .includes(pageId)
+            .includes(pageId)
     ) {
 
         renderTasks(pageId);
@@ -156,7 +156,7 @@ function setTagFilter(tag) {
 // Create and save a new task
 // ===============================
 
-function addTask(listType){
+function addTask(listType) {
 
     // Get task title
     let text =
@@ -197,9 +197,9 @@ function addTask(listType){
             document.getElementById(
                 "taskTag"
             )
-            .value
-            .trim()
-            .toLowerCase(),
+                .value
+                .trim()
+                .toLowerCase(),
 
         description: "",
 
@@ -234,22 +234,20 @@ function addTask(listType){
     // Refresh calendar if currently open
     if (
         document.getElementById("calendar")
-        .classList.contains("active")
+            .classList.contains("active")
     ) {
 
         generateCalendar();
 
     }
 
+    // ===============================
+    // RESET INPUT AND TEMPORARY DATA
+    // ===============================
 
-
-// ===============================
-// RESET INPUT AND TEMPORARY DATA
-// ===============================
-
-   // Clear task title input
+    // Clear task title input
     document.getElementById(
-    listType + "TaskText"
+        listType + "TaskText"
     ).value = "";
 
     // Reset selected date and time
@@ -266,16 +264,16 @@ function addTask(listType){
 
     // Reset priority button selection
     document
-    .querySelectorAll(
-         ".priority-box > span"
-    )
-    .forEach(el => {
+        .querySelectorAll(
+            ".priority-box > span"
+        )
+        .forEach(el => {
 
-    el.classList.remove(
-        "priority-selected"
-    );
+            el.classList.remove(
+                "priority-selected"
+            );
 
-});
+        });
 
 }
 
@@ -315,7 +313,7 @@ function completeTask(listType, id) {
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
-        .classList.contains("active")
+            .classList.contains("active")
     ) {
 
         generateCalendar();
@@ -367,7 +365,7 @@ function deleteTask(listType, id) {
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
-        .classList.contains("active")
+            .classList.contains("active")
     ) {
 
         generateCalendar();
@@ -409,11 +407,10 @@ function renderTagFilters() {
             <button
                 class="
                     tag-chip
-                    ${
-                        currentTagFilter === "all"
-                        ? "active"
-                        : ""
-                    }
+                    ${currentTagFilter === "all"
+                ? "active"
+                : ""
+            }
                 "
                 onclick="setTagFilter('all')"
             >
@@ -444,33 +441,31 @@ function renderTagFilters() {
 
         // Create tag chips
         [...tags]
-        .sort()
-        .forEach(tag => {
+            .sort()
+            .forEach(tag => {
 
-            container.innerHTML += `
+                container.innerHTML += `
 
                 <button
                     class="
                         tag-chip
-                        ${
-                            currentTagFilter === tag
-                            ? "active"
-                            : ""
-                        }
+                        ${currentTagFilter === tag
+                        ? "active"
+                        : ""
+                    }
                     "
                     onclick="setTagFilter('${tag}')"
                 >
 
-                   ${
-                      tag.charAt(0).toUpperCase()
-                      + tag.slice(1)
+                   ${tag.charAt(0).toUpperCase()
+                    + tag.slice(1)
                     }
 
                 </button>
 
             `;
 
-        });
+            });
 
     });
 
@@ -508,32 +503,32 @@ function renderTasks(listType) {
 
     // Get active tasks only
     let activeTasks =
-    taskData[listType].filter(task => {
+        taskData[listType].filter(task => {
 
-        if (task.status !== "active") {
+            if (task.status !== "active") {
 
-            return false;
+                return false;
 
-        }
+            }
 
-        if (
-            currentTagFilter !== "all" &&
-            task.tag !== currentTagFilter
-        ) {
+            if (
+                currentTagFilter !== "all" &&
+                task.tag !== currentTagFilter
+            ) {
 
-            return false;
+                return false;
 
-        }
+            }
 
-        return true;
+            return true;
 
-    });
+        });
 
     // Show / hide empty message
     emptyMsg.style.display =
         activeTasks.length === 0
-        ? "block"
-        : "none";
+            ? "block"
+            : "none";
 
     // Create task cards
     activeTasks.forEach(task => {
@@ -575,45 +570,44 @@ function renderTasks(listType) {
 
                     </span>
 
-                    ${
-                        task.startTime || task.endTime
-                        ? `
+                    ${task.startTime || task.endTime
+                ? `
                         <span class="task-time">
 
                             <span class="material-symbols-rounded">
                                 schedule
                             </span>
 
-                            ${task.startTime || "--:--"}
-                            -
-                            ${task.endTime || "--:--"}
-
+                              ${task.startTime && task.endTime
+                    ? `${task.startTime} - ${task.endTime}`
+                    : task.startTime
+                        ? task.startTime
+                        : ""
+                }
                         </span>
                         `
-                        : ""
-                    }
+                : ""
+            }
 
-                    ${
-                        task.priority
-                        ? `
+                    ${task.priority
+                ? `
                         <span class="task-priority">
 
                             ${getPriorityDot(task.priority)}
 
-                            ${
-                                task.priority === "red"
-                                ? "High"
-                                : task.priority === "orange"
-                                ? "Medium"
-                                : task.priority === "blue"
-                                ? "Low"
-                                : "No Priority"
-                            }
+                            ${task.priority === "red"
+                    ? "High"
+                    : task.priority === "orange"
+                        ? "Medium"
+                        : task.priority === "blue"
+                            ? "Low"
+                            : "No Priority"
+                }
 
                         </span>
                         `
-                        : ""
-                    }
+                : ""
+            }
 
                 </div>
 
@@ -700,10 +694,9 @@ function renderCompleted() {
                     task_alt
                 </span>
 
-                ${
-                    listType.charAt(0).toUpperCase()
-                    + listType.slice(1)
-                }
+                ${listType.charAt(0).toUpperCase()
+            + listType.slice(1)
+            }
 
                 Tasks (${completedTasks.length})
 
@@ -748,45 +741,45 @@ function renderCompleted() {
 
                         </span>
 
-                        ${
-                            task.startTime || task.endTime
-                            ? `
+                        ${task.startTime || task.endTime
+                    ? `
                             <span class="task-time">
 
                                 <span class="material-symbols-rounded">
                                     schedule
                                 </span>
 
-                                ${task.startTime || "--:--"}
-                                -
-                                ${task.endTime || "--:--"}
+                                ${task.startTime && task.endTime
+                        ? `${task.startTime} - ${task.endTime}`
+                        : task.startTime
+                            ? task.startTime
+                            : ""
+                    }
 
                             </span>
                             `
-                            : ""
-                        }
+                    : ""
+                }
 
-                        ${
-                            task.priority
-                            ? `
+                        ${task.priority
+                    ? `
                             <span class="task-priority">
 
                                 ${getPriorityDot(task.priority)}
 
-                                ${
-                                    task.priority === "red"
-                                    ? "High"
-                                    : task.priority === "orange"
-                                    ? "Medium"
-                                    : task.priority === "blue"
-                                    ? "Low"
-                                    : "No Priority"
-                                }
+                                ${task.priority === "red"
+                        ? "High"
+                        : task.priority === "orange"
+                            ? "Medium"
+                            : task.priority === "blue"
+                                ? "Low"
+                                : "No Priority"
+                    }
 
                             </span>
                             `
-                            : ""
-                        }
+                    : ""
+                }
 
                     </div>
 
@@ -902,10 +895,9 @@ function renderTrash() {
                     delete
                 </span>
 
-                ${
-                    listType.charAt(0).toUpperCase()
-                    + listType.slice(1)
-                }
+                ${listType.charAt(0).toUpperCase()
+            + listType.slice(1)
+            }
 
                 Tasks (${trashTasks.length})
 
@@ -955,47 +947,47 @@ function renderTrash() {
 
                         <!-- Time -->
 
-                        ${
-                            task.startTime || task.endTime
-                            ? `
+                        ${task.startTime || task.endTime
+                    ? `
                             <span class="task-time">
 
                                 <span class="material-symbols-rounded">
                                     schedule
                                 </span>
 
-                                ${task.startTime || "--:--"}
-                                -
-                                ${task.endTime || "--:--"}
+                               ${task.startTime && task.endTime
+                        ? `${task.startTime} - ${task.endTime}`
+                        : task.startTime
+                            ? task.startTime
+                            : ""
+                    }
 
                             </span>
                             `
-                            : ""
-                        }
+                    : ""
+                }
 
                         <!-- Priority -->
 
-                        ${
-                            task.priority
-                            ? `
+                        ${task.priority
+                    ? `
                             <span class="task-priority">
 
                                 ${getPriorityDot(task.priority)}
 
-                                ${
-                                    task.priority === "red"
-                                    ? "High"
-                                    : task.priority === "orange"
-                                    ? "Medium"
-                                    : task.priority === "blue"
-                                    ? "Low"
-                                    : "No Priority"
-                                }
+                                ${task.priority === "red"
+                        ? "High"
+                        : task.priority === "orange"
+                            ? "Medium"
+                            : task.priority === "blue"
+                                ? "Low"
+                                : "No Priority"
+                    }
 
                             </span>
                             `
-                            : ""
-                        }
+                    : ""
+                }
 
                     </div>
 
@@ -1106,7 +1098,7 @@ function restoreTask(listType, id) {
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
-        .classList.contains("active")
+            .classList.contains("active")
     ) {
 
         generateCalendar();
@@ -1218,12 +1210,12 @@ function toggleCalendar(btn, e) {
     const popupWidth = 340;
 
     popup.style.left =
-    (rect.right - popupWidth) + "px";
+        (rect.right - popupWidth) + "px";
 
     popup.style.display =
         popup.style.display === "block"
-        ? "none"
-        : "block";
+            ? "none"
+            : "block";
 
 }
 
@@ -1262,16 +1254,16 @@ function setPanelPriority(priority, e) {
     panelSelectedPriority = priority;
 
     document
-    .querySelectorAll(
-        "#panelPriorityBox > span"
-    )
-    .forEach(el => {
+        .querySelectorAll(
+            "#panelPriorityBox > span"
+        )
+        .forEach(el => {
 
-        el.classList.remove(
-            "priority-selected"
-        );
+            el.classList.remove(
+                "priority-selected"
+            );
 
-    });
+        });
 
     e.currentTarget.classList.add(
         "priority-selected"
@@ -1373,16 +1365,16 @@ function setPriority(priority, e) {
     selectedPriority = priority;
 
     document
-    .querySelectorAll(
-        ".priority-box > span"
-    )
-    .forEach(el => {
+        .querySelectorAll(
+            ".priority-box > span"
+        )
+        .forEach(el => {
 
-        el.classList.remove(
-            "priority-selected"
-        );
+            el.classList.remove(
+                "priority-selected"
+            );
 
-    });
+        });
 
     if (e) {
 
@@ -1426,26 +1418,26 @@ function applyDate() {
     // Save date
     selectedDate =
         dateInput
-        ? dateInput.value
-        : "";
+            ? dateInput.value
+            : "";
 
     // Save start time
     selectedStart =
         startInput
-        ? startInput.value
-        : "";
+            ? startInput.value
+            : "";
 
     // Save end time
     selectedEnd =
         endInput
-        ? endInput.value
-        : "";
+            ? endInput.value
+            : "";
 
     // Save repeat option
     selectedRepeat =
         repeatInput
-        ? repeatInput.value
-        : "";
+            ? repeatInput.value
+            : "";
 
     // Close popup
     closeCalendar();
@@ -1612,75 +1604,75 @@ function toggleComplete(
 
     if (!task) return;
 
-// Create next recurring task
-if (
-    checkbox.checked &&
-    task.repeat &&
-    task.repeat !== "none" &&
-    task.date
-) {
+    // Create next recurring task
+    if (
+        checkbox.checked &&
+        task.repeat &&
+        task.repeat !== "none" &&
+        task.date
+    ) {
 
-    let nextDate =
-        new Date(task.date);
+        let nextDate =
+            new Date(task.date);
 
-    switch (task.repeat) {
+        switch (task.repeat) {
 
-        case "daily":
+            case "daily":
 
-            nextDate.setDate(
-                nextDate.getDate() + 1
-            );
+                nextDate.setDate(
+                    nextDate.getDate() + 1
+                );
 
-            break;
+                break;
 
-        case "weekly":
+            case "weekly":
 
-            nextDate.setDate(
-                nextDate.getDate() + 7
-            );
+                nextDate.setDate(
+                    nextDate.getDate() + 7
+                );
 
-            break;
+                break;
 
-        case "monthly":
+            case "monthly":
 
-            nextDate.setMonth(
-                nextDate.getMonth() + 1
-            );
+                nextDate.setMonth(
+                    nextDate.getMonth() + 1
+                );
 
-            break;
+                break;
 
-        case "yearly":
+            case "yearly":
 
-            nextDate.setFullYear(
-                nextDate.getFullYear() + 1
-            );
+                nextDate.setFullYear(
+                    nextDate.getFullYear() + 1
+                );
 
-            break;
+                break;
+
+        }
+
+        taskData[listType].push({
+
+            ...task,
+
+            id: Date.now(),
+
+            status: "active",
+
+            date:
+                nextDate
+                    .toISOString()
+                    .split("T")[0]
+
+        });
 
     }
-
-    taskData[listType].push({
-
-        ...task,
-
-        id: Date.now(),
-
-        status: "active",
-
-        date:
-            nextDate
-            .toISOString()
-            .split("T")[0]
-
-    });
-
-}
 
     // Update task status
     task.status =
         checkbox.checked
-        ? "completed"
-        : "active";
+            ? "completed"
+            : "active";
 
 
     // Refresh pages
@@ -1700,7 +1692,7 @@ if (
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
-        .classList.contains("active")
+            .classList.contains("active")
     ) {
 
         generateCalendar();
@@ -1773,35 +1765,35 @@ function showTaskDetail(
         task.endTime || "";
 
     document.getElementById(
-    "panelRepeatSelect"
+        "panelRepeatSelect"
     ).value =
-        task.repeat || "none";    
+        task.repeat || "none";
 
     panelSelectedPriority =
-    task.priority || "";
+        task.priority || "";
 
     document
-    .querySelectorAll(
-    "#panelPriorityBox > span"
-    )
-    .forEach(el => {
+        .querySelectorAll(
+            "#panelPriorityBox > span"
+        )
+        .forEach(el => {
 
-    el.classList.remove(
-        "priority-selected"
-    );
+            el.classList.remove(
+                "priority-selected"
+            );
 
-    if (
-        el.dataset.priority ===
-        panelSelectedPriority
-    ) {
+            if (
+                el.dataset.priority ===
+                panelSelectedPriority
+            ) {
 
-        el.classList.add(
-            "priority-selected"
-        );
+                el.classList.add(
+                    "priority-selected"
+                );
 
-    }
+            }
 
-});
+        });
 
     document.getElementById(
         "panelTagInput"
@@ -1866,9 +1858,9 @@ function saveTaskChanges() {
 
     let task =
         taskData[currentTaskListType]
-        .find(
-            t => t.id === currentTaskId
-        );
+            .find(
+                t => t.id === currentTaskId
+            );
 
     if (!task) return;
 
@@ -1904,15 +1896,15 @@ function saveTaskChanges() {
         ).value;
 
     task.priority =
-    panelSelectedPriority;
+        panelSelectedPriority;
 
     task.tag =
-    document.getElementById(
-        "panelTagInput"
-    )
-    .value
-    .trim()
-    .toLowerCase();
+        document.getElementById(
+            "panelTagInput"
+        )
+            .value
+            .trim()
+            .toLowerCase();
 
     // Save data
     saveTasks();
@@ -2072,8 +2064,8 @@ function renderTagSuggestions(keyword) {
 
     keyword =
         keyword
-        .trim()
-        .toLowerCase();
+            .trim()
+            .toLowerCase();
 
     // 没输入就隐藏
     if (!keyword) {
@@ -2116,26 +2108,25 @@ function renderTagSuggestions(keyword) {
     }
 
     [...tags]
-    .sort()
-    .forEach(tag => {
+        .sort()
+        .forEach(tag => {
 
-        container.innerHTML += `
+            container.innerHTML += `
 
             <div
                 class="tag-suggestion"
                 onclick="selectTagSuggestion('${tag}')"
             >
 
-                ${
-                    tag.charAt(0).toUpperCase()
-                    + tag.slice(1)
+                ${tag.charAt(0).toUpperCase()
+                + tag.slice(1)
                 }
 
             </div>
 
         `;
 
-    });
+        });
 
     container.style.display =
         "block";
@@ -2189,8 +2180,8 @@ function renderPopupTagSuggestions(keyword) {
 
     keyword =
         keyword
-        .trim()
-        .toLowerCase();
+            .trim()
+            .toLowerCase();
 
     if (!keyword) {
 
@@ -2231,10 +2222,10 @@ function renderPopupTagSuggestions(keyword) {
     }
 
     [...tags]
-    .sort()
-    .forEach(tag => {
+        .sort()
+        .forEach(tag => {
 
-        container.innerHTML += `
+            container.innerHTML += `
 
             <div
                 class="tag-suggestion"
@@ -2245,16 +2236,15 @@ function renderPopupTagSuggestions(keyword) {
                 "
             >
 
-                ${
-                    tag.charAt(0).toUpperCase()
-                    + tag.slice(1)
+                ${tag.charAt(0).toUpperCase()
+                + tag.slice(1)
                 }
 
             </div>
 
         `;
 
-    });
+        });
 
     container.style.display =
         "block";
