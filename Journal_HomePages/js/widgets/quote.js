@@ -39,14 +39,14 @@ const SYSTEM_QUOTES = {
 };
 
 const DEFAULT_STATE = {
-    systemCategory: "encouragement",
+    systemCategories: ["encouragement"],  // array — multiple categories allowed
     autoRotate: true,
     rotateDaily: true,
-    showSource: "both",          // "system" | "user" | "both"
-    fontStyle: "serif",          // "serif" | "sans" | "italic" | "cursive"
-    savedQuotes: [],             // [{ text, author, source }]
-    userQuotes: [],              // [{ text, author }]
-    currentSource: "system",     // "system" | "user"
+    showSources: ["system", "user"],      // array — "system" and/or "user"
+    fontStyle: "serif",
+    savedQuotes: [],
+    userQuotes: [],
+    currentSource: "system",
     currentSystemIndex: 0,
     currentUserIndex: 0,
     lastRotateDate: ""
@@ -58,7 +58,21 @@ function getState() {
         return { ...DEFAULT_STATE };
     }
     try {
-        return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+        const parsed = JSON.parse(raw);
+
+        // Migrate old single-string state shapes
+        if (parsed.systemCategory && !parsed.systemCategories) {
+            parsed.systemCategories = [parsed.systemCategory];
+            delete parsed.systemCategory;
+        }
+        if (parsed.showSource && !parsed.showSources) {
+            parsed.showSources = parsed.showSource === "both" ? ["system", "user"]
+                : parsed.showSource === "system" ? ["system"]
+                : ["user"];
+            delete parsed.showSource;
+        }
+
+        return { ...DEFAULT_STATE, ...parsed };
     }
     catch {
         return { ...DEFAULT_STATE };
@@ -75,6 +89,18 @@ function todayKey() {
     return new Date().toISOString().slice(0, 10);
 }
 
+function getSystemPool(state) {
+    const cats = state.systemCategories && state.systemCategories.length
+        ? state.systemCategories
+        : ["encouragement"];
+    const pool = [];
+    cats.forEach(cat => {
+        const quotes = SYSTEM_QUOTES[cat] || [];
+        pool.push(...quotes);
+    });
+    return pool.length ? pool : SYSTEM_QUOTES.encouragement;
+}
+
 function checkAutoRotate(state) {
     if (!state.autoRotate || !state.rotateDaily) {
         return state;
@@ -83,7 +109,7 @@ function checkAutoRotate(state) {
         return state;
     }
 
-    const pool = SYSTEM_QUOTES[state.systemCategory] || SYSTEM_QUOTES.encouragement;
+    const pool = getSystemPool(state);
     const nextIdx = (state.currentSystemIndex + 1) % pool.length;
 
     return saveState({
@@ -93,26 +119,18 @@ function checkAutoRotate(state) {
 }
 
 function getCurrentQuote(state) {
-
-    const showUser = state.showSource === "user";
-    const showSystem = state.showSource === "system";
-    const showBoth = state.showSource === "both";
-
+    const sources = state.showSources || ["system", "user"];
+    const showUser   = sources.includes("user");
+    const showSystem = sources.includes("system");
     const hasUser = state.userQuotes.length > 0;
-    const hasSystem = true;
 
-    let source = state.currentSource;
-
-    if (showUser && !hasUser) {
-        source = "system";
-    }
-
-    if (showSystem) {
-        source = "system";
-    }
-
-    if (showUser) {
+    let source;
+    if (showSystem && showUser) {
+        source = (state.currentSource === "user" && hasUser) ? "user" : "system";
+    } else if (showUser && hasUser) {
         source = "user";
+    } else {
+        source = "system";
     }
 
     if (source === "user" && hasUser) {
@@ -120,10 +138,9 @@ function getCurrentQuote(state) {
         return { ...q, source: "user" };
     }
 
-    const pool = SYSTEM_QUOTES[state.systemCategory] || SYSTEM_QUOTES.encouragement;
+    const pool = getSystemPool(state);
     const q = pool[state.currentSystemIndex % pool.length];
     return { ...q, source: "system" };
-
 }
 
 function isSaved(state, quote) {
@@ -133,9 +150,9 @@ function isSaved(state, quote) {
 }
 
 const FONT_STYLES = {
-    serif: "Georgia, serif",
-    sans: "system-ui, sans-serif",
-    italic: "Georgia, serif",
+    serif:   "Georgia, serif",
+    sans:    "system-ui, sans-serif",
+    italic:  "Georgia, serif",
     cursive: "cursive, Georgia"
 };
 
@@ -233,7 +250,7 @@ export function initializeQuote() {
         }
 
         if (nextBtn) {
-            const pool = SYSTEM_QUOTES[cur.systemCategory] || SYSTEM_QUOTES.encouragement;
+            const pool = getSystemPool(cur);
 
             if (cur.currentSource === "user" && cur.userQuotes.length) {
                 updateState({
