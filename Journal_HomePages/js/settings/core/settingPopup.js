@@ -2,7 +2,6 @@ import {
     setShowSeconds,
     setClockFormat,
     setClockType,
-    setFlipClockSize,
     setShowDate,
     setShowWeekday,
     setTimezone
@@ -462,18 +461,6 @@ export function createSettingPopup(widgetId) {
             setClockType(clockType);
         });
     });
-
-    const flipClockSizeSlider = popup.querySelector(".flip-clock-size-slider");
-    const flipClockSizeValue  = popup.querySelector(".flip-clock-size-value");
-
-    if (flipClockSizeSlider) {
-        flipClockSizeSlider.addEventListener("input", event => {
-            const size = event.target.value;
-            flipClockSizeValue.textContent = size + "px";
-            setFlipClockSize(Number(size));
-            renderDigitalClock(showSeconds, clockFormat, clockType);
-        });
-    }
 
     clockFormatButtons.forEach(button => {
         button.addEventListener("click", () => {

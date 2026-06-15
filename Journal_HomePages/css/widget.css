@@ -240,10 +240,155 @@
     letter-spacing: 1px;
 }
 
+/* ── Flip Clock ──────────────────────────────────────────── */
+
+.flip-clock-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.flip-clock-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flip-group {
+    display: flex;
+    gap: 4px;
+}
+
+/* each digit card — 4 absolute layers inside */
+.flip-digit {
+    position: relative;
+    border-radius: 7px;
+    overflow: hidden;
+    perspective: 250px;
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.65),
+        0 1px 4px  rgba(0,0,0,0.3);
+}
+
+/* hard line between top and bottom halves */
+.flip-digit::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 2px;
+    background: #080808;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.flip-back-top,
+.flip-back-bottom,
+.flip-front-top,
+.flip-front-bottom {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    color: #f0ece0;
+    user-select: none;
+}
+
+/* ── Static back layers (always visible) ── */
+.flip-back-top {
+    top: 0;
+    align-items: flex-end;
+    padding-bottom: 2px;
+    background: #2e2e2e;
+    border-radius: 7px 7px 0 0;
+    z-index: 1;
+}
+
+.flip-back-bottom {
+    bottom: 0;
+    align-items: flex-start;
+    padding-top: 2px;
+    background: #1a1a1a;
+    border-radius: 0 0 7px 7px;
+    z-index: 1;
+}
+
+/* ── Animated front layers ── */
+.flip-front-top {
+    top: 0;
+    align-items: flex-end;
+    padding-bottom: 2px;
+    background: #3a3a3a;
+    border-radius: 7px 7px 0 0;
+    transform-origin: center bottom;
+    transform: rotateX(0deg);
+    z-index: 4;
+    backface-visibility: hidden;
+}
+
+.flip-front-bottom {
+    bottom: 0;
+    align-items: flex-start;
+    padding-top: 2px;
+    background: #202020;
+    border-radius: 0 0 7px 7px;
+    transform-origin: center top;
+    transform: rotateX(90deg);   /* hidden until digit changes */
+    z-index: 3;
+    backface-visibility: hidden;
+}
+
+/* digit changed → play the flip */
+.flip-front-top.is-flipping {
+    animation: fc-fold   0.3s ease-in forwards;
+}
+.flip-front-bottom.is-flipping {
+    animation: fc-unfold 0.3s ease-out 0.22s forwards;
+}
+
+@keyframes fc-fold {
+    from { transform: rotateX(0deg);   }
+    to   { transform: rotateX(-90deg); }
+}
+
+@keyframes fc-unfold {
+    from { transform: rotateX(90deg); }
+    to   { transform: rotateX(0deg);  }
+}
+
+/* two-dot colon separator */
+.flip-colon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 1px;
+    margin-bottom: 4px;
+}
+
+.flip-colon::before,
+.flip-colon::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #777;
+}
+
 .flip-ampm {
-    font-size: 0.9em;
-    font-weight: 600;
-    opacity: 0.7;
+    font-size: 0.75em;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 1px;
+    align-self: flex-end;
+    padding-bottom: 6px;
 }
 
 /* ── Quote ───────────────────────────────────────────────── */
