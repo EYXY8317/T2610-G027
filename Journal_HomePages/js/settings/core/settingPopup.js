@@ -192,10 +192,6 @@ const WIDGET_NAMES = {
     "quote-widget":           "Quote"
 };
 
-function emptyPane() {
-    return `<p class="setting-empty-note">No settings in this section.</p>`;
-}
-
 export function createSettingPopup(widgetId) {
 
     closeCurrentPopup();
@@ -240,10 +236,23 @@ export function createSettingPopup(widgetId) {
 
     const widgetName = WIDGET_NAMES[widgetId] || widgetId;
 
-    const styleContent   = appearanceHTML + (widgetTabs.style || "");
-    const locationContent = widgetTabs.location || emptyPane();
-    const graphContent   = widgetTabs.graph    || emptyPane();
-    const displayContent = widgetTabs.display  || emptyPane();
+    // Only include tabs that have content
+    const ALL_TABS = [
+        { key: "style",    label: "Style",    content: appearanceHTML + (widgetTabs.style || "") },
+        { key: "location", label: "Location", content: widgetTabs.location || "" },
+        { key: "graph",    label: "Graph",    content: widgetTabs.graph    || "" },
+        { key: "display",  label: "Display",  content: widgetTabs.display  || "" }
+    ];
+
+    const visibleTabs = ALL_TABS.filter(t => t.content.trim() !== "");
+
+    const tabBarHTML = visibleTabs.map((t, i) =>
+        `<button class="setting-tab${i === 0 ? " active" : ""}" data-tab="${t.key}">${t.label}</button>`
+    ).join("");
+
+    const panesHTML = visibleTabs.map((t, i) =>
+        `<div class="setting-pane${i === 0 ? " active" : ""}" data-pane="${t.key}">${t.content}</div>`
+    ).join("");
 
     const popup = document.createElement("div");
     popup.className = "setting-popup";
@@ -256,17 +265,11 @@ export function createSettingPopup(widgetId) {
         </div>
 
         <div class="setting-tabs">
-            <button class="setting-tab active" data-tab="style">Style</button>
-            <button class="setting-tab" data-tab="location">Location</button>
-            <button class="setting-tab" data-tab="graph">Graph</button>
-            <button class="setting-tab" data-tab="display">Display</button>
+            ${tabBarHTML}
         </div>
 
         <div class="setting-body">
-            <div class="setting-pane active" data-pane="style">${styleContent}</div>
-            <div class="setting-pane" data-pane="location">${locationContent}</div>
-            <div class="setting-pane" data-pane="graph">${graphContent}</div>
-            <div class="setting-pane" data-pane="display">${displayContent}</div>
+            ${panesHTML}
         </div>
 
     `;
