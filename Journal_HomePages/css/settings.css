@@ -26,6 +26,9 @@
 
     overflow: hidden;
 
+    display: flex;
+    flex-direction: column;
+
 }
 
 .setting-header {
@@ -45,11 +48,77 @@
 
     cursor: move;
 
+    flex-shrink: 0;
+
 }
 
 .setting-body {
 
     padding: 16px;
+
+    overflow-y: auto;
+
+    flex: 1;
+
+}
+
+.setting-body h3 {
+
+    margin: 16px 0 10px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.05em;
+
+    color: #9ca3af;
+
+}
+
+.setting-body h3:first-child {
+
+    margin-top: 0;
+
+}
+
+.setting-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+
+}
+
+.setting-row span:first-child {
+
+    flex-shrink: 0;
+
+    color: #374151;
+
+}
+
+.setting-row select {
+
+    padding: 4px 8px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    cursor: pointer;
 
 }
 
