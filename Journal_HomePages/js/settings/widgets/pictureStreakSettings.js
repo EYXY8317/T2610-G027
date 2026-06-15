@@ -18,45 +18,49 @@ export function getPictureStreakSettings() {
         `).join("")
         : `<div style="font-size:12px;color:#9ca3af;">No photos yet</div>`;
 
-    return `
+    return {
 
-        <h3>Photos</h3>
+        style: "",
 
-        <div class="setting-row">
-            <span>Upload Photo</span>
-            <input class="ps-photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
-        </div>
+        location: "",
 
-        <div class="ps-photo-list">${photoList}</div>
-
-        <h3>Display</h3>
-
-        <div class="setting-row">
-            <span>Mode</span>
-            <div class="segment-button ps-display-segment">
-                <button class="segment-option${state.displayMode === "single" ? " active" : ""}" data-value="single">Single</button>
-                <button class="segment-option${state.displayMode === "scroll" ? " active" : ""}" data-value="scroll">Auto Scroll</button>
+        graph: `
+            <h3>Photos</h3>
+            <div class="setting-row">
+                <span>Upload Photo</span>
+                <input class="ps-photo-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
             </div>
-        </div>
+            <div class="ps-photo-list">${photoList}</div>
+        `,
 
-        <div class="setting-row">
-            <span>Show Date Label</span>
-            <div class="segment-button ps-date-label-segment">
-                <button class="segment-option${state.showDateLabel ? " active" : ""}" data-value="true">Show</button>
-                <button class="segment-option${!state.showDateLabel ? " active" : ""}" data-value="false">Hide</button>
+        display: `
+            <h3>Mode</h3>
+            <div class="setting-row">
+                <span>Display Mode</span>
+                <div class="segment-button ps-display-segment">
+                    <button class="segment-option${state.displayMode === "single" ? " active" : ""}" data-value="single">Single</button>
+                    <button class="segment-option${state.displayMode === "scroll" ? " active" : ""}" data-value="scroll">Auto Scroll</button>
+                </div>
             </div>
-        </div>
+            <h3>Options</h3>
+            <div class="setting-row">
+                <span>Show Date Label</span>
+                <div class="segment-button ps-date-label-segment">
+                    <button class="segment-option${state.showDateLabel ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${!state.showDateLabel ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <span>Scroll Interval</span>
+                <select class="ps-interval-select">
+                    ${SCROLL_INTERVALS.map(i =>
+                        `<option value="${i.value}"${state.scrollInterval === i.value ? " selected" : ""}>${i.label}</option>`
+                    ).join("")}
+                </select>
+            </div>
+        `
 
-        <div class="setting-row">
-            <span>Scroll Interval</span>
-            <select class="ps-interval-select">
-                ${SCROLL_INTERVALS.map(i =>
-                    `<option value="${i.value}"${state.scrollInterval === i.value ? " selected" : ""}>${i.label}</option>`
-                ).join("")}
-            </select>
-        </div>
-
-    `;
+    };
 
 }
 

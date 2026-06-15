@@ -38,7 +38,7 @@ export function getAppearanceSettings() {
     return `
 
         <h3>
-            Style
+            Appearance
         </h3>
 
         ${getShowTitleSetting()}
