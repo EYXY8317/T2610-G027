@@ -130,6 +130,16 @@ import {
 from "../../widgets/nowStreak.js";
 
 import {
+    getHighStreakSettings
+}
+from "../widgets/highStreakSettings.js";
+
+import {
+    updateHighStreakState
+}
+from "../../widgets/highStreak.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -218,6 +228,16 @@ export function createSettingPopup(
 
         widgetContent =
             getNowStreakSettings();
+
+    }
+
+    else if (
+        widgetId ===
+        "high-streak-widget"
+    ) {
+
+        widgetContent =
+            getHighStreakSettings();
 
     }
 
@@ -1157,6 +1177,39 @@ if (
                 renderWeatherDay();
             });
         });
+
+    }
+
+    /* ── High Streak settings ───────────────────────────── */
+
+    if (widgetId === "high-streak-widget") {
+
+        const hsDisplayBtns = popup.querySelectorAll(".hs-display-segment .segment-option");
+        hsDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                hsDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateHighStreakState({ displayMode: btn.dataset.value });
+            });
+        });
+
+        const hsCelebrateBtns = popup.querySelectorAll(".hs-celebrate-segment .segment-option");
+        hsCelebrateBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                hsCelebrateBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateHighStreakState({ celebrationEnabled: btn.dataset.value === "true" });
+            });
+        });
+
+        const hsResetBtn = popup.querySelector(".hs-reset-btn");
+        if (hsResetBtn) {
+            hsResetBtn.addEventListener("click", () => {
+                if (confirm("Reset your high streak record to 0?")) {
+                    updateHighStreakState({ highStreak: 0 });
+                }
+            });
+        }
 
     }
 
