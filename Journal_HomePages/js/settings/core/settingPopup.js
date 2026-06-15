@@ -623,13 +623,47 @@ export function createSettingPopup(widgetId) {
 
     if (widgetId === "quote-widget") {
 
-        const qCategorySelect = popup.querySelector(".quote-category-select");
-        if (qCategorySelect) {
-            qCategorySelect.addEventListener("change", event => {
-                updateQuoteState({ systemCategory: event.target.value, currentSystemIndex: 0 });
+        // Category chips — multi-select, keep at least one active
+        const qCatBtns = popup.querySelectorAll(".quote-cat-btn");
+        qCatBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const cat = btn.dataset.cat;
+                const cur = getQuoteState();
+                const cats = [...(cur.systemCategories || ["encouragement"])];
+                const idx = cats.indexOf(cat);
+                if (idx >= 0) {
+                    if (cats.length > 1) {
+                        cats.splice(idx, 1);
+                    }
+                } else {
+                    cats.push(cat);
+                }
+                btn.classList.toggle("active", cats.includes(cat));
+                updateQuoteState({ systemCategories: cats, currentSystemIndex: 0 });
             });
-        }
+        });
 
+        // Source chips — multi-select, keep at least one active
+        const qSrcBtns = popup.querySelectorAll(".quote-src-btn");
+        qSrcBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const src = btn.dataset.src;
+                const cur = getQuoteState();
+                const sources = [...(cur.showSources || ["system", "user"])];
+                const idx = sources.indexOf(src);
+                if (idx >= 0) {
+                    if (sources.length > 1) {
+                        sources.splice(idx, 1);
+                    }
+                } else {
+                    sources.push(src);
+                }
+                btn.classList.toggle("active", sources.includes(src));
+                updateQuoteState({ showSources: sources });
+            });
+        });
+
+        // Auto Rotate + Rotate Interval
         function wireQSegment(selector, stateKey) {
             const btns = popup.querySelectorAll(`${selector} .segment-option`);
             btns.forEach(btn => {
@@ -654,9 +688,9 @@ export function createSettingPopup(widgetId) {
 
         wireQSegment(".quote-auto-rotate-segment", "autoRotate");
         wireQSegment(".quote-rotate-daily-segment", "rotateDaily");
-        wireQSegment(".quote-source-segment", "showSource");
         wireQSegment(".quote-font-segment", "fontStyle");
 
+        // Add user quote
         const qAddBtn = popup.querySelector(".quote-add-btn");
         if (qAddBtn) {
             qAddBtn.addEventListener("click", () => {
@@ -667,8 +701,8 @@ export function createSettingPopup(widgetId) {
                     return;
                 }
                 const author = authorEl?.value.trim() || "";
-                const state = getQuoteState ? getQuoteState() : { userQuotes: [] };
-                updateQuoteState({ userQuotes: [...(state.userQuotes || []), { text, author }] });
+                const cur = getQuoteState();
+                updateQuoteState({ userQuotes: [...(cur.userQuotes || []), { text, author }] });
                 if (textEl) {
                     textEl.value = "";
                 }
@@ -678,12 +712,13 @@ export function createSettingPopup(widgetId) {
             });
         }
 
+        // Remove saved quote
         const qRemoveBtns = popup.querySelectorAll(".quote-remove-saved");
         qRemoveBtns.forEach(btn => {
             btn.addEventListener("click", () => {
                 const idx = Number(btn.dataset.index);
-                const state = getQuoteState ? getQuoteState() : { savedQuotes: [] };
-                updateQuoteState({ savedQuotes: state.savedQuotes.filter((_, i) => i !== idx) });
+                const cur = getQuoteState();
+                updateQuoteState({ savedQuotes: cur.savedQuotes.filter((_, i) => i !== idx) });
                 popup.remove();
                 createSettingPopup(widgetId);
             });

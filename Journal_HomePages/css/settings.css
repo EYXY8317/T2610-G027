@@ -213,6 +213,69 @@
 
 }
 
+/* ── Multi-select chip rows (Quote: categories + sources) ─── */
+
+.quote-cat-chips,
+.quote-src-chips {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-bottom: 4px;
+
+}
+
+/* ── Saved quote full-text item ──────────────────────────── */
+
+.quote-saved-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    padding: 8px 0;
+
+    border-bottom: 1px solid #f3f4f6;
+
+}
+
+.quote-saved-text {
+
+    flex: 1;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: #374151;
+
+    word-break: break-word;
+
+}
+
+.quote-remove-saved {
+
+    flex-shrink: 0;
+
+    border: none;
+
+    background: none;
+
+    cursor: pointer;
+
+    color: #ef4444;
+
+    font-size: 14px;
+
+    padding: 0 2px;
+
+}
+
 .segment-option {
 
     border: none;
