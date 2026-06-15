@@ -37,6 +37,16 @@
 
 }
 
+#weather-hour-widget .widget-content {
+
+    display: block;
+
+    padding: 8px;
+
+    overflow: hidden;
+
+}
+
 .widget-header {
 
     display: flex;
