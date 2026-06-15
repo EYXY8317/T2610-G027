@@ -99,6 +99,12 @@ import {
 from "../../widgets/weatherDay.js";
 
 import {
+    renderWeatherWeek,
+    updateWeatherWeekState
+}
+from "../../widgets/weatherWeek.js";
+
+import {
     getWeatherHourSettings
 }
 from "../widgets/weatherHourSettings.js";
@@ -107,6 +113,11 @@ import {
     getQuoteSettings
 }
 from "../widgets/quoteSettings.js";
+
+import {
+    getWeatherWeekSettings
+}
+from "../widgets/weatherWeekSettings.js";
 
 import {
     getTodayEmotionSettings
@@ -157,6 +168,16 @@ export function createSettingPopup(
 
         widgetContent =
             getWeatherHourSettings();
+
+    }
+
+    else if (
+        widgetId ===
+        "weather-week-widget"
+    ) {
+
+        widgetContent =
+            getWeatherWeekSettings();
 
     }
 
@@ -1021,6 +1042,54 @@ if (
 
         }
     );
+
+    /* ── Weather Week settings ──────────────────────────── */
+
+    if (widgetId === "weather-week-widget") {
+
+        function wireWwSegment(selector, stateKey) {
+            const btns = popup.querySelectorAll(`${selector} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    const raw = btn.dataset.value;
+                    const val = raw === "true" ? true
+                        : raw === "false" ? false
+                        : isNaN(Number(raw)) ? raw : Number(raw);
+                    updateWeatherWeekState({ [stateKey]: val });
+                });
+            });
+        }
+
+        wireWwSegment(".ww-temp-display-segment", "tempDisplay");
+        wireWwSegment(".ww-days-segment", "showDays");
+        wireWwSegment(".ww-icon-segment", "showIcon");
+        wireWwSegment(".ww-feels-segment", "showFeelsLike");
+        wireWwSegment(".ww-humidity-segment", "showHumidity");
+
+        const wwCitySelect = popup.querySelector(".weather-city-select");
+
+        if (wwCitySelect) {
+            wwCitySelect.addEventListener("change", event => {
+                const [lat, lon] = event.target.value.split(",").map(Number);
+                const cityName = event.target.options[event.target.selectedIndex].text;
+                setWeatherCity(cityName, lat, lon);
+                renderWeatherWeek();
+            });
+        }
+
+        const wwTempUnit = popup.querySelectorAll(".temp-unit-segment .segment-option");
+        wwTempUnit.forEach(btn => {
+            btn.addEventListener("click", () => {
+                wwTempUnit.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                setTempUnit(btn.dataset.value);
+                renderWeatherWeek();
+            });
+        });
+
+    }
 
     /* ── Weather Day settings ───────────────────────────── */
 

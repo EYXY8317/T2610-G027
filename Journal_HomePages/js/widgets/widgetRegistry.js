@@ -23,6 +23,11 @@ import {
 }
 from "./todayEmotion.js";
 
+import {
+    createWeatherWeekWidget
+}
+from "./weatherWeek.js";
+
 export const widgets = [
 
     {
@@ -62,6 +67,12 @@ export const widgets = [
 
         create:
             createDigitalClock
+    },
+
+    {
+        id: "weather-week",
+        name: "Weather Week",
+        create: createWeatherWeekWidget
     },
 
 ];

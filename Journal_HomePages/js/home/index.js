@@ -40,6 +40,11 @@ import {
 from "../widgets/weatherDay.js";
 
 import {
+    renderWeatherWeek
+}
+from "../widgets/weatherWeek.js";
+
+import {
     initializeTodayEmotion
 }
 from "../widgets/todayEmotion.js";
@@ -134,6 +139,7 @@ export function initializeHomepage() {
 
     renderWeatherHour();
     renderWeatherDay();
+    renderWeatherWeek();
     initializeTodayEmotion();
     
     setupEditMode(
