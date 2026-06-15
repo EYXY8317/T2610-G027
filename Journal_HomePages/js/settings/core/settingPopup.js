@@ -21,7 +21,8 @@ import {
     setShowWeatherTemperature,
     setShowHumidity,
     setGraphColor,
-    setGraphSize
+    setGraphSize,
+    setChartFontSize
 }
 from "../../widgets/weatherHour.js";
 
@@ -507,6 +508,11 @@ export function createSettingPopup(widgetId) {
             contentSizeValue.textContent = size + "px";
             const widget = document.getElementById(widgetId);
             applyFontSize(widget, size);
+
+            if (widgetId === "weather-hour-widget") {
+                setChartFontSize(Number(size));
+                renderWeatherHour();
+            }
         });
     }
 

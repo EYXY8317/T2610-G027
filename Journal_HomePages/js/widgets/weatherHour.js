@@ -11,6 +11,7 @@ export let showWeatherTemperature = true;
 export let showHumidity = false;
 export let graphColor = "#4A90E2";
 export let graphSize = 100;
+export let chartFontSize = 11;
 
 export function setGraphSize(value) { graphSize = value; }
 export function setWeatherFrequency(value) { weatherFrequency = value; }
@@ -18,6 +19,7 @@ export function setShowWeatherIcon(value) { showWeatherIcon = value; }
 export function setShowWeatherTemperature(value) { showWeatherTemperature = value; }
 export function setShowHumidity(value) { showHumidity = value; }
 export function setGraphColor(value) { graphColor = value; }
+export function setChartFontSize(value) { chartFontSize = Number(value); }
 
 export function createWeatherHourWidget() {
 
@@ -112,10 +114,8 @@ export async function renderWeatherHour() {
 
         container.innerHTML = `<canvas id="weather-hour-chart"></canvas>`;
 
-        const widget = document.getElementById("weather-hour-widget");
-        const widgetWidth = widget ? widget.offsetWidth : 400;
-        const fontSize = Math.max(10, Math.floor(widgetWidth * graphSize / 3500));
-        const lineWidth = Math.max(2, Math.floor(widgetWidth / 180));
+        const fontSize = Math.max(8, chartFontSize);
+        const lineWidth = Math.max(1, Math.round(graphSize / 50));
 
         const datasets = [
             {
