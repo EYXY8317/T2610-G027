@@ -43,6 +43,11 @@ import {
 }
 from "./pictureStreak.js";
 
+import {
+    createEmotionSummaryWidget
+}
+from "./emotionSummary.js";
+
 export const widgets = [
 
     {
@@ -106,6 +111,12 @@ export const widgets = [
         id: "picture-streak",
         name: "Picture Streak",
         create: createPictureStreakWidget
+    },
+
+    {
+        id: "emotion-summary",
+        name: "Emotion Summary",
+        create: createEmotionSummaryWidget
     },
 
 ];
