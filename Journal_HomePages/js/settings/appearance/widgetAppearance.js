@@ -5,7 +5,8 @@ const DEFAULTS = {
     backgroundOpacity: 100,
     titleColor: "#000000",
     contentColor: "#000000",
-    showTitle: true
+    showTitle: true,
+    showBorder: true
 };
 
 export function getWidgetAppearance(widgetId) {
@@ -35,6 +36,7 @@ export function applyWidgetAppearance(widget, app) {
     const a = (app.backgroundOpacity ?? 100) / 100;
     widget.style.background = "";
     widget.style.backgroundColor = `rgba(${r},${g},${b},${a})`;
+    widget.style.setProperty("--widget-shadow-a", (a * 0.10).toFixed(3));
 
     const header = widget.querySelector(".widget-header");
     if (header) {
@@ -46,4 +48,6 @@ export function applyWidgetAppearance(widget, app) {
     if (content) {
         content.style.color = app.contentColor || "";
     }
+
+    widget.style.border = app.showBorder !== false ? "" : "none";
 }
