@@ -152,6 +152,16 @@ import {
 from "../../widgets/pictureStreak.js";
 
 import {
+    getEmotionSummarySettings
+}
+from "../widgets/emotionSummarySettings.js";
+
+import {
+    updateEmotionSummaryState
+}
+from "../../widgets/emotionSummary.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -260,6 +270,16 @@ export function createSettingPopup(
 
         widgetContent =
             getPictureStreakSettings();
+
+    }
+
+    else if (
+        widgetId ===
+        "emotion-summary-widget"
+    ) {
+
+        widgetContent =
+            getEmotionSummarySettings();
 
     }
 
@@ -1199,6 +1219,54 @@ if (
                 renderWeatherDay();
             });
         });
+
+    }
+
+    /* ── Emotion Summary settings ───────────────────────── */
+
+    if (widgetId === "emotion-summary-widget") {
+
+        function wireEsSegment(selector, stateKey) {
+            const btns = popup.querySelectorAll(`${selector} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    const val = btn.dataset.value === "true" ? true
+                        : btn.dataset.value === "false" ? false
+                        : btn.dataset.value;
+                    updateEmotionSummaryState({ [stateKey]: val });
+
+                    // enable/disable custom date inputs
+                    if (stateKey === "timeRange") {
+                        const rows = popup.querySelectorAll(".es-custom-range");
+                        rows.forEach(r => {
+                            r.style.opacity = val === "custom" ? "1" : "0.4";
+                            r.style.pointerEvents = val === "custom" ? "auto" : "none";
+                        });
+                    }
+                });
+            });
+        }
+
+        wireEsSegment(".es-display-segment", "displayMode");
+        wireEsSegment(".es-range-segment", "timeRange");
+        wireEsSegment(".es-combo-segment", "showCombo");
+        wireEsSegment(".es-highlight-segment", "showHighlight");
+
+        const esStart = popup.querySelector(".es-custom-start");
+        if (esStart) {
+            esStart.addEventListener("change", event => {
+                updateEmotionSummaryState({ customStart: event.target.value });
+            });
+        }
+
+        const esEnd = popup.querySelector(".es-custom-end");
+        if (esEnd) {
+            esEnd.addEventListener("change", event => {
+                updateEmotionSummaryState({ customEnd: event.target.value });
+            });
+        }
 
     }
 
