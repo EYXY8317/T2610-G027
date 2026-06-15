@@ -884,34 +884,11 @@ export function createSettingPopup(widgetId) {
             });
         });
 
-        const hsResetBtn = popup.querySelector(".hs-reset-btn");
-        if (hsResetBtn) {
-            hsResetBtn.addEventListener("click", () => {
-                if (confirm("Reset your high streak record to 0?")) {
-                    updateHighStreakState({ highStreak: 0 });
-                }
-            });
-        }
-
     }
 
     /* ── Now Streak ───────────────────────────────────────── */
 
     if (widgetId === "now-streak-widget") {
-
-        const nsTypeSelect = popup.querySelector(".ns-type-select");
-        if (nsTypeSelect) {
-            nsTypeSelect.addEventListener("change", event => {
-                updateNowStreakState({ streakType: event.target.value });
-            });
-        }
-
-        const nsCustomLabel = popup.querySelector(".ns-custom-label");
-        if (nsCustomLabel) {
-            nsCustomLabel.addEventListener("input", event => {
-                updateNowStreakState({ customLabel: event.target.value });
-            });
-        }
 
         const nsDisplayBtns = popup.querySelectorAll(".ns-display-segment .segment-option");
         nsDisplayBtns.forEach(btn => {
