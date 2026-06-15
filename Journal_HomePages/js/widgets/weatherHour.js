@@ -34,7 +34,7 @@ export function createWeatherHourWidget() {
             <div class="widget-header">
                 <span>Weather Hours</span>
             </div>
-            <div class="widget-content" id="weather-hour-content" style="height:220px;">
+            <div class="widget-content" id="weather-hour-content">
                 Loading...
             </div>
             <div class="resize-handle">↘</div>
