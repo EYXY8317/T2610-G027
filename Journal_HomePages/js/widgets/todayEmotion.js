@@ -2,31 +2,22 @@ const STORAGE_KEY = "today-emotion-state";
 
 const DEFAULT_EMOJIS = ["😀", "😊", "🙂", "😐", "😔"];
 
-const MOOD_LABELS = {
-    "😀": "Great",
-    "😊": "Happy",
-    "🙂": "Good",
-    "😐": "Neutral",
-    "😔": "Sad"
-};
-
 const DEFAULT_STATE = {
-    emotionType: "emoji",
-    selectedMoodIndex: 2,
-    selectedMoodIndexes: [2],
+    displayMode: "select",          // "select" | "slider"
     displayedEmojis: DEFAULT_EMOJIS,
     displayedCount: 5,
-    emojiSize: 64,
-    textSize: 18,
+    // select mode
+    selectedIndexes: [],
+    selectionMode: "single",        // "single" | "multiple"
+    selectedEffect: "border",       // "border" | "glow" | "scale"
+    // slider mode
+    sliderValues: [0, 0, 0, 0, 0], // percentages per emoji
+    // shared
     showTitle: true,
-    showCurrentMood: true,
-    selectionMode: "single",
-    selectedEffect: "border",
-    ratingValue: 5,
-    customImage: "",
-    emojiPercentages: { 0: 100, 1: 0, 2: 0, 3: 0, 4: 0 },
     resetHour: 0
 };
+
+/* ── Storage ─────────────────────────────────────────────── */
 
 function getSavedState() {
 
@@ -42,29 +33,24 @@ function getSavedState() {
 
         const displayedEmojis = Array.isArray(parsed.displayedEmojis)
             ? parsed.displayedEmojis.map(e => String(e || "").trim()).filter(Boolean)
-            : DEFAULT_STATE.displayedEmojis;
+            : DEFAULT_EMOJIS;
+
+        const sliderValues = Array.isArray(parsed.sliderValues)
+            ? parsed.sliderValues.slice(0, 5).map(v => Number(v) || 0)
+            : [0, 0, 0, 0, 0];
 
         return {
             ...DEFAULT_STATE,
             ...parsed,
             displayedEmojis: displayedEmojis.length
                 ? displayedEmojis.slice(0, 5)
-                : DEFAULT_STATE.displayedEmojis,
+                : DEFAULT_EMOJIS,
             displayedCount: Math.min(5, Math.max(1,
                 Number(parsed.displayedCount) || DEFAULT_STATE.displayedCount)),
-            emojiSize: Math.min(120, Math.max(24,
-                Number(parsed.emojiSize) || DEFAULT_STATE.emojiSize)),
-            textSize: Math.min(50, Math.max(10,
-                Number(parsed.textSize) || DEFAULT_STATE.textSize)),
-            ratingValue: Math.min(10, Math.max(1,
-                Number(parsed.ratingValue) || DEFAULT_STATE.ratingValue)),
-            selectedMoodIndexes: Array.isArray(parsed.selectedMoodIndexes)
-                ? parsed.selectedMoodIndexes
-                : DEFAULT_STATE.selectedMoodIndexes,
-            emojiPercentages: parsed.emojiPercentages || DEFAULT_STATE.emojiPercentages,
-            resetHour: typeof parsed.resetHour === "number"
-                ? parsed.resetHour
-                : DEFAULT_STATE.resetHour
+            selectedIndexes: Array.isArray(parsed.selectedIndexes)
+                ? parsed.selectedIndexes
+                : [],
+            sliderValues
         };
 
     }
@@ -78,10 +64,12 @@ function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+/* ── Daily Reset ─────────────────────────────────────────── */
+
 function checkDailyReset(state) {
 
     const now = new Date();
-    const resetKey = `today-emotion-reset-${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${state.resetHour}`;
+    const resetKey = `te-reset-${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${state.resetHour}`;
     const lastReset = localStorage.getItem("today-emotion-last-reset");
 
     if (lastReset !== resetKey && now.getHours() >= state.resetHour) {
@@ -90,14 +78,11 @@ function checkDailyReset(state) {
 
         const resetState = {
             ...state,
-            selectedMoodIndex: 0,
-            selectedMoodIndexes: [0],
-            emojiPercentages: { 0: 100, 1: 0, 2: 0, 3: 0, 4: 0 },
-            ratingValue: 5
+            selectedIndexes: [],
+            sliderValues: [0, 0, 0, 0, 0]
         };
 
         saveState(resetState);
-
         return resetState;
 
     }
@@ -106,333 +91,44 @@ function checkDailyReset(state) {
 
 }
 
-function getSelectedIndexes(state) {
-    return state.selectionMode === "multiple"
-        ? state.selectedMoodIndexes
-        : [state.selectedMoodIndex];
-}
+/* ── Slider helpers ──────────────────────────────────────── */
 
-function getMoodLabel(emoji) {
-    return MOOD_LABELS[emoji] || "Mood";
-}
+function rebalance(values, changedIndex, newVal, count) {
 
-function getEffectiveEmojis(state) {
-    const values = state.displayedEmojis.slice(0, 5);
-    return values.length ? values : DEFAULT_EMOJIS;
-}
+    const result = [...values];
+    const clamped = Math.max(0, Math.min(100, newVal));
+    result[changedIndex] = clamped;
 
-function normalizePercentages(percentages, selectedIndexes) {
-
-    if (!selectedIndexes.length) {
-        return percentages;
-    }
-
-    const total = selectedIndexes.reduce(
-        (sum, i) => sum + (Number(percentages[i]) || 0),
-        0
-    );
-
-    if (total === 0) {
-
-        const equal = Math.floor(100 / selectedIndexes.length);
-        const remainder = 100 - equal * selectedIndexes.length;
-        const result = { ...percentages };
-
-        selectedIndexes.forEach((i, idx) => {
-            result[i] = equal + (idx === 0 ? remainder : 0);
-        });
-
-        return result;
-
-    }
-
-    return percentages;
-
-}
-
-function renderEmojiButtons(state) {
-
-    const emojis = getEffectiveEmojis(state).slice(0, state.displayedCount);
-    const selectedIndexes = new Set(getSelectedIndexes(state));
-
-    return emojis.map((emoji, index) => {
-
-        const isSelected = selectedIndexes.has(index);
-        const classes = ["today-emotion-button"];
-
-        if (isSelected) {
-            classes.push("selected");
-            classes.push(`effect-${state.selectedEffect}`);
+    const others = [];
+    for (let i = 0; i < count; i++) {
+        if (i !== changedIndex) {
+            others.push(i);
         }
-
-        return `
-            <button
-                type="button"
-                class="${classes.join(" ")}"
-                data-index="${index}"
-                aria-pressed="${isSelected}"
-            >
-                ${emoji}
-            </button>
-        `;
-
-    }).join("");
-
-}
-
-function renderPercentageSliders(state) {
-
-    const emojis = getEffectiveEmojis(state).slice(0, state.displayedCount);
-    const selectedIndexes = getSelectedIndexes(state);
-
-    if (!selectedIndexes.length) {
-        return "";
     }
-
-    const percentages = normalizePercentages(
-        state.emojiPercentages,
-        selectedIndexes
-    );
-
-    const total = selectedIndexes.reduce(
-        (sum, i) => sum + (Number(percentages[i]) || 0),
-        0
-    );
-
-    const sliders = selectedIndexes.map(index => {
-
-        const emoji = emojis[index] || "?";
-        const pct = Number(percentages[index]) || 0;
-
-        return `
-            <div class="emotion-pct-row">
-                <span class="emotion-pct-emoji">${emoji}</span>
-                <input
-                    type="range"
-                    class="emotion-pct-slider"
-                    data-index="${index}"
-                    min="0"
-                    max="100"
-                    value="${pct}"
-                >
-                <span class="emotion-pct-value" data-index="${index}">${pct}%</span>
-            </div>
-        `;
-
-    }).join("");
-
-    const totalClass = total === 100
-        ? "emotion-pct-total ok"
-        : "emotion-pct-total error";
-
-    return `
-        <div class="emotion-pct-sliders">
-            ${sliders}
-            <div class="${totalClass}">Total: ${total}%</div>
-        </div>
-    `;
-
-}
-
-function renderCurrentMood(state) {
-
-    if (!state.showCurrentMood) {
-        return "";
-    }
-
-    if (state.emotionType === "rating") {
-        return `
-            <div class="today-emotion-current">
-                <span class="today-emotion-current-label">Current Mood</span>
-                <span class="today-emotion-current-value">${state.ratingValue} / 10</span>
-            </div>
-        `;
-    }
-
-    if (state.emotionType === "image") {
-        return `
-            <div class="today-emotion-current">
-                <span class="today-emotion-current-label">Current Mood</span>
-                <span class="today-emotion-current-value">${state.customImage ? "Custom Image" : "Upload an image in settings"}</span>
-            </div>
-        `;
-    }
-
-    const values = getEffectiveEmojis(state).slice(0, state.displayedCount);
-    const selectedIndexes = getSelectedIndexes(state).filter(
-        i => i >= 0 && i < values.length
-    );
-
-    if (!selectedIndexes.length) {
-        return `
-            <div class="today-emotion-current">
-                <span class="today-emotion-current-label">Current Mood</span>
-                <span class="today-emotion-current-value">No mood selected</span>
-            </div>
-        `;
-    }
-
-    if (state.selectionMode === "multiple" && selectedIndexes.length > 1) {
-        const parts = selectedIndexes.map(i => {
-            const e = values[i];
-            const pct = Number(state.emojiPercentages?.[i]) || 0;
-            return `${e} ${pct}%`;
-        });
-
-        return `
-            <div class="today-emotion-current">
-                <span class="today-emotion-current-label">Current Mood</span>
-                <span class="today-emotion-current-value">${parts.join(" · ")}</span>
-            </div>
-        `;
-    }
-
-    const emoji = values[selectedIndexes[0]];
-    const label = getMoodLabel(emoji);
-
-    return `
-        <div class="today-emotion-current">
-            <span class="today-emotion-current-label">Current Mood</span>
-            <span class="today-emotion-current-value">${emoji} ${label}</span>
-        </div>
-    `;
-
-}
-
-function renderRating(state) {
-    return `
-        <div class="today-emotion-rating-row">
-            <div class="today-emotion-rating-label">
-                <span>😡</span>
-                <span>1</span>
-                <span>●</span>
-                <span>10</span>
-                <span>😀</span>
-            </div>
-            <input
-                type="range"
-                class="today-emotion-rating-slider"
-                min="1"
-                max="10"
-                value="${state.ratingValue}"
-            >
-            <div class="today-emotion-rating-value">${state.ratingValue}</div>
-        </div>
-    `;
-}
-
-function renderImageMode(state) {
-    return `
-        <div class="today-emotion-image-mode">
-            ${state.customImage
-                ? `<img class="today-emotion-image" src="${state.customImage}" alt="Custom mood image">`
-                : `<div class="today-emotion-image-placeholder">Upload JPG, PNG or WEBP in settings</div>`
-            }
-        </div>
-    `;
-}
-
-function renderWidget(state) {
-
-    const titleMarkup = state.showTitle
-        ? `<div class="today-emotion-card-title">Today's Emotion</div>`
-        : "";
-
-    let contentMarkup;
-
-    if (state.emotionType === "rating") {
-
-        contentMarkup = renderRating(state);
-
-    } else if (state.emotionType === "image") {
-
-        contentMarkup = renderImageMode(state);
-
-    } else {
-
-        const showSliders = state.selectionMode === "multiple"
-            && getSelectedIndexes(state).length > 1;
-
-        contentMarkup = `
-            <div class="today-emotion-buttons">
-                ${renderEmojiButtons(state)}
-            </div>
-            ${showSliders ? renderPercentageSliders(state) : ""}
-        `;
-
-    }
-
-    return `
-        <div class="today-emotion-card">
-            ${titleMarkup}
-            ${contentMarkup}
-            ${renderCurrentMood(state)}
-        </div>
-    `;
-
-}
-
-function renderTodayEmotionContainer(state) {
-
-    const widget = document.getElementById("today-emotion-widget");
-
-    if (!widget) {
-        return;
-    }
-
-    widget.style.setProperty("--today-emoji-size", `${state.emojiSize}px`);
-    widget.style.setProperty("--today-text-size", `${state.textSize}px`);
-
-    const content = widget.querySelector(".widget-content");
-
-    if (!content) {
-        return;
-    }
-
-    content.innerHTML = renderWidget(state);
-
-}
-
-function rebalancePercentages(percentages, changedIndex, newValue, selectedIndexes) {
-
-    const others = selectedIndexes.filter(i => i !== changedIndex);
 
     if (!others.length) {
-        const result = { ...percentages };
-        result[changedIndex] = 100;
         return result;
     }
 
-    const clamped = Math.max(0, Math.min(100, newValue));
     const remaining = 100 - clamped;
-
-    const oldOthersTotal = others.reduce(
-        (sum, i) => sum + (Number(percentages[i]) || 0),
-        0
-    );
-
-    const result = { ...percentages };
-    result[changedIndex] = clamped;
+    const oldOthersTotal = others.reduce((s, i) => s + (result[i] || 0), 0);
 
     if (oldOthersTotal === 0) {
 
-        const equal = Math.floor(remaining / others.length);
-        const rem = remaining - equal * others.length;
+        const each = Math.floor(remaining / others.length);
+        const rem = remaining - each * others.length;
 
         others.forEach((i, idx) => {
-            result[i] = equal + (idx === 0 ? rem : 0);
+            result[i] = each + (idx === 0 ? rem : 0);
         });
 
     } else {
 
         others.forEach(i => {
-            result[i] = Math.round(
-                (Number(percentages[i]) || 0) / oldOthersTotal * remaining
-            );
+            result[i] = Math.round((values[i] || 0) / oldOthersTotal * remaining);
         });
 
-        // fix rounding drift
-        const actual = selectedIndexes.reduce((s, i) => s + result[i], 0);
+        const actual = others.reduce((s, i) => s + result[i], 0) + clamped;
         const drift = 100 - actual;
 
         if (drift !== 0) {
@@ -445,35 +141,131 @@ function rebalancePercentages(percentages, changedIndex, newValue, selectedIndex
 
 }
 
-function updateState(partial) {
+/* ── Render ──────────────────────────────────────────────── */
 
-    const state = { ...getSavedState(), ...partial };
+function renderSelectMode(state) {
 
-    if (state.selectionMode === "single") {
-        state.selectedMoodIndexes = [state.selectedMoodIndex];
+    const emojis = state.displayedEmojis.slice(0, state.displayedCount);
+    const selected = new Set(state.selectedIndexes);
+
+    const buttons = emojis.map((emoji, i) => {
+
+        const isSelected = selected.has(i);
+        const effectClass = isSelected ? `selected effect-${state.selectedEffect}` : "unselected";
+
+        return `
+            <button
+                type="button"
+                class="te-emoji-btn ${effectClass}"
+                data-index="${i}"
+                aria-pressed="${isSelected}"
+            >${emoji}</button>
+        `;
+
+    }).join("");
+
+    let summary = "";
+
+    if (state.selectedIndexes.length) {
+
+        const parts = state.selectedIndexes
+            .filter(i => i < emojis.length)
+            .map(i => emojis[i])
+            .join(" ");
+
+        summary = `<div class="te-summary">${parts}</div>`;
+
     }
 
-    if (state.selectionMode === "multiple") {
-        state.selectedMoodIndex = state.selectedMoodIndexes[0] ?? state.selectedMoodIndex;
-    }
-
-    if (state.displayedEmojis.length < 5) {
-        state.displayedEmojis = [
-            ...state.displayedEmojis,
-            ...DEFAULT_EMOJIS
-        ].slice(0, 5);
-    }
-
-    saveState(state);
-    renderTodayEmotionContainer(state);
-    return state;
+    return `
+        <div class="te-emoji-row">${buttons}</div>
+        ${summary}
+    `;
 
 }
+
+function renderSliderMode(state) {
+
+    const emojis = state.displayedEmojis.slice(0, state.displayedCount);
+    const values = state.sliderValues.slice(0, state.displayedCount);
+    const total = values.reduce((s, v) => s + v, 0);
+
+    const rows = emojis.map((emoji, i) => `
+        <div class="te-slider-row">
+            <span class="te-slider-emoji">${emoji}</span>
+            <input
+                type="range"
+                class="te-pct-slider"
+                data-index="${i}"
+                min="0"
+                max="100"
+                value="${values[i] || 0}"
+            >
+            <span class="te-pct-label" data-index="${i}">${values[i] || 0}%</span>
+        </div>
+    `).join("");
+
+    const totalClass = total === 100 ? "te-total ok" : "te-total error";
+
+    return `
+        <div class="te-sliders">${rows}</div>
+        <div class="${totalClass}">Total: ${total}%</div>
+    `;
+
+}
+
+function renderWidget(state) {
+
+    const titleMarkup = state.showTitle
+        ? `<div class="te-title">Today's Emotion</div>`
+        : "";
+
+    const contentMarkup = state.displayMode === "slider"
+        ? renderSliderMode(state)
+        : renderSelectMode(state);
+
+    return `
+        <div class="te-card">
+            ${titleMarkup}
+            ${contentMarkup}
+        </div>
+    `;
+
+}
+
+function rerender(state) {
+
+    const widget = document.getElementById("today-emotion-widget");
+
+    if (!widget) {
+        return;
+    }
+
+    const content = widget.querySelector(".widget-content");
+
+    if (!content) {
+        return;
+    }
+
+    content.innerHTML = renderWidget(state);
+
+}
+
+function updateState(partial) {
+
+    const next = { ...getSavedState(), ...partial };
+    saveState(next);
+    rerender(next);
+    return next;
+
+}
+
+/* ── Public API ──────────────────────────────────────────── */
 
 export function createTodayEmotionWidget() {
     return `
         <div class="widget" id="today-emotion-widget">
-            <div class="drag-handle" id="today-emotion-drag-handle">
+            <div class="drag-handle">
                 <span class="drag-dot"></span>
                 <span class="drag-dot"></span>
                 <span class="drag-dot"></span>
@@ -484,9 +276,7 @@ export function createTodayEmotionWidget() {
             <div class="widget-header">
                 <span>Today Emotion</span>
             </div>
-            <div class="widget-content" id="today-emotion-content">
-                Loading...
-            </div>
+            <div class="widget-content">Loading...</div>
             <div class="resize-handle">↘</div>
         </div>
     `;
@@ -502,135 +292,85 @@ export function initializeTodayEmotion() {
 
     let state = getSavedState();
     state = checkDailyReset(state);
-    renderTodayEmotionContainer(state);
+    rerender(state);
 
+    /* emoji select clicks */
     widget.addEventListener("click", event => {
 
-        const button = event.target.closest(".today-emotion-button");
+        const btn = event.target.closest(".te-emoji-btn");
 
-        if (!button) {
+        if (!btn) {
             return;
         }
 
-        const index = Number(button.dataset.index);
-        const currentState = getSavedState();
+        const index = Number(btn.dataset.index);
+        const cur = getSavedState();
 
-        if (currentState.emotionType !== "emoji") {
+        if (cur.displayMode !== "select") {
             return;
         }
 
-        if (currentState.selectionMode === "single") {
-
-            const percentages = { ...currentState.emojiPercentages };
-
-            for (const k of Object.keys(percentages)) {
-                percentages[k] = 0;
-            }
-
-            percentages[index] = 100;
+        if (cur.selectionMode === "single") {
 
             updateState({
-                selectedMoodIndex: index,
-                selectedMoodIndexes: [index],
-                emojiPercentages: percentages
+                selectedIndexes: [index]
             });
 
         } else {
 
-            const selectedMoodIndexes = new Set(currentState.selectedMoodIndexes);
+            const set = new Set(cur.selectedIndexes);
 
-            if (selectedMoodIndexes.has(index)) {
-                selectedMoodIndexes.delete(index);
+            if (set.has(index)) {
+                set.delete(index);
             } else {
-                selectedMoodIndexes.add(index);
+                set.add(index);
             }
 
-            const newIndexes = Array.from(selectedMoodIndexes);
-
-            let percentages = { ...currentState.emojiPercentages };
-            percentages[index] = 0;
-            percentages = normalizePercentages(percentages, newIndexes);
-
-            updateState({
-                selectedMoodIndexes: newIndexes,
-                selectedMoodIndex: newIndexes[0] ?? index,
-                emojiPercentages: percentages
-            });
+            updateState({ selectedIndexes: Array.from(set) });
 
         }
 
     });
 
+    /* percentage sliders */
     widget.addEventListener("input", event => {
 
-        const ratingSlider = event.target.closest(".today-emotion-rating-slider");
+        const slider = event.target.closest(".te-pct-slider");
 
-        if (ratingSlider) {
-            updateState({ ratingValue: Number(ratingSlider.value) });
+        if (!slider) {
             return;
         }
 
-        const pctSlider = event.target.closest(".emotion-pct-slider");
+        const i = Number(slider.dataset.index);
+        const cur = getSavedState();
+        const count = cur.displayedCount;
+        const newValues = rebalance(cur.sliderValues, i, Number(slider.value), count);
 
-        if (pctSlider) {
+        /* update sibling sliders + labels live without full re-render */
+        for (let j = 0; j < count; j++) {
 
-            const changedIndex = Number(pctSlider.dataset.index);
-            const newValue = Number(pctSlider.value);
-            const currentState = getSavedState();
-            const selectedIndexes = getSelectedIndexes(currentState);
+            const sib = widget.querySelector(`.te-pct-slider[data-index="${j}"]`);
+            const lbl = widget.querySelector(`.te-pct-label[data-index="${j}"]`);
 
-            const pctValueEl = widget.querySelector(
-                `.emotion-pct-value[data-index="${changedIndex}"]`
-            );
-
-            const newPercentages = rebalancePercentages(
-                currentState.emojiPercentages,
-                changedIndex,
-                newValue,
-                selectedIndexes
-            );
-
-            if (pctValueEl) {
-                pctValueEl.textContent = `${newPercentages[changedIndex]}%`;
+            if (sib) {
+                sib.value = newValues[j];
             }
 
-            // update sibling sliders live
-            selectedIndexes.forEach(i => {
-                if (i !== changedIndex) {
-                    const sibling = widget.querySelector(
-                        `.emotion-pct-slider[data-index="${i}"]`
-                    );
-                    const siblingValue = widget.querySelector(
-                        `.emotion-pct-value[data-index="${i}"]`
-                    );
-
-                    if (sibling) {
-                        sibling.value = newPercentages[i];
-                    }
-
-                    if (siblingValue) {
-                        siblingValue.textContent = `${newPercentages[i]}%`;
-                    }
-                }
-            });
-
-            const total = selectedIndexes.reduce(
-                (s, i) => s + (newPercentages[i] || 0),
-                0
-            );
-
-            const totalEl = widget.querySelector(".emotion-pct-total");
-
-            if (totalEl) {
-                totalEl.textContent = `Total: ${total}%`;
-                totalEl.className = total === 100
-                    ? "emotion-pct-total ok"
-                    : "emotion-pct-total error";
+            if (lbl) {
+                lbl.textContent = `${newValues[j]}%`;
             }
-
-            updateState({ emojiPercentages: newPercentages });
 
         }
+
+        const total = newValues.slice(0, count).reduce((s, v) => s + v, 0);
+        const totalEl = widget.querySelector(".te-total");
+
+        if (totalEl) {
+            totalEl.textContent = `Total: ${total}%`;
+            totalEl.className = total === 100 ? "te-total ok" : "te-total error";
+        }
+
+        updateState({ sliderValues: newValues });
 
     });
 
