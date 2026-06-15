@@ -28,6 +28,11 @@ import {
 }
 from "./weatherWeek.js";
 
+import {
+    createNowStreakWidget
+}
+from "./nowStreak.js";
+
 export const widgets = [
 
     {
@@ -73,6 +78,12 @@ export const widgets = [
         id: "weather-week",
         name: "Weather Week",
         create: createWeatherWeekWidget
+    },
+
+    {
+        id: "now-streak",
+        name: "Now Streak",
+        create: createNowStreakWidget
     },
 
 ];
