@@ -457,3 +457,121 @@ button {
     color: #bbb;
     font-size: 13px;
 }
+
+/* ===== FORMAT BAR ===== */
+#formatBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd8cf;
+    flex-wrap: wrap;
+}
+
+#uploadLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+#uploadLabel:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+.fbar-divider {
+    width: 1px;
+    height: 22px;
+    background: #ddd8cf;
+    margin: 0 4px;
+}
+
+#formatBar select {
+    border: 1px solid #ddd8cf;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #555;
+    border-radius: 8px;
+    padding: 4px 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+#formatBar select:hover,
+#formatBar select:focus {
+    border-color: #888;
+}
+
+#fontColor {
+    width: 32px;
+    height: 28px;
+    border: 1px solid #ddd8cf;
+    border-radius: 8px;
+    padding: 2px;
+    cursor: pointer;
+    background: transparent;
+    outline: none;
+}
+
+.fbar-btn {
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+}
+
+.fbar-btn:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+/* ===== WHITE PAPER CANVAS ===== */
+#canvas {
+    position: relative;
+    min-height: 520px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #ddd8cf;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+#box {
+    position: absolute;
+    inset: 0;
+    padding: 32px 40px;
+    min-height: 520px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #2a2a2a;
+    caret-color: #888;
+    white-space: pre-wrap;
+    word-break: break-word;
+    z-index: 1;
+    cursor: text;
+}

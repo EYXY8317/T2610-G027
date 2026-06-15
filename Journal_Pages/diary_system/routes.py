@@ -7,8 +7,10 @@ from Journal_Pages.diary_system.encouragement_data import (
     sad_list,
     angry_list
 )
-
+import os
+import time
 import random
+from werkzeug.utils import secure_filename
 
 
 #================================ blueprint ================================
@@ -24,7 +26,6 @@ def diary():
     date = request.args.get("date")
 
     if not date:
-
         date = datetime.now().strftime("%d/%m/%Y")
 
     from Journal_Pages.diary_system.logic import get_entry_by_date
@@ -32,14 +33,9 @@ def diary():
     entry = get_entry_by_date(date)
 
     if entry and entry["content"].strip() != "":
-
         mode = "view"
-
     else:
-
         mode = "add"
-
-    today = datetime.now().strftime("%d/%m/%Y")
 
     return render_template(
         "diary.html",
@@ -55,16 +51,11 @@ def diary():
 def autosave():
 
     content = request.form.get("content")
-
     mood = request.form.get("mood")
-
     date = request.form.get("date")
-
     topic = request.form.get("topic")
 
-    from Journal_Pages.diary_system.logic import (
-        get_entry_by_date
-    )
+    from Journal_Pages.diary_system.logic import get_entry_by_date
 
     existing = get_entry_by_date(date)
 
@@ -73,45 +64,34 @@ def autosave():
     if existing and mood and mood != existing.get("mood"):
 
         if mood == "Happy":
-
             message = random.choice(happy_list)
-
         elif mood == "Sad":
-
             message = random.choice(sad_list)
-
         elif mood == "Angry":
-
             message = random.choice(angry_list)
+        else:
+            message = ""
 
     # ================= KEEP OLD QUOTE =================
 
     elif existing and existing.get("quote"):
-
         message = existing.get("quote")
 
     else:
-
         message = ""
 
     new_data = {
-
         "date": date,
-
         "content": content,
-
         "mood": (
             mood if mood
             else (existing.get("mood") if existing else "")
         ),
-
         "topic": (
             topic if topic
             else (existing.get("topic") if existing else "")
         ),
-
         "quote": message
-
     }
 
     add_entry(new_data)
@@ -125,9 +105,7 @@ def autosave():
 def delete():
 
     date = request.form.get("date")
-
     delete_entry(date)
-
     return "deleted"
 
 
@@ -141,13 +119,10 @@ def search():
     keyword = request.form.get("keyword")
 
     if not keyword:
-
         return {"results": []}
 
     keyword = keyword.lower().replace(" ", "")
-
     entries = load_entries()
-
     results = []
 
     for e in entries:
@@ -165,17 +140,10 @@ def search():
         )
 
         if keyword in content or keyword in topic:
-
             results.append({
-
                 "date": e["date"],
-
                 "topic": e.get("topic", ""),
-
-                "content": (
-                    (e.get("content") or "")[:50]
-                )
-
+                "content": (e.get("content") or "")[:50]
             })
 
     return {"results": results}
@@ -186,14 +154,10 @@ def search():
 @diary_bp.route("/get_entry", methods=["POST"])
 def get_entry():
 
-    from Journal_Pages.diary_system.logic import (
-        get_entry_by_date
-    )
+    from Journal_Pages.diary_system.logic import get_entry_by_date
 
     date = request.form.get("date")
-
     entry = get_entry_by_date(date)
-
     return entry or {}
 
 
@@ -205,19 +169,12 @@ def get_message():
     mood = request.args.get("mood")
 
     if mood == "Happy":
-
         return random.choice(happy_list)
-
     elif mood == "Sad":
-
         return random.choice(sad_list)
-
     elif mood == "Angry":
-
         return random.choice(angry_list)
-
     else:
-
         return ""
 
 
@@ -226,32 +183,62 @@ def get_message():
 @diary_bp.route("/weather")
 def weather():
 
-    city = "Cyberjaya"
+    import requests
 
+    city = "Cyberjaya"
     api_key = "825799c844694c8dcff5bf94fa943a5a"
 
     url = (
-        f"https://api.openweathermap.org/data/2.5/weather"
+        f"[api.openweathermap.org](https://api.openweathermap.org/data/2.5/weather)"
         f"?q={city}"
         f"&appid={api_key}"
         f"&units=metric"
     )
+
+    response = requests.get(url)
+    return jsonify(response.json())
+
 
 #================================ weather forecast API ================================
 
 @diary_bp.route("/weather_forecast")
-
 def weather_forecast():
 
-    city = "Cyberjaya"
+    import requests
 
+    city = "Cyberjaya"
     api_key = "825799c844694c8dcff5bf94fa943a5a"
 
     url = (
-        f"https://api.openweathermap.org/data/2.5/forecast"
+        f"[api.openweathermap.org](https://api.openweathermap.org/data/2.5/forecast)"
         f"?q={city}"
         f"&appid={api_key}"
         f"&units=metric"
     )
 
-  
+    response = requests.get(url)
+    return jsonify(response.json())
+
+
+#================================ upload image API ================================
+
+UPLOAD_FOLDER = "static/uploads"
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@diary_bp.route("/upload_image", methods=["POST"])
+def upload_image():
+
+    file = request.files.get("file")
+
+    if not file:
+        return jsonify({"error": "no file"}), 400
+
+    filename = secure_filename(file.filename)
+    name, ext = os.path.splitext(filename)
+    filename = f"{name}_{int(time.time())}{ext}"
+
+    save_path = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(save_path)
+
+    url = "/static/uploads/" + filename
+    return jsonify({"url": url})

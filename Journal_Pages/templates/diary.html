@@ -2,10 +2,267 @@
 <html>
 <head>
     <title>Diary</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css)">
     <link rel="stylesheet" href="/diary_static/style.css">
-</head>
+    <style>
+        #canvas {
+            position: relative;
+            min-height: 520px;
+            width: 100%;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            overflow: hidden;
+            cursor: crosshair;
+        }
 
+        #box { display: none; }
+
+        /* ── Textbox ── */
+        .tb-wrap {
+            position: absolute;
+            z-index: 10;
+            min-width: 80px;
+        }
+
+        .tb-toolbar {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid #ddd;
+            border-radius: 6px 6px 0 0;
+            padding: 2px 6px;
+            cursor: grab;
+        }
+
+        .tb-wrap:hover .tb-toolbar,
+        .tb-wrap.active .tb-toolbar {
+            display: flex;
+        }
+
+        .tb-toolbar-drag {
+            font-size: 10px;
+            color: #aaa;
+            letter-spacing: 2px;
+            cursor: grab;
+            padding: 0 4px;
+        }
+
+        .tb-rotate-btn {
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0 4px;
+            line-height: 1;
+            color: #555;
+            cursor: grab;
+        }
+
+        .tb-del-btn {
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0 4px;
+            line-height: 1;
+            color: #e74c3c;
+            margin-left: auto;
+        }
+
+        .tb-content {
+            min-width: 80px;
+            min-height: 28px;
+            padding: 4px 8px;
+            border: 1.5px dashed transparent;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #2a2a2a;
+            white-space: pre-wrap;
+            word-break: break-word;
+            cursor: text;
+            background: transparent;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .tb-wrap:hover .tb-content,
+        .tb-wrap.active .tb-content {
+            border-color: #aaa;
+            background: rgba(255,255,255,0.55);
+        }
+
+        .tb-content:focus {
+            border-color: #666;
+            background: rgba(255,255,255,0.7);
+        }
+
+        .tb-content:empty::before {
+            content: "Type here...";
+            color: #bbb;
+            font-style: italic;
+            pointer-events: none;
+        }
+
+        /* ── Image ── */
+        .img-wrap {
+            position: absolute;
+            z-index: 5;
+            user-select: none;
+        }
+
+        .img-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+        }
+
+        .img-wrap img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .img-wrap .img-toolbar {
+            display: none;
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            align-items: center;
+            gap: 4px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 2px 8px;
+            white-space: nowrap;
+            z-index: 20;
+        }
+
+        .img-wrap:hover .img-toolbar {
+            display: flex;
+        }
+
+        .img-toolbar span {
+            font-size: 13px;
+            cursor: grab;
+            color: #555;
+        }
+
+        .img-toolbar .img-del-btn {
+            font-size: 13px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            padding: 0 2px;
+        }
+
+        .img-resize {
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            width: 14px;
+            height: 14px;
+            background: #555;
+            border-radius: 50%;
+            cursor: se-resize;
+            z-index: 20;
+            display: none;
+        }
+
+        .img-wrap:hover .img-resize {
+            display: block;
+        }
+
+        /* ── Format Bar ── */
+        #formatBar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 0;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #ddd8cf;
+            flex-wrap: wrap;
+        }
+
+        #uploadLabel {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: transparent;
+            border: 1px solid #ddd8cf;
+            color: #555;
+            border-radius: 8px;
+            padding: 5px 14px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        #uploadLabel:hover {
+            background: #1a1a1a;
+            color: #F2EFE9;
+            border-color: #1a1a1a;
+        }
+
+        .fbar-divider {
+            width: 1px;
+            height: 22px;
+            background: #ddd8cf;
+            margin: 0 4px;
+        }
+
+        #formatBar select {
+            border: 1px solid #ddd8cf;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            color: #555;
+            border-radius: 8px;
+            padding: 4px 8px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        #formatBar select:hover { border-color: #888; }
+
+        #fontColor {
+            width: 32px;
+            height: 28px;
+            border: 1px solid #ddd8cf;
+            border-radius: 8px;
+            padding: 2px;
+            cursor: pointer;
+            background: transparent;
+            outline: none;
+        }
+
+        .fbar-btn {
+            background: transparent;
+            border: 1px solid #ddd8cf;
+            color: #555;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .fbar-btn:hover {
+            background: #1a1a1a;
+            color: #F2EFE9;
+            border-color: #1a1a1a;
+        }
+    </style>
+</head>
 <body>
 
 <!-- ===== NAVBAR ===== -->
@@ -26,30 +283,52 @@
     </div>
 </div>
 
-<!-- Search results dropdown -->
 <div id="searchResults"></div>
 
 <!-- ===== MAIN CONTENT ===== -->
 <div id="mainContent">
 
-    <!-- Date Section -->
     <div id="dateSection">
         <div id="dayName"></div>
         <h2 id="dateDisplay" style="cursor:pointer;">{{ today }}</h2>
         <div id="monthYear"></div>
     </div>
 
-    <!-- Toolbar: topic + mood -->
+    <!-- Format Bar -->
+    <div id="formatBar">
+        <label id="uploadLabel" for="uploadImg">📷 Photo</label>
+        <input type="file" id="uploadImg" accept="image/*" style="display:none;">
+        <div class="fbar-divider"></div>
+        <select id="fontFamily">
+            <option value="Inter">Inter</option>
+            <option value="Playfair Display">Playfair</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Courier New">Courier</option>
+            <option value="Arial">Arial</option>
+        </select>
+        <select id="fontSize">
+            <option value="12px">12</option>
+            <option value="14px">14</option>
+            <option value="16px" selected>16</option>
+            <option value="18px">18</option>
+            <option value="20px">20</option>
+            <option value="24px">24</option>
+            <option value="32px">32</option>
+        </select>
+        <input type="color" id="fontColor" value="#2a2a2a" title="Text color">
+        <button class="fbar-btn" id="boldBtn"><b>B</b></button>
+        <button class="fbar-btn" id="italicBtn"><i>I</i></button>
+    </div>
+
+    <!-- Toolbar: mood + topic -->
     <div id="toolbar">
         <label for="mood">Mood</label>
-        <select id="mood" name="mood"
-            {{ "disabled" if mode == "view" else "" }}>
+        <select id="mood" name="mood" {{ "disabled" if mode == "view" else "" }}>
             <option value="">— select —</option>
             <option value="Happy"  {{ "selected" if entry and entry.mood == "Happy"  else "" }}>😊 Happy</option>
             <option value="Sad"    {{ "selected" if entry and entry.mood == "Sad"    else "" }}>😢 Sad</option>
             <option value="Angry"  {{ "selected" if entry and entry.mood == "Angry"  else "" }}>😡 Angry</option>
         </select>
-
         <label for="topic">Topic</label>
         <input type="text" id="topic" maxlength="20"
             value="{{ entry.topic if entry else '' }}"
@@ -57,11 +336,9 @@
             {{ "readonly" if mode == "view" else "" }}>
     </div>
 
-    <!-- Writing area -->
+    <!-- Canvas -->
     <div id="canvas">
-        <div id="box" contenteditable="{{ 'false' if mode == 'view' else 'true' }}">
-            {{ entry.content if entry else '' }}
-        </div>
+        <div id="box" contenteditable="false"></div>
     </div>
 
     <!-- Action bar -->
@@ -69,48 +346,461 @@
         <div id="leftActions">
             <button id="editBtn">Edit</button>
             <button id="deleteBtn">Delete</button>
-            <input type="file" id="uploadImg">
         </div>
         <p id="saveStatus"></p>
     </div>
 
-    <!-- Date navigation -->
     <div id="dateNav">
         <button id="prevDate">←</button>
         <button id="nextDate">→</button>
     </div>
 
-    <!-- Quote section -->
     <div id="quoteSection">
         <p id="msg">{{ entry.quote if entry and entry.quote else "" }}</p>
     </div>
 
 </div>
 
-<!-- Pass mode to JS -->
+<script>let mode = "{{ mode }}";</script>
+<script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/flatpickr)"></script>
+<script src="/diary_static/script.js"></script>
+
+<!-- Day name + month/year -->
 <script>
-    let mode = "{{ mode }}";
+(function(){
+    const raw = document.getElementById("dateDisplay").innerText.trim();
+    const parts = raw.split("/");
+    if (parts.length === 3) {
+        const d = new Date(parts[2], parts[1]-1, parts[0]);
+        const days   = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+        const months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
+                        "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+        document.getElementById("dayName").innerText   = days[d.getDay()];
+        document.getElementById("monthYear").innerText = months[d.getMonth()]+" "+d.getFullYear();
+    }
+})();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="/diary_static/script.js"></script>
-<script src="/diary_static/canvas.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-
-<!-- Day name + month/year display -->
+<!-- ===== CANVAS LOGIC ===== -->
 <script>
-    (function() {
-        const raw = document.getElementById("dateDisplay").innerText.trim();
-        const parts = raw.split("/");
-        if (parts.length === 3) {
-            const d = new Date(parts[2], parts[1] - 1, parts[0]);
-            const days   = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-            const months = ["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-                            "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
-            document.getElementById("dayName").innerText   = days[d.getDay()];
-            document.getElementById("monthYear").innerText = months[d.getMonth()] + " " + d.getFullYear();
+(function(){
+    const canvas    = document.getElementById("canvas");
+    const box       = document.getElementById("box");
+    const fFamily   = document.getElementById("fontFamily");
+    const fSize     = document.getElementById("fontSize");
+    const fColor    = document.getElementById("fontColor");
+    const boldBtn   = document.getElementById("boldBtn");
+    const italicBtn = document.getElementById("italicBtn");
+    const uploadImg = document.getElementById("uploadImg");
+    const saveStatus= document.getElementById("saveStatus");
+    const moodSel   = document.getElementById("mood");
+    const topicInp  = document.getElementById("topic");
+
+    let activeTb  = null;
+    let canEdit   = (mode === "add" || mode === "edit");
+    let saveTimer = null;
+
+    function getDate() {
+        const p = new URLSearchParams(window.location.search);
+        let d = p.get("date");
+        if (!d) {
+            const t = new Date();
+            const x = t.toISOString().split("T")[0].split("-");
+            d = x[2]+"/"+x[1]+"/"+x[0];
         }
-    })();
+        return d;
+    }
+
+    document.getElementById("editBtn").addEventListener("click", function(){
+        canEdit = true;
+        canvas.style.cursor = "crosshair";
+        canvas.querySelectorAll(".tb-content").forEach(tb => {
+            tb.contentEditable = "true";
+        });
+    });
+
+    /* ════════════════════════════════
+       DRAG HELPER
+    ════════════════════════════════ */
+    function makeDraggable(el, handle) {
+        handle.addEventListener("mousedown", function(e){
+            if (e.target.isContentEditable) return;
+            if (e.button !== 0) return;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const startX   = e.clientX;
+            const startY   = e.clientY;
+            const origLeft = parseFloat(el.style.left) || 0;
+            const origTop  = parseFloat(el.style.top)  || 0;
+
+            function onMove(e){
+                const cr = canvas.getBoundingClientRect();
+                let nl = origLeft + (e.clientX - startX);
+                let nt = origTop  + (e.clientY - startY);
+                nl = Math.max(0, Math.min(nl, cr.width  - el.offsetWidth));
+                nt = Math.max(0, Math.min(nt, cr.height - el.offsetHeight));
+                el.style.left = nl + "px";
+                el.style.top  = nt + "px";
+            }
+            function onUp(){
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+    }
+
+    /* ════════════════════════════════
+       ROTATE HELPER
+       rotateBtn: the element user drags
+       target:    the element that rotates
+       getCX/getCY: center point functions
+    ════════════════════════════════ */
+    function makeRotatable(rotateBtn, target) {
+        rotateBtn.addEventListener("mousedown", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+
+            function onMove(e){
+                const rect = target.getBoundingClientRect();
+                const cx = rect.left + rect.width  / 2;
+                const cy = rect.top  + rect.height / 2;
+                const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
+                target.style.transform = "rotate(" + angle + "deg)";
+                target.dataset.rotate  = angle;
+            }
+            function onUp(){
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+                schedSave();
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+    }
+
+    /* ════════════════════════════════
+       TEXTBOX
+    ════════════════════════════════ */
+    canvas.addEventListener("mousedown", function(e){
+        if (!canEdit) return;
+        if (e.target !== canvas) return;
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        makeTb(e.clientX - rect.left, e.clientY - rect.top, "", 0, true);
+    });
+
+    function makeTb(x, y, html, rotateDeg, doFocus) {
+        const wrap = document.createElement("div");
+        wrap.className  = "tb-wrap";
+        wrap.style.left = x + "px";
+        wrap.style.top  = y + "px";
+
+        /* toolbar row: drag handle | rotate btn | delete btn */
+        const toolbar = document.createElement("div");
+        toolbar.className = "tb-toolbar";
+
+        const dragHandle = document.createElement("span");
+        dragHandle.className   = "tb-toolbar-drag";
+        dragHandle.textContent = "⠿ drag";
+
+        const rotBtn = document.createElement("button");
+        rotBtn.className   = "tb-rotate-btn";
+        rotBtn.textContent = "⟳ rotate";
+        rotBtn.title       = "Drag to rotate";
+
+        const delBtn = document.createElement("button");
+        delBtn.className   = "tb-del-btn";
+        delBtn.textContent = "✕";
+        delBtn.title       = "Delete";
+
+        toolbar.appendChild(dragHandle);
+        toolbar.appendChild(rotBtn);
+        toolbar.appendChild(delBtn);
+
+        /* content */
+        const tb = document.createElement("div");
+        tb.className       = "tb-content";
+        tb.contentEditable = canEdit ? "true" : "false";
+        tb.innerHTML       = html;
+        tb.style.fontFamily = fFamily.value;
+        tb.style.fontSize   = fSize.value;
+        tb.style.color      = fColor.value;
+        if (rotateDeg) {
+            tb.style.transform = "rotate(" + rotateDeg + "deg)";
+            tb.dataset.rotate  = rotateDeg;
+        }
+
+        tb.addEventListener("focus", ()=>{
+            activeTb = tb;
+            wrap.classList.add("active");
+        });
+        tb.addEventListener("blur", ()=>{
+            wrap.classList.remove("active");
+            // remove if empty
+            setTimeout(()=>{
+                if (tb.innerText.trim() === "" && !wrap.matches(":hover")) {
+                    wrap.remove();
+                    schedSave();
+                }
+            }, 200);
+        });
+        tb.addEventListener("input", schedSave);
+
+        delBtn.addEventListener("mousedown", function(e){
+            e.preventDefault();
+            wrap.remove();
+            schedSave();
+        });
+
+        wrap.appendChild(toolbar);
+        wrap.appendChild(tb);
+        canvas.appendChild(wrap);
+
+        makeDraggable(wrap, dragHandle);
+        makeRotatable(rotBtn, tb);
+
+        if (doFocus) { tb.focus(); activeTb = tb; }
+        return tb;
+    }
+
+    /* ════════════════════════════════
+       IMAGE
+    ════════════════════════════════ */
+    uploadImg.addEventListener("change", function(e){
+        if (!canEdit) return;
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const fd = new FormData();
+        fd.append("file", file);
+
+        fetch("/upload_image", { method: "POST", body: fd })
+            .then(r => r.json())
+            .then(res => {
+                if (res.url) {
+                    makeImg(res.url, 40, 40, 180, 135, 0, null);
+                }
+            });
+
+        uploadImg.value = "";
+    });
+
+
+    function makeImg(src, x, y, w, h, rotateDeg, imgId) {
+        const wrap = document.createElement("div");
+        wrap.className   = "img-wrap";
+        wrap.style.left  = x + "px";
+        wrap.style.top   = y + "px";
+        wrap.style.width = w + "px";
+        wrap.style.height= h + "px";
+        if (imgId) wrap.dataset.imgId = imgId;
+
+        /* inner (rotates) */
+        const inner = document.createElement("div");
+        inner.className = "img-inner";
+        if (rotateDeg) {
+            inner.style.transform = "rotate(" + rotateDeg + "deg)";
+            inner.dataset.rotate  = rotateDeg;
+        }
+
+        const img = document.createElement("img");
+        img.src = src;
+
+        /* toolbar */
+        const toolbar = document.createElement("div");
+        toolbar.className = "img-toolbar";
+
+        const rotBtn = document.createElement("span");
+        rotBtn.textContent = "⟳ rotate";
+        rotBtn.title       = "Drag to rotate";
+        rotBtn.style.cursor = "grab";
+
+        const delBtn = document.createElement("button");
+        delBtn.className   = "img-del-btn";
+        delBtn.textContent = "✕ delete";
+
+        toolbar.appendChild(rotBtn);
+        toolbar.appendChild(delBtn);
+
+        /* resize handle */
+        const resizeHandle = document.createElement("div");
+        resizeHandle.className = "img-resize";
+
+        inner.appendChild(img);
+        wrap.appendChild(toolbar);
+        wrap.appendChild(inner);
+        wrap.appendChild(resizeHandle);
+        canvas.appendChild(wrap);
+
+        /* drag whole wrap */
+        makeDraggable(wrap, wrap);
+
+        /* rotate inner */
+        makeRotatable(rotBtn, inner);
+
+        /* delete */
+        delBtn.addEventListener("mousedown", function(e){
+            e.preventDefault();
+            wrap.remove();
+            schedSave();
+        });
+
+        /* resize */
+        resizeHandle.addEventListener("mousedown", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            const startX = e.clientX;
+            const startW = wrap.offsetWidth;
+            const startH = wrap.offsetHeight;
+            const ratio  = startH / startW;
+
+            function onMove(e){
+                const cr   = canvas.getBoundingClientRect();
+                const wl   = parseFloat(wrap.style.left) || 0;
+                const wt   = parseFloat(wrap.style.top)  || 0;
+                let newW   = Math.max(40, startW + (e.clientX - startX));
+                let newH   = newW * ratio;
+                if (wl + newW > cr.width)  newW = cr.width  - wl;
+                if (wt + newH > cr.height) newH = cr.height - wt;
+                wrap.style.width  = Math.max(40, newW) + "px";
+                wrap.style.height = Math.max(30, newH) + "px";
+            }
+            function onUp(){
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+
+        return wrap;
+    }
+
+    /* ════════════════════════════════
+       FORMAT BAR
+    ════════════════════════════════ */
+    fFamily.addEventListener("change", function(){
+        if (activeTb) activeTb.style.fontFamily = this.value;
+    });
+    fSize.addEventListener("change", function(){
+        if (activeTb) activeTb.style.fontSize = this.value;
+    });
+    fColor.addEventListener("input", function(){
+        if (!activeTb) return;
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed && activeTb.contains(sel.anchorNode)) {
+            document.execCommand("foreColor", false, this.value);
+        } else {
+            activeTb.style.color = this.value;
+        }
+    });
+    boldBtn.addEventListener("mousedown", function(e){
+        e.preventDefault(); document.execCommand("bold");
+    });
+    italicBtn.addEventListener("mousedown", function(e){
+        e.preventDefault(); document.execCommand("italic");
+    });
+
+    /* ════════════════════════════════
+       SAVE
+       Images are saved as data URLs
+       so they survive page reload
+    ════════════════════════════════ */
+    function schedSave(){
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(doSave, 1000);
+    }
+
+    function doSave(){
+        const chunks = [];
+
+        /* save textboxes */
+        canvas.querySelectorAll(".tb-wrap").forEach(wrap => {
+            const tb  = wrap.querySelector(".tb-content");
+            if (!tb || tb.innerText.trim() === "") return;
+            chunks.push(JSON.stringify({
+                type: "text",
+                x:  parseFloat(wrap.style.left)      || 0,
+                y:  parseFloat(wrap.style.top)       || 0,
+                ff: tb.style.fontFamily  || "Inter",
+                fs: tb.style.fontSize    || "16px",
+                fc: tb.style.color       || "#2a2a2a",
+                r:  parseFloat(tb.dataset.rotate)    || 0,
+                html: tb.innerHTML
+            }));
+        });
+
+        /* save images — just store the URL, no base64 */
+        canvas.querySelectorAll(".img-wrap").forEach(wrap => {
+            const imgEl = wrap.querySelector("img");
+            const inner = wrap.querySelector(".img-inner");
+            chunks.push(JSON.stringify({
+                type: "img",
+                x:  parseFloat(wrap.style.left)      || 0,
+                y:  parseFloat(wrap.style.top)       || 0,
+                w:  parseFloat(wrap.style.width)     || 160,
+                h:  parseFloat(wrap.style.height)    || 120,
+                r:  parseFloat(inner.dataset.rotate) || 0,
+                src: imgEl.src
+            }));
+        });
+
+        box.innerHTML = chunks.join("||ITEM||");
+        sendSave();
+
+    }
+
+    function sendSave(){
+        const data = new FormData();
+        data.append("content", box.innerHTML);
+        data.append("mood",    moodSel  ? moodSel.value  : "");
+        data.append("topic",   topicInp ? topicInp.value : "");
+        data.append("date",    getDate());
+
+        fetch("/autosave", { method:"POST", body:data })
+            .then(r => r.json())
+            .then(res => {
+                saveStatus.innerText   = "Saved ✅";
+                saveStatus.style.color = "green";
+                const msg = document.getElementById("msg");
+                if (msg && res.message) msg.innerText = res.message;
+            })
+            .catch(()=>{});
+    }
+
+    if (moodSel)  moodSel.addEventListener("change", schedSave);
+    if (topicInp) topicInp.addEventListener("input",  schedSave);
+
+    /* ════════════════════════════════
+       LOAD SAVED CONTENT
+    ════════════════════════════════ */
+    const savedRaw = `{{ entry.content if entry else '' }}`;
+    if (savedRaw.trim()) {
+        const items = savedRaw.split("||ITEM||");
+        items.forEach(item => {
+            item = item.trim();
+            if (!item) return;
+            try {
+                const d = JSON.parse(item);
+                if (d.type === "text") {
+                    const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                    tb.style.fontFamily = d.ff || "Inter";
+                    tb.style.fontSize   = d.fs || "16px";
+                    tb.style.color      = d.fc || "#2a2a2a";
+                } else if (d.type === "img") {
+                    makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
+                }
+            } catch(e) {
+                /* legacy plain text fallback */
+                if (item.length > 0) makeTb(40, 40, item, 0, false);
+            }
+        });
+    }
+
+})();
 </script>
 
 </body>
