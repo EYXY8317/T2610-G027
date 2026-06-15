@@ -139,7 +139,6 @@ function renderSliderMode(state) {
 
     const emojis = state.displayedEmojis.slice(0, state.displayedCount);
     const values = state.sliderValues.slice(0, state.displayedCount);
-    const total = values.reduce((s, v) => s + v, 0);
 
     const rows = emojis.map((emoji, i) => `
         <div class="te-slider-row">
@@ -156,11 +155,15 @@ function renderSliderMode(state) {
         </div>
     `).join("");
 
-    const totalClass = total === 100 ? "te-total ok" : "te-total error";
+    const dominantIdx = values.reduce((best, v, i) => v > (values[best] || 0) ? i : best, 0);
+    const dominantEmoji = values[dominantIdx] > 0 ? emojis[dominantIdx] : null;
+    const dominantLine = dominantEmoji
+        ? `<div class="te-dominant">Most: ${dominantEmoji}</div>`
+        : "";
 
     return `
         <div class="te-sliders">${rows}</div>
-        <div class="${totalClass}">Total: ${total}%</div>
+        ${dominantLine}
     `;
 
 }
@@ -278,33 +281,43 @@ export function initializeTodayEmotion() {
 
     });
 
-    /* percentage sliders */
+    /* percentage sliders — update DOM in-place while dragging, save on release */
     widget.addEventListener("input", event => {
 
         const slider = event.target.closest(".te-pct-slider");
-
-        if (!slider) {
-            return;
-        }
+        if (!slider) return;
 
         const i = Number(slider.dataset.index);
-        const cur = getSavedState();
-        const count = cur.displayedCount;
-        const newValues = [...cur.sliderValues];
-        newValues[i] = Number(slider.value);
-
         const lbl = widget.querySelector(`.te-pct-label[data-index="${i}"]`);
-        if (lbl) lbl.textContent = `${newValues[i]}%`;
+        if (lbl) lbl.textContent = `${slider.value}%`;
 
-        const total = newValues.slice(0, count).reduce((s, v) => s + v, 0);
-        const totalEl = widget.querySelector(".te-total");
-
-        if (totalEl) {
-            totalEl.textContent = `Total: ${total}%`;
-            totalEl.className = total === 100 ? "te-total ok" : "te-total error";
+        // update dominant emoji without rerender
+        const cur = getSavedState();
+        const emojis = cur.displayedEmojis.slice(0, cur.displayedCount);
+        const liveValues = Array.from(
+            widget.querySelectorAll(".te-pct-slider")
+        ).map(s => Number(s.value));
+        const dominantIdx = liveValues.reduce((best, v, j) => v > liveValues[best] ? j : best, 0);
+        const dominantEl = widget.querySelector(".te-dominant");
+        if (dominantEl) {
+            dominantEl.textContent = liveValues[dominantIdx] > 0
+                ? `Most: ${emojis[dominantIdx]}`
+                : "";
         }
 
-        updateState({ sliderValues: newValues });
+    });
+
+    widget.addEventListener("change", event => {
+
+        const slider = event.target.closest(".te-pct-slider");
+        if (!slider) return;
+
+        const cur = getSavedState();
+        const newValues = Array.from(
+            widget.querySelectorAll(".te-pct-slider")
+        ).map(s => Number(s.value));
+        const next = { ...cur, sliderValues: newValues };
+        saveState(next);
 
     });
 
