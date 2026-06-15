@@ -12,13 +12,6 @@ export function getDigitalClockSettings() {
                     <button class="segment-option" data-value="minimal">Minimal</button>
                 </div>
             </div>
-            <div class="setting-row flip-clock-size-row">
-                <span>Flip Clock Size</span>
-                <div>
-                    <input class="flip-clock-size-slider" type="range" min="40" max="160" value="80">
-                    <span class="flip-clock-size-value">80px</span>
-                </div>
-            </div>
         `,
 
         location: `
