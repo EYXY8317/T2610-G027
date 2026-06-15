@@ -44,6 +44,8 @@ const DEFAULT_STATE = {
     rotateDaily: true,
     showSources: ["system", "user"],      // array — "system" and/or "user"
     fontStyle: "serif",
+    showAuthor: true,
+    showSourceTag: true,
     savedQuotes: [],
     userQuotes: [],
     currentSource: "system",
@@ -166,9 +168,11 @@ function renderWidget(state) {
 
     return `
         <div class="quote-body" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}">
-            <div class="quote-text">${quote.text}</div>
-            ${quote.author ? `<div class="quote-author">— ${quote.author}</div>` : ""}
-            <div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>
+            <div class="quote-main">
+                <div class="quote-text">${quote.text}</div>
+                ${state.showAuthor !== false && quote.author ? `<div class="quote-author">— ${quote.author}</div>` : ""}
+                ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
+            </div>
             <div class="quote-actions">
                 <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
                     ${saved ? "★" : "☆"}

@@ -36,7 +36,13 @@ import {
 from "../settings/appearance/widgetAppearance.js";
 
 import {
-    renderWeatherHour
+    enableFontScale
+}
+from "../dashboard/fontScale.js";
+
+import {
+    renderWeatherHour,
+    initWeatherHourFontScale
 }
 from "../widgets/weatherHour.js";
 
@@ -128,6 +134,8 @@ export function initializeHomepage() {
                 applyWidgetAppearance(widget, savedApp);
             }
 
+            enableFontScale(widget);
+
             const dragHandle =
                 widget.querySelector(
                     ".drag-handle"
@@ -174,6 +182,7 @@ export function initializeHomepage() {
     updateDigitalClock();
 
     renderWeatherHour();
+    initWeatherHourFontScale();
     renderWeatherDay();
     renderWeatherWeek();
     initializeTodayEmotion();

@@ -46,6 +46,22 @@ export function getQuoteSettings() {
         graph: "",
 
         display: `
+            <h3>Show</h3>
+            <div class="setting-row">
+                <span>Author</span>
+                <div class="segment-button quote-show-author-seg">
+                    <button class="segment-option${state.showAuthor !== false ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${state.showAuthor === false ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <span>Source Tag</span>
+                <div class="segment-button quote-show-source-tag-seg">
+                    <button class="segment-option${state.showSourceTag !== false ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${state.showSourceTag === false ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+            </div>
+
             <h3>Categories</h3>
             <div class="quote-cat-chips">
                 ${ALL_CATEGORIES.map(c => `

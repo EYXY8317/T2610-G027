@@ -13,7 +13,7 @@ export function setupEditMode(settingsButton, menu, editLayoutButton, widgets) {
 
             editMode = false;
             settingsButton.textContent = "⚙ Customize Homepage";
-            console.log("Layout Saved");
+            console.log("Edit mode exited");
             return;
         }
 
@@ -30,7 +30,7 @@ export function setupEditMode(settingsButton, menu, editLayoutButton, widgets) {
             widget.classList.add("edit-mode");
         });
 
-        settingsButton.textContent = "💾 Save Layout";
+        settingsButton.textContent = "✓ Done";
         console.log("Edit Mode Started");
     });
 }

@@ -216,3 +216,13 @@ export async function renderWeatherHour() {
     }
 
 }
+
+export function initWeatherHourFontScale() {
+    const widget = document.getElementById("weather-hour-widget");
+    if (!widget) return;
+    new ResizeObserver(([entry]) => {
+        const scale = entry.contentRect.width / 300;
+        chartFontSize = Math.round(Math.max(8, Math.min(14, scale * 10)));
+        renderWeatherHour();
+    }).observe(widget);
+}
