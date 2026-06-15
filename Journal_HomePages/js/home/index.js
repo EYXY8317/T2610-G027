@@ -45,6 +45,11 @@ import {
 from "../widgets/weatherWeek.js";
 
 import {
+    initializeNowStreak
+}
+from "../widgets/nowStreak.js";
+
+import {
     initializeTodayEmotion
 }
 from "../widgets/todayEmotion.js";
@@ -141,6 +146,7 @@ export function initializeHomepage() {
     renderWeatherDay();
     renderWeatherWeek();
     initializeTodayEmotion();
+    initializeNowStreak();
     
     setupEditMode(
         settingsButton,

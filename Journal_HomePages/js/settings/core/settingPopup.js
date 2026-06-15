@@ -120,6 +120,16 @@ import {
 from "../widgets/weatherWeekSettings.js";
 
 import {
+    getNowStreakSettings
+}
+from "../widgets/nowStreakSettings.js";
+
+import {
+    updateNowStreakState
+}
+from "../../widgets/nowStreak.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -198,6 +208,16 @@ export function createSettingPopup(
 
         widgetContent =
             getTodayEmotionSettings();
+
+    }
+
+    else if (
+        widgetId ===
+        "now-streak-widget"
+    ) {
+
+        widgetContent =
+            getNowStreakSettings();
 
     }
 
@@ -1135,6 +1155,35 @@ if (
                 btn.classList.add("active");
                 setTempUnit(btn.dataset.value);
                 renderWeatherDay();
+            });
+        });
+
+    }
+
+    /* ── Now Streak settings ────────────────────────────── */
+
+    if (widgetId === "now-streak-widget") {
+
+        const nsTypeSelect = popup.querySelector(".ns-type-select");
+        if (nsTypeSelect) {
+            nsTypeSelect.addEventListener("change", event => {
+                updateNowStreakState({ streakType: event.target.value });
+            });
+        }
+
+        const nsCustomLabel = popup.querySelector(".ns-custom-label");
+        if (nsCustomLabel) {
+            nsCustomLabel.addEventListener("input", event => {
+                updateNowStreakState({ customLabel: event.target.value });
+            });
+        }
+
+        const nsDisplayBtns = popup.querySelectorAll(".ns-display-segment .segment-option");
+        nsDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                nsDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateNowStreakState({ displayMode: btn.dataset.value });
             });
         });
 
