@@ -1225,6 +1225,60 @@ body{
 
 }
 
+/* ==================================================
+   PRIORITY FLAGS
+================================================== */
+
+.priority-high{
+
+    color:#ef4444;
+
+}
+
+.priority-medium{
+
+    color:#f97316;
+
+}
+
+.priority-low{
+
+    color:#3b82f6;
+
+}
+
+.priority-none{
+
+    color:#9ca3af;
+
+}
+
+
+/* Flag icon size */
+
+.priority-box .material-symbols-rounded{
+
+    font-size:18px;
+
+    vertical-align:middle;
+
+}
+
+
+/* ==================================================
+   SELECTED PRIORITY
+================================================== */
+
+.priority-selected{
+
+    background:#f4efff !important;
+
+    border:1px solid #cdbbff !important;
+
+    font-weight:600;
+
+}
+
 
 /* ==================================================
    PRIORITY OPTIONS
@@ -1242,6 +1296,12 @@ body{
 
 .priority-box span{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
     padding:10px 14px;
 
     border-radius:14px;
@@ -1255,6 +1315,7 @@ body{
     transition:0.25s;
 
 }
+
 
 .priority-box span:hover{
 
