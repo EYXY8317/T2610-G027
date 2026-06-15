@@ -1,19 +1,13 @@
-import RESIZE_CONSTRAINTS from "./resizeConstraints.js";
+import { getConstraints } from "./resizeConstraints.js";
 
-export function computeNewSize(widget, startWidth, startHeight, deltaX, deltaY, constraints = RESIZE_CONSTRAINTS) {
+export function computeNewSize(widget, startWidth, startHeight, deltaX, deltaY) {
 
-    let newWidth = startWidth + deltaX;
+    const { minW, minH, maxW, maxH } = getConstraints(widget.id);
 
-    let newHeight = startHeight + deltaY;
+    const newWidth  = Math.max(minW, Math.min(startWidth  + deltaX, maxW));
+    const newHeight = Math.max(minH, Math.min(startHeight + deltaY, maxH));
 
-    newWidth = Math.max(constraints.MIN_WIDTH, Math.min(newWidth, constraints.MAX_WIDTH));
-
-    newHeight = Math.max(constraints.MIN_HEIGHT, Math.min(newHeight, constraints.MAX_HEIGHT));
-
-    return {
-        width: newWidth,
-        height: newHeight
-    };
+    return { width: newWidth, height: newHeight };
 
 }
 
