@@ -30,6 +30,12 @@ import {
 from "./loadLayout.js";
 
 import {
+    getWidgetAppearance,
+    applyWidgetAppearance
+}
+from "../settings/appearance/widgetAppearance.js";
+
+import {
     renderWeatherHour
 }
 from "../widgets/weatherHour.js";
@@ -116,6 +122,11 @@ export function initializeHomepage() {
             loadLayout(
                 widget
             );
+
+            const savedApp = getWidgetAppearance(widget.id);
+            if (savedApp) {
+                applyWidgetAppearance(widget, savedApp);
+            }
 
             const dragHandle =
                 widget.querySelector(
