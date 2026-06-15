@@ -134,6 +134,88 @@
 
 }
 
+/* ── Tab bar ─────────────────────────────────────────────── */
+
+.setting-tabs {
+
+    display: flex;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    flex-shrink: 0;
+
+    background: white;
+
+}
+
+.setting-tab {
+
+    flex: 1;
+
+    padding: 10px 4px;
+
+    border: none;
+
+    border-bottom: 2px solid transparent;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    color: #6b7280;
+
+    transition: color 0.15s, border-color 0.15s;
+
+    letter-spacing: 0.02em;
+
+}
+
+.setting-tab.active {
+
+    color: #3b82f6;
+
+    border-bottom-color: #3b82f6;
+
+    font-weight: 600;
+
+}
+
+.setting-tab:hover:not(.active) {
+
+    color: #374151;
+
+}
+
+/* ── Tab panes ───────────────────────────────────────────── */
+
+.setting-pane {
+
+    display: none;
+
+}
+
+.setting-pane.active {
+
+    display: block;
+
+}
+
+.setting-empty-note {
+
+    color: #9ca3af;
+
+    font-size: 13px;
+
+    text-align: center;
+
+    margin-top: 24px;
+
+}
+
 .segment-button {
 
     display: flex;

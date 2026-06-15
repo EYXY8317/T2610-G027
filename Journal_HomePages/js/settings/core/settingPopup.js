@@ -179,960 +179,345 @@ import {
 }
 from "../../widgets/todayEmotion.js";
 
-export function createSettingPopup(
-    widgetId
-) {
+const WIDGET_NAMES = {
+    "digital-clock-widget":   "Digital Clock",
+    "weather-hour-widget":    "Weather Hours",
+    "weather-day-widget":     "Weather Day",
+    "weather-week-widget":    "Weather Week",
+    "today-emotion-widget":   "Emotion Today",
+    "now-streak-widget":      "Now Streak",
+    "high-streak-widget":     "High Streak",
+    "picture-streak-widget":  "Picture Streak",
+    "emotion-summary-widget": "Emotion Summary",
+    "quote-widget":           "Quote"
+};
+
+function emptyPane() {
+    return `<p class="setting-empty-note">No settings in this section.</p>`;
+}
+
+export function createSettingPopup(widgetId) {
 
     closeCurrentPopup();
 
-    const appearanceContent =
-        getAppearanceSettings();
+    const appearanceHTML = getAppearanceSettings();
 
-    let widgetContent = "";
+    let widgetTabs = { style: "", location: "", graph: "", display: "" };
 
-    if (
-        widgetId ===
-        "digital-clock-widget"
-    ) {
-
-        widgetContent =
-            getDigitalClockSettings();
-
+    if (widgetId === "digital-clock-widget") {
+        widgetTabs = getDigitalClockSettings();
     }
-
-    else if (
-        widgetId ===
-        "weather-day-widget"
-    ) {
-
-        widgetContent =
-            getWeatherDaySettings();
-
+    else if (widgetId === "weather-day-widget") {
+        widgetTabs = getWeatherDaySettings();
     }
-
-    else if (
-        widgetId ===
-        "weather-hour-widget"
-    ) {
-
-        widgetContent =
-            getWeatherHourSettings();
-
+    else if (widgetId === "weather-hour-widget") {
+        widgetTabs = getWeatherHourSettings();
     }
-
-    else if (
-        widgetId ===
-        "weather-week-widget"
-    ) {
-
-        widgetContent =
-            getWeatherWeekSettings();
-
+    else if (widgetId === "weather-week-widget") {
+        widgetTabs = getWeatherWeekSettings();
     }
-
-    else if (
-        widgetId ===
-        "quote-widget"
-    ) {
-
-        widgetContent =
-            getQuoteSettings();
-
+    else if (widgetId === "quote-widget") {
+        widgetTabs = getQuoteSettings();
     }
-
-    else if (
-        widgetId ===
-        "today-emotion-widget"
-    ) {
-
-        widgetContent =
-            getTodayEmotionSettings();
-
+    else if (widgetId === "today-emotion-widget") {
+        widgetTabs = getTodayEmotionSettings();
     }
-
-    else if (
-        widgetId ===
-        "now-streak-widget"
-    ) {
-
-        widgetContent =
-            getNowStreakSettings();
-
+    else if (widgetId === "now-streak-widget") {
+        widgetTabs = getNowStreakSettings();
     }
-
-    else if (
-        widgetId ===
-        "high-streak-widget"
-    ) {
-
-        widgetContent =
-            getHighStreakSettings();
-
+    else if (widgetId === "high-streak-widget") {
+        widgetTabs = getHighStreakSettings();
     }
-
-    else if (
-        widgetId ===
-        "picture-streak-widget"
-    ) {
-
-        widgetContent =
-            getPictureStreakSettings();
-
+    else if (widgetId === "picture-streak-widget") {
+        widgetTabs = getPictureStreakSettings();
     }
-
-    else if (
-        widgetId ===
-        "emotion-summary-widget"
-    ) {
-
-        widgetContent =
-            getEmotionSummarySettings();
-
+    else if (widgetId === "emotion-summary-widget") {
+        widgetTabs = getEmotionSummarySettings();
     }
-
     else {
-
-        widgetContent =
-            `
-                <p>
-                    Coming Soon
-                </p>
-            `;
-
+        widgetTabs = { style: "", location: "", graph: "", display: "<p>Coming Soon</p>" };
     }
 
-    const popup =
-        document.createElement(
-            "div"
-        );
+    const widgetName = WIDGET_NAMES[widgetId] || widgetId;
 
-    popup.className =
-        "setting-popup";
+    const styleContent   = appearanceHTML + (widgetTabs.style || "");
+    const locationContent = widgetTabs.location || emptyPane();
+    const graphContent   = widgetTabs.graph    || emptyPane();
+    const displayContent = widgetTabs.display  || emptyPane();
+
+    const popup = document.createElement("div");
+    popup.className = "setting-popup";
 
     popup.innerHTML = `
 
-        <div
-            class="setting-header"
-        >
-
-            <span>
-
-                ${widgetId}
-
-            </span>
-
-            <button
-                class="setting-close"
-            >
-                ✕
-
-            </button>
-
+        <div class="setting-header">
+            <span>${widgetName}</span>
+            <button class="setting-close">✕</button>
         </div>
 
-        <div
-            class="setting-body"
-        >
+        <div class="setting-tabs">
+            <button class="setting-tab active" data-tab="style">Style</button>
+            <button class="setting-tab" data-tab="location">Location</button>
+            <button class="setting-tab" data-tab="graph">Graph</button>
+            <button class="setting-tab" data-tab="display">Display</button>
+        </div>
 
-            ${appearanceContent}
-
-            ${widgetContent}
-
+        <div class="setting-body">
+            <div class="setting-pane active" data-pane="style">${styleContent}</div>
+            <div class="setting-pane" data-pane="location">${locationContent}</div>
+            <div class="setting-pane" data-pane="graph">${graphContent}</div>
+            <div class="setting-pane" data-pane="display">${displayContent}</div>
         </div>
 
     `;
 
-    popup
-        .querySelector(
-            ".setting-close"
-        )
-        .addEventListener(
-            "click",
-            () => {
+    popup.querySelector(".setting-close").addEventListener("click", () => closeCurrentPopup());
 
-                closeCurrentPopup();
+    const tabBtns = popup.querySelectorAll(".setting-tab");
+    tabBtns.forEach(tab => {
+        tab.addEventListener("click", () => {
+            tabBtns.forEach(t => t.classList.remove("active"));
+            popup.querySelectorAll(".setting-pane").forEach(p => p.classList.remove("active"));
+            tab.classList.add("active");
+            popup.querySelector(`.setting-pane[data-pane="${tab.dataset.tab}"]`).classList.add("active");
+        });
+    });
 
-            }
-        );
+    document.body.append(popup);
 
-    document.body.append(
-        popup
-    );
+    /* ── Weather Hour: graph controls ─────────────────────── */
 
-    const frequencyButtons =
-        popup.querySelectorAll(
-            ".frequency-segment .segment-option"
-        );
+    const frequencyButtons = popup.querySelectorAll(".frequency-segment .segment-option");
+    const showIconButtons = popup.querySelectorAll(".show-icon-segment .segment-option");
+    const showTemperatureButtons = popup.querySelectorAll(".show-temperature-segment .segment-option");
+    const graphColorPicker = popup.querySelector(".graph-color-picker");
+    const graphSizeSlider = popup.querySelector(".graph-size-slider");
+    const graphSizeValue = popup.querySelector(".graph-size-value");
 
-    const showIconButtons =
-        popup.querySelectorAll(
-            ".show-icon-segment .segment-option"
-        );
-
-    const showTemperatureButtons =
-        popup.querySelectorAll(
-            ".show-temperature-segment .segment-option"
-        );
-
-    const graphColorPicker =
-        popup.querySelector(
-            ".graph-color-picker"
-        );
-
-    const graphSizeSlider =
-        popup.querySelector(
-            ".graph-size-slider"
-        );
-
-    const graphSizeValue =
-        popup.querySelector(
-            ".graph-size-value"
-        );
-
-    if (
-        graphSizeSlider &&
-        graphSizeValue
-    ) {
-
-        graphSizeSlider
-            .addEventListener(
-                "input",
-                event => {
-
-                    const size =
-                        Number(
-                            event.target.value
-                        );
-
-                    graphSizeValue
-                        .textContent =
-                        size + "%";
-
-                    setGraphSize(
-                        size
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
+    if (graphSizeSlider && graphSizeValue) {
+        graphSizeSlider.addEventListener("input", event => {
+            const size = Number(event.target.value);
+            graphSizeValue.textContent = size + "%";
+            setGraphSize(size);
+            renderWeatherHour();
+        });
     }
 
-    if (
-        graphColorPicker
-    ) {
-
-        graphColorPicker
-            .addEventListener(
-                "input",
-                event => {
-
-                    setGraphColor(
-                        event.target.value
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
+    if (graphColorPicker) {
+        graphColorPicker.addEventListener("input", event => {
+            setGraphColor(event.target.value);
+            renderWeatherHour();
+        });
     }
 
-    frequencyButtons.forEach(
-        button => {
+    frequencyButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            frequencyButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setWeatherFrequency(button.dataset.value);
+            renderWeatherHour();
+        });
+    });
 
-            button.addEventListener(
-                "click",
-                () => {
+    showIconButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showIconButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setShowWeatherIcon(button.dataset.value === "true");
+            renderWeatherHour();
+        });
+    });
 
-                    frequencyButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
+    showTemperatureButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showTemperatureButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setShowWeatherTemperature(button.dataset.value === "true");
+            renderWeatherHour();
+        });
+    });
 
-                    button.classList.add(
-                        "active"
-                    );
+    const showHumidityButtons = popup.querySelectorAll(".show-humidity-segment .segment-option");
+    showHumidityButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showHumidityButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setShowHumidity(button.dataset.value === "true");
+            renderWeatherHour();
+        });
+    });
 
-                    setWeatherFrequency(
-                        button.dataset.value
-                    );
+    /* ── Weather Hour: location controls ──────────────────── */
 
-                    renderWeatherHour();
+    const tempUnitButtons = popup.querySelectorAll(".temp-unit-segment .segment-option");
+    tempUnitButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            tempUnitButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setTempUnit(button.dataset.value);
+            renderWeatherHour();
+        });
+    });
 
-                }
-            );
-
-        }
-    );
-
-    showIconButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showIconButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    setShowWeatherIcon(
-                        button.dataset.value
-                        === "true"
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    showTemperatureButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showTemperatureButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    setShowWeatherTemperature(
-                        button.dataset.value
-                        === "true"
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    const showHumidityButtons =
-        popup.querySelectorAll(
-            ".show-humidity-segment .segment-option"
-        );
-
-    showHumidityButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showHumidityButtons.forEach(
-                        item => item.classList.remove("active")
-                    );
-
-                    button.classList.add("active");
-
-                    setShowHumidity(button.dataset.value === "true");
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    const tempUnitButtons =
-        popup.querySelectorAll(
-            ".temp-unit-segment .segment-option"
-        );
-
-    tempUnitButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    tempUnitButtons.forEach(
-                        item => item.classList.remove("active")
-                    );
-
-                    button.classList.add("active");
-
-                    setTempUnit(button.dataset.value);
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    const weatherCitySelect =
-        popup.querySelector(".weather-city-select");
-
+    const weatherCitySelect = popup.querySelector(".weather-city-select");
     if (weatherCitySelect) {
-
-        weatherCitySelect.addEventListener(
-            "change",
-            event => {
-
-                const [lat, lon] =
-                    event.target.value.split(",").map(Number);
-
-                const cityName =
-                    event.target.options[event.target.selectedIndex].text;
-
-                setWeatherCity(cityName, lat, lon);
-
-                renderWeatherHour();
-
-            }
-        );
-
+        weatherCitySelect.addEventListener("change", event => {
+            const [lat, lon] = event.target.value.split(",").map(Number);
+            const cityName = event.target.options[event.target.selectedIndex].text;
+            setWeatherCity(cityName, lat, lon);
+            renderWeatherHour();
+        });
     }
+
+    /* ── Digital Clock ────────────────────────────────────── */
 
     let showSeconds = true;
-
     let clockFormat = "24h";
+    let clockType   = "digital";
 
-    let clockType =
-        "digital";
+    const showSecondsButtons = popup.querySelectorAll(".show-seconds-segment .segment-option");
+    showSecondsButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showSecondsButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            showSeconds = button.dataset.value === "true";
+            setShowSeconds(showSeconds);
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
+    });
 
-    const showSecondsButtons =
-        popup.querySelectorAll(
-            ".show-seconds-segment .segment-option"
-        );
+    const clockFormatButtons = popup.querySelectorAll(".clock-format-segment .segment-option");
+    const clockTypeButtons   = popup.querySelectorAll(".clock-type-segment .segment-option");
 
-    showSecondsButtons.forEach(
-        button => {
+    clockTypeButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            clockTypeButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            clockType = button.dataset.value;
+            setClockType(clockType);
+        });
+    });
 
-            button.addEventListener(
-                "click",
-                () => {
+    const flipClockSizeSlider = popup.querySelector(".flip-clock-size-slider");
+    const flipClockSizeValue  = popup.querySelector(".flip-clock-size-value");
 
-                    showSecondsButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    showSeconds =
-                        button.dataset.value
-                        === "true";
-
-                    setShowSeconds(
-                        showSeconds
-                    );
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat,
-                        clockType
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    const clockFormatButtons =
-    
-        popup.querySelectorAll(
-            ".clock-format-segment .segment-option"
-        );
-
-    const clockTypeButtons =
-        popup.querySelectorAll(
-            ".clock-type-segment .segment-option"
-        );
-
-    clockTypeButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    clockTypeButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    clockType =
-                        button.dataset.value;
-
-                    setClockType(
-                        clockType
-                    );
-
-                    console.log(
-                        "Clock Type:",
-                        clockType
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    const flipClockSizeSlider =
-        popup.querySelector(
-            ".flip-clock-size-slider"
-        );
-
-    const flipClockSizeValue =
-        popup.querySelector(
-            ".flip-clock-size-value"
-        );
-
-    if (
-        flipClockSizeSlider
-    ) {
-
-        flipClockSizeSlider
-            .addEventListener(
-                "input",
-                event => {
-
-                    const size =
-                        event.target.value;
-
-                    flipClockSizeValue
-                        .textContent =
-                        size + "px";
-
-                    console.log(
-                        "Flip Size:",
-                        size
-                    );
-
-                    setFlipClockSize(
-                        Number(size)
-                    );
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat,
-                        clockType
-                    );
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat,
-                        clockType
-                    );
-
-                }
-            );
-
+    if (flipClockSizeSlider) {
+        flipClockSizeSlider.addEventListener("input", event => {
+            const size = event.target.value;
+            flipClockSizeValue.textContent = size + "px";
+            setFlipClockSize(Number(size));
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
     }
 
-    clockFormatButtons.forEach(
-        button => {
+    clockFormatButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            clockFormatButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            clockFormat = button.dataset.value;
+            setClockFormat(clockFormat);
+            renderDigitalClock(showSeconds, clockFormat);
+        });
+    });
 
-            button.addEventListener(
-                "click",
-                () => {
+    const showDateButtons = popup.querySelectorAll(".show-date-segment .segment-option");
+    showDateButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showDateButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setShowDate(button.dataset.value === "true");
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
+    });
 
-                    clockFormatButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
+    const showWeekdayButtons = popup.querySelectorAll(".show-weekday-segment .segment-option");
+    showWeekdayButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            showWeekdayButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            setShowWeekday(button.dataset.value === "true");
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
+    });
 
-                    button.classList.add(
-                        "active"
-                    );
-
-                    clockFormat =
-                        button.dataset.value;
-
-                    setClockFormat(
-                        clockFormat
-                    );
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    const showDateButtons =
-        popup.querySelectorAll(
-            ".show-date-segment .segment-option"
-        );
-
-    showDateButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showDateButtons.forEach(
-                        item => item.classList.remove("active")
-                    );
-
-                    button.classList.add("active");
-
-                    setShowDate(button.dataset.value === "true");
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat,
-                        clockType
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    const showWeekdayButtons =
-        popup.querySelectorAll(
-            ".show-weekday-segment .segment-option"
-        );
-
-    showWeekdayButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showWeekdayButtons.forEach(
-                        item => item.classList.remove("active")
-                    );
-
-                    button.classList.add("active");
-
-                    setShowWeekday(button.dataset.value === "true");
-
-                    renderDigitalClock(
-                        showSeconds,
-                        clockFormat,
-                        clockType
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    const timezoneSelect =
-        popup.querySelector(".clock-timezone-select");
-
+    const timezoneSelect = popup.querySelector(".clock-timezone-select");
     if (timezoneSelect) {
-
-        timezoneSelect.addEventListener(
-            "change",
-            event => {
-
-                setTimezone(event.target.value);
-
-                renderDigitalClock(
-                    showSeconds,
-                    clockFormat,
-                    clockType
-                );
-
-            }
-        );
-
+        timezoneSelect.addEventListener("change", event => {
+            setTimezone(event.target.value);
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
     }
 
-    const titleColorPicker =
-        popup.querySelector(
-            ".title-color-picker"
-        );
+    /* ── Appearance controls ──────────────────────────────── */
 
-    if (
-        titleColorPicker
-    ) {
-
-        titleColorPicker
-            .addEventListener(
-                "input",
-                event => {
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyTitleColor(
-                        widget,
-                        event.target.value
-                    );
-
-                }
-            );
-
+    const titleColorPicker = popup.querySelector(".title-color-picker");
+    if (titleColorPicker) {
+        titleColorPicker.addEventListener("input", event => {
+            const widget = document.getElementById(widgetId);
+            applyTitleColor(widget, event.target.value);
+        });
     }
 
-    const titleSizeSlider =
-        popup.querySelector(
-            ".title-size-slider"
-        );
-
-    const titleSizeValue =
-        popup.querySelector(
-            ".title-size-value"
-        );
-
-    if (
-        titleSizeSlider
-    ) {
-
-        titleSizeSlider
-            .addEventListener(
-                "input",
-                event => {
-
-                    const size =
-                        event.target.value;
-
-                    titleSizeValue
-                        .textContent =
-                        size + "px";
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyTitleSize(
-                        widget,
-                        size
-                    );
-
-                }
-            );
-
+    const titleSizeSlider = popup.querySelector(".title-size-slider");
+    const titleSizeValue  = popup.querySelector(".title-size-value");
+    if (titleSizeSlider) {
+        titleSizeSlider.addEventListener("input", event => {
+            const size = event.target.value;
+            titleSizeValue.textContent = size + "px";
+            const widget = document.getElementById(widgetId);
+            applyTitleSize(widget, size);
+        });
     }
 
-    const contentColorPicker =
-        popup.querySelector(
-            ".content-color-picker"
-        );
-
-    const backgroundColorPicker =
-        popup.querySelector(
-            ".background-color-picker"
-        );
-
-    const backgroundOpacitySlider =
-    popup.querySelector(
-        ".background-opacity-slider"
-    );
-
-const backgroundOpacityValue =
-    popup.querySelector(
-        ".background-opacity-value"
-    );
-
-if (
-    backgroundOpacitySlider
-) {
-
-    backgroundOpacitySlider
-        .addEventListener(
-            "input",
-            event => {
-
-                const opacity =
-                    event.target.value;
-
-                backgroundOpacityValue
-                    .textContent =
-                    opacity + "%";
-
-                const widget =
-                    document.getElementById(
-                        widgetId
-                    );
-
-                applyBackgroundOpacity(
-                    widget,
-                    opacity
-                );
-
-            }
-        );
-
-}
-
-    if (
-        backgroundColorPicker
-    ) {
-
-        backgroundColorPicker
-            .addEventListener(
-                "input",
-                event => {
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyBackgroundColor(
-                        widget,
-                        event.target.value
-                    );
-
-                }
-            );
-
+    const contentColorPicker = popup.querySelector(".content-color-picker");
+    if (contentColorPicker) {
+        contentColorPicker.addEventListener("input", event => {
+            const widget = document.getElementById(widgetId);
+            applyContentColor(widget, event.target.value);
+        });
     }
 
-    if (
-        contentColorPicker
-    ) {
-
-        contentColorPicker
-            .addEventListener(
-                "input",
-                event => {
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyContentColor(
-                        widget,
-                        event.target.value
-                    );
-
-                }
-            );
-
+    const backgroundColorPicker = popup.querySelector(".background-color-picker");
+    if (backgroundColorPicker) {
+        backgroundColorPicker.addEventListener("input", event => {
+            const widget = document.getElementById(widgetId);
+            applyBackgroundColor(widget, event.target.value);
+        });
     }
 
-    const contentSizeSlider =
-        popup.querySelector(
-            ".content-size-slider"
-        );
-
-    const contentSizeValue =
-        popup.querySelector(
-            ".content-size-value"
-        );
-
-    if (
-        contentSizeSlider
-    ) {
-
-        contentSizeSlider
-            .addEventListener(
-                "input",
-                event => {
-
-                    const size =
-                        event.target.value;
-
-                    contentSizeValue
-                        .textContent =
-                        size + "px";
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyFontSize(
-                        widget,
-                        size
-                    );
-
-                }
-            );
-
+    const backgroundOpacitySlider = popup.querySelector(".background-opacity-slider");
+    const backgroundOpacityValue  = popup.querySelector(".background-opacity-value");
+    if (backgroundOpacitySlider) {
+        backgroundOpacitySlider.addEventListener("input", event => {
+            const opacity = event.target.value;
+            backgroundOpacityValue.textContent = opacity + "%";
+            const widget = document.getElementById(widgetId);
+            applyBackgroundOpacity(widget, opacity);
+        });
     }
 
-    const titleButtons =
-        popup.querySelectorAll(
-            ".title-segment-option"
-        );
+    const contentSizeSlider = popup.querySelector(".content-size-slider");
+    const contentSizeValue  = popup.querySelector(".content-size-value");
+    if (contentSizeSlider) {
+        contentSizeSlider.addEventListener("input", event => {
+            const size = event.target.value;
+            contentSizeValue.textContent = size + "px";
+            const widget = document.getElementById(widgetId);
+            applyFontSize(widget, size);
+        });
+    }
 
-    titleButtons.forEach(
-        button => {
+    const titleButtons = popup.querySelectorAll(".title-segment-option");
+    titleButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            titleButtons.forEach(item => item.classList.remove("active"));
+            button.classList.add("active");
+            const widget = document.getElementById(widgetId);
+            applyShowTitle(widget, button.dataset.value === "true");
+        });
+    });
 
-            button.addEventListener(
-                "click",
-                () => {
-
-                    titleButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    const widget =
-                        document.getElementById(
-                            widgetId
-                        );
-
-                    applyShowTitle(
-                        widget,
-                        button.dataset.value
-                        === "true"
-                    );
-
-                }
-            );
-
-        }
-    );
-
-    /* ── Weather Week settings ──────────────────────────── */
+    /* ── Weather Week ─────────────────────────────────────── */
 
     if (widgetId === "weather-week-widget") {
 
@@ -1158,7 +543,6 @@ if (
         wireWwSegment(".ww-humidity-segment", "showHumidity");
 
         const wwCitySelect = popup.querySelector(".weather-city-select");
-
         if (wwCitySelect) {
             wwCitySelect.addEventListener("change", event => {
                 const [lat, lon] = event.target.value.split(",").map(Number);
@@ -1180,7 +564,7 @@ if (
 
     }
 
-    /* ── Weather Day settings ───────────────────────────── */
+    /* ── Weather Day ──────────────────────────────────────── */
 
     if (widgetId === "weather-day-widget") {
 
@@ -1190,11 +574,9 @@ if (
                 btn.addEventListener("click", () => {
                     btns.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
-                    const val = btn.dataset.value === "true"
-                        ? true
-                        : btn.dataset.value === "false"
-                            ? false
-                            : btn.dataset.value;
+                    const val = btn.dataset.value === "true" ? true
+                        : btn.dataset.value === "false" ? false
+                        : btn.dataset.value;
                     updateWeatherDayState({ [stateKey]: val });
                 });
             });
@@ -1207,7 +589,6 @@ if (
         wireWdSegment(".wd-update-time-segment", "showUpdateTime");
 
         const wdCitySelect = popup.querySelector(".weather-city-select");
-
         if (wdCitySelect) {
             wdCitySelect.addEventListener("change", event => {
                 const [lat, lon] = event.target.value.split(",").map(Number);
@@ -1229,7 +610,7 @@ if (
 
     }
 
-    /* ── Quote settings ─────────────────────────────────── */
+    /* ── Quote ────────────────────────────────────────────── */
 
     if (widgetId === "quote-widget") {
 
@@ -1270,7 +651,7 @@ if (
         const qAddBtn = popup.querySelector(".quote-add-btn");
         if (qAddBtn) {
             qAddBtn.addEventListener("click", () => {
-                const textEl = popup.querySelector(".quote-user-text");
+                const textEl   = popup.querySelector(".quote-user-text");
                 const authorEl = popup.querySelector(".quote-user-author");
                 const text = textEl?.value.trim();
                 if (!text) {
@@ -1278,9 +659,7 @@ if (
                 }
                 const author = authorEl?.value.trim() || "";
                 const state = getQuoteState ? getQuoteState() : { userQuotes: [] };
-                updateQuoteState({
-                    userQuotes: [...(state.userQuotes || []), { text, author }]
-                });
+                updateQuoteState({ userQuotes: [...(state.userQuotes || []), { text, author }] });
                 if (textEl) {
                     textEl.value = "";
                 }
@@ -1295,9 +674,7 @@ if (
             btn.addEventListener("click", () => {
                 const idx = Number(btn.dataset.index);
                 const state = getQuoteState ? getQuoteState() : { savedQuotes: [] };
-                updateQuoteState({
-                    savedQuotes: state.savedQuotes.filter((_, i) => i !== idx)
-                });
+                updateQuoteState({ savedQuotes: state.savedQuotes.filter((_, i) => i !== idx) });
                 popup.remove();
                 createSettingPopup(widgetId);
             });
@@ -1305,7 +682,7 @@ if (
 
     }
 
-    /* ── Emotion Summary settings ───────────────────────── */
+    /* ── Emotion Summary ──────────────────────────────────── */
 
     if (widgetId === "emotion-summary-widget") {
 
@@ -1320,7 +697,6 @@ if (
                         : btn.dataset.value;
                     updateEmotionSummaryState({ [stateKey]: val });
 
-                    // enable/disable custom date inputs
                     if (stateKey === "timeRange") {
                         const rows = popup.querySelectorAll(".es-custom-range");
                         rows.forEach(r => {
@@ -1353,7 +729,7 @@ if (
 
     }
 
-    /* ── Picture Streak settings ────────────────────────── */
+    /* ── Picture Streak ───────────────────────────────────── */
 
     if (widgetId === "picture-streak-widget") {
 
@@ -1411,7 +787,7 @@ if (
 
     }
 
-    /* ── High Streak settings ───────────────────────────── */
+    /* ── High Streak ──────────────────────────────────────── */
 
     if (widgetId === "high-streak-widget") {
 
@@ -1444,7 +820,7 @@ if (
 
     }
 
-    /* ── Now Streak settings ────────────────────────────── */
+    /* ── Now Streak ───────────────────────────────────────── */
 
     if (widgetId === "now-streak-widget") {
 
@@ -1473,7 +849,7 @@ if (
 
     }
 
-    /* ── Today Emotion settings ─────────────────────────── */
+    /* ── Today Emotion ────────────────────────────────────── */
 
     if (widgetId === "today-emotion-widget") {
 
@@ -1509,7 +885,7 @@ if (
         wireSegment(".te-title-segment", "showTitle");
 
         const countSlider = popup.querySelector(".te-count-slider");
-        const countValue = popup.querySelector(".te-count-value");
+        const countValue  = popup.querySelector(".te-count-value");
 
         if (countSlider) {
             countSlider.value = teState.displayedCount;
@@ -1526,7 +902,6 @@ if (
         }
 
         const emojiInputs = popup.querySelectorAll(".te-emoji-input");
-
         emojiInputs.forEach(input => {
             const idx = Number(input.dataset.index);
             input.value = teState.displayedEmojis[idx] || "";
@@ -1537,7 +912,6 @@ if (
         });
 
         const resetSelect = popup.querySelector(".te-reset-hour-select");
-
         if (resetSelect) {
             resetSelect.value = teState.resetHour ?? 0;
             resetSelect.addEventListener("change", event => {
@@ -1547,19 +921,11 @@ if (
 
     }
 
-    const header =
-        popup.querySelector(
-            ".setting-header"
-        );
+    /* ── Drag + register ──────────────────────────────────── */
 
-    enableSettingDrag(
-        popup,
-        header
-    );
-
-    setCurrentPopup(
-        popup
-    );
+    const header = popup.querySelector(".setting-header");
+    enableSettingDrag(popup, header);
+    setCurrentPopup(popup);
 
     return popup;
 
