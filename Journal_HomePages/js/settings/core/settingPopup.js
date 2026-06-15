@@ -21,8 +21,7 @@ import {
     setShowWeatherTemperature,
     setShowHumidity,
     setGraphColor,
-    setGraphSize,
-    setChartFontSize
+    setGraphSize
 }
 from "../../widgets/weatherHour.js";
 
@@ -52,15 +51,6 @@ import {
 }
 from "../appearance/contentColorSetting.js";
 
-import {
-    applyTitleSize
-}
-from "../appearance/titleSizeSetting.js";
-
-import {
-    applyFontSize
-}
-from "../appearance/fontSizeSetting.js";
 
 import {
     applyShowTitle
@@ -176,6 +166,16 @@ import {
 from "../../widgets/quote.js";
 
 import {
+    isOverlapping
+}
+from "../../dashboard/overlapManager.js";
+
+import {
+    saveLayout
+}
+from "../../home/saveLayout.js";
+
+import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -198,6 +198,65 @@ const WIDGET_NAMES = {
     "emotion-summary-widget": "Emotion Summary",
     "quote-widget":           "Quote"
 };
+
+// ── Quote widget: auto-expand when new content is shown ───────────────────────
+
+function measureQuoteOverflow(widget) {
+    const quoteMain    = widget.querySelector(".quote-main");
+    const quoteActions = widget.querySelector(".quote-actions");
+    if (!quoteMain || !quoteActions) return 0;
+    const header    = widget.querySelector(".widget-header");
+    const quoteBody = widget.querySelector(".quote-body");
+    const headerH   = header ? header.offsetHeight : 0;
+    const cs        = quoteBody ? getComputedStyle(quoteBody) : null;
+    const pt        = cs ? parseFloat(cs.paddingTop)    : 14;
+    const pb        = cs ? parseFloat(cs.paddingBottom) : 14;
+    const actCS     = getComputedStyle(quoteActions);
+    const actionsH  = quoteActions.scrollHeight + parseFloat(actCS.paddingTop || 0);
+    const minNeeded = headerH + pt + quoteMain.scrollHeight + actionsH + pb;
+    return Math.max(0, minNeeded - widget.offsetHeight);
+}
+
+function showNoSpaceWarning() {
+    if (document.querySelector(".widget-expand-warning")) return;
+    const el = document.createElement("div");
+    el.className = "widget-expand-warning";
+    el.textContent = "Not enough space — please adjust widget positions first.";
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+}
+
+function expandQuoteIfNeeded(widgetId) {
+    requestAnimationFrame(() => {
+        const widget = document.getElementById(widgetId);
+        if (!widget) return;
+
+        const overflow = measureQuoteOverflow(widget);
+        if (overflow <= 1) return;
+
+        const newHeight = widget.offsetHeight + overflow;
+        const dashboard = document.getElementById("dashboard");
+        const dashH     = dashboard ? dashboard.offsetHeight : window.innerHeight;
+
+        if (widget.offsetTop + newHeight > dashH) {
+            showNoSpaceWarning();
+            return;
+        }
+
+        const prevHeight = widget.style.height;
+        widget.style.height = newHeight + "px";
+
+        if (isOverlapping(widget)) {
+            widget.style.height = prevHeight;
+            showNoSpaceWarning();
+            return;
+        }
+
+        saveLayout(widget);
+    });
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 
 export function createSettingPopup(widgetId) {
 
@@ -316,23 +375,9 @@ export function createSettingPopup(widgetId) {
         _titleColorEl.value = savedApp.titleColor;
     }
 
-    const _titleSizeEl = popup.querySelector(".title-size-slider");
-    if (_titleSizeEl && savedApp.titleSize !== undefined) {
-        _titleSizeEl.value = savedApp.titleSize;
-        const _titleSizeVal = popup.querySelector(".title-size-value");
-        if (_titleSizeVal) _titleSizeVal.textContent = savedApp.titleSize + "px";
-    }
-
     const _contentColorEl = popup.querySelector(".content-color-picker");
     if (_contentColorEl && savedApp.contentColor) {
         _contentColorEl.value = savedApp.contentColor;
-    }
-
-    const _contentSizeEl = popup.querySelector(".content-size-slider");
-    if (_contentSizeEl && savedApp.contentSize !== undefined) {
-        _contentSizeEl.value = savedApp.contentSize;
-        const _contentSizeVal = popup.querySelector(".content-size-value");
-        if (_contentSizeVal) _contentSizeVal.textContent = savedApp.contentSize + "px";
     }
 
     if (savedApp.showTitle === false) {
@@ -515,18 +560,6 @@ export function createSettingPopup(widgetId) {
         });
     }
 
-    const titleSizeSlider = popup.querySelector(".title-size-slider");
-    const titleSizeValue  = popup.querySelector(".title-size-value");
-    if (titleSizeSlider) {
-        titleSizeSlider.addEventListener("input", event => {
-            const size = event.target.value;
-            titleSizeValue.textContent = size + "px";
-            const widget = document.getElementById(widgetId);
-            applyTitleSize(widget, size);
-            saveWidgetAppearance(widgetId, { titleSize: Number(size) });
-        });
-    }
-
     const contentColorPicker = popup.querySelector(".content-color-picker");
     if (contentColorPicker) {
         contentColorPicker.addEventListener("input", event => {
@@ -554,23 +587,6 @@ export function createSettingPopup(widgetId) {
             const widget = document.getElementById(widgetId);
             applyBackgroundOpacity(widget, opacity);
             saveWidgetAppearance(widgetId, { backgroundOpacity: Number(opacity) });
-        });
-    }
-
-    const contentSizeSlider = popup.querySelector(".content-size-slider");
-    const contentSizeValue  = popup.querySelector(".content-size-value");
-    if (contentSizeSlider) {
-        contentSizeSlider.addEventListener("input", event => {
-            const size = event.target.value;
-            contentSizeValue.textContent = size + "px";
-            const widget = document.getElementById(widgetId);
-            applyFontSize(widget, size);
-            saveWidgetAppearance(widgetId, { contentSize: Number(size) });
-
-            if (widgetId === "weather-hour-widget") {
-                setChartFontSize(Number(size));
-                renderWeatherHour();
-            }
         });
     }
 
@@ -749,6 +765,22 @@ export function createSettingPopup(widgetId) {
         wireQSegment(".quote-auto-rotate-segment", "autoRotate");
         wireQSegment(".quote-rotate-daily-segment", "rotateDaily");
         wireQSegment(".quote-font-segment", "fontStyle");
+        // Show/hide toggles — expand widget if new content doesn't fit
+        [
+            { sel: ".quote-show-author-seg",     key: "showAuthor"    },
+            { sel: ".quote-show-source-tag-seg", key: "showSourceTag" },
+        ].forEach(({ sel, key }) => {
+            const btns = popup.querySelectorAll(`${sel} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    const val = btn.dataset.value === "true";
+                    updateQuoteState({ [key]: val });
+                    if (val) expandQuoteIfNeeded(widgetId);
+                });
+            });
+        });
 
         // Add user quote
         const qAddBtn = popup.querySelector(".quote-add-btn");

@@ -13,6 +13,56 @@ import {
 }
 from "./overlapManager.js";
 
+import {
+    saveLayout
+}
+from "../home/saveLayout.js";
+
+// Returns how many extra px the widget needs so no content is clipped.
+export function contentOverflow(widget) {
+    // Quote widget: measure every visible element explicitly
+    const quoteMain    = widget.querySelector(".quote-main");
+    const quoteActions = widget.querySelector(".quote-actions");
+    if (quoteMain && quoteActions) {
+        const header    = widget.querySelector(".widget-header");
+        const quoteBody = widget.querySelector(".quote-body");
+        const headerH   = header ? header.offsetHeight : 0;
+        const cs        = quoteBody ? getComputedStyle(quoteBody) : null;
+        const pt        = cs ? parseFloat(cs.paddingTop)    : 14;
+        const pb        = cs ? parseFloat(cs.paddingBottom) : 14;
+        const actCS     = getComputedStyle(quoteActions);
+        const actionsH  = quoteActions.scrollHeight + parseFloat(actCS.paddingTop || 0);
+        const minNeeded = headerH + pt + quoteMain.scrollHeight + actionsH + pb;
+        return Math.max(0, minNeeded - widget.offsetHeight);
+    }
+
+    // Weather week: directly compare table natural height vs available space
+    const wwTable = widget.querySelector(".ww-table");
+    if (wwTable) {
+        const header    = widget.querySelector(".widget-header");
+        const headerH   = header ? header.offsetHeight : 0;
+        const available = widget.offsetHeight - headerH;
+        return Math.max(0, wwTable.offsetHeight - available);
+    }
+
+    // Generic fallback: check widget-content itself (scrollHeight vs clientHeight)
+    const content = widget.querySelector(".widget-content");
+    if (!content) return 0;
+
+    const contentOver = content.scrollHeight - content.clientHeight;
+    if (contentOver > 1) return contentOver;
+
+    for (const child of content.children) {
+        const over = child.scrollHeight - child.clientHeight;
+        if (over > 1) return over;
+        for (const grandchild of child.children) {
+            const over2 = grandchild.scrollHeight - grandchild.clientHeight;
+            if (over2 > 1) return over2;
+        }
+    }
+    return 0;
+}
+
 export function enableResize(
     widget,
     handle
@@ -88,6 +138,12 @@ export function enableResize(
             widget.style.height =
                 snapped.height + "px";
 
+            // Content-aware floor: expand height if any content is being clipped
+            const overflow = contentOverflow(widget);
+            if (overflow > 1) {
+                widget.style.height = (widget.offsetHeight + overflow) + "px";
+            }
+
         }
     );
 
@@ -121,6 +177,8 @@ export function enableResize(
                 );
 
             }
+
+            saveLayout(widget);
 
             isResizing = false;
 

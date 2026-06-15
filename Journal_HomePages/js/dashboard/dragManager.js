@@ -13,6 +13,11 @@ import {
 }
 from "./overlapManager.js";
 
+import {
+    saveLayout
+}
+from "../home/saveLayout.js";
+
 let currentZIndex = 1;
 
 export function enableDrag(
@@ -131,6 +136,8 @@ export function enableDrag(
             }
 
             hideGuideLines();
+
+            saveLayout(widget);
 
             isDragging = false;
 

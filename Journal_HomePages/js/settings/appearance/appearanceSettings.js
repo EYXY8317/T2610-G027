@@ -19,19 +19,9 @@ import {
 from "./titleColorSetting.js";
 
 import {
-    getTitleSizeSetting
-}
-from "./titleSizeSetting.js";
-
-import {
     getShowTitleSetting
 }
 from "./showTitleSetting.js";
-
-import {
-    getFontSizeSetting
-}
-from "./fontSizeSetting.js";
 
 export function getAppearanceSettings() {
 
@@ -45,15 +35,7 @@ export function getAppearanceSettings() {
 
         <hr>
 
-        ${getTitleSizeSetting()}
-
-        <hr>
-
         ${getTitleColorSetting()}
-
-        <hr>
-
-        ${getFontSizeSetting()}
 
         <hr>
 

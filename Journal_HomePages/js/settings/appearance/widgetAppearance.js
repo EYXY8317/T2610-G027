@@ -4,9 +4,7 @@ const DEFAULTS = {
     backgroundColor: "#ffffff",
     backgroundOpacity: 100,
     titleColor: "#000000",
-    titleSize: 20,
     contentColor: "#000000",
-    contentSize: 18,
     showTitle: true
 };
 
@@ -41,13 +39,11 @@ export function applyWidgetAppearance(widget, app) {
     const header = widget.querySelector(".widget-header");
     if (header) {
         header.style.color   = app.titleColor || "";
-        header.style.fontSize = (app.titleSize ?? 20) + "px";
         header.style.display  = app.showTitle !== false ? "flex" : "none";
     }
 
     const content = widget.querySelector(".widget-content");
     if (content) {
-        content.style.color    = app.contentColor || "";
-        content.style.fontSize = (app.contentSize ?? 18) + "px";
+        content.style.color = app.contentColor || "";
     }
 }

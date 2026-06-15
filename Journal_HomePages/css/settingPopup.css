@@ -61,3 +61,26 @@
     font-size: 18px;
 
 }
+
+.widget-expand-warning {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    z-index: 9999;
+    pointer-events: none;
+    animation: warn-fadein 0.2s ease;
+}
+
+@keyframes warn-fadein {
+    from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
