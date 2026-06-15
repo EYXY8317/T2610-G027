@@ -226,11 +226,36 @@ export function renderDigitalClock(
 
     }
 
+    // shared auto-size for digital + minimal
+    const widgetEl2 = clock.closest(".widget");
+    const widgetW2  = widgetEl2 ? widgetEl2.offsetWidth  : 320;
+    const widgetH2  = widgetEl2 ? widgetEl2.offsetHeight : 220;
+    const headerH2  = widgetEl2?.querySelector(".widget-header")?.offsetHeight ?? 36;
+    const contentH2 = widgetH2 - headerH2;
+    const hasDate2  = showDate || showWeekday;
+    const dateH2    = hasDate2 ? 36 : 0;
+
+    // estimate rendered width: digits ≈ 0.58em, colons ≈ 0.32em, spaces ≈ 0.28em
+    function estimateEm(str) {
+        let em = 0;
+        for (const ch of str) {
+            if (ch === ":") em += 0.32;
+            else if (ch === " ") em += 0.28;
+            else em += 0.58;
+        }
+        return em;
+    }
+
+    const emW   = estimateEm(timeStr);
+    const fsFromW2 = (widgetW2 - 32) / emW;
+    const fsFromH2 = (contentH2 - dateH2 - 20) * 0.82;
+    const fs2 = Math.max(16, Math.floor(Math.min(fsFromW2, fsFromH2)));
+
     if (clockType === "minimal") {
 
         clock.innerHTML = `
             <div class="clock-minimal">
-                <div class="clock-minimal-time">${timeStr}</div>
+                <div class="clock-minimal-time" style="font-size:${fs2}px">${timeStr}</div>
                 ${dateLine ? `<div class="clock-minimal-date">${dateLine}</div>` : ""}
             </div>
         `;
@@ -242,7 +267,7 @@ export function renderDigitalClock(
     // digital (default)
     clock.innerHTML = `
         <div class="clock-digital">
-            <div class="clock-digital-time">${timeStr}</div>
+            <div class="clock-digital-time" style="font-size:${fs2}px">${timeStr}</div>
             ${dateLine ? `<div class="clock-date-line">${dateLine}</div>` : ""}
         </div>
     `;

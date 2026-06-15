@@ -16,8 +16,11 @@
 
     border-radius: 20px;
 
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1.5px solid #d1d5db;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, var(--widget-shadow-a, 0.10));
+    /* only show shadow below the card; clip left/right/top so adjacent cards have no shadow between them */
+    clip-path: inset(0 0 -24px 0 round 20px);
 
     display: flex;
 
@@ -76,7 +79,11 @@
 
     justify-content: center;
 
+    padding: 10px 14px;
+
     font-size: calc(var(--widget-font-scale, 1) * 14px);
+
+    box-sizing: border-box;
 
 }
 
