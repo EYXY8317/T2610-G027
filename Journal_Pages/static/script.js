@@ -328,3 +328,83 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 });
+
+// ======================== FORMAT BAR ========================
+document.addEventListener("DOMContentLoaded", function () {
+
+    const fontFamily = document.getElementById("fontFamily");
+    const fontSize   = document.getElementById("fontSize");
+    const fontColor  = document.getElementById("fontColor");
+    const boldBtn    = document.getElementById("boldBtn");
+    const italicBtn  = document.getElementById("italicBtn");
+    const box        = document.getElementById("box");
+
+    // 保存选区，防止 select/click 工具栏时失去焦点
+    let savedRange = null;
+
+    box.addEventListener("mouseup", saveRange);
+    box.addEventListener("keyup",   saveRange);
+
+    function saveRange() {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            savedRange = sel.getRangeAt(0).cloneRange();
+        }
+    }
+
+    function restoreRange() {
+        if (!savedRange) return;
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
+    }
+
+    // 字体
+    fontFamily.addEventListener("change", function () {
+        restoreRange();
+        document.execCommand("fontName", false, this.value);
+        box.focus();
+    });
+
+    // 大小
+    fontSize.addEventListener("change", function () {
+        restoreRange();
+        // execCommand fontSize 只接受 1-7，用 span 包裹更精确
+        const size = this.value + "px";
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+            const range = sel.getRangeAt(0);
+            const span  = document.createElement("span");
+            span.style.fontSize = size;
+            range.surroundContents(span);
+        } else {
+            // 光标处设置，后续输入生效
+            document.execCommand("fontSize", false, "7");
+            const fontEls = box.querySelectorAll("font[size='7']");
+            fontEls.forEach(el => {
+                el.removeAttribute("size");
+                el.style.fontSize = size;
+            });
+        }
+        box.focus();
+    });
+
+    // 颜色
+    fontColor.addEventListener("input", function () {
+        restoreRange();
+        document.execCommand("foreColor", false, this.value);
+        box.focus();
+    });
+
+    // 粗体
+    boldBtn.addEventListener("mousedown", function (e) {
+        e.preventDefault(); // 防止 box 失去焦点
+        document.execCommand("bold");
+    });
+
+    // 斜体
+    italicBtn.addEventListener("mousedown", function (e) {
+        e.preventDefault();
+        document.execCommand("italic");
+    });
+});
