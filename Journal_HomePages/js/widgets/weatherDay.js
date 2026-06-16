@@ -65,29 +65,45 @@ export function createWeatherDayWidget() {
 
 let _wdResizeObserver = null;
 
+function _applyFontSizes(body, base) {
+    const icon  = body.querySelector(".wd-icon");
+    if (icon)  icon.style.fontSize  = `${Math.round(2.6  * base)}px`;
+    const temp  = body.querySelector(".wd-temp");
+    if (temp)  temp.style.fontSize  = `${Math.round(2.8  * base)}px`;
+    const label = body.querySelector(".wd-temp-label");
+    if (label) label.style.fontSize = `${Math.round(0.75 * base)}px`;
+    body.querySelectorAll(".wd-range,.wd-feels,.wd-humidity,.wd-city,.wd-update").forEach(el => {
+        el.style.fontSize = `${Math.round(0.85 * base)}px`;
+    });
+}
+
 function applyWeatherDayScale(widget) {
     if (!widget) return;
+    const body = widget.querySelector(".wd-body");
+    if (!body) return;
+
     const headerH  = widget.querySelector(".widget-header")?.offsetHeight ?? 36;
     const contentH = widget.offsetHeight - headerH;
     const widgetW  = widget.offsetWidth;
 
-    // Scale relative to a 400×250 reference card (content ~214px tall)
-    const scaleW = (widgetW - 20) / 380;
-    const scaleH = contentH / 214;
-    const base   = Math.max(10, Math.round(14 * Math.min(scaleW, scaleH)));
+    // Measure at a known base, then scale to fill available space
+    const DEFAULT_BASE = 16;
+    _applyFontSizes(body, DEFAULT_BASE);
 
-    const icon = widget.querySelector(".wd-icon");
-    if (icon) icon.style.fontSize = `${Math.round(2.6 * base)}px`;
+    const naturalH = body.scrollHeight;
+    const maxNaturalW = Math.max(
+        body.querySelector(".wd-temp")?.scrollWidth  || 0,
+        body.querySelector(".wd-city")?.scrollWidth  || 0,
+        body.querySelector(".wd-range")?.scrollWidth || 0,
+        body.querySelector(".wd-feels")?.scrollWidth || 0,
+        1
+    );
 
-    const temp = widget.querySelector(".wd-temp");
-    if (temp) temp.style.fontSize = `${Math.round(2.8 * base)}px`;
+    const scaleH = (contentH - 8) / naturalH;
+    const scaleW = (widgetW  - 16) / maxNaturalW;
+    const base   = Math.max(16, Math.round(DEFAULT_BASE * Math.min(scaleH, scaleW)));
 
-    const label = widget.querySelector(".wd-temp-label");
-    if (label) label.style.fontSize = `${Math.max(10, Math.round(0.75 * base))}px`;
-
-    widget.querySelectorAll(".wd-range,.wd-feels,.wd-humidity,.wd-city,.wd-update").forEach(el => {
-        el.style.fontSize = `${Math.max(10, Math.round(0.85 * base))}px`;
-    });
+    _applyFontSizes(body, base);
 }
 
 async function fetchDayData(lat, lon) {
