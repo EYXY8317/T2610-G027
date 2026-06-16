@@ -203,10 +203,8 @@ export async function renderWeatherDay() {
             autoExpandWidget("weather-day-widget");
 
             if (!_wdResizeObserver && widget) {
-                _wdResizeObserver = new ResizeObserver(() => {
-                    requestAnimationFrame(() => applyWeatherDayScale(widget));
-                });
-                _wdResizeObserver.observe(widget);
+                _wdResizeObserver = true;
+                widget.addEventListener("widgetresize", () => applyWeatherDayScale(widget));
             }
         });
 

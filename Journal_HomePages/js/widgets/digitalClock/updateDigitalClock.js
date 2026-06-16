@@ -57,12 +57,8 @@ export function updateDigitalClock() {
 
     // Re-render immediately on resize so font size tracks the card size smoothly
     const widget = document.getElementById("digital-clock-widget");
-    if (widget && typeof ResizeObserver !== "undefined") {
-        let rafId = null;
-        new ResizeObserver(() => {
-            if (rafId) return;
-            rafId = requestAnimationFrame(() => { rafId = null; render(); });
-        }).observe(widget);
+    if (widget) {
+        widget.addEventListener("widgetresize", render);
     }
 
 }
