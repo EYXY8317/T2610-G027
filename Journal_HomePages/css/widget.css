@@ -79,11 +79,7 @@
 
     justify-content: center;
 
-    padding: 10px 14px;
-
     font-size: calc(var(--widget-font-scale, 1) * 14px);
-
-    box-sizing: border-box;
 
 }
 
@@ -871,7 +867,7 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding: 12px;
+    padding: 6px 10px;
     width: 100%;
     height: 100%;
     justify-content: center;
