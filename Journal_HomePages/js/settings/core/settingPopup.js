@@ -957,6 +957,7 @@ export function createSettingPopup(widgetId) {
         wireSegment(".te-display-mode-segment", "displayMode");
         wireSegment(".te-selection-mode-segment", "selectionMode");
         wireSegment(".te-effect-segment", "selectedEffect");
+        wireSegment(".te-show-most-segment", "showMost");
         wireSegment(".te-title-segment", "showTitle");
 
         const countSlider = popup.querySelector(".te-count-slider");

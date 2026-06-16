@@ -53,6 +53,15 @@ export function getTodayEmotionSettings() {
                 </div>
             </div>
 
+            <h3>Slider Mode Settings</h3>
+            <div class="setting-row">
+                <span>Show Most</span>
+                <div class="segment-button te-show-most-segment">
+                    <button class="segment-option active" data-value="true">ON</button>
+                    <button class="segment-option" data-value="false">OFF</button>
+                </div>
+            </div>
+
             <h3>Other</h3>
             <div class="setting-row">
                 <span>Show Title</span>

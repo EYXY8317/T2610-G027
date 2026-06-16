@@ -12,6 +12,7 @@ const DEFAULT_STATE = {
     selectedEffect: "border",       // "border" | "glow" | "scale"
     // slider mode
     sliderValues: [0, 0, 0, 0, 0], // percentages per emoji
+    showMost: true,
     // shared
     showTitle: true,
     resetHour: 0
@@ -151,12 +152,11 @@ function renderSliderMode(state) {
                 max="100"
                 value="${values[i] || 0}"
             >
-            <span class="te-pct-label" data-index="${i}">${values[i] || 0}%</span>
         </div>
     `).join("");
 
     const dominantIdx = values.reduce((best, v, i) => v > (values[best] || 0) ? i : best, 0);
-    const dominantEmoji = values[dominantIdx] > 0 ? emojis[dominantIdx] : null;
+    const dominantEmoji = state.showMost && values[dominantIdx] > 0 ? emojis[dominantIdx] : null;
     const dominantLine = dominantEmoji
         ? `<div class="te-dominant">Most: ${dominantEmoji}</div>`
         : "";
@@ -178,8 +178,30 @@ function renderWidget(state) {
         <div class="te-card">
             ${contentMarkup}
         </div>
+        <div class="te-pct-popup"></div>
     `;
 
+}
+
+// Emoji sizing that responds to widget width:
+//  - select mode: inverse scale (wider → smaller emojis)
+//  - slider mode: fixed compact emoji so bar stretches longer
+function applyTodayEmotionScale(widget, state) {
+    const widgetW = widget.offsetWidth;
+    if (!widgetW) return;
+
+    if (state.displayMode === "select") {
+        // Inverse: at 200px → ~48px emoji; at 350px → ~28px; wider → stays ~26px
+        const emojiPx = Math.max(26, Math.min(48, Math.floor(9600 / widgetW)));
+        widget.querySelectorAll(".te-emoji-btn").forEach(btn => {
+            btn.style.fontSize = `${emojiPx}px`;
+        });
+    } else {
+        // Slider: fix emoji at 24px so bar (flex:1) claims all the extra width
+        widget.querySelectorAll(".te-slider-emoji").forEach(el => {
+            el.style.fontSize = "24px";
+        });
+    }
 }
 
 function rerender(state) {
@@ -197,6 +219,8 @@ function rerender(state) {
     }
 
     content.innerHTML = renderWidget(state);
+
+    requestAnimationFrame(() => applyTodayEmotionScale(widget, state));
 
 }
 
@@ -243,6 +267,10 @@ export function initializeTodayEmotion() {
     state = checkDailyReset(state);
     rerender(state);
 
+    widget.addEventListener("widgetresize", () => {
+        applyTodayEmotionScale(widget, getSavedState());
+    });
+
     /* emoji select clicks */
     widget.addEventListener("click", event => {
 
@@ -281,15 +309,21 @@ export function initializeTodayEmotion() {
 
     });
 
-    /* percentage sliders — update DOM in-place while dragging, save on release */
+    /* percentage sliders — show popup while dragging, save on release */
     widget.addEventListener("input", event => {
 
         const slider = event.target.closest(".te-pct-slider");
         if (!slider) return;
 
-        const i = Number(slider.dataset.index);
-        const lbl = widget.querySelector(`.te-pct-label[data-index="${i}"]`);
-        if (lbl) lbl.textContent = `${slider.value}%`;
+        const popup = widget.querySelector(".te-pct-popup");
+        if (popup) {
+            const pct = Number(slider.value) / 100;
+            const rect = slider.getBoundingClientRect();
+            popup.textContent = `${slider.value}%`;
+            popup.style.left = `${rect.left + pct * rect.width}px`;
+            popup.style.top = `${rect.top}px`;
+            popup.classList.add("visible");
+        }
 
         // update dominant emoji without rerender
         const cur = getSavedState();
@@ -300,11 +334,16 @@ export function initializeTodayEmotion() {
         const dominantIdx = liveValues.reduce((best, v, j) => v > liveValues[best] ? j : best, 0);
         const dominantEl = widget.querySelector(".te-dominant");
         if (dominantEl) {
-            dominantEl.textContent = liveValues[dominantIdx] > 0
+            dominantEl.textContent = cur.showMost && liveValues[dominantIdx] > 0
                 ? `Most: ${emojis[dominantIdx]}`
                 : "";
         }
 
+    });
+
+    window.addEventListener("pointerup", () => {
+        const popup = widget.querySelector(".te-pct-popup");
+        if (popup) popup.classList.remove("visible");
     });
 
     widget.addEventListener("change", event => {
