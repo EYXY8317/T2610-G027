@@ -30,6 +30,12 @@ import {
 from "./loadLayout.js";
 
 import {
+    applyDefaultLayout,
+    resetToDefaultLayout
+}
+from "./defaultLayout.js";
+
+import {
     getWidgetAppearance,
     applyWidgetAppearance
 }
@@ -99,6 +105,10 @@ export function initializeHomepage() {
 
     dashboard.innerHTML =
         renderWidgets();
+
+    // Seed localStorage with default positions/styles for first-time users.
+    // Only writes entries that don't already exist, so saved layouts are never overwritten.
+    applyDefaultLayout();
 
     const settingsButton =
         document.getElementById(
@@ -198,5 +208,24 @@ export function initializeHomepage() {
         editLayoutButton,
         widgets
     );
+
+    // Reset Layout button — re-applies default positions + styles to all widgets
+    const resetLayoutButton = document.getElementById("reset-layout-btn");
+    if (resetLayoutButton) {
+        resetLayoutButton.addEventListener("click", () => {
+            if (!confirm("Reset all widgets to the default layout? This will undo your current arrangement.")) return;
+
+            resetToDefaultLayout();
+
+            widgets.forEach(widget => {
+                loadLayout(widget);
+                const savedApp = getWidgetAppearance(widget.id);
+                if (savedApp) applyWidgetAppearance(widget, savedApp);
+                widget.dispatchEvent(new CustomEvent("widgetresize"));
+            });
+
+            menu.style.display = "none";
+        });
+    }
 
 }

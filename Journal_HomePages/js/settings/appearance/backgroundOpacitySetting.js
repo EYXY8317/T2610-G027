@@ -70,34 +70,15 @@ export function getBackgroundOpacitySetting() {
 
 }
 
-export function applyBackgroundOpacity(
-    widget,
-    opacity
-) {
+export function applyBackgroundOpacity(widget, opacity) {
+    const alpha = Number(opacity) / 100;
 
-    const currentColor =
-        getComputedStyle(
-            widget
-        ).backgroundColor;
+    // Shadow fades with background
+    widget.style.setProperty("--widget-shadow-a", (alpha * 0.10).toFixed(3));
 
-    const rgb =
-        currentColor.match(
-            /\d+/g
-        );
+    const currentColor = getComputedStyle(widget).backgroundColor;
+    const rgb = currentColor.match(/\d+/g);
+    if (!rgb || rgb.length < 3) return;
 
-    if (
-        !rgb ||
-        rgb.length < 3
-    ) {
-        return;
-    }
-
-    widget.style.backgroundColor =
-        `rgba(
-            ${rgb[0]},
-            ${rgb[1]},
-            ${rgb[2]},
-            ${opacity / 100}
-        )`;
-
+    widget.style.backgroundColor = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${alpha})`;
 }

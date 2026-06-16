@@ -18,6 +18,7 @@ import {
 }
 from "../home/saveLayout.js";
 
+
 // Returns how many extra px the widget needs so no content is clipped.
 export function contentOverflow(widget) {
     // Quote widget: quote-main uses overflow:hidden internally, so leaf elements
@@ -194,3 +195,4 @@ export function enableResize(
     );
 
 }
+

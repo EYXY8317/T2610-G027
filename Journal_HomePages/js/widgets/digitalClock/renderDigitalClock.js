@@ -235,21 +235,24 @@ export function renderDigitalClock(
     const hasDate2  = showDate || showWeekday;
     const dateH2    = hasDate2 ? 36 : 0;
 
-    // estimate rendered width: digits ≈ 0.58em, colons ≈ 0.32em, spaces ≈ 0.28em
+    // estimate rendered width: Inter Bold digits ≈ 0.63em, colons ≈ 0.33em, spaces ≈ 0.28em
     function estimateEm(str) {
         let em = 0;
         for (const ch of str) {
-            if (ch === ":") em += 0.32;
+            if (ch === ":") em += 0.33;
             else if (ch === " ") em += 0.28;
-            else em += 0.58;
+            else em += 0.63;
         }
         return em;
     }
 
     const emW   = estimateEm(timeStr);
-    const fsFromW2 = (widgetW2 - 32) / emW;
+    // subtract letter-spacing (2px per char, from CSS) from available width before dividing
+    const letterSpacingPx = 2 * (timeStr.length - 1);
+    const fsFromW2 = (widgetW2 - 32 - letterSpacingPx) / emW;
     const fsFromH2 = (contentH2 - dateH2 - 20) * 0.82;
-    const fs2 = Math.max(16, Math.floor(Math.min(fsFromW2, fsFromH2)));
+    // apply a 6% safety margin so bold glyphs never clip the widget edge
+    const fs2 = Math.max(16, Math.floor(Math.min(fsFromW2, fsFromH2) * 0.94));
 
     if (clockType === "minimal") {
 
