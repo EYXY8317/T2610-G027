@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 from Journal_Pages.diary_system.routes import diary_bp
 from auth_routes import auth_bp
 from Finance.finance_routes import finance_bp
+from Calendar_Pages.calendar_routes import calendar_bp
 
 import json
 import os
@@ -34,6 +35,7 @@ app.jinja_loader = ChoiceLoader([
 app.register_blueprint(diary_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(finance_bp)
+app.register_blueprint(calendar_bp)
 
 # ================= FILE PATHS =================
 f_users = os.path.join(BASE_DIR, "users.json")
