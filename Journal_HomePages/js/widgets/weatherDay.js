@@ -63,6 +63,33 @@ export function createWeatherDayWidget() {
 
 }
 
+let _wdResizeObserver = null;
+
+function applyWeatherDayScale(widget) {
+    if (!widget) return;
+    const headerH  = widget.querySelector(".widget-header")?.offsetHeight ?? 36;
+    const contentH = widget.offsetHeight - headerH;
+    const widgetW  = widget.offsetWidth;
+
+    // Scale relative to a 400×250 reference card (content ~214px tall)
+    const scaleW = (widgetW - 20) / 380;
+    const scaleH = contentH / 214;
+    const base   = Math.max(10, Math.round(14 * Math.min(scaleW, scaleH)));
+
+    const icon = widget.querySelector(".wd-icon");
+    if (icon) icon.style.fontSize = `${Math.round(2.6 * base)}px`;
+
+    const temp = widget.querySelector(".wd-temp");
+    if (temp) temp.style.fontSize = `${Math.round(2.8 * base)}px`;
+
+    const label = widget.querySelector(".wd-temp-label");
+    if (label) label.style.fontSize = `${Math.max(10, Math.round(0.75 * base))}px`;
+
+    widget.querySelectorAll(".wd-range,.wd-feels,.wd-humidity,.wd-city,.wd-update").forEach(el => {
+        el.style.fontSize = `${Math.max(10, Math.round(0.85 * base))}px`;
+    });
+}
+
 async function fetchDayData(lat, lon) {
 
     const url =
@@ -154,8 +181,18 @@ export async function renderWeatherDay() {
             </div>
         `;
 
-        // After render: expand if content overflows, warn if no space available
-        requestAnimationFrame(() => autoExpandWidget("weather-day-widget"));
+        requestAnimationFrame(() => {
+            const widget = document.getElementById("weather-day-widget");
+            applyWeatherDayScale(widget);
+            autoExpandWidget("weather-day-widget");
+
+            if (!_wdResizeObserver && widget) {
+                _wdResizeObserver = new ResizeObserver(() => {
+                    requestAnimationFrame(() => applyWeatherDayScale(widget));
+                });
+                _wdResizeObserver.observe(widget);
+            }
+        });
 
     }
     catch (err) {
