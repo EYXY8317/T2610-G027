@@ -1,6 +1,9 @@
 # ===============================
-# 读 JSON
-# 写 JSON
+# CRUD
+# Handle JSON file operations 
+# 处理 JSON 文件操作
+# Read and save data 
+# 负责读取与保存数据
 # ===============================
 import json
 import os
@@ -16,9 +19,15 @@ TASK_FILE = os.path.join(
     "tasks.json"
 )
 
+print(
+    "TASK FILE =",
+    TASK_FILE
+)
+
 # ===============================
 # LOAD TASKS
-# Read tasks from JSON file
+# Read tasks from JSON file 
+# 读取 JSON 文件中的任务
 # ===============================
 
 def load_tasks():
@@ -44,23 +53,13 @@ def load_tasks():
 
 # ===============================
 # SAVE TASKS
-# Save tasks into JSON file
+# Save tasks into JSON file 
+# 将任务保存到 JSON 文件中
 # ===============================
 
 def save_tasks(tasks):
 
-    with open(
-        TASK_FILE,
-        "w"
-    ) as f:
-
-        json.dump(
-            tasks,
-            f,
-            indent=4
-        )
-
-def save_tasks(tasks):
+    print("FILE PATH =", TASK_FILE)
 
     with open(
         TASK_FILE,
@@ -72,3 +71,4 @@ def save_tasks(tasks):
             f,
             indent=4
         )
+
