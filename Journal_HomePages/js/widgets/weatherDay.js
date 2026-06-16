@@ -71,9 +71,9 @@ function _applyFontSizes(body, base) {
     const temp  = body.querySelector(".wd-temp");
     if (temp)  temp.style.fontSize  = `${Math.round(2.8  * base)}px`;
     const label = body.querySelector(".wd-temp-label");
-    if (label) label.style.fontSize = `${Math.max(10, Math.round(0.75 * base))}px`;
+    if (label) label.style.fontSize = `${Math.max(8, Math.round(0.75 * base))}px`;
     body.querySelectorAll(".wd-range,.wd-feels,.wd-humidity,.wd-city,.wd-update").forEach(el => {
-        el.style.fontSize = `${Math.max(10, Math.round(0.85 * base))}px`;
+        el.style.fontSize = `${Math.max(8, Math.round(0.85 * base))}px`;
     });
 }
 
@@ -101,7 +101,7 @@ function applyWeatherDayScale(widget) {
 
     const scaleH = (contentH - 8) / naturalH;
     const scaleW = (widgetW  - 16) / maxNaturalW;
-    const base   = Math.max(10, Math.round(DEFAULT_BASE * Math.min(scaleH, scaleW)));
+    const base   = Math.max(8, Math.round(DEFAULT_BASE * Math.min(scaleH, scaleW)));
 
     _applyFontSizes(body, base);
 }
