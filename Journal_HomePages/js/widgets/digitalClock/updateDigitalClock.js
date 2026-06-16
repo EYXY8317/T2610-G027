@@ -45,31 +45,24 @@ export function setFlipClockSize(value) {
     flipClockSize = value;
 }
 
+function render() {
+    renderDigitalClock(showSeconds, clockFormat, clockType, showDate, showWeekday, timezone);
+}
+
 export function updateDigitalClock() {
 
-    renderDigitalClock(
-        showSeconds,
-        clockFormat,
-        clockType,
-        showDate,
-        showWeekday,
-        timezone
-    );
+    render();
 
-    setInterval(
-        () => {
+    setInterval(render, 1000);
 
-            renderDigitalClock(
-                showSeconds,
-                clockFormat,
-                clockType,
-                showDate,
-                showWeekday,
-                timezone
-            );
-
-        },
-        1000
-    );
+    // Re-render immediately on resize so font size tracks the card size smoothly
+    const widget = document.getElementById("digital-clock-widget");
+    if (widget && typeof ResizeObserver !== "undefined") {
+        let rafId = null;
+        new ResizeObserver(() => {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => { rafId = null; render(); });
+        }).observe(widget);
+    }
 
 }
