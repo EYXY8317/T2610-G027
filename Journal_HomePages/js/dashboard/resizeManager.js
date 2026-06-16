@@ -149,6 +149,9 @@ export function enableResize(
                 widget.style.height = (widget.offsetHeight + overflow) + "px";
             }
 
+            // Notify scalable widgets to update their font sizes
+            widget.dispatchEvent(new CustomEvent("widgetresize"));
+
         }
     );
 
