@@ -207,6 +207,33 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% else %}
 
+        <form method="GET" class="filter-form">
+
+            <input
+                type="date"
+                name="start"
+                value="{{ request.args.get('start', '') }}"
+            >
+
+            <input
+                type="date"
+                name="end"
+                value="{{ request.args.get('end', '') }}"
+            >
+
+            <button type="submit">
+                Filter
+            </button>
+
+            <a
+                href="/view"
+                class="secondary-btn"
+            >
+                Reset
+            </a>
+
+        </form>
+
         <!-- ===== TABLE ===== -->
 
         <div class="table-wrapper">

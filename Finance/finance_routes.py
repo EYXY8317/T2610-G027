@@ -129,6 +129,19 @@ def view_financial():
     if selected_account and selected_account != "All Accounts":
         user_records = [r for r in user_records if r.get("account") == selected_account]
 
+    start = request.args.get("start")
+    end = request.args.get("end")
+
+    if start and end:
+
+        user_records = [
+
+            r for r in user_records
+
+            if start <= r["date"] <= end
+
+        ]
+
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
     user_accounts = [a for a in accounts if a["username"] == user]
 
