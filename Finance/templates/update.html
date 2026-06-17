@@ -131,6 +131,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <form
         method="POST"
         class="add-form"
+        enctype="multipart/form-data"
         >
 
             <!-- ROW 1 -->
@@ -361,6 +362,57 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             </div>
 
+            <!-- RECEIPT -->
+
+            <div class="receipt-card">
+
+                <p>Receipt (Optional)</p>
+
+                {% if record.receipt %}
+
+                <div class="receipt-current">
+
+                    <img
+                        src="{{ url_for('static', filename='receipts/' + record.receipt) }}"
+                        class="receipt-thumb-preview"
+                    >
+
+                    <span class="receipt-soft-text">
+                        Current receipt — upload a new one to replace it
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+                <div class="receipt-upload-row">
+
+                    <label
+                        class="receipt-label"
+                        for="receiptInput"
+                    >
+                        📎 {% if record.receipt %}Replace{% else %}Attach{% endif %} Image
+                    </label>
+
+                    <span
+                        class="receipt-filename"
+                        id="receiptFilename"
+                    >
+                        No file chosen
+                    </span>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="receiptInput"
+                    name="receipt"
+                    accept="image/*"
+                    class="receipt-input"
+                >
+
+            </div>
+
             <!-- BUTTONS -->
 
             <div class="update-actions">
@@ -506,6 +558,19 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     toggleNewAccount();
+
+    // ================= RECEIPT FILENAME =================
+
+    document.getElementById("receiptInput")
+        .addEventListener("change", function () {
+
+        const name = this.files[0]
+            ? this.files[0].name
+            : "No file chosen";
+
+        document.getElementById("receiptFilename")
+            .textContent = name;
+    });
 
     // ================= TNG INPUT =================
 
