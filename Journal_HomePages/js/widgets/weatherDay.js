@@ -17,6 +17,8 @@ const DEFAULT_STATE = {
     showHumidity: true,
     showIcon: true,
     showUpdateTime: true,
+    showCity: true,
+    showRange: true,
     tempDisplay: "max"   // "max" | "min" | "avg"
 };
 
@@ -175,23 +177,28 @@ export async function renderWeatherDay() {
             ? `<div class="wd-humidity">💧 ${humidity}%</div>`
             : "";
 
-        const rangeLine = `
-            <div class="wd-range">
-                ↑ ${toDisplayTemp(tMax, unit)} &nbsp; ↓ ${toDisplayTemp(tMin, unit)}
-            </div>
-        `;
+        // Secondary temperature: omit whichever value is already shown as the main.
+        const secondaryParts = [
+            state.tempDisplay !== "max" ? `↑ ${toDisplayTemp(tMax, unit)}` : "",
+            state.tempDisplay !== "min" ? `↓ ${toDisplayTemp(tMin, unit)}` : ""
+        ].filter(Boolean);
+        const rangeLine = state.showRange && secondaryParts.length > 0
+            ? `<div class="wd-range">${secondaryParts.join(" &nbsp; ")}</div>`
+            : "";
 
         const updateLine = state.showUpdateTime
             ? `<div class="wd-update">Updated ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>`
             : "";
 
-        const cityLine = `<div class="wd-city">${config.cityName}</div>`;
+        const cityLine = state.showCity
+            ? `<div class="wd-city">📍 ${config.cityName}</div>`
+            : "";
 
         container.innerHTML = `
             <div class="wd-body">
                 ${icon}
                 <div class="wd-temp">${mainTemp}</div>
-                <div class="wd-temp-label">${rangeLabel} Temperature</div>
+                <div class="wd-temp-label">${rangeLabel}</div>
                 ${rangeLine}
                 ${feelsLine}
                 ${humidityLine}

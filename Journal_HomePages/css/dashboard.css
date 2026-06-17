@@ -23,29 +23,137 @@ body {
 
 }
 
-#dashboard {
+/* ── Navbar (Life Pages style, fixed overlay) ── */
 
-    position: relative;
+.navbar {
 
-    width: 100vw;
+    position: fixed;
 
-    height: 100vh;
+    top: 0;
 
-    background: #F2EFE9;
+    left: 0;
+
+    right: 0;
+
+    background: white;
+
+    border-bottom: 1px solid #eee4da;
+
+    padding: 14px 45px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    z-index: 200;
+
+    font-family: Arial, sans-serif;
+
+}
+
+.logo-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.logo-box {
+
+    width: 52px;
+
+    height: 52px;
+
+    background: #f2e5d8;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
 
     overflow: hidden;
 
 }
 
-#homepage-toolbar {
+.logo-box img {
 
-    position: fixed;
+    width: 100%;
 
-    top: 20px;
+    height: 100%;
 
-    right: 20px;
+    object-fit: cover;
 
-    z-index: 9999;
+}
+
+.logo-text {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: #3b2f2a;
+
+}
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #333;
+
+    border: 1px solid #d2d2d2;
+
+    border-radius: 8px;
+
+    padding: 8px 16px;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+
+}
+
+.nav-links a.active {
+
+    background: #8b5e3c;
+
+    color: white;
+
+    border: none;
+
+}
+
+.nav-links a:hover {
+
+    background: #c9a88a;
+
+    color: white;
+
+}
+
+.navbar-right {
+
+    display: flex;
+
+    align-items: center;
 
 }
 
@@ -55,7 +163,7 @@ body {
 
     border-radius: 8px;
 
-    padding: 7px 18px;
+    padding: 7px 16px;
 
     background: transparent;
 
@@ -85,33 +193,43 @@ body {
 
 }
 
+#dashboard {
+
+    position: relative;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background: #F2EFE9;
+
+    overflow: hidden;
+
+}
+
 #homepage-menu {
 
     position: fixed;
 
-    top: 70px;
+    top: 95px;
 
     right: 20px;
 
-    width: 220px;
+    width: 200px;
 
     display: none;
 
-    background: #F2EFE9;
+    background: white;
 
-    border: 1px solid #ddd8cf;
+    border: 1px solid #e8e3dc;
 
     border-radius: 12px;
 
-    padding: 8px;
+    padding: 6px;
 
     box-shadow:
-        0 4px 16px rgba(
-            0,
-            0,
-            0,
-            0.08
-        );
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
 
     z-index: 9999;
 
@@ -127,7 +245,7 @@ body {
 
     text-align: left;
 
-    padding: 12px;
+    padding: 9px 12px;
 
     border-radius: 8px;
 
@@ -137,15 +255,35 @@ body {
 
     font-size: 13px;
 
-    color: #555;
+    color: #444;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: background 0.12s, color 0.12s;
 
 }
 
 #homepage-menu button:hover {
 
-    background: #ebe7e0;
+    background: #f0ece6;
 
     color: #1a1a1a;
+
+}
+
+.menu-icon {
+
+    font-size: 14px;
+
+    width: 18px;
+
+    text-align: center;
+
+    flex-shrink: 0;
 
 }
 
@@ -153,25 +291,25 @@ body {
 
     height: 1px;
 
-    background: #ddd8cf;
+    background: #e8e3dc;
 
-    margin: 4px 0;
+    margin: 4px 6px;
 
 }
 
 #reset-layout-btn {
 
-    color: #888 !important;
+    color: #c0392b;
 
-    font-size: 12px !important;
+    margin-top: 2px;
 
 }
 
 #reset-layout-btn:hover {
 
-    background: #fee2e2 !important;
+    background: #fdf0ef !important;
 
-    color: #b91c1c !important;
+    color: #a93226 !important;
 
 }
 

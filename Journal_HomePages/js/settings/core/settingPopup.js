@@ -656,6 +656,7 @@ export function createSettingPopup(widgetId) {
             const btns = popup.querySelectorAll(`${selector} .segment-option`);
             btns.forEach(btn => {
                 btn.addEventListener("click", () => {
+                    if (btn.disabled) return;
                     btns.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
                     const val = btn.dataset.value === "true" ? true
@@ -667,6 +668,8 @@ export function createSettingPopup(widgetId) {
         }
 
         wireWdSegment(".wd-temp-display-segment", "tempDisplay");
+        wireWdSegment(".wd-range-segment", "showRange");
+        wireWdSegment(".wd-city-segment", "showCity");
         wireWdSegment(".wd-feels-segment", "showFeelsLike");
         wireWdSegment(".wd-humidity-segment", "showHumidity");
         wireWdSegment(".wd-icon-segment", "showIcon");

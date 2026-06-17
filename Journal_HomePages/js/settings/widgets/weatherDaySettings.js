@@ -47,7 +47,7 @@ export function getWeatherDaySettings() {
         graph: "",
 
         display: `
-            <h3>Temperature</h3>
+            <h3>Main Temperature</h3>
             <div class="setting-row">
                 <span>Display</span>
                 <div class="segment-button wd-temp-display-segment">
@@ -57,6 +57,20 @@ export function getWeatherDaySettings() {
                 </div>
             </div>
             <h3>Show / Hide</h3>
+            <div class="setting-row">
+                <span>Secondary Temp</span>
+                <div class="segment-button wd-range-segment">
+                    <button class="segment-option${state.showRange ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${!state.showRange ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <span>City</span>
+                <div class="segment-button wd-city-segment">
+                    <button class="segment-option${state.showCity ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${!state.showCity ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+            </div>
             <div class="setting-row">
                 <span>Feels Like</span>
                 <div class="segment-button wd-feels-segment">

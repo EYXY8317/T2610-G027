@@ -116,6 +116,15 @@
 
 }
 
+.setting-row-muted {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.setting-row-muted .segment-option[disabled] {
+    cursor: not-allowed;
+}
+
 .setting-row select {
 
     padding: 4px 8px;

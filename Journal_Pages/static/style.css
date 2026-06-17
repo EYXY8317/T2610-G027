@@ -18,42 +18,79 @@ body {
     font-family: 'Inter', sans-serif;
     font-weight: 300;
     min-height: 100vh;
+    padding-top: 80px;
 }
 
 /* ===== NAVBAR ===== */
-#navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    height: 60px;
-    background: #F2EFE9;
-    border-bottom: 1px solid #ddd8cf;
-    position: sticky;
+.navbar {
+    position: fixed;
     top: 0;
-    z-index: 100;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #eee4da;
+    padding: 14px 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 200;
+    font-family: Arial, sans-serif;
 }
 
-#navLinks {
+.logo-section {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: #555;
+    gap: 16px;
 }
 
-#navLinks a {
+.logo-box {
+    width: 52px;
+    height: 52px;
+    background: #f2e5d8;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b2f2a;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links a {
     text-decoration: none;
-    color: #555;
-    padding: 4px 10px;
-    border-radius: 6px;
-    transition: background 0.15s;
-    font-weight: 400;
+    color: #333;
+    border: 1px solid #d2d2d2;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
-#navLinks a:hover {
-    background: #e8e4dd;
-    color: #1a1a1a;
+.nav-links a.active {
+    background: #8b5e3c;
+    color: white;
+    border: none;
+}
+
+.nav-links a:hover {
+    background: #c9a88a;
+    color: white;
 }
 
 /* ===== SEARCH WIDGET (navbar right) ===== */

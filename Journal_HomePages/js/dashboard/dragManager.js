@@ -14,6 +14,11 @@ import {
 from "./overlapManager.js";
 
 import {
+    BOUNDARY_GAP
+}
+from "./boundaryManager.js";
+
+import {
     saveLayout
 }
 from "../home/saveLayout.js";
@@ -33,7 +38,7 @@ export function enableDrag(
     let startLeft = 0;
     let startTop = 0;
 
-    const PADDING = 20;
+    const PADDING = BOUNDARY_GAP;
 
     handle.addEventListener(
         "pointerdown",
