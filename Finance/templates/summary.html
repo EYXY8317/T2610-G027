@@ -343,19 +343,19 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             {% if daily_avg < 5 %}
 
-                <span style="color:green;">
+                <span class="spending-low">
                     (Low 👍)
                 </span>
 
             {% elif daily_avg < 20 %}
 
-                <span style="color:orange;">
+                <span class="spending-moderate">
                     (Moderate)
                 </span>
 
             {% else %}
 
-                <span style="color:red;">
+                <span class="spending-high">
                     (High ⚠️)
                 </span>
 

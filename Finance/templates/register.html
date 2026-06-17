@@ -2,6 +2,10 @@
 <html>
 <head>
     <title>Sign Up</title>
+    <style>
+    .error { color: red; }
+    .success { color: green; }
+    </style>
 </head>
 
 <body>
@@ -57,12 +61,12 @@
 
 <!-- ERROR -->
 {% if error %}
-<p style="color:red;">{{ error }}</p>
+<p class="error">{{ error }}</p>
 {% endif %}
 
 <!-- SUCCESS -->
 {% if request.args.get("success") %}
-<p style="color:green;">{{ request.args.get("success") }}</p>
+<p class="success">{{ request.args.get("success") }}</p>
 {% endif %}
 
 </body>
