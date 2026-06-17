@@ -290,7 +290,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 <label>
 
-                    New Account
+                    New Account Name
 
                 </label>
 
@@ -298,8 +298,30 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     type="text"
                     id="new_account"
                     name="new_account"
-                    placeholder="Enter new account"
+                    placeholder="Enter account name"
                 >
+
+                <label>
+
+                    Account Purpose
+
+                </label>
+
+                <select name="purpose">
+
+                    <option value="spending">
+
+                        Spending Account
+
+                    </option>
+
+                    <option value="savings">
+
+                        Savings Account
+
+                    </option>
+
+                </select>
 
             </div>
 

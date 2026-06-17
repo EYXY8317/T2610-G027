@@ -335,43 +335,25 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     
                     <div class="goal-add-savings-row">
 
-                        <div class="goal-account-group">
+                        <select name="account" class="goal-account-select" required>
 
-                            <select name="account" class="goal-account-select" required>
+                            <option value="">
 
-                                <option value="">
+                                Select Account
 
-                                    Select Account
+                            </option>
 
-                                </option>
+                            {% for account in accounts %}
 
-                                {% for account in accounts %}
+                            <option value="{{ account.name }}">
 
-                                <option value="{{ account.name }}">
+                                {{ account.name }}
 
-                                    {{ account.name }}
+                            </option>
 
-                                </option>
+                            {% endfor %}
 
-                                {% endfor %}
-
-                                <option value="__new__">
-
-                                    + Create New Account
-
-                                </option>
-
-                            </select>
-
-                            <input
-                                type="text"
-                                name="new_account"
-                                class="new-account-input"
-                                placeholder="Enter new account name"
-                                style="display:none;"
-                            >
-
-                        </div>
+                        </select>
 
                         <input
                             type="number"
@@ -579,21 +561,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                             {% endfor %}
 
-                            <option value="__new__">
-
-                                + Create New Account
-
-                            </option>
-
                         </select>
-
-                        <input
-                            type="text"
-                            name="new_account"
-                            class="new-account-input"
-                            placeholder="Enter new account name"
-                            style="display:none;"
-                        >
 
                         <input
                             type="number"
@@ -804,53 +772,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })();
 
-document.addEventListener("DOMContentLoaded", function () {
-
-    const accountSelects =
-        document.querySelectorAll(
-            "select[name='account']"
-        );
-
-    accountSelects.forEach(function(select) {
-
-        select.addEventListener(
-            "change",
-            function () {
-
-                const wrapper =
-                    select.parentElement;
-
-                const newInput =
-                    wrapper.querySelector(
-                        ".new-account-input"
-                    );
-
-                if (
-                    select.value === "__new__"
-                ) {
-
-                    newInput.style.display =
-                        "block";
-
-                    newInput.required = true;
-
-                }
-
-                else {
-
-                    newInput.style.display =
-                        "none";
-
-                    newInput.required = false;
-
-                }
-
-            }
-        );
-
-    });
-
-});
 
 const goalAmountInput =
     document.getElementById(
