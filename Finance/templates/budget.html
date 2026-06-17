@@ -1,108 +1,415 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Set Budget</title>
+
+    <title>Budget Tracking</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}">
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+>
 </head>
 
-<body>
+<body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
-<h1>Set Budget</h1>
+{% if wallpaper %}
 
-<hr>
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
 
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a>
-<hr>
-
-{% if error %}
-<p style="color:red;">{{ error }}</p>
 {% endif %}
+>
 
-<form method="POST">
+<div class="wallpaper-overlay"></div>
 
-    <!-- CATEGORY -->
-    <label>Category:</label><br>
-    <select name="category" required>
-        <option value="">-- Select Category --</option>
+<!-- ================= TOPBAR ================= -->
 
-        {% for cat in categories|default([]) %}
-            <option value="{{ cat }}">{{ cat }}</option>
-        {% endfor %}
-    </select>
+<div class="topbar">
 
-    <br><br>
+    <div class="topbar-title">
+        💸 Budget Tracking
+    </div>
 
-    <!-- AMOUNT -->
-    <label>Budget Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount" value="0.00" readonly>
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget" class="active-link">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
 
-    <br><br>
+    <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
 
-    <button type="submit">Save Budget</button>
+</div>
 
-</form>
+<!-- ================= MAIN ================= -->
 
-<hr>
+<div class="summary-wrapper">
 
-<h2>Your Budgets</h2>
+    <!-- ===== HERO ===== -->
 
-{% if budgets %}
-    <ul>
-        {% for b in budgets %}
-            <li>{{ b.category }} — RM {{ "%.2f"|format(b.amount) }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No budgets set</p>
-{% endif %}
+    <div class="summary-card hover-card">
+
+        <div class="budget-header">
+
+            <div>
+
+                <h1 class="summary-main-title">
+                    💸 Budget Tracking
+                </h1>
+
+                <p class="budget-subtitle">
+                    Manage and track your monthly spending limits.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ERROR -->
+
+        {% if error %}
+
+        <div class="budget-error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== FORM ===== -->
+
+        <form method="POST">
+
+            <div class="summary-grid">
+
+                <!-- CATEGORY -->
+
+                <div>
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select
+                    name="category"
+                    required
+                    >
+
+                        <option value="">
+                            -- Select Category --
+                        </option>
+
+                        {% for cat in categories|default([]) %}
+
+                        <option value="{{ cat }}">
+                            {{ cat }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <!-- AMOUNT -->
+
+                <div>
+
+                    <label>
+                        Budget Amount (RM)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="amountInput"
+                        name="amount"
+                        value="0.00"
+                        readonly
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="budget-button-row">
+
+                <button type="submit">
+
+                    Save Budget
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- ===== BUDGET LIST ===== -->
+
+    <div class="summary-card hover-card">
+
+        <h2 class="budget-section-title">
+
+            Your Budgets
+
+        </h2>
+
+        {% if budgets %}
+
+        <div class="budget-grid">
+
+            {% for b in budgets %}
+
+            <div class="budget-modern hover-card">
+
+                <div class="budget-card-top">
+
+                    <h3>
+
+                        {{ b.category }}
+
+                    </h3>
+
+                        <div class="budget-actions">
+
+                            <a
+                                href="/edit_budget/{{ b.category }}"
+                                class="edit-btn"
+                            >
+                                ✏️ Edit
+                            </a>
+
+                            <a
+                                href="/delete_budget/{{ b.category }}"
+                                class="delete-btn"
+                            >
+                                🗑 Delete
+                            </a>
+
+                        </div>
+
+                </div>
+
+                <div class="budget-amount-wrapper">
+
+                    <div class="budget-amount">
+
+                        RM {{ "%.2f"|format(b.amount) }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No budgets created yet
+
+            </h3>
+
+            <p>
+
+                Start by creating your first budget.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- ================= TNG INPUT ================= -->
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     let value = 0;
+
     let active = false;
 
-    const amountInput = document.getElementById("amountInput");
+    const amountInput =
+    document.getElementById("amountInput");
 
-    // initialize safely
-    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
+    value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    ) || 0;
 
-    amountInput.addEventListener("focus", () => active = true);
-    amountInput.addEventListener("blur", () => active = false);
+    amountInput.addEventListener(
+        "focus",
+        () => active = true
+    );
 
-    document.addEventListener("keydown", function(e) {
+    amountInput.addEventListener(
+        "blur",
+        () => active = false
+    );
+
+    document.addEventListener(
+    "keydown",
+    function(e) {
 
         if (!active) return;
 
         if (e.key >= "0" && e.key <= "9") {
+
             value = value * 10 + parseInt(e.key);
-        } 
+
+        }
+
         else if (e.key === "Backspace") {
+
             value = Math.floor(value / 10);
-        } 
+
+        }
+
         else {
+
             return;
         }
 
         e.preventDefault();
-        amountInput.value = (value / 100).toFixed(2);
+
+        amountInput.value =
+        (value / 100).toFixed(2);
+
     });
 
-    // optional UX
     amountInput.focus();
 
 });
+
 </script>
 
+<script>
+
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
 </body>
 </html>

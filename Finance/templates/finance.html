@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Finance Dashboard</title>
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
+
+</head>
+
+<body
+class="{{ theme }} {{ ui_style }}"
+
+{% if wallpaper %}
+
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+>
+
+<div class="wallpaper-overlay"></div>
+
+<div class="summary-wrapper">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            💸 Finance Workspace
+
+        </div>
+
+        <div class="topbar-links">
+            <a href="/finance" class="active-link">Dashboard</a>
+            <a href="/view">View</a>
+            <a href="/add">Add</a>
+            <a href="/summary">Summary</a>
+            <a href="/budget">Budget</a>
+            <a href="/goals">Goals</a>
+        </div>
+
+        <div class="topbar-actions">
+            <a href="/dashboard">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+
+    </div>
+
+    <!-- HERO -->
+
+    <div class="finance-hero summary-card hover-card">
+
+        <div>
+
+            <p class="hero-label">
+
+                FINANCIAL OVERVIEW
+
+            </p>
+
+            <h1 class="summary-main-title">
+
+                Welcome back,
+                {{ session.get("user") }}
+
+            </h1>
+
+            <p class="hero-subtitle">
+
+                Your financial ecosystem at a glance.
+
+            </p>
+
+        </div>
+
+        <div class="hero-balance">
+
+            <p>
+
+                Available Balance
+
+            </p>
+
+            <h2>
+
+                RM {{ "%.2f"|format(balance) }}
+
+            </h2>
+
+            <span class="hero-balance-caption">
+
+                Ready to spend
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- OVERVIEW -->
+
+    <div class="summary-grid">
+
+        <div class="overview-box hover-card">
+
+            <p>
+                Available Balance
+            </p>
+
+            <h3>
+                RM {{ "%.2f"|format(balance) }}
+            </h3>
+
+        </div>
+
+        <div class="overview-box hover-card">
+
+            <p>
+                Savings Balance
+            </p>
+
+            <h3>
+                RM {{ "%.2f"|format(saving) }}
+            </h3>
+
+        </div>
+
+        <div class="overview-box hover-card">
+
+            <p>
+                Monthly Income
+            </p>
+
+            <h3>
+                RM {{ "%.2f"|format(income) }}
+            </h3>
+
+        </div>
+
+        <div class="overview-box hover-card">
+
+            <p>
+                Monthly Expense
+            </p>
+
+            <h3>
+                RM {{ "%.2f"|format(expense) }}
+            </h3>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN GRID -->
+
+    <div class="finance-dashboard-grid">
+
+        <!-- INSIGHTS -->
+
+        <div class="summary-card hover-card">
+
+        <h2 class="section-title">
+            Analysis
+        </h2>
+
+        <div class="analysis-list">
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Available Balance
+                        </div>
+
+                        <div class="analysis-desc">
+                            Money available to spend
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    RM {{ "%.2f"|format(balance) }}
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        🏦
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Savings Balance
+                        </div>
+
+                        <div class="analysis-desc">
+                            Stored in savings accounts
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    RM {{ "%.2f"|format(saving) }}
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Savings Rate
+                        </div>
+
+                        <div class="analysis-desc">
+                            Percentage of income saved
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+                    {{ savings_rate }}%
+                </div>
+
+            </div>
+
+            <div class="analysis-row">
+
+                <div class="analysis-left">
+
+                    <div class="analysis-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <div class="analysis-title">
+                            Budget Health
+                        </div>
+
+                        <div class="analysis-desc">
+                            Status of your budget
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="analysis-value">
+
+                    {% if warning_budgets %}
+                        Warning
+                    {% else %}
+                        Healthy
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="summary-card hover-card">
+
+            <h2 class="section-title">
+
+                Quick Actions
+
+            </h2>
+
+            <div class="quick-actions-grid">
+
+                <a
+                href="/add"
+                class="quick-action-card"
+                >
+
+                    <div class="quick-icon">
+                        ➕
+                    </div>
+
+                    <div class="quick-title">
+                        Add Record
+                    </div>
+
+                    <div class="quick-desc">
+                        Add income or expense
+                    </div>
+
+                </a>
+
+                <a
+                href="/budget"
+                class="quick-action-card"
+                >
+
+                    <div class="quick-icon">
+                        📊
+                    </div>
+
+                    <div class="quick-title">
+                        Manage Budget
+                    </div>
+
+                    <div class="quick-desc">
+                        View and edit your budgets
+                    </div>
+
+                </a>
+
+                <a
+                href="/goals"
+                class="quick-action-card"
+                >
+
+                    <div class="quick-icon">
+                        🎯
+                    </div>
+
+                    <div class="quick-title">
+                        Savings Goals
+                    </div>
+
+                    <div class="quick-desc">
+                        Track your savings progress
+                    </div>
+
+                </a>
+
+                <a
+                href="/summary"
+                class="quick-action-card"
+                >
+
+                    <div class="quick-icon">
+                        📈
+                    </div>
+
+                    <div class="quick-title">
+                        Analytics
+                    </div>
+
+                    <div class="quick-desc">
+                        View detailed financial insights
+                    </div>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RECENT RECORDS -->
+
+    <div class="summary-card hover-card">
+
+        <div class="view-header">
+
+            <div>
+
+                <h2>
+
+                    Recent Transactions
+
+                </h2>
+
+                <p>
+
+                    Your latest financial activity.
+
+                </p>
+
+            </div>
+
+            <a
+            href="/view"
+            class="add-btn"
+            >
+
+                View All
+
+            </a>
+
+        </div>
+
+        {% if recent_records %}
+
+        <div class="table-wrapper">
+
+            <table class="records-table">
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Type</th>
+
+                    <th>Category</th>
+
+                    <th>Item</th>
+
+                    <th>Amount</th>
+
+                </tr>
+
+                {% for r in recent_records %}
+
+                <tr>
+
+                    <td>
+
+                        {{ r.date }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge {{ r.type }}">
+
+                            {{ r.type }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ r.category }}
+
+                    </td>
+
+                    <td>
+
+                        {{ r.item }}
+
+                    </td>
+
+                    <td>
+
+                        RM {{ "%.2f"|format(r.amount) }}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No records yet
+
+            </h3>
+
+            <p>
+
+                Start tracking your finances.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- GOALS -->
+
+    <div class="summary-card hover-card">
+
+        <div class="view-header">
+
+            <div>
+
+                <h2>
+
+                    Active Goals
+
+                </h2>
+
+                <p>
+
+                    Track your savings progress.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        {% if active_goals %}
+
+        <div class="summary-grid">
+
+            {% for g in active_goals %}
+
+            <div class="goal-card">
+
+                <h3>
+
+                    {{ g.name }}
+
+                </h3>
+
+                <h2>
+
+                    RM {{ "%.2f"|format(g.saved) }}
+
+                </h2>
+
+                <p class="goal-status">
+
+                    RM {{ "%.2f"|format(g.target) }} target
+
+                </p>
+
+                <div class="progress-track">
+
+                    <div
+                        class="progress-bar safe"
+                        data-width="{{ g.percent }}"
+                    ></div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No active goals
+
+            </h3>
+
+            <p>
+
+                Create your first savings goal.
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+
+document
+.querySelectorAll(".progress-bar")
+.forEach(bar => {
+
+    const width =
+        bar.dataset.width;
+
+    bar.style.width =
+        width + "%";
+});
+
+</script>
+</body>
+</html>

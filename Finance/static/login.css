@@ -1,0 +1,541 @@
+/* ===== BODY ===== */
+body{
+    margin:0;
+    padding:0;
+
+    font-family:'Poppins', sans-serif;
+
+    background:#efefef;
+
+    height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* ===== CONTAINER ===== */
+.container{
+
+    width:1100px;
+    height:650px;
+
+    background:white;
+
+    border-radius:35px;
+
+    overflow:hidden;
+
+    display:flex;
+
+    box-shadow:0 15px 40px rgba(0,0,0,0.12);
+
+}
+
+/* ===== LEFT PANEL ===== */
+.left-panel{
+
+    width:42%;
+
+    background:#9a6d4f;
+
+    border-top-right-radius:140px;
+    border-bottom-right-radius:140px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+
+    text-align:center;
+
+    padding:60px;
+
+}
+
+/* ===== LOGO ===== */
+.logo{
+
+    max-width:180px;
+
+    width:100%;
+
+    height:auto;
+
+    margin-bottom:15px;
+
+}
+
+/* ===== LEFT TITLE ===== */
+.left-panel h1{
+
+    font-size:30px;
+
+    line-height:1.25;
+
+    margin:10px 0;
+
+}
+
+/* ===== LEFT TEXT ===== */
+.left-panel p{
+
+    font-size:20px;
+
+    margin-bottom:35px;
+
+}
+
+/* ===== REGISTER BUTTON ===== */
+.register-btn{
+
+    width:220px;
+
+    padding:15px 0;
+
+    border:2px solid white;
+
+    border-radius:14px;
+
+    text-decoration:none;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    transition:0.3s;
+
+    text-align:center;
+
+}
+
+.register-btn:hover{
+
+    background:white;
+    color:#9a6d4f;
+
+}
+
+/* ===== RIGHT PANEL ===== */
+.right-panel{
+
+    width:58%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    padding:0 70px;
+
+    gap:10px;
+
+}
+
+/* ===== LOGIN TITLE ===== */
+.right-panel h2{
+
+    font-size:40px;
+
+    color:#4d2e1d;
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+}
+
+/* ===== PASSWORD RULES ===== */
+
+.password-rules{
+
+    font-size:12px;
+
+    color:#888;
+
+    line-height:1.4;
+
+    margin-top:-12px;
+
+    margin-bottom:10px;
+
+}
+
+/* ===== INPUT BOX ===== */
+.input-box{
+
+    width:100%;
+
+    height:58px;
+
+    border:1.5px solid #d9d9d9;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    padding:0 20px;
+
+    margin-bottom:25px;
+
+    box-sizing:border-box;
+
+    transition:0.3s;
+
+}
+
+/* ===== INPUT FOCUS ===== */
+.input-box:focus-within{
+
+    border-color:#9a6d4f;
+
+    box-shadow:0 0 0 4px rgba(154,109,79,0.12);
+
+}
+
+/* ===== INPUT ICON ===== */
+.input-box i{
+
+    color:#8c8c8c;
+
+    font-size:20px;
+
+}
+
+/* ===== INPUT ===== */
+.input-box input{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    font-size:18px;
+
+    margin-left:15px;
+
+    font-family:'Poppins', sans-serif;
+
+    background:transparent;
+
+}
+
+/* ===== TOGGLE EYE ===== */
+.toggle-eye{
+
+    cursor:pointer;
+
+    user-select:none;
+
+    font-size:20px;
+
+    margin-left:10px;
+
+}
+
+/* ===== FORGOT LINKS ===== */
+.forgot-links{
+
+    text-align:center;
+
+    margin-bottom:30px;
+
+}
+
+.forgot-links a{
+
+    display:block;
+
+    text-decoration:none;
+
+    color:#7a4e33;
+
+    font-size:17px;
+
+    margin-bottom:8px;
+
+}
+
+.forgot-links a:hover{
+
+    text-decoration:underline;
+
+}
+
+/* ===== LOGIN BUTTON ===== */
+button{
+
+    width:100%;
+
+    height:70px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#7a4e33;
+
+    color:white;
+
+    font-size:24px;
+
+    font-weight:600;
+
+    letter-spacing:0.5px;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+}
+
+button:hover{
+
+    background:#5e3924;
+
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error-message{
+
+    color:red;
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:15px;
+
+}
+
+/* ===== SUCCESS MESSAGE ===== */
+.success-message{
+
+    color:green;
+
+    text-align:center;
+
+    margin-top:15px;
+
+    font-size:15px;
+
+}
+
+/* ========================================= */
+/* CONTAINER */
+/* ========================================= */
+
+.container{
+
+    position:relative; /* Makes the container the reference point for positioning panels */
+
+}
+
+/* ========================================= */
+/* LOGIN PANEL & REGISTER PANEL */
+/* ========================================= */
+
+.login-panel,
+.register-panel{
+
+    position:absolute; /* Stack both panels on top of each other */
+
+    width:100%; /* Fill the entire container width */
+
+    height:100%; /* Fill the entire container height */
+
+    display:flex; /* Keep left-panel and right-panel side by side */
+
+    transition:0.6s ease-in-out; /* Smooth sliding animation */
+
+}
+
+/* ========================================= */
+/* LOGIN PANEL (VISIBLE BY DEFAULT) */
+/* ========================================= */
+
+.login-panel{
+
+    transform:translateX(0); /* Start in the normal visible position */
+
+}
+
+/* ========================================= */
+/* REGISTER PANEL (HIDDEN ON THE RIGHT) */
+/* ========================================= */
+
+.register-panel{
+
+    transform:translateX(100%); /* Move the whole panel outside the container */
+
+}
+
+/* ========================================= */
+/* SHOW REGISTER */
+/* ========================================= */
+
+.container.show-register .login-panel{
+
+    transform:translateX(-100%);
+
+}
+
+.container.show-register .register-panel{
+
+    transform:translateX(0);
+
+}
+
+/* ========================================= */
+/* FORGOT PANELS */
+/* ========================================= */
+
+.forgot-panel,
+.forgot-username-panel{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    display:flex;
+
+    transition:0.6s ease-in-out;
+
+    transform:translateX(100%);
+
+}
+
+/* ========================================= */
+/* SHOW FORGOT PASSWORD */
+/* ========================================= */
+
+.container.show-forgot .login-panel{
+
+    transform:translateX(-100%);
+
+}
+
+.container.show-forgot .forgot-panel{
+
+    transform:translateX(0);
+
+}
+
+/* ========================================= */
+/* SHOW FORGOT USERNAME */
+/* ========================================= */
+
+.container.show-forgot-username .login-panel{
+
+    transform:translateX(-100%);
+
+}
+
+.container.show-forgot-username .forgot-username-panel{
+
+    transform:translateX(0);
+
+}
+
+.container.show-forgot-username .forgot-panel{
+
+    transform:translateX(-100%);
+
+}
+
+/* ========================================= */
+/* SELECT INSIDE INPUT BOX */
+/* ========================================= */
+
+.input-box select{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    font-size:18px;
+
+    margin-left:15px;
+
+    font-family:'Poppins', sans-serif;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    color:#333;
+
+}
+
+/* ========================================= */
+/* FORGOT LINK BUTTONS */
+/* ========================================= */
+
+.forgot-link-btn{
+
+    width:auto;
+
+    height:auto;
+
+    background:none;
+
+    border:none;
+
+    border-radius:0;
+
+    padding:0;
+
+    display:block;
+
+    text-decoration:none;
+
+    color:#7a4e33;
+
+    font-size:17px;
+
+    font-weight:400;
+
+    letter-spacing:0;
+
+    margin-bottom:8px;
+
+    cursor:pointer;
+
+}
+
+.forgot-link-btn:hover{
+
+    background:none;
+
+    text-decoration:underline;
+
+    color:#7a4e33;
+
+}
+
+/* ===== USER DISPLAY ===== */
+.user-display{
+
+    text-align:center;
+
+    font-size:16px;
+
+    color:#7a4e33;
+
+    margin-bottom:20px;
+
+    font-weight:500;
+
+}

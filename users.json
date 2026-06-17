@@ -1,13 +1,5 @@
 [
     {
-        "username": "test",
-        "password": "f8aa14da2301e201e817f5b8667a36bb40c8ca49da69b3470a74d0f4ec194961",
-        "email": "eyxy8317@gmail.com",
-        "security_question": "nickname",
-        "security_answer": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
-        "profile_picture": "download.jpg"
-    },
-    {
         "username": "ZOEY",
         "password": "6296dbb4f8b680d7f9d339678b3a47841d0fed45eade04c02ddbdd5383dc586f",
         "email": "zoeychu0709@gmail.com",
@@ -20,6 +12,29 @@
         "password": "5cf4d310a12495134a24d5ea4fbb347b50a447840d14d1a0b458947f2b10f922",
         "email": "yxin683@gmail.com",
         "security_question": "birth_city",
-        "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4"
+        "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4",
+        "theme": "cozy"
+    },
+    {
+        "username": "User7763",
+        "password": "efb174de90ce6e2885028eafa4fffdfb8c90b0d99e0e7f4c89fe069a495fa7a2",
+        "email": "yxin683@gmail.com",
+        "security_question": "favourite_subject",
+        "security_answer": "4d4e6a6794a094ec318a7f48ee6f380df6bd2bebebccd6cf83152e21ad420bfb"
+    },
+    {
+        "username": "test111",
+        "password": "f8aa14da2301e201e817f5b8667a36bb40c8ca49da69b3470a74d0f4ec194961",
+        "email": "test@gmail.com",
+        "security_question": "nickname",
+        "security_answer": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+    },
+    {
+        "username": "Ethan",
+        "password": "091b338bc2d48a45dc652308d5ac6827a11e84425404eb259d000614d0329295",
+        "email": "eyxy8317@gmail.com",
+        "security_question": "nickname",
+        "security_answer": "0925eef828afdd3cfccb4776afa08f9fbda045abeb85d72d66b955b42d342a6b",
+        "theme": "cozy"
     }
 ]

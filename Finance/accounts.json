@@ -1,18 +1,17 @@
 [
     {
-        "username": "test",
-        "name": "CIMB"
+        "username": "Ethan",
+        "name": "TnG",
+        "purpose": "spending"
     },
     {
-        "username": "test",
-        "name": "TnG"
+        "username": "Ethan",
+        "name": "CIMB",
+        "purpose": "savings"
     },
     {
-        "username": "test",
-        "name": "MAE"
-    },
-    {
-        "username": "test",
-        "name": "Public bank"
+        "username": "Ethan",
+        "name": "MAE",
+        "purpose": "spending"
     }
 ]

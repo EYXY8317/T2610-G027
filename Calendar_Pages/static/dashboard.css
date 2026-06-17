@@ -1,0 +1,644 @@
+/* ================= RESET ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+
+    padding:20px;
+
+    background:#f7f3ee;
+
+    color:#3b2f2a;
+
+}
+
+/* ================= MAIN CONTAINER ================= */
+
+.dashboard{
+
+    width:95%;
+
+    max-width:1800px;
+
+    margin:auto;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    
+    background:white;
+
+    border:1px solid #eee4da;
+
+    border-radius:12px;
+
+    padding:22px 45px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+/* ================= LEFT SIDE ================= */
+
+.logo-section{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+}
+
+/* ICON PLACEHOLDER */
+
+.logo-box{
+
+    width:79px;
+    height:79px;
+
+    background:#f2e5d8;
+
+    border:none;
+
+    border-radius:21px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+
+.logo-box img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+}
+
+/* NAME（Life Pages) */
+
+.logo-text{
+    font-size:42px;
+    font-weight:700;
+}
+
+/* ================= NAVIGATION ================= */
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#333;
+
+    border:1px solid #d2d2d2;
+
+    border-radius:8px;
+
+    padding:12px 22px;
+
+    font-size:15px;
+
+    transition:0.2s;
+}
+
+.nav-links a.active{
+
+    background:#8b5e3c;
+
+    color:white;
+
+    border:none;
+
+}
+
+.nav-links a:hover{
+
+    background:#c9a88a;
+
+    color:white;
+
+}
+
+/* ================= HERO字体 ================= */
+
+.hero{
+    text-align:center;
+    margin-top:40px;
+}
+
+.hero h1{
+    font-size:58px;
+    margin-bottom:10px;
+}
+
+.hero p{
+
+    color:#8b7767;
+
+    font-size:18px;
+
+}
+
+/* ================= CARDS ================= */
+
+.cards-container{
+
+    margin-top:50px;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,minmax(420px,1fr));
+
+    gap:30px;
+}
+
+/* ================= CARD ================= */
+
+.card{
+
+    background:white;
+
+    border:1px solid transparent;
+
+    border-radius:28px;
+
+    padding:24px;
+
+    min-height:540px;
+
+    box-shadow:
+    0 8px 24px rgba(181,148,120,0.08);
+
+    transition:0.3s ease;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+    0 14px 30px rgba(181,148,120,0.12);
+
+    border:1px solid #d8b89c;
+
+}
+
+/* CARD TOP */
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+/* LEFT */
+
+.card-left{
+    display:flex;
+    gap:15px;
+}
+
+/* ICON */
+.icon-box{
+
+    width:70px;
+    height:70px;;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:#f4ede4;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.icon-box img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:contain;
+
+}
+
+/* TEXT */
+.card-text h2{
+    margin-bottom:5px;
+    font-size:32px;
+}
+
+.card-text p{
+
+    color:#666;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+/* PREVIEW BOX */
+
+.preview-box{
+
+    width:100%;
+
+    height:290px;
+
+    border:none;
+
+    border-radius:18px;
+
+    margin-top:30px;
+
+    background:#faf6f1;
+
+}
+
+/* BUTTON */
+
+.card-btn{
+
+    width:100%;
+
+    height:52px;
+
+    margin-top:25px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#f1e6dc;
+
+    color:#7d5f49;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+
+    font-weight:600;
+
+}
+
+.card-btn:hover{
+
+    background:#c9a88a;
+
+    color:white;
+
+}
+
+
+/* ================= FINANCE PREVIEW ================= */
+
+.finance-preview{
+
+    background:#f7f1ff;
+
+    padding:18px;
+
+}
+
+/* HEADER */
+
+.finance-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+}
+
+/* SMALL TEXT */
+
+.finance-header span{
+
+    font-size:12px;
+
+    color:#777;
+
+}
+
+/* MONEY */
+
+.finance-header h3{
+
+    margin-top:8px;
+
+    font-size:30px;
+
+    color:#2f2521;
+
+}
+
+/* SUBTEXT */
+
+.finance-header p{
+
+    margin-top:5px;
+
+    font-size:12px;
+
+    color:#666;
+
+}
+
+/* BADGE */
+
+.finance-badge{
+
+    background:#ece0ff;
+
+    color:#7f5bc2;
+
+    padding:6px 10px;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* CHART */
+
+.finance-chart{
+
+    margin-top:28px;
+
+    height:170px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-end;
+
+}
+
+/* GROUP */
+
+.finance-bar-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+/* BAR */
+
+.bar{
+
+    width:26px;
+
+    background:#b292ea;
+
+    border-radius:10px 10px 0 0;
+
+}
+
+.bar1{ height:60px; }
+
+.bar2{ height:110px; }
+
+.bar3{ height:80px; }
+
+.bar4{ height:140px; }
+
+/* LABEL */
+
+.finance-bar-group span{
+
+    font-size:11px;
+
+    color:#777;
+
+}
+
+/* ================= DIARY PREVIEW ================= */
+
+.diary-preview{
+
+    padding:18px;
+
+    background:#fff2f4;
+
+}
+
+/* LABEL */
+
+.diary-label{
+
+    color:#ff6f8f;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+/* TITLE */
+
+.diary-preview h3{
+
+    margin-top:14px;
+
+    font-size:36px;
+
+    line-height:1.4;
+
+    font-family:cursive;
+
+    color:#3b2f2a;
+
+}
+
+/* DATE */
+
+.diary-date{
+
+    margin-top:10px;
+
+    font-size:12px;
+
+    color:#777;
+
+}
+
+/* TEXT */
+
+.diary-text{
+
+    margin-top:18px;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    color:#555;
+
+}
+
+/* ================= CALENDAR PREVIEW ================= */
+
+.calendar-preview{
+
+    background:#f5f8ed;
+
+    padding:18px;
+
+    border-radius:18px;
+
+}
+
+/* TOP */
+
+.calendar-top{
+
+    text-align:center;
+
+    margin-bottom:16px;
+
+    font-weight:600;
+
+    color:#55663a;
+
+    font-size:16px;
+
+}
+
+/* WEEK DAYS */
+
+.week-days{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    text-align:center;
+
+    font-size:10px;
+
+    color:#95a07b;
+
+    margin-bottom:14px;
+
+}
+
+/* GRID */
+
+.calendar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:10px;
+
+    text-align:center;
+
+    font-size:16px;
+
+    color:#444;
+
+}
+
+/* DAYS */
+
+.calendar-grid span{
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    margin:auto;
+
+    transition:0.2s ease;
+
+}
+
+/* HOVER */
+
+.calendar-grid span:hover{
+
+    background:#edf3df;
+
+}
+
+/* ACTIVE DAY */
+
+.active-day{
+
+    background:#8aa05a;
+
+    color:white !important;
+
+    font-weight:600;
+
+    box-shadow:
+    0 4px 10px rgba(138,160,90,0.25);
+
+}
+
+/* EVENT */
+
+.event-box{
+
+    margin-top:18px;
+
+    font-size:12px;
+
+    color:#7c9b4d;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
