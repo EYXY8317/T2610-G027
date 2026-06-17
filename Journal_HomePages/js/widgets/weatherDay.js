@@ -92,10 +92,13 @@ function applyWeatherDayScale(widget) {
 
     const naturalH = body.scrollHeight;
     const maxNaturalW = Math.max(
-        body.querySelector(".wd-temp")?.scrollWidth  || 0,
-        body.querySelector(".wd-city")?.scrollWidth  || 0,
-        body.querySelector(".wd-range")?.scrollWidth || 0,
-        body.querySelector(".wd-feels")?.scrollWidth || 0,
+        body.querySelector(".wd-temp")?.scrollWidth       || 0,
+        body.querySelector(".wd-temp-label")?.scrollWidth || 0,
+        body.querySelector(".wd-city")?.scrollWidth       || 0,
+        body.querySelector(".wd-range")?.scrollWidth      || 0,
+        body.querySelector(".wd-feels")?.scrollWidth      || 0,
+        body.querySelector(".wd-humidity")?.scrollWidth   || 0,
+        body.querySelector(".wd-update")?.scrollWidth     || 0,
         1
     );
 

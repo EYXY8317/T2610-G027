@@ -320,6 +320,29 @@ export function createSettingPopup(widgetId) {
 
     document.body.append(popup);
 
+    // Position popup outside the widget card
+    const widgetEl = document.getElementById(widgetId);
+    if (widgetEl) {
+        const r  = widgetEl.getBoundingClientRect();
+        const pw = popup.offsetWidth  || 420;
+        const ph = popup.offsetHeight || 600;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const GAP = 12;
+
+        // Prefer right side; fall back to left; clamp within viewport
+        let left = r.right + GAP;
+        if (left + pw > vw - GAP) left = r.left - pw - GAP;
+        if (left < GAP) left = vw - pw - GAP;
+
+        // Align top with widget, clamp vertically
+        let top = Math.min(r.top, vh - ph - GAP);
+        if (top < GAP) top = GAP;
+
+        popup.style.left = left + "px";
+        popup.style.top  = top  + "px";
+    }
+
     attachContentObserver(widgetId);
 
     /* ── Pre-fill appearance controls from saved state ───────── */

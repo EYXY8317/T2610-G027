@@ -94,7 +94,7 @@ const DEFAULTS = [
     {
         id: "emotion-summary-widget",
         layout:     { left: "726px", top: "530px", width: "460px", height: "270px" },
-        appearance: { backgroundColor: "#ffffff", backgroundOpacity: 100,
+        appearance: { backgroundColor: "#F2EFE9", backgroundOpacity: 100,
                       showTitle: true,  showBorder: true,
                       titleColor: "#1a1a1a", contentColor: "#1a1a1a" }
     },
