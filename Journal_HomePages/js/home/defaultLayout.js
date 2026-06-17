@@ -111,11 +111,21 @@ const DEFAULTS = [
 
 ];
 
+function getNavbarHeight() {
+    const nav = document.querySelector('.navbar');
+    return nav ? nav.offsetHeight : 0;
+}
+
+function adjustedLayout(layout) {
+    const navH = getNavbarHeight();
+    return { ...layout, top: (parseInt(layout.top) + navH) + 'px' };
+}
+
 // Seed defaults only if no saved data exists (first-time user)
 export function applyDefaultLayout() {
     DEFAULTS.forEach(({ id, layout, appearance }) => {
         if (!localStorage.getItem(`${id}-layout`)) {
-            localStorage.setItem(`${id}-layout`, JSON.stringify(layout));
+            localStorage.setItem(`${id}-layout`, JSON.stringify(adjustedLayout(layout)));
         }
         if (!localStorage.getItem(`${id}-appearance`)) {
             localStorage.setItem(`${id}-appearance`, JSON.stringify(appearance));
@@ -126,7 +136,7 @@ export function applyDefaultLayout() {
 // Force-overwrite all layout + appearance back to defaults (reset button)
 export function resetToDefaultLayout() {
     DEFAULTS.forEach(({ id, layout, appearance }) => {
-        localStorage.setItem(`${id}-layout`, JSON.stringify(layout));
+        localStorage.setItem(`${id}-layout`, JSON.stringify(adjustedLayout(layout)));
         localStorage.setItem(`${id}-appearance`, JSON.stringify(appearance));
     });
 }

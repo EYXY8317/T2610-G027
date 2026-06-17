@@ -51,6 +51,23 @@ function attachEdgeHandle(widget, dir) {
             newT = startT + (startH - newH);
         }
 
+        // Clamp to dashboard + navbar bounds
+        const bounds = getDashboardBounds();
+        if (dir.includes("w") && newL < bounds.minLeft) {
+            newL = bounds.minLeft;
+            newW = startL + startW - newL;
+        }
+        if (dir.includes("e") && newL + newW > bounds.maxRight) {
+            newW = bounds.maxRight - newL;
+        }
+        if (dir.includes("n") && newT < bounds.minTop) {
+            newT = bounds.minTop;
+            newH = startT + startH - newT;
+        }
+        if (dir.includes("s") && newT + newH > bounds.maxBottom) {
+            newH = bounds.maxBottom - newT;
+        }
+
         widget.style.width  = newW + "px";
         widget.style.height = newH + "px";
         widget.style.left   = newL + "px";
@@ -97,6 +114,11 @@ import {
     saveLayout
 }
 from "../home/saveLayout.js";
+
+import {
+    getDashboardBounds
+}
+from "./boundaryManager.js";
 
 
 // Returns how many extra px the widget needs so no content is clipped.
@@ -233,6 +255,10 @@ export function enableResize(
                     size.width,
                     size.height
                 );
+
+            const { maxRight, maxBottom } = getDashboardBounds();
+            snapped.width  = Math.min(snapped.width,  maxRight  - (parseFloat(widget.style.left) || 0));
+            snapped.height = Math.min(snapped.height, maxBottom - (parseFloat(widget.style.top)  || 0));
 
             const prevW = widget.offsetWidth;
             const prevH = widget.offsetHeight;

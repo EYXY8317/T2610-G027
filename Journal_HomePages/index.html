@@ -48,42 +48,51 @@
 
 <body>
 
-    <div id="homepage-toolbar">
+    <nav class="navbar">
 
-        <button
-            id="homepage-settings"
-        >
-            ⚙ Customize Homepage
-        </button>
+        <div class="logo-section">
+            <div class="logo-box">
+                <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+            </div>
+            <div class="logo-text">Life Pages</div>
+        </div>
 
-    </div>
+        <div class="nav-links">
+            <a href="/dashboard">Home</a>
+            <a href="/finance">Finance Page</a>
+            <a href="/journal" class="active">Diary Page</a>
+            <a href="/calendar">Calendar Page</a>
+            <a href="/logout">Logout</a>
+        </div>
+
+        <div class="navbar-right">
+            <button id="homepage-settings">⚙ Customize</button>
+        </div>
+
+    </nav>
 
     <div id="homepage-menu">
 
-        <button
-            id="edit-layout-btn"
-        >
-            Edit Layout
+        <button id="edit-layout-btn">
+            <span class="menu-icon">✏️</span> Edit Layout
         </button>
 
         <button>
-            Add Widget
+            <span class="menu-icon">➕</span> Add Widget
         </button>
 
         <button>
-            Wallpaper
+            <span class="menu-icon">🖼️</span> Wallpaper
         </button>
 
         <button>
-            Theme
+            <span class="menu-icon">🎨</span> Theme
         </button>
 
         <div id="homepage-menu-divider"></div>
 
-        <button
-            id="reset-layout-btn"
-        >
-            Reset Layout
+        <button id="reset-layout-btn">
+            <span class="menu-icon">↺</span> Reset Layout
         </button>
 
     </div>

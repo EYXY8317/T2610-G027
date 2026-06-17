@@ -1,45 +1,35 @@
+export const BOUNDARY_GAP = 20;
+
+function getNavbarHeight() {
+    const nav = document.querySelector('.navbar');
+    return nav ? nav.offsetHeight : 0;
+}
+
+export function getDashboardBounds(padding = BOUNDARY_GAP) {
+    const dashboard = document.getElementById("dashboard");
+    const navH = getNavbarHeight();
+    return {
+        minLeft:   padding,
+        minTop:    navH + padding,
+        maxRight:  dashboard.clientWidth  - padding,
+        maxBottom: dashboard.clientHeight - padding
+    };
+}
+
 export function clampWidgetToDashboard(
     widget,
     newLeft,
     newTop,
-    padding = 20
+    padding = BOUNDARY_GAP
 ) {
 
-    const dashboard =
-        document.getElementById(
-            "dashboard"
-        );
-
-    const maxLeft =
-        dashboard.clientWidth -
-        widget.offsetWidth -
-        padding;
-
-    const maxTop =
-        dashboard.clientHeight -
-        widget.offsetHeight -
-        padding;
+    const { minLeft, minTop, maxRight, maxBottom } = getDashboardBounds(padding);
 
     return {
 
-        left:
-            Math.max(
-                padding,
-                Math.min(
-                    newLeft,
-                    maxLeft
-                )
-            ),
+        left: Math.max(minLeft, Math.min(newLeft, maxRight  - widget.offsetWidth)),
 
-        top:
-            Math.max(
-                padding,
-                Math.min(
-                    newTop,
-                    maxTop
-                )
-
-        )
+        top:  Math.max(minTop,  Math.min(newTop,  maxBottom - widget.offsetHeight))
 
     };
 
