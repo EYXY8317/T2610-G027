@@ -379,17 +379,148 @@ button:hover{
 }
 
 /* ========================================= */
-/* WHEN REGISTER BUTTON IS CLICKED */
+/* SHOW REGISTER */
 /* ========================================= */
 
-.container.active .login-panel{
+.container.show-register .login-panel{
 
-    transform:translateX(-100%); /* Slide Login panel out to the left */
+    transform:translateX(-100%);
 
 }
 
-.container.active .register-panel{
+.container.show-register .register-panel{
 
-    transform:translateX(0); /* Slide Register panel into view */
+    transform:translateX(0);
+
+}
+
+/* ========================================= */
+/* FORGOT PANELS */
+/* ========================================= */
+
+.forgot-panel,
+.forgot-username-panel{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    display:flex;
+
+    transition:0.6s ease-in-out;
+
+    transform:translateX(100%);
+
+}
+
+/* ========================================= */
+/* SHOW FORGOT PASSWORD */
+/* ========================================= */
+
+.container.show-forgot .login-panel{
+
+    transform:translateX(-100%);
+
+}
+
+.container.show-forgot .forgot-panel{
+
+    transform:translateX(0);
+
+}
+
+/* ========================================= */
+/* SHOW FORGOT USERNAME */
+/* ========================================= */
+
+.container.show-forgot-username .login-panel{
+
+    transform:translateX(-100%);
+
+}
+
+.container.show-forgot-username .forgot-username-panel{
+
+    transform:translateX(0);
+
+}
+
+.container.show-forgot-username .forgot-panel{
+
+    transform:translateX(-100%);
+
+}
+
+/* ========================================= */
+/* SELECT INSIDE INPUT BOX */
+/* ========================================= */
+
+.input-box select{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    font-size:18px;
+
+    margin-left:15px;
+
+    font-family:'Poppins', sans-serif;
+
+    background:transparent;
+
+    cursor:pointer;
+
+    color:#333;
+
+}
+
+/* ========================================= */
+/* FORGOT LINK BUTTONS */
+/* ========================================= */
+
+.forgot-link-btn{
+
+    width:auto;
+
+    height:auto;
+
+    background:none;
+
+    border:none;
+
+    border-radius:0;
+
+    padding:0;
+
+    display:block;
+
+    text-decoration:none;
+
+    color:#7a4e33;
+
+    font-size:17px;
+
+    font-weight:400;
+
+    letter-spacing:0;
+
+    margin-bottom:8px;
+
+    cursor:pointer;
+
+}
+
+.forgot-link-btn:hover{
+
+    background:none;
+
+    text-decoration:underline;
+
+    color:#7a4e33;
 
 }

@@ -1133,40 +1133,6 @@ label{
     margin-top:18px;
 }
 
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
-
-@media (max-width: 900px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ================================================= */
-/* ============== GOAL ACCOUNT FIX ================= */
-/* ================================================= */
-
-.goal-account-group{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:12px;
-
-    width:100%;
-}
-
-.goal-account-select{
-
-    width:100%;
-}
-
-
-
 
 
 /* ================================================= */
@@ -1208,53 +1174,6 @@ label{
 /* ================================================= */
 
 .page-header{
-    margin-bottom:30px;
-}
-
-.page-header h1{
-    font-size:2.5rem;
-    margin-bottom:10px;
-    color:var(--text-main);
-}
-
-.page-header p{
-    color:var(--text-soft);
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px;
-}
-
-.form-group{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.form-group input{
-    height:58px;
-}
-
-.action-buttons{
-    display:flex;
-    gap:12px;
-    margin-top:30px;
-}
-
-@media (max-width:900px){
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-}
-
-/* ================================================= */
-/* ================= PAGE HEADER =================== */
-/* ================================================= */
-
-.page-header{
 
     margin-bottom:30px;
 }
@@ -1264,6 +1183,8 @@ label{
     font-size:3rem;
 
     margin-bottom:8px;
+
+    color:var(--text-main);
 }
 
 .page-header p{
@@ -1271,13 +1192,22 @@ label{
     color:var(--text-soft);
 }
 
+.form-grid{
 
+    display:grid;
 
-/* ================================================= */
-/* ================= FORM GROUP ==================== */
-/* ================================================= */
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+}
 
 .form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
 
     margin-bottom:22px;
 }
@@ -1287,6 +1217,17 @@ label{
     height:60px;
 
     font-size:1rem;
+}
+
+.action-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    margin-top:30px;
 }
 
 /* ================================================= */
@@ -1432,6 +1373,30 @@ label{
     font-size:.85rem;
 }
 
+
+
+/* ================================================= */
+/* ================= FILTER FORM =================== */
+/* ================================================= */
+
+.filter-form{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    margin-bottom:24px;
+}
+
+.filter-form input{
+
+    width:auto;
+}
+
 /* ================================================= */
 /* ================================================= */
 /* ===================== ADD PAGE ================== */
@@ -1548,6 +1513,8 @@ label{
     font-size:1.2rem;
 
     font-weight:600;
+
+    appearance:textfield;
 }
 
 .goal-amount-input::-webkit-outer-spin-button,
@@ -1558,9 +1525,210 @@ label{
     margin:0;
 }
 
-.goal-amount-input{
+/* ================================================= */
+/* ================== RECEIPT ====================== */
+/* ================================================= */
 
-    appearance:textfield;
+.receipt-card{
+
+    background:var(--card-bg-2);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    margin-top:8px;
+}
+
+.receipt-card p{
+
+    color:var(--text-soft);
+
+    margin-bottom:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-size:0.9rem;
+}
+
+.receipt-upload-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    flex-wrap:wrap;
+}
+
+.receipt-label{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    background:var(--accent);
+
+    color:white;
+
+    border-radius:14px;
+
+    padding:12px 20px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+
+    margin-bottom:0;
+}
+
+.receipt-label:hover{
+
+    background:var(--accent-hover);
+
+    transform:translateY(-2px);
+}
+
+.receipt-input{
+
+    display:none;
+}
+
+.receipt-filename{
+
+    color:var(--text-soft);
+
+    font-size:0.95rem;
+}
+
+.receipt-current{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin-bottom:18px;
+}
+
+.receipt-thumb-preview{
+
+    width:72px;
+
+    height:72px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    border:1px solid var(--border);
+}
+
+.receipt-soft-text{
+
+    color:var(--text-soft);
+
+    font-size:0.9rem;
+}
+
+.receipt-thumb{
+
+    width:42px;
+
+    height:42px;
+
+    object-fit:cover;
+
+    border-radius:8px;
+
+    border:1px solid var(--border);
+
+    cursor:pointer;
+
+    display:block;
+
+    transition:transform 0.2s ease;
+}
+
+.receipt-thumb:hover{
+
+    transform:scale(1.15);
+}
+
+.receipt-none{
+
+    color:var(--text-soft);
+}
+
+.receipt-modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,0.88);
+
+    z-index:9999;
+
+    align-items:center;
+
+    justify-content:center;
+}
+
+.receipt-modal.open{
+
+    display:flex;
+}
+
+.receipt-modal img{
+
+    max-width:90vw;
+
+    max-height:90vh;
+
+    border-radius:16px;
+
+    box-shadow:0 24px 60px rgba(0,0,0,0.5);
+}
+
+.receipt-modal-close{
+
+    position:absolute;
+
+    top:24px;
+
+    right:32px;
+
+    color:white;
+
+    font-size:2.2rem;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    line-height:1;
+
+    opacity:0.8;
+}
+
+.receipt-modal-close:hover{
+
+    opacity:1;
 }
 
 /* ================================================= */
@@ -1570,16 +1738,6 @@ label{
 .add-button-row{
 
     margin-top:10px;
-}
-
-.action-buttons{
-    display:flex;
-
-    gap:12px;
-
-    align-items:center;
-
-    margin-top:30px;
 }
 
 .edit-btn,
@@ -1957,6 +2115,11 @@ body.cozy .records-table tr:hover{
 @media (max-width:900px){
 
     .summary-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
 
         grid-template-columns:1fr;
     }

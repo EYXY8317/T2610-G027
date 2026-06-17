@@ -207,6 +207,33 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% else %}
 
+        <form method="GET" class="filter-form">
+
+            <input
+                type="date"
+                name="start"
+                value="{{ request.args.get('start', '') }}"
+            >
+
+            <input
+                type="date"
+                name="end"
+                value="{{ request.args.get('end', '') }}"
+            >
+
+            <button type="submit">
+                Filter
+            </button>
+
+            <a
+                href="/view"
+                class="secondary-btn"
+            >
+                Reset
+            </a>
+
+        </form>
+
         <!-- ===== TABLE ===== -->
 
         <div class="table-wrapper">
@@ -226,6 +253,8 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     <th>Item</th>
 
                     <th>Amount</th>
+
+                    <th>Receipt</th>
 
                     <th>Actions</th>
 
@@ -301,6 +330,27 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     </td>
 
+                    <!-- RECEIPT -->
+
+                    <td>
+
+                        {% if r.receipt %}
+
+                        <img
+                            src="{{ url_for('static', filename='receipts/' + r.receipt) }}"
+                            class="receipt-thumb"
+                            onclick="openReceiptModal(this.src)"
+                            alt="Receipt"
+                        >
+
+                        {% else %}
+
+                        <span class="receipt-none">—</span>
+
+                        {% endif %}
+
+                    </td>
+
                     <!-- ACTIONS -->
 
                     <td>
@@ -343,12 +393,42 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
 </div>
 
+<!-- RECEIPT MODAL -->
+
+<div
+    class="receipt-modal"
+    id="receiptModal"
+    onclick="closeReceiptModal()"
+>
+
+    <span class="receipt-modal-close">&times;</span>
+
+    <img
+        id="receiptModalImg"
+        src=""
+        alt="Receipt"
+        onclick="event.stopPropagation()"
+    >
+
+</div>
+
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+function openReceiptModal(src) {
 
-    console.log("Financial Records Loaded");
+    document.getElementById("receiptModalImg").src = src;
 
+    document.getElementById("receiptModal").classList.add("open");
+}
+
+function closeReceiptModal() {
+
+    document.getElementById("receiptModal").classList.remove("open");
+}
+
+document.addEventListener("keydown", function(e) {
+
+    if (e.key === "Escape") closeReceiptModal();
 });
 
 </script>

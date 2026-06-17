@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 import json
 import os
+import uuid
 from datetime import datetime
+from werkzeug.utils import secure_filename
 from .finance_helpers import (
     load_data, save_data, get_user_wallpaper, get_current_user,
     CATEGORY_MAP, BASE_DIR
@@ -15,6 +17,25 @@ f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
 f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
 f_users = os.path.join(BASE_DIR, "users.json")
 f_goals = os.path.join(BASE_DIR, "goals.json")
+
+RECEIPTS_DIR = os.path.join(BASE_DIR, "Finance", "static", "receipts")
+ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp"}
+
+def _allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def _save_receipt(file, username):
+    os.makedirs(RECEIPTS_DIR, exist_ok=True)
+    ext = secure_filename(file.filename).rsplit(".", 1)[1].lower()
+    filename = f"{username}_{uuid.uuid4().hex}.{ext}"
+    file.save(os.path.join(RECEIPTS_DIR, filename))
+    return filename
+
+def _delete_receipt(filename):
+    if filename:
+        path = os.path.join(RECEIPTS_DIR, filename)
+        if os.path.exists(path):
+            os.remove(path)
 
 # ================= ADD =================
 @finance_bp.route("/add", methods=["GET", "POST"])
@@ -90,6 +111,11 @@ def add_financial():
             save_data(f_expense, records)
             return redirect(url_for("finance.view_financial"))
 
+        receipt_file = request.files.get("receipt")
+        receipt_filename = None
+        if receipt_file and receipt_file.filename and _allowed_file(receipt_file.filename):
+            receipt_filename = _save_receipt(receipt_file, session["user"])
+
         record = {
             "username": session["user"],
             "date": form.get("date"),
@@ -97,7 +123,8 @@ def add_financial():
             "category": form.get("category"),
             "account": account,
             "item": form.get("item"),
-            "amount": amount
+            "amount": amount,
+            "receipt": receipt_filename
         }
 
         records = load_data(f_expense, [])
@@ -129,6 +156,19 @@ def view_financial():
     if selected_account and selected_account != "All Accounts":
         user_records = [r for r in user_records if r.get("account") == selected_account]
 
+    start = request.args.get("start")
+    end = request.args.get("end")
+
+    if start and end:
+
+        user_records = [
+
+            r for r in user_records
+
+            if start <= r["date"] <= end
+
+        ]
+
     sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
     user_accounts = [a for a in accounts if a["username"] == user]
 
@@ -155,6 +195,7 @@ def delete_financial(idx):
         return redirect(url_for("finance.view_financial"))
 
     target = user_records[idx]
+    _delete_receipt(target.get("receipt"))
     records.remove(target)
     save_data(f_expense, records)
     return redirect(url_for("finance.view_financial"))
@@ -214,6 +255,11 @@ def update_financial(idx):
 
         if not account:
             account = record.get("account", "Default")
+
+        receipt_file = request.files.get("receipt")
+        if receipt_file and receipt_file.filename and _allowed_file(receipt_file.filename):
+            _delete_receipt(record.get("receipt"))
+            record["receipt"] = _save_receipt(receipt_file, user)
 
         record["date"] = date
         record["type"] = type_

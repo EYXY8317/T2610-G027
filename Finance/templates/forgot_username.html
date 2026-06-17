@@ -1,44 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Life Pages</title>
+<title>Life Pages</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ICON -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
 
-<!-- NAV -->
-<a href="/login">Login</a> |
-<a href="/register">Register</a>
+<!-- MAIN CONTAINER -->
+<div class="container">
 
-<hr>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
 
-<h1>Life Pages</h1>
-<p>Recover your username</p>
+        <h1>Recover your username</h1>
 
-<h3>Forgot Username</h3>
+        <p>Remember it?</p>
 
-<form method="POST">
+        <a href="/login" class="register-btn">Back to Login</a>
 
-    <!-- EMAIL -->
-    <label>Email:</label><br>
-    <input type="email" name="email" required autocomplete="email"><br><br>
+    </div>
 
-    <button type="submit">Find Username</button>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
 
-</form>
+        <h2>Forgot Username</h2>
 
-<br>
-<a href="/login">Back to Login</a>
+        <form action="/forgot_username" method="POST">
 
-<!-- ERROR -->
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+            <!-- EMAIL -->
+            <div class="input-box">
 
-<!-- SUCCESS -->
-{% if result %}
-<p style="color:green;">Your username is: {{ result }}</p>
-{% endif %}
+                <i class="fa-regular fa-envelope"></i>
+
+                <input
+                 type="email"
+                 name="email"
+                 placeholder="Email"
+                 required
+                 autocomplete="email">
+
+            </div>
+
+            <button type="submit">Find Username</button>
+
+        </form>
+
+        <!-- ERROR -->
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <!-- SUCCESS -->
+        {% if result %}
+        <p class="success-message">Your username is: {{ result }}</p>
+        {% endif %}
+
+    </div>
+
+</div>
 
 </body>
 </html>
