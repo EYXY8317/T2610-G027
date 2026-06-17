@@ -117,6 +117,13 @@ def profile_static(filename):
         filename
     )
 
+@app.route('/journal_home_static/<path:filename>')
+def journal_home_static(filename):
+    return send_from_directory(
+        os.path.join('Journal_HomePages'),
+        filename
+    )
+
 # ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)

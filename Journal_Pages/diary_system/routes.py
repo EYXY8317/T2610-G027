@@ -20,6 +20,41 @@ diary_bp = Blueprint("diary", __name__, template_folder="../../templates")
 
 #================================ route ================================
 
+@diary_bp.route("/journal")
+def journal_index():
+    from flask import send_from_directory as _sfd
+    base = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "Journal_HomePages")
+    return _sfd(base, "index.html")
+
+
+@diary_bp.route("/journal_entries_list")
+def journal_entries_list():
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = load_entries()
+    result = []
+    for e in reversed(entries):
+        content = (e.get("content") or "").strip()
+        if not content:
+            continue
+        raw_text = content.replace("||ITEM||", " ")
+        try:
+            import json as _json
+            first_chunk = raw_text.split("||ITEM||")[0].strip() if "||ITEM||" in raw_text else raw_text
+            parsed = _json.loads(first_chunk)
+            import re
+            preview = re.sub(r"<[^>]+>", "", parsed.get("html", ""))[:60]
+        except Exception:
+            import re
+            preview = re.sub(r"<[^>]+>", "", raw_text)[:60]
+        result.append({
+            "date":    e.get("date", ""),
+            "topic":   e.get("topic", ""),
+            "mood":    e.get("mood", ""),
+            "preview": preview,
+        })
+    return jsonify({"entries": result[:20]})
+
+
 @diary_bp.route("/diary")
 def diary():
 
