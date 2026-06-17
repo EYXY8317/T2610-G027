@@ -87,11 +87,11 @@ def forgot_username():
 
         for u in users:
             if u["email"] == email:
-                return render_template("forgot_username.html", result=u["username"])
+                return redirect(url_for("auth.login", panel="forgot_username", result=u["username"]))
 
-        return render_template("forgot_username.html", error="Email not found")
+        return redirect(url_for("auth.login", panel="forgot_username", error="Email not found"))
 
-    return render_template("forgot_username.html")
+    return redirect(url_for("auth.login", panel="forgot_username"))
 
 # ================= FORGOT PASSWORD =================
 @auth_bp.route("/forgot", methods=["GET", "POST"])
@@ -112,11 +112,11 @@ def forgot_password():
                     session["reset_user"] = username
                     return redirect(url_for("auth.reset_password"))
                 else:
-                    return render_template("forgot.html", error="Wrong question or answer")
+                    return redirect(url_for("auth.login", panel="forgot", error="Wrong question or answer"))
 
-        return render_template("forgot.html", error="User not found")
+        return redirect(url_for("auth.login", panel="forgot", error="User not found"))
 
-    return render_template("forgot.html")
+    return redirect(url_for("auth.login", panel="forgot"))
 
 # ================= RESET PASSWORD =================
 @auth_bp.route("/reset", methods=["GET", "POST"])

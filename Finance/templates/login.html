@@ -14,7 +14,7 @@
 <body>
 
 <!-- MAIN CONTAINER -->
-<div class="container">
+<div class="container {% if request.args.get('panel') == 'forgot' %}show-forgot{% elif request.args.get('panel') == 'forgot_username' %}show-forgot-username{% endif %}">
 
  <!-- LOGIN --> 
  <div class="login-panel">
@@ -81,13 +81,13 @@
 
            <div class="forgot-links">
 
-            <a href="/forgot" class="forgot">
+            <button type="button" id="forgotBtn" class="forgot-link-btn">
                Forgot Password?
-            </a>
+            </button>
 
-            <a href="/forgot_username" class="forgot-username">
+            <button type="button" id="forgotUsernameBtn" class="forgot-link-btn">
                Forgot Username?
-            </a>
+            </button>
 
         </div>
 
@@ -256,10 +256,156 @@
 
   </div>
 
+    <!-- FORGOT PASSWORD PANEL -->
+    <div class="forgot-panel">
+
+        <div class="left-panel">
+
+            <h1>Recover your password</h1>
+
+            <p>Remember it?</p>
+
+            <button type="button" class="register-btn back-to-login-btn">
+                Back to Login
+            </button>
+
+            <p>Need your username instead?</p>
+
+            <button type="button" id="toForgotUsernameBtn" class="register-btn">
+                Forgot Username
+            </button>
+
+        </div>
+
+        <div class="right-panel">
+
+            <h2>Forgot Password</h2>
+
+            <form action="/forgot" method="POST">
+
+                <!-- USERNAME -->
+                <div class="input-box">
+
+                    <i class="fa-regular fa-user"></i>
+
+                    <input
+                     type="text"
+                     name="username"
+                     placeholder="Username"
+                     required
+                     autocomplete="username">
+
+                </div>
+
+                <!-- SECURITY QUESTION -->
+                <div class="input-box">
+
+                    <i class="fa-solid fa-circle-question"></i>
+
+                    <select name="question" required>
+
+                        <option value="">Security Question</option>
+
+                        <option value="nickname">What is your nickname?</option>
+
+                        <option value="birth_city">Where is your birth city?</option>
+
+                        <option value="favourite_subject">What is your favourite subject?</option>
+
+                        <option value="mother_name">What is your mother's name?</option>
+
+                        <option value="best_friend">What is your best friend's name?</option>
+
+                    </select>
+
+                </div>
+
+                <!-- ANSWER -->
+                <div class="input-box">
+
+                    <i class="fa-regular fa-comment"></i>
+
+                    <input
+                     type="text"
+                     name="answer"
+                     placeholder="Answer"
+                     required>
+
+                </div>
+
+                <button type="submit">Verify</button>
+
+            </form>
+
+            {% if request.args.get("panel") == "forgot" and request.args.get("error") %}
+            <p class="error-message">{{ request.args.get("error") }}</p>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- FORGOT USERNAME PANEL -->
+    <div class="forgot-username-panel">
+
+        <div class="left-panel">
+
+            <h1>Recover your username</h1>
+
+            <p>Remember it?</p>
+
+            <button type="button" class="register-btn back-to-login-btn">
+                Back to Login
+            </button>
+
+            <p>Need your password instead?</p>
+
+            <button type="button" id="toForgotPasswordBtn" class="register-btn">
+                Forgot Password
+            </button>
+
+        </div>
+
+        <div class="right-panel">
+
+            <h2>Forgot Username</h2>
+
+            <form action="/forgot_username" method="POST">
+
+                <!-- EMAIL -->
+                <div class="input-box">
+
+                    <i class="fa-regular fa-envelope"></i>
+
+                    <input
+                     type="email"
+                     name="email"
+                     placeholder="Email"
+                     required
+                     autocomplete="email">
+
+                </div>
+
+                <button type="submit">Find Username</button>
+
+            </form>
+
+            {% if request.args.get("panel") == "forgot_username" and request.args.get("error") %}
+            <p class="error-message">{{ request.args.get("error") }}</p>
+            {% endif %}
+
+            {% if request.args.get("panel") == "forgot_username" and request.args.get("result") %}
+            <p class="success-message">Your username is: <b>{{ request.args.get("result") }}</b></p>
+            {% endif %}
+
+        </div>
+
+    </div>
+
 </div>
 
 <script>
-    
+
 function togglePassword(inputId, eyeId) {
 
     const input = document.getElementById(inputId);
@@ -282,33 +428,64 @@ function togglePassword(inputId, eyeId) {
 /* ELEMENTS */
 /* ========================================= */
 
-const container =
-document.querySelector(".container"); // Main container
-
-const registerBtn =
-document.getElementById("registerBtn"); // Register button on Login panel
-
-const loginBtn =
-document.getElementById("loginBtn"); // Login button on Register panel
+const container = document.querySelector(".container");
 
 /* ========================================= */
-/* SHOW REGISTER PANEL */
+/* PANEL HELPERS */
 /* ========================================= */
 
-registerBtn.addEventListener("click", () => {
+function showPanel(name) {
+    container.className = name ? "container " + name : "container";
+}
 
-    container.classList.add("active"); // Add "active" class to trigger slide animation
+/* ========================================= */
+/* LOGIN <-> REGISTER */
+/* ========================================= */
 
+document.getElementById("registerBtn").addEventListener("click", () => {
+    showPanel("show-register");
+});
+
+document.getElementById("loginBtn").addEventListener("click", () => {
+    showPanel("");
 });
 
 /* ========================================= */
-/* SHOW LOGIN PANEL */
+/* LOGIN <-> FORGOT PASSWORD */
 /* ========================================= */
 
-loginBtn.addEventListener("click", () => {
+document.getElementById("forgotBtn").addEventListener("click", () => {
+    showPanel("show-forgot");
+});
 
-    container.classList.remove("active"); // Remove "active" class to return to Login panel
+/* ========================================= */
+/* LOGIN <-> FORGOT USERNAME */
+/* ========================================= */
 
+document.getElementById("forgotUsernameBtn").addEventListener("click", () => {
+    showPanel("show-forgot-username");
+});
+
+/* ========================================= */
+/* BACK TO LOGIN (from any forgot panel) */
+/* ========================================= */
+
+document.querySelectorAll(".back-to-login-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        showPanel("");
+    });
+});
+
+/* ========================================= */
+/* FORGOT PASSWORD <-> FORGOT USERNAME */
+/* ========================================= */
+
+document.getElementById("toForgotUsernameBtn").addEventListener("click", () => {
+    showPanel("show-forgot-username");
+});
+
+document.getElementById("toForgotPasswordBtn").addEventListener("click", () => {
+    showPanel("show-forgot");
 });
 
 </script>
