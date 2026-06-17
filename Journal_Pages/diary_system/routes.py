@@ -99,6 +99,28 @@ def autosave():
     return {"message": message}
 
 
+#================================ journal_dates API ================================
+
+@diary_bp.route("/journal_dates", methods=["GET"])
+def journal_dates():
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = load_entries()
+    dates = []
+    for e in entries:
+        raw     = e.get("date", "")
+        content = (e.get("content") or "").strip()
+        if not raw or not content:
+            continue
+        for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+            try:
+                dt = datetime.strptime(raw, fmt)
+                dates.append(dt.strftime("%Y-%m-%d"))
+                break
+            except ValueError:
+                continue
+    return jsonify({"dates": dates})
+
+
 #================================ delete API ================================
 
 @diary_bp.route("/delete", methods=["POST"])
@@ -222,7 +244,7 @@ def weather_forecast():
 
 #================================ upload image API ================================
 
-UPLOAD_FOLDER = "static/uploads"
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @diary_bp.route("/upload_image", methods=["POST"])
@@ -240,5 +262,5 @@ def upload_image():
     save_path = os.path.join(UPLOAD_FOLDER, filename)
     file.save(save_path)
 
-    url = "/static/uploads/" + filename
+    url = "/diary_static/uploads/" + filename
     return jsonify({"url": url})
