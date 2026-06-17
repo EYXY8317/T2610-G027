@@ -114,6 +114,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <form
         method="POST"
         class="add-form"
+        enctype="multipart/form-data"
         onsubmit="return validateAmount()"
         >
 
@@ -379,6 +380,40 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             </div>
 
+            <!-- RECEIPT -->
+
+            <div class="receipt-card">
+
+                <p>Receipt (Optional)</p>
+
+                <div class="receipt-upload-row">
+
+                    <label
+                        class="receipt-label"
+                        for="receiptInput"
+                    >
+                        📎 Attach Image
+                    </label>
+
+                    <span
+                        class="receipt-filename"
+                        id="receiptFilename"
+                    >
+                        No file chosen
+                    </span>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="receiptInput"
+                    name="receipt"
+                    accept="image/*"
+                    class="receipt-input"
+                >
+
+            </div>
+
             <!-- BUTTON -->
 
             <div class="add-button-row">
@@ -583,6 +618,19 @@ document.addEventListener("DOMContentLoaded", function () {
     updateTransferUI();
 
     updateAccountUI();
+
+    // ================= RECEIPT FILENAME =================
+
+    document.getElementById("receiptInput")
+        .addEventListener("change", function () {
+
+        const name = this.files[0]
+            ? this.files[0].name
+            : "No file chosen";
+
+        document.getElementById("receiptFilename")
+            .textContent = name;
+    });
 
     // ================= AMOUNT DISPLAY =================
 

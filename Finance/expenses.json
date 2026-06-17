@@ -6,7 +6,8 @@
         "category": "Salary",
         "account": "TnG",
         "item": "",
-        "amount": 5000.0
+        "amount": 5000.0,
+        "receipt": "Ethan_e8bf2274d8184ef68c9b846f89ef832e.jpg"
     },
     {
         "username": "Ethan",
@@ -15,7 +16,8 @@
         "category": "Food",
         "account": "TnG",
         "item": "hotdog",
-        "amount": 75.0
+        "amount": 75.0,
+        "receipt": "Ethan_c6b34f6e7e3844a2a31a649acf362410.jpg"
     },
     {
         "username": "Ethan",
