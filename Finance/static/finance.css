@@ -1968,3 +1968,21 @@ body.cozy .records-table tr:hover{
         align-items:flex-start;
     }
 }
+
+.filter-form{
+
+    display:flex;
+
+    gap:12px;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    margin-bottom:24px;
+}
+
+.filter-form input{
+
+    width:auto;
+}

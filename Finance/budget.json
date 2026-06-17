@@ -7,11 +7,6 @@
     {
         "username": "Ethan",
         "category": "Entertainment",
-        "amount": 2000.0
-    },
-    {
-        "username": "Ethan",
-        "category": "Transport",
-        "amount": 50.0
+        "amount": 3000.0
     }
 ]

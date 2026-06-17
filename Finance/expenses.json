@@ -1,74 +1,56 @@
 [
     {
         "username": "Ethan",
-        "date": "2026-05-01",
-        "type": "income",
-        "category": "Salary",
-        "account": "CIMB",
-        "item": "",
-        "amount": 20.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-05-01",
-        "type": "income",
-        "category": "Salary",
-        "account": "MAE",
-        "item": "",
-        "amount": 10.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-02",
+        "date": "2026-06-01",
         "type": "income",
         "category": "Salary",
         "account": "TnG",
-        "item": "work",
-        "amount": 6000.0
+        "item": "",
+        "amount": 5000.0
     },
     {
         "username": "Ethan",
         "date": "2026-06-02",
-        "type": "expense",
-        "category": "Transfer Out",
-        "account": "TnG",
-        "item": "Transfer to CIMB",
-        "amount": 1500.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-02",
-        "type": "income",
-        "category": "Transfer In",
-        "account": "CIMB",
-        "item": "Transfer from TnG",
-        "amount": 1500.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-04",
         "type": "expense",
         "category": "Food",
         "account": "TnG",
-        "item": "Lunch",
-        "amount": 1500.0
+        "item": "hotdog",
+        "amount": 75.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-04",
-        "type": "expense",
-        "category": "Entertainment",
-        "account": "TnG",
-        "item": "Pokemon",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Bonus",
+        "account": "CIMB",
+        "item": "",
         "amount": 2000.0
     },
     {
         "username": "Ethan",
-        "date": "2026-06-12",
+        "date": "2026-06-01",
+        "type": "income",
+        "category": "Gift",
+        "account": "MAE",
+        "item": "",
+        "amount": 1500.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-03",
         "type": "expense",
-        "category": "Transport",
+        "category": "Transfer Out",
         "account": "TnG",
-        "item": "a",
-        "amount": 10.0
+        "item": "Transfer to CIMB",
+        "amount": 1000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-03",
+        "type": "income",
+        "category": "Transfer In",
+        "account": "CIMB",
+        "item": "Transfer from TnG",
+        "amount": 1000.0
     }
 ]
