@@ -82,7 +82,6 @@ function renderWidget(dates, state) {
     if (state.displayMode === "heatmap") {
         return `
             <div class="streak-body">
-                <div class="streak-label">High Streak</div>
                 <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
                 <div class="hs-current">Current: ${current} days</div>
                 ${renderHeatmap(dates)}
@@ -91,7 +90,6 @@ function renderWidget(dates, state) {
 
     return `
         <div class="streak-body">
-            <div class="streak-label">High Streak</div>
             <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
             <div class="hs-current">Current: ${current} days</div>
         </div>`;

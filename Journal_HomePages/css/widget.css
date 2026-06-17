@@ -46,7 +46,7 @@
 
     display: block;
 
-    padding: 8px;
+    padding: 0.55em;
 
     overflow: hidden;
 
@@ -60,7 +60,9 @@
 
     justify-content: space-between;
 
-    padding: 6px 16px;
+    padding: 0.25em 0.75em;
+
+    min-height: 1.8em;
 
     font-size: calc(var(--widget-font-scale, 1) * 17px);
 
@@ -70,6 +72,16 @@
 
     border-bottom:
         1px solid #ddd8cf;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+}
+
+.widget-header > span:first-child {
+
+    overflow: hidden;
 
 }
 
@@ -95,7 +107,7 @@
 
     cursor: pointer;
 
-    font-size: 14px;
+    font-size: 0.82em;
 
     opacity: 0.35;
 
@@ -155,6 +167,21 @@
 
     display: grid;
 
+    /* Float above the widget, centred horizontally, out of the flex flow */
+    position: absolute;
+
+    top: 0;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    margin: 0;
+
+    padding: 8px;
+
+    z-index: 2;
+
 }
 
 .resize-handle {
@@ -167,13 +194,17 @@
 
     bottom: 8px;
 
-    color: #9ca3af;
+    font-size: 0;
 
-    opacity: 0.35;
+    width: 16px;
+
+    height: 16px;
 
     cursor: nwse-resize;
 
     user-select: none;
+
+    z-index: 4;
 
 }
 
@@ -183,6 +214,36 @@
     display: block;
 
 }
+
+/* ── Edge / corner resize hit zones (injected dynamically) ── */
+
+.resize-n, .resize-s, .resize-e, .resize-w,
+.resize-ne, .resize-nw, .resize-sw {
+    display: none;
+    position: absolute;
+    z-index: 3;
+    user-select: none;
+}
+
+.widget.edit-mode .resize-n,
+.widget.edit-mode .resize-s,
+.widget.edit-mode .resize-e,
+.widget.edit-mode .resize-w  { display: block; }
+
+.widget.edit-mode .resize-ne,
+.widget.edit-mode .resize-nw,
+.widget.edit-mode .resize-sw { display: block; z-index: 4; }
+
+/* Edge strips — inset 8px from corners so corners take priority */
+.resize-n  { top: 0;    left: 8px; right: 8px;  height: 6px; cursor: n-resize; }
+.resize-s  { bottom: 0; left: 8px; right: 8px;  height: 6px; cursor: s-resize; }
+.resize-e  { right: 0;  top: 8px; bottom: 8px; width:  6px; cursor: e-resize; }
+.resize-w  { left: 0;   top: 8px; bottom: 8px; width:  6px; cursor: w-resize; }
+
+/* Corner squares */
+.resize-ne { top: 0;    right:  0; width: 12px; height: 12px; cursor: ne-resize; }
+.resize-nw { top: 0;    left:   0; width: 12px; height: 12px; cursor: nw-resize; }
+.resize-sw { bottom: 0; left:   0; width: 12px; height: 12px; cursor: sw-resize; }
 
 
 #weather-hour-widget {
@@ -407,7 +468,7 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 14px 18px;
+    padding: 0.85em 1.1em;
     box-sizing: border-box;
     text-align: center;
 }
@@ -502,15 +563,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 0.4em;
     width: 100%;
     height: 100%;
-    padding: 10px;
+    padding: 0.65em;
     box-sizing: border-box;
 }
 
 .es-empty {
-    font-size: 13px;
+    font-size: 0.93em;
     color: #9ca3af;
     text-align: center;
 }
@@ -584,7 +645,7 @@
 }
 
 .ps-placeholder {
-    font-size: 13px;
+    font-size: 0.93em;
     color: #9ca3af;
 }
 
@@ -713,10 +774,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 0.25em;
     width: 100%;
     height: 100%;
-    padding: 12px;
+    padding: 0.35em;
     box-sizing: border-box;
     text-align: center;
 }
@@ -726,6 +787,9 @@
     text-transform: uppercase;
     letter-spacing: 0.07em;
     opacity: 0.5;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .streak-number {
@@ -816,12 +880,12 @@
 .ww-table {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 8px 12px;
+    gap: 0.15em;
+    padding: 0.5em 0.85em;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .ww-row {
@@ -877,8 +941,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
+    gap: 0.28em;
+    padding: 0.28em 0.55em;
     width: 100%;
     box-sizing: border-box;
 }
@@ -899,6 +963,9 @@
     opacity: 0.5;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .wd-range,
@@ -908,6 +975,8 @@
 .wd-update {
     font-size: 0.85em;
     opacity: 0.65;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .wd-city {
@@ -918,8 +987,8 @@
 
 .wd-loading,
 .wd-error {
-    padding: 16px;
-    font-size: 14px;
+    padding: 1em;
+    font-size: 1em;
     color: #9ca3af;
 }
 
@@ -936,8 +1005,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    padding: 14px;
+    gap: 0.7em;
+    padding: 0.85em;
     box-sizing: border-box;
     text-align: center;
 }
@@ -1003,9 +1072,9 @@
 .te-sliders {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.55em;
     width: 100%;
-    padding: 0 8px;
+    padding: 0 0.55em;
     box-sizing: border-box;
 }
 
