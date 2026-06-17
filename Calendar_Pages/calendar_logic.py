@@ -66,3 +66,31 @@ def add_task(task_data):
     save_tasks(tasks)
 
     print("Saved to:", task_data)
+
+
+# ===============================
+# UPDATE TASK
+# Update existing task
+# ===============================
+
+def update_task(task_id, username, new_data):
+
+    tasks = load_tasks()
+
+    for task in tasks:
+
+        if (
+
+            task.get("id") == task_id
+
+            and
+
+            task.get("username") == username
+
+        ):
+
+            task.update(new_data)
+
+            break
+
+    save_tasks(tasks)
