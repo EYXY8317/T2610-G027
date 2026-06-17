@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Diary</title>
-    <link rel="stylesheet" href="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css)">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/diary_static/style.css">
     <style>
         #canvas {
@@ -12,7 +12,7 @@
             background: transparent;
             border: none;
             box-shadow: none;
-            overflow: hidden;
+            overflow: visible;
             cursor: crosshair;
         }
 
@@ -27,19 +27,30 @@
 
         .tb-toolbar {
             display: none;
+            position: absolute;
+            top: -30px;
+            left: 0;
             align-items: center;
             gap: 4px;
             background: rgba(255,255,255,0.92);
             border: 1px solid #ddd;
-            border-radius: 6px 6px 0 0;
+            border-radius: 6px;
             padding: 2px 6px;
             cursor: grab;
+            white-space: nowrap;
+            z-index: 20;
         }
 
         .tb-wrap:hover .tb-toolbar,
         .tb-wrap.active .tb-toolbar {
             display: flex;
         }
+
+        /* ── View mode: hide all handles until Edit is pressed ── */
+        #canvas.view-mode .tb-toolbar  { display: none !important; }
+        #canvas.view-mode .tb-content  { cursor: default; pointer-events: none; }
+        #canvas.view-mode .img-toolbar { display: none !important; }
+        #canvas.view-mode .img-resize  { display: none !important; }
 
         .tb-toolbar-drag {
             font-size: 10px;
@@ -85,7 +96,7 @@
             word-break: break-word;
             cursor: text;
             background: transparent;
-            border-radius: 0 0 4px 4px;
+            border-radius: 4px;
         }
 
         .tb-wrap:hover .tb-content,
@@ -362,7 +373,7 @@
 </div>
 
 <script>let mode = "{{ mode }}";</script>
-<script src="[cdn.jsdelivr.net](https://cdn.jsdelivr.net/npm/flatpickr)"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="/diary_static/script.js"></script>
 
 <!-- Day name + month/year -->
@@ -400,19 +411,20 @@
     let canEdit   = (mode === "add" || mode === "edit");
     let saveTimer = null;
 
+    if (!canEdit) canvas.classList.add("view-mode");
+
     function getDate() {
         const p = new URLSearchParams(window.location.search);
         let d = p.get("date");
         if (!d) {
-            const t = new Date();
-            const x = t.toISOString().split("T")[0].split("-");
-            d = x[2]+"/"+x[1]+"/"+x[0];
+            d = document.getElementById("dateDisplay").innerText.trim();
         }
         return d;
     }
 
     document.getElementById("editBtn").addEventListener("click", function(){
         canEdit = true;
+        canvas.classList.remove("view-mode");
         canvas.style.cursor = "crosshair";
         canvas.querySelectorAll(".tb-content").forEach(tb => {
             tb.contentEditable = "true";
@@ -424,6 +436,7 @@
     ════════════════════════════════ */
     function makeDraggable(el, handle) {
         handle.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
             if (e.target.isContentEditable) return;
             if (e.button !== 0) return;
             e.preventDefault();
@@ -460,6 +473,7 @@
     ════════════════════════════════ */
     function makeRotatable(rotateBtn, target) {
         rotateBtn.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
             e.preventDefault();
             e.stopPropagation();
 
@@ -529,8 +543,8 @@
         tb.style.fontSize   = fSize.value;
         tb.style.color      = fColor.value;
         if (rotateDeg) {
-            tb.style.transform = "rotate(" + rotateDeg + "deg)";
-            tb.dataset.rotate  = rotateDeg;
+            wrap.style.transform = "rotate(" + rotateDeg + "deg)";
+            wrap.dataset.rotate  = rotateDeg;
         }
 
         tb.addEventListener("focus", ()=>{
@@ -550,6 +564,7 @@
         tb.addEventListener("input", schedSave);
 
         delBtn.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
             e.preventDefault();
             wrap.remove();
             schedSave();
@@ -560,7 +575,7 @@
         canvas.appendChild(wrap);
 
         makeDraggable(wrap, dragHandle);
-        makeRotatable(rotBtn, tb);
+        makeRotatable(rotBtn, wrap);
 
         if (doFocus) { tb.focus(); activeTb = tb; }
         return tb;
@@ -582,6 +597,7 @@
             .then(res => {
                 if (res.url) {
                     makeImg(res.url, 40, 40, 180, 135, 0, null);
+                    schedSave();
                 }
             });
 
@@ -643,6 +659,7 @@
 
         /* delete */
         delBtn.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
             e.preventDefault();
             wrap.remove();
             schedSave();
@@ -650,6 +667,7 @@
 
         /* resize */
         resizeHandle.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
             e.preventDefault();
             e.stopPropagation();
             const startX = e.clientX;
@@ -728,7 +746,7 @@
                 ff: tb.style.fontFamily  || "Inter",
                 fs: tb.style.fontSize    || "16px",
                 fc: tb.style.color       || "#2a2a2a",
-                r:  parseFloat(tb.dataset.rotate)    || 0,
+                r:  parseFloat(wrap.dataset.rotate)  || 0,
                 html: tb.innerHTML
             }));
         });
@@ -777,7 +795,7 @@
     /* ════════════════════════════════
        LOAD SAVED CONTENT
     ════════════════════════════════ */
-    const savedRaw = `{{ entry.content if entry else '' }}`;
+    const savedRaw = {{ (entry.content if entry else '') | tojson }};
     if (savedRaw.trim()) {
         const items = savedRaw.split("||ITEM||");
         items.forEach(item => {

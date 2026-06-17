@@ -482,10 +482,6 @@ def profile_static(filename):
         filename
     )
 
-@app.route("/diary")
-def diary():
-    return render_template("diary.html")
-
 # ================= RUN =================
 if __name__ == "__main__":
     app.run(debug=True)

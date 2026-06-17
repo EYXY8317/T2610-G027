@@ -29,9 +29,7 @@ if (mode === "view") {
 // ======================== CURRENT DATE ========================
 let currentDate = params.get("date");
 if (!currentDate) {
-    let today = new Date();
-    let todayParts = today.toISOString().split("T")[0].split("-");
-    currentDate = todayParts[2] + "/" + todayParts[1] + "/" + todayParts[0];
+    currentDate = document.getElementById("dateDisplay").innerText.trim();
 }
 
 // ======================== SYNC INDEX ========================
@@ -164,7 +162,7 @@ topic.addEventListener("input", function() {
 
 // ======================== CALENDAR ========================
 let dateDisplay = document.getElementById("dateDisplay");
-if (dateDisplay) {
+if (dateDisplay && typeof flatpickr !== "undefined") {
     flatpickr(dateDisplay, {
         dateFormat: "d/m/Y",
         defaultDate: currentDate,
