@@ -205,3 +205,21 @@ def register_profile_routes(app):
 
         return redirect("/profile")
     
+    @app.route("/remove_wallpaper",methods=["POST"])
+    def remove_wallpaper():
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        for user in users:
+
+            if user["username"] == session["user"]:
+
+                user["wallpaper"] = None
+
+                break
+
+        with open("users.json", "w") as f:
+            json.dump(users, f, indent=4)
+
+        return redirect("/profile")
