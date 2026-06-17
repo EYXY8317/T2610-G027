@@ -458,25 +458,33 @@
 
     display:none;
 
-    position:absolute;
+    position:fixed;
 
-    width:380px;
+    width:420px;
+
+    max-height:75vh;
+
+    overflow-y:auto;
 
     background:white;
 
-    border:1px solid #f0ebff;
+    border:1px solid #eee6ff;
 
-    border-radius:28px;
+    border-radius:24px;
 
     padding:24px;
 
     box-shadow:
-    0 12px 40px rgba(124,92,255,0.12);
+    0 10px 35px rgba(
+        124,
+        92,
+        255,
+        0.15
+    );
 
-    z-index:1000;
+    z-index:9999;
 
 }
-
 
 /* ==================================================
    POPUP HEADER

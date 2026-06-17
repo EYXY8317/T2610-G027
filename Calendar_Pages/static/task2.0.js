@@ -159,7 +159,7 @@ function setTagFilter(tag) {
 // Create and save a new task
 // ===============================
 
-function addTask(listType) {
+async function addTask(listType) {
 
     // Get task title
     let text =
@@ -212,6 +212,33 @@ function addTask(listType) {
 
     // Save task into category
     taskData[listType].push(task);
+
+   // SAVE TASK TO FLASK
+   // Send new task data to backend JSON storage
+    await fetch(
+    "/calendar/add_task",
+    {
+        method: "POST",
+
+        headers: {
+
+            "Content-Type":
+                "application/json"
+
+        },
+
+        body: JSON.stringify({
+
+            // Task information
+            ...task,
+
+            // Task category
+            category: listType
+
+        })
+
+    }
+);
 
     // Clear inputs
     document.getElementById(
@@ -1233,31 +1260,47 @@ function toggleCalendar(btn, e) {
 
     if (e) e.stopPropagation();
 
-    let popup =
+    const popup =
         document.getElementById(
             "calendarPopup"
         );
 
     if (!popup) return;
 
+    if (
+        popup.style.display === "block"
+    ) {
+
+        popup.style.display = "none";
+
+        return;
+
+    }
+
+    popup.style.display = "block";
+
     const rect =
         btn.getBoundingClientRect();
 
-    popup.style.position =
-        "fixed";
+    const popupWidth = 420;
 
-    popup.style.top =
-        rect.bottom + 10 + "px";
+    let left =
+        rect.right - popupWidth;
 
-    const popupWidth = 340;
+    let top =
+        rect.bottom + 12;
+
+    if (left < 10) {
+
+        left = 10;
+
+    }
 
     popup.style.left =
-        (rect.right - popupWidth) + "px";
+        left + "px";
 
-    popup.style.display =
-        popup.style.display === "block"
-            ? "none"
-            : "block";
+    popup.style.top =
+        top + "px";
 
 }
 
@@ -1491,8 +1534,8 @@ function applyDate() {
 
 
 // ===============================
-// PERSISTENCE - LOCAL STORAGE
-// Save and load task data
+// PERSISTENCE 
+// Load task data from Flask API
 // ===============================
 
 function saveTasks() {
@@ -1504,38 +1547,37 @@ function saveTasks() {
 
 }
 
-function loadTasks() {
-
-    const saved =
-        localStorage.getItem(
-            "taskData"
-        );
+async function loadTasks() {
 
     try {
 
-        if (saved) {
+        const response =
+            await fetch(
+                "/calendar/tasks"
+            );
 
-            taskData =
-                JSON.parse(saved);
+        taskData =
+            await response.json();
 
-        }
+        console.log(
+            "Tasks Loaded:",
+            taskData
+        );
 
     }
 
-    catch {
+    catch(error) {
 
         console.error(
-            "Failed to load task data"
-        );
-
-        localStorage.removeItem(
-            "taskData"
+            "Failed to load tasks:",
+            error
         );
 
     }
 
 }
 
+ 
 // ===============================
 // GET PRIORITY COLOR
 // Return color for calendar badges
@@ -1572,10 +1614,11 @@ function getPriorityColor(priority) {
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
 
-        // Load saved task data
-        loadTasks();
+    async () => {
+
+        // Load task data
+        await loadTasks();
 
         // Render all task categories
         [
@@ -1612,6 +1655,7 @@ document.addEventListener(
 
             tagInput.addEventListener(
                 "input",
+
                 function () {
 
                     renderTagSuggestions(
@@ -1619,11 +1663,13 @@ document.addEventListener(
                     );
 
                 }
+
             );
 
         }
 
     }
+
 );
 
 

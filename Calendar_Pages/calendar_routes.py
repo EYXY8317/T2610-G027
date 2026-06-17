@@ -5,6 +5,7 @@
 # Receive data and return response 
 # 接收数据并返回结果
 # ===============================
+
 from flask import (
     Blueprint,
     session,
@@ -14,7 +15,9 @@ from flask import (
 
 from .calendar_logic import (
     get_user_tasks,
-    add_task
+    add_task,
+    update_task
+
 )
 
 # ===============================
@@ -39,14 +42,44 @@ def calendar_tasks():
 
     if "user" not in session:
 
-        return jsonify([])
+        return jsonify({
 
-    return jsonify(
+            "work": [],
+            "shopping": [],
+            "study": [],
+            "personal": [],
+            "workout": []
 
-        get_user_tasks(
-            session["user"]
+        })
+
+    tasks = get_user_tasks(
+        session["user"]
+    )
+
+    grouped = {
+
+        "work": [],
+        "shopping": [],
+        "study": [],
+        "personal": [],
+        "workout": []
+
+    }
+
+    for task in tasks:
+
+        category = task.get(
+            "category"
         )
 
+        if category in grouped:
+
+            grouped[
+                category
+            ].append(task)
+
+    return jsonify(
+        grouped
     )
 
 # ===============================
@@ -79,3 +112,38 @@ def create_task():
 
     })
 
+# ===============================
+# UPDATE TASK API
+# ===============================
+
+@calendar_bp.route(
+    "/calendar/update_task",
+    methods=["POST"]
+)
+def update_task_api():
+
+    if "user" not in session:
+
+        return jsonify({
+
+            "success": False
+
+        })
+
+    data = request.json
+
+    update_task(
+
+        data["id"],
+
+        session["user"],
+
+        data
+
+    )
+
+    return jsonify({
+
+        "success": True
+
+    })
