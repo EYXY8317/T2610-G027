@@ -1,141 +1,538 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Financial Records</title>
 
-    <!-- 🔥 BADGE STYLE -->
-    <style>
-        .badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
 
-        .income {
-            background-color: #d4edda;
-            color: #155724;
-        }
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
 
-        .expense {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-
-        .saving {
-            background-color: #d1ecf1;
-            color: #0c5460;
-        }
-    </style>
 </head>
 
-<body>
+<body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+{% if wallpaper %}
 
-<div style="margin-left:20px;">
-    <a href="/view">View</a> |
-    <a href="/add">Add</a> |
-    <a href="/summary">Summary</a> |
-    <a href="/budget">Budget</a>
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+>
+
+<div class="wallpaper-overlay"></div>
+
+<div class="summary-wrapper">
+
+    <!-- ================================================= -->
+    <!-- ==================== TOPBAR ===================== -->
+    <!-- ================================================= -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            💸 Records
+
+        </div>
+
+        <div class="topbar-links">
+            <a href="/finance">Dashboard</a>
+            <a href="/view" class="active-link">View</a>
+            <a href="/add">Add</a>
+            <a href="/summary">Summary</a>
+            <a href="/budget">Budget</a>
+            <a href="/goals">Goals</a>
+        </div>
+
+        <div class="topbar-actions">
+            <a href="/dashboard">Home</a>
+            <a href="/calendar">Calendar</a>
+            <a href="/diary">Diary</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ===================== MAIN ====================== -->
+    <!-- ================================================= -->
+
+    <div class="summary-card hover-card">
+
+        <!-- ===== HEADER ===== -->
+
+        <div class="view-header">
+
+            <div>
+
+                <h2>
+
+                    Financial Records
+
+                </h2>
+
+                <p>
+
+                    Manage and track all your transactions.
+
+                </p>
+
+            </div>
+
+            <a
+            href="/add"
+            class="add-btn"
+            >
+
+                + Add Record
+
+            </a>
+
+        </div>
+
+        <!-- ===== SUCCESS ===== -->
+
+        {% if success %}
+
+        <div class="insight-box">
+
+            <p class="positive">
+
+                {{ success }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== ERROR ===== -->
+
+        {% if error %}
+
+        <div class="insight-box">
+
+            <p class="negative">
+
+                {{ error }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== FILTER ===== -->
+
+        <form
+        method="GET"
+        class="filter-form"
+        >
+
+            <label>
+
+                Filter by Account
+
+            </label>
+
+            <select
+            id="accountFilter"
+            name="account"
+            >
+
+                <option value="">
+
+                    All Accounts
+
+                </option>
+
+                {% for acc in accounts|default([]) %}
+
+                <option
+                    value="{{ acc.name }}"
+
+                    {% if request.args.get('account') == acc.name %}
+                    selected
+                    {% endif %}
+                >
+
+                    {{ acc.name }}
+
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+
+                Filter
+
+            </button>
+
+        </form>
+
+        <!-- ===== EMPTY ===== -->
+
+        {% if not records %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No records found
+
+            </h3>
+
+            <p>
+
+                Add your first financial record.
+
+            </p>
+
+        </div>
+
+        {% else %}
+
+        <form method="GET" class="filter-form">
+
+            <input
+                type="date"
+                name="start"
+                value="{{ request.args.get('start', '') }}"
+            >
+
+            <input
+                type="date"
+                name="end"
+                value="{{ request.args.get('end', '') }}"
+            >
+
+            <button type="submit">
+                Filter
+            </button>
+
+            <a
+                href="/view"
+                class="secondary-btn"
+            >
+                Reset
+            </a>
+
+        </form>
+
+        <!-- ===== TABLE ===== -->
+
+        <div class="table-wrapper">
+
+            <table class="records-table">
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Type</th>
+
+                    <th>Category</th>
+
+                    <th>Account</th>
+
+                    <th>Item</th>
+
+                    <th>Amount</th>
+
+                    <th>Receipt</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+                {% for r in records %}
+
+                <tr>
+
+                    <!-- DATE -->
+
+                    <td>
+
+                        {{ r.date }}
+
+                    </td>
+
+                    <!-- TYPE -->
+
+                    <td>
+
+                        <span class="badge {{ r.type }}">
+
+                            {{ r.type }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- CATEGORY -->
+
+                    <td>
+
+                        {{ r.category|default('-') }}
+
+                    </td>
+
+                    <!-- ACCOUNT -->
+
+                    <td>
+
+                        {{ r.account|default('-') }}
+
+                    </td>
+
+                    <!-- ITEM -->
+
+                    <td>
+
+                        {{ r.item|default('-') }}
+
+                    </td>
+
+                    <!-- AMOUNT -->
+
+                    <td>
+
+                        <span class="badge {{ r.type }}">
+
+                            {% if r.type == 'income' %}
+
+                                +
+
+                            {% elif r.type == 'expense' %}
+
+                                -
+
+                            {% endif %}
+
+                            RM {{ "%.2f"|format(r.amount) }}
+
+                        </span>
+
+                    </td>
+
+                    <!-- RECEIPT -->
+
+                    <td>
+
+                        {% if r.receipt %}
+
+                        <img
+                            src="{{ url_for('static', filename='receipts/' + r.receipt) }}"
+                            class="receipt-thumb"
+                            onclick="openReceiptModal(this.src)"
+                            alt="Receipt"
+                        >
+
+                        {% else %}
+
+                        <span class="receipt-none">—</span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACTIONS -->
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                            href="/update/{{ loop.index0 }}"
+                            class="edit-btn"
+                            >
+
+                                ✏️Edit
+
+                            </a>
+
+                            <a
+                            href="/delete/{{ loop.index0 }}"
+                            class="delete-btn"
+                            >
+
+                                🗑Delete
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
 </div>
 
-<hr>
+<!-- RECEIPT MODAL -->
 
-<h1>Financial Records</h1>
+<div
+    class="receipt-modal"
+    id="receiptModal"
+    onclick="closeReceiptModal()"
+>
 
-<p>Logged in as: {{ session.get("user") }}</p>
+    <span class="receipt-modal-close">&times;</span>
 
-<h2>Records</h2>
+    <img
+        id="receiptModalImg"
+        src=""
+        alt="Receipt"
+        onclick="event.stopPropagation()"
+    >
 
-<a href="/add">Add New Record</a><br><br>
+</div>
 
-<!-- SUCCESS -->
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
+<script>
 
-<!-- ERROR -->
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+function openReceiptModal(src) {
 
-{% if not records %}
-<p>No records found</p>
+    document.getElementById("receiptModalImg").src = src;
 
-{% else %}
+    document.getElementById("receiptModal").classList.add("open");
+}
 
-<!-- FILTER -->
-<form method="GET">
-    <label>Filter by Account:</label><br><br>
+function closeReceiptModal() {
 
-    <select name="account">
-        <option value="">All Accounts</option>
+    document.getElementById("receiptModal").classList.remove("open");
+}
 
-        {% for acc in accounts|default([]) %}
-        <option value="{{ acc.name }}"
-        {% if request.args.get('account') == acc.name %}selected{% endif %}>
-            {{ acc.name }}
-        </option>
-        {% endfor %}
-    </select>
+document.addEventListener("keydown", function(e) {
 
-    <button type="submit">Filter</button>
-</form>
+    if (e.key === "Escape") closeReceiptModal();
+});
 
-<br>
+</script>
 
-<!-- TABLE -->
-<table border="1" cellpadding="6" cellspacing="0">
-    <tr>
-        <th>Date</th>
-        <th>Type</th>
-        <th>Category</th>
-        <th>Account</th>
-        <th>Item</th>
-        <th>Amount (RM)</th>
-        <th>Actions</th>
-    </tr>
+<script>
 
-    {% for r in records %}
-    <tr>
-        <td>{{ r.date }}</td>
+(function () {
 
-        <!-- TYPE BADGE -->
-        <td>
-            <span class="badge {{ r.type }}">
-                {{ r.type }}
-            </span>
-        </td>
+    const body = document.body;
 
-        <td>{{ r.category|default('-') }}</td>
-        <td>{{ r.account|default('-') }}</td>
-        <td>{{ r.item|default('-') }}</td>
+    if (!body.classList.contains("adaptive")) {
 
-        <!-- AMOUNT -->
-        <td>
-            <span class="badge {{ r.type }}">
-                {% if r.type == 'income' %}+{% elif r.type == 'expense' %}-{% endif %}
-                RM {{ "%.2f"|format(r.amount) }}
-            </span>
-        </td>
+        return;
+    }
 
-        <td>
-            <a href="/update/{{ loop.index0 }}">Edit</a> |
-            <a href="/delete/{{ loop.index0 }}">Delete</a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
 
-{% endif %}
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
 
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
 </body>
 </html>

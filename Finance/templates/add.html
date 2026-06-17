@@ -1,176 +1,845 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Add Record</title>
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
+
 </head>
 
-<body>
+<body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/profile">Profile</a> |
-<a href="/logout">Logout</a>
-<hr>
+{% if wallpaper %}
 
-<hr>
-<a href="/view">View</a> |
-<a href="/add">Add</a> |
-<a href="/summary">Summary</a> |
-<a href="/budget">Budget</a>
-<hr>
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
 
-<h1>Add Record</h1>
-
-<form method="POST">
-
-    <!-- DATE -->
-    <label>Date:</label><br>
-    <input type="date" name="date"
-        value="{{ form_data.date if form_data else '' }}" required><br><br>
-
-    <!-- TYPE -->
-    <label>Type:</label><br>
-    <select name="type" id="typeSelect" required>
-        <option value="">-- Select Type --</option>
-        <option value="income" {{ 'selected' if form_data and form_data.type == 'income' else '' }}>Income</option>
-        <option value="expense" {{ 'selected' if form_data and form_data.type == 'expense' else '' }}>Expense</option>
-        <option value="saving" {{ 'selected' if form_data and form_data.type == 'saving' else '' }}>Saving</option>
-    </select><br><br>
-
-    <!-- CATEGORY -->
-    <label>Category:</label><br>
-    <select name="category" id="categorySelect" required
-        data-selected="{{ form_data.category if form_data else '' }}">
-        <option value="">-- Select Category --</option>
-    </select><br><br>
-
-    <!-- ACCOUNT -->
-    <label>Account:</label><br>
-    <select name="account">
-        <option value="">-- Select Account --</option>
-        {% for acc in accounts %}
-        <option value="{{ acc.name }}"
-            {% if form_data and form_data.account == acc.name %}selected{% endif %}>
-            {{ acc.name }}
-        </option>
-        {% endfor %}
-    </select><br><br>
-
-    <input type="text" name="new_account"
-        value="{{ form_data.new_account if form_data else '' }}"
-        placeholder="Or create new account"><br><br>
-
-    <!-- ITEM -->
-    <label>Item:</label><br>
-    <input type="text" name="item"
-        value="{{ form_data.item if form_data else '' }}"><br><br>
-
-    <!-- AMOUNT -->
-    <label>Amount (RM):</label><br>
-    <input type="text" id="amountInput" name="amount"
-        value="{{ form_data.amount if form_data else '0.00' }}" readonly>
-
-    <br><br>
-    <button type="submit">Add</button>
-
-</form>
-
-{% if error %}
-<p style="color:red;">{{ error }}</p>
 {% endif %}
+>
 
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
+<div class="wallpaper-overlay"></div>
 
-<!-- SAFE JSON -->
+<div class="summary-wrapper">
+
+    <!-- ================================================= -->
+    <!-- ==================== TOPBAR ===================== -->
+    <!-- ================================================= -->
+
+    <div class="topbar">
+
+        <div class="topbar-title">
+
+            ➕ Add Record
+
+        </div>
+
+        <div class="topbar-links">
+            <a href="/finance">Dashboard</a>
+            <a href="/view">View</a>
+            <a href="/add" class="active-link">Add</a>
+            <a href="/summary">Summary</a>
+            <a href="/budget">Budget</a>
+            <a href="/goals">Goals</a>
+        </div>
+
+        <div class="topbar-actions">
+            <a href="/dashboard">Home</a>
+            <a href="/calendar">Calendar</a>
+            <a href="/diary">Diary</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- ===================== MAIN ====================== -->
+    <!-- ================================================= -->
+
+    <div class="summary-card hover-card">
+
+        <div class="add-header">
+
+            <div>
+
+                <h1 class="summary-main-title">
+
+                    ➕ New Financial Record
+
+                </h1>
+
+                <p class="add-subtitle">
+
+                    Add income, expenses, or savings
+                    into your finance workspace.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ===== SUCCESS ===== -->
+
+        {% if success %}
+
+        <div class="insight-box">
+
+            <p class="positive">
+
+                {{ success }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
+        <!-- ===== FORM ===== -->
+
+        <form
+        method="POST"
+        class="add-form"
+        enctype="multipart/form-data"
+        onsubmit="return validateAmount()"
+        >
+
+            <!-- ROW 1 -->
+
+            <div class="summary-grid">
+
+                <!-- DATE -->
+
+                <div>
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <input
+                        type="date"
+                        name="date"
+                        value="{{ form_data.date if form_data else '' }}"
+                        required
+                    >
+
+                </div>
+
+                <!-- TYPE -->
+
+                <div>
+
+                    <label>
+
+                        Type
+
+                    </label>
+
+                    <select
+                    name="type"
+                    id="typeSelect"
+                    required
+                    >
+
+                        <option value="">
+
+                            -- Select Type --
+
+                        </option>
+
+                        <option
+                        value="income"
+                        {{ 'selected' if form_data and form_data.type == 'income' else '' }}
+                        >
+
+                            Income
+
+                        </option>
+
+                        <option
+                        value="expense"
+                        {{ 'selected' if form_data and form_data.type == 'expense' else '' }}
+                        >
+
+                            Expense
+
+                        </option>
+
+                        <option
+                        value="saving"
+                        {{ 'selected' if form_data and form_data.type == 'saving' else '' }}
+                        >
+
+                            Saving
+                        </option>
+
+                        <option
+                        value="transfer"
+                        {{ 'selected' if form_data and form_data.type == 'transfer' else '' }}
+                        >
+                            Transfer
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- ROW 2 -->
+
+            <div class="summary-grid">
+
+                <div id="categoryBlock">
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select
+                        name="category"
+                        id="categorySelect"
+                        required
+                        data-selected="{{ form_data.category if form_data else '' }}"
+                    >
+
+                        <option value="">
+                            -- Select Category --
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label>
+                        Account
+                    </label>
+
+                    <select
+                    name="account"
+                    id="accountSelect"
+                    required
+                    >
+
+                        <option value="">
+                            -- Select Account --
+                        </option>
+
+                        {% for acc in accounts %}
+
+                        <option
+                        value="{{ acc.name }}"
+                        {% if form_data and form_data.account == acc.name %}
+                        selected
+                        {% endif %}
+                        >
+
+                            {{ acc.name }}
+
+                        </option>
+
+                        {% endfor %}
+
+                        <option value="__new__">
+                            ➕ Create New Account
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+                <!-- TRANSFER TO -->
+
+                <div
+                id="transferSection"
+                style="display:none;"
+                >
+
+                    <label>
+                        Transfer To
+                    </label>
+
+                    <select
+                        name="to_account"
+                        id="toAccountSelect"
+                    >
+
+                        <option value="">
+                            -- Select Account --
+                        </option>
+
+                        {% for acc in accounts %}
+
+                        <option value="{{ acc.name }}">
+                            {{ acc.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            <div
+            id="newAccountSection"
+            style="display:none;"
+            >
+
+                <label>
+
+                    New Account Name
+
+                </label>
+
+                <input
+                    type="text"
+                    name="new_account"
+                    value="{{ form_data.new_account if form_data else '' }}"
+                    placeholder="Enter account name"
+                >
+
+                <label>
+
+                    Account Purpose
+
+                </label>
+
+                <select name="purpose">
+
+                    <option value="spending">
+
+                        Spending Account
+
+                    </option>
+
+                    <option value="savings">
+
+                        Savings Account
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- ITEM -->
+
+            <div id="itemBlock">
+                <label>
+
+                    Item
+
+                </label>
+
+                <input
+                    type="text"
+                    name="item"
+                    value="{{ form_data.item if form_data else '' }}"
+                    placeholder="Example: Lunch, Salary, Grab..."
+                >
+            </div>
+
+            <!-- AMOUNT -->
+
+            <div class="amount-card">
+
+                <p>
+                    Amount (RM)
+                </p>
+
+                <div id="amountDisplay">
+                    {{ form_data.amount if form_data else '0.00' }}
+                </div>
+
+                <input
+                    type="hidden"
+                    id="amountInput"
+                    name="amount"
+                    value="{{ form_data.amount if form_data else '0.00' }}"
+                >
+
+            </div>
+
+            <!-- RECEIPT -->
+
+            <div class="receipt-card">
+
+                <p>Receipt (Optional)</p>
+
+                <div class="receipt-upload-row">
+
+                    <label
+                        class="receipt-label"
+                        for="receiptInput"
+                    >
+                        📎 Attach Image
+                    </label>
+
+                    <span
+                        class="receipt-filename"
+                        id="receiptFilename"
+                    >
+                        No file chosen
+                    </span>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="receiptInput"
+                    name="receipt"
+                    accept="image/*"
+                    class="receipt-input"
+                >
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="add-button-row">
+
+                <button type="submit">
+
+                    Add Record
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ================================================= -->
+<!-- ================= SAFE JSON ===================== -->
+<!-- ================================================= -->
+
 <script id="categories-data" type="application/json">
-    {{ categories | tojson if categories else '{}' }}
+
+{{ categories | tojson if categories else '{}' }}
+
 </script>
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // ================= CATEGORY =================
+
     let categories = {};
+
     try {
+
         categories = JSON.parse(
             document.getElementById("categories-data").textContent
         );
+
     } catch {
+
         categories = {};
     }
 
-    const typeSelect = document.getElementById("typeSelect");
-    const categorySelect = document.getElementById("categorySelect");
+    const typeSelect =
+        document.getElementById("typeSelect");
 
-    let selectedCategory = categorySelect.getAttribute("data-selected") || "";
+    const accountSelect =
+        document.getElementById(
+            "accountSelect"
+        );
+
+    const newAccountSection =
+        document.getElementById(
+            "newAccountSection"
+        );
+
+    const categorySelect =
+        document.getElementById("categorySelect");
+
+    let selectedCategory =
+        categorySelect.getAttribute("data-selected") || "";
 
     function updateCategory() {
+
         const type = typeSelect.value;
 
-        categorySelect.innerHTML = '<option value="">-- Select Category --</option>';
+        categorySelect.innerHTML =
+        '<option value="">-- Select Category --</option>';
 
         if (categories[type]) {
+
             categories[type].forEach(cat => {
-                const option = document.createElement("option");
+
+                const option =
+                    document.createElement("option");
+
                 option.value = cat;
+
                 option.textContent = cat;
 
                 if (cat === selectedCategory) {
+
                     option.selected = true;
                 }
 
                 categorySelect.appendChild(option);
+
             });
         }
     }
 
+    function updateItemRequired() {
+
+        const itemInput =
+            document.querySelector("input[name='item']");
+
+        const type = typeSelect.value;
+
+        if (type === "expense") {
+
+            itemInput.setAttribute(
+                "required",
+                "required"
+            );
+
+        }
+
+        else {
+
+            itemInput.removeAttribute("required");
+        }
+    }
+
+    function updateTransferUI() {
+
+        const transferSection =
+            document.getElementById("transferSection");
+
+        const type =
+            typeSelect.value;
+
+        const categoryBlock =
+            document.getElementById("categoryBlock");
+
+        const itemBlock =
+            document.getElementById("itemBlock");
+
+        const categorySelect =
+            document.getElementById("categorySelect");
+
+        const itemInput =
+            document.querySelector("input[name='item']");
+
+        if (type === "transfer") {
+
+            transferSection.style.display = "block";
+
+            categoryBlock.style.display = "none";
+
+            itemBlock.style.display = "none";
+
+            categorySelect.removeAttribute("required");
+
+            itemInput.removeAttribute("required");
+
+        }
+
+        else {
+
+            transferSection.style.display = "none";
+
+            categoryBlock.style.display = "block";
+
+            itemBlock.style.display = "block";
+
+            categorySelect.setAttribute(
+                "required",
+                "required"
+            );
+        }
+    }
+
+    function updateAccountUI() {
+
+        if (!accountSelect) return;
+
+        newAccountSection.style.display =
+
+            accountSelect.value === "__new__"
+
+            ? "block"
+
+            : "none";
+    }
+
     typeSelect.addEventListener("change", function () {
-        selectedCategory = ""; // reset when user changes type
+
+        selectedCategory = "";
+
         updateCategory();
+
+        updateItemRequired();
+
+        updateTransferUI();
+
+        updateAccountUI();
     });
+
+    accountSelect.addEventListener(
+        "change",
+        updateAccountUI
+    );
 
     updateCategory();
 
+    updateItemRequired();
 
-    // ================= TNG INPUT =================
-    let value = 0;
-    let active = false;
+    updateTransferUI();
 
-    const amountInput = document.getElementById("amountInput");
+    updateAccountUI();
 
-    // initialize safely
-    value = Math.round(parseFloat(amountInput.value || "0") * 100) || 0;
+    // ================= RECEIPT FILENAME =================
 
-    amountInput.addEventListener("focus", () => active = true);
-    amountInput.addEventListener("blur", () => active = false);
+    document.getElementById("receiptInput")
+        .addEventListener("change", function () {
 
-    document.addEventListener("keydown", function(e) {
+        const name = this.files[0]
+            ? this.files[0].name
+            : "No file chosen";
 
-        if (!active) return;
-
-        if (e.key >= "0" && e.key <= "9") {
-            value = value * 10 + parseInt(e.key);
-        } 
-        else if (e.key === "Backspace") {
-            value = Math.floor(value / 10);
-        } 
-        else {
-            return;
-        }
-
-        e.preventDefault();
-        amountInput.value = (value / 100).toFixed(2);
+        document.getElementById("receiptFilename")
+            .textContent = name;
     });
 
-    // optional focus
-    amountInput.focus();
+    // ================= AMOUNT DISPLAY =================
+
+    const amountInput =
+        document.getElementById("amountInput");
+
+    const amountDisplay =
+        document.getElementById("amountDisplay");
+
+    let value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
+    );
+
+    function updateAmount() {
+
+        const formatted =
+            (value / 100).toFixed(2);
+
+        amountInput.value =
+            formatted;
+
+        amountDisplay.textContent =
+            formatted;
+    }
+
+    updateAmount();
+
+    amountDisplay.setAttribute(
+        "tabindex",
+        "0"
+    );
+
+    amountDisplay.addEventListener(
+        "keydown",
+        function(e) {
+
+            if (
+                e.key >= "0"
+                &&
+                e.key <= "9"
+            ) {
+
+                value =
+                    value * 10 +
+                    parseInt(e.key);
+
+            }
+
+            else if (
+                e.key === "Backspace"
+            ) {
+
+                value =
+                    Math.floor(
+                        value / 10
+                    );
+
+            }
+
+            else {
+
+                return;
+            }
+
+            e.preventDefault();
+
+            updateAmount();
+
+        }
+    );
+
+    amountDisplay.addEventListener(
+        "click",
+        function() {
+
+            amountDisplay.focus();
+
+        }
+    );
+
+    function validateAmount() {
+
+        const amount =
+            parseFloat(
+                document.getElementById("amountInput").value
+            );
+
+        if (amount <= 0) {
+
+            document
+                .getElementById("amountInput")
+                .setCustomValidity(
+                    "Please enter an amount greater than RM 0.00"
+                );
+
+            document
+                .getElementById("amountInput")
+                .reportValidity();
+
+            return false;
+        }
+
+        document
+            .getElementById("amountInput")
+            .setCustomValidity("");
+
+        return true;
+    }
 
 });
-</script>
 
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+</script>
 </body>
 </html>

@@ -1,53 +1,107 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Forgot Password</title>
+<title>Life Pages</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ICON -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 
 <body>
 
-<!-- NAV -->
-<a href="/login">Login</a> |
-<a href="/register">Sign Up</a>
+<!-- MAIN CONTAINER -->
+<div class="container">
 
-<hr>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
 
-<h2>Forgot Password</h2>
+        <h1>Recover your password</h1>
 
-<form method="POST">
+        <p>Remember it?</p>
 
-    <!-- USERNAME -->
-    <label>Username:</label><br>
-    <input type="text" name="username" required autocomplete="username"><br><br>
+        <a href="/login" class="register-btn">Back to Login</a>
 
-    <!-- SECURITY QUESTION -->
-    <label>Security Question:</label><br>
-    <select name="question" required>
-        <option value="">-- Select Question --</option>
-        <option value="nickname">What is your nickname?</option>
-        <option value="birth_city">Where is your birth city?</option>
-        <option value="favourite_subject">What is your favourite subject?</option>
-        <option value="mother_name">What is your mother's name?</option>
-        <option value="best_friend">What is your best friend's name?</option>
-    </select><br><br>
+    </div>
 
-    <!-- ANSWER -->
-    <label>Answer:</label><br>
-    <input type="text" name="answer" required><br><br>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
 
-    <button type="submit">Verify</button>
+        <h2>Forgot Password</h2>
 
-</form>
+        <form action="/forgot" method="POST">
 
-<!-- ERROR -->
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+            <!-- USERNAME -->
+            <div class="input-box">
 
-<!-- SUCCESS -->
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
+                <i class="fa-regular fa-user"></i>
+
+                <input
+                 type="text"
+                 name="username"
+                 placeholder="Username"
+                 required
+                 autocomplete="username">
+
+            </div>
+
+            <!-- SECURITY QUESTION -->
+            <div class="input-box">
+
+                <i class="fa-solid fa-circle-question"></i>
+
+                <select name="question" required>
+
+                    <option value="">Security Question</option>
+
+                    <option value="nickname">What is your nickname?</option>
+
+                    <option value="birth_city">Where is your birth city?</option>
+
+                    <option value="favourite_subject">What is your favourite subject?</option>
+
+                    <option value="mother_name">What is your mother's name?</option>
+
+                    <option value="best_friend">What is your best friend's name?</option>
+
+                </select>
+
+            </div>
+
+            <!-- ANSWER -->
+            <div class="input-box">
+
+                <i class="fa-regular fa-comment"></i>
+
+                <input
+                 type="text"
+                 name="answer"
+                 placeholder="Answer"
+                 required>
+
+            </div>
+
+            <button type="submit">Verify</button>
+
+        </form>
+
+        <!-- ERROR -->
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <!-- SUCCESS -->
+        {% if success %}
+        <p class="success-message">{{ success }}</p>
+        {% endif %}
+
+    </div>
+
+</div>
 
 </body>
 </html>

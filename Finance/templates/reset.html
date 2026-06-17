@@ -1,41 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Reset Password</title>
+<title>Life Pages</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+
+<!-- FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- ICON -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 
 <body>
 
-<!-- NAV -->
-<a href="/login">Login</a> |
-<a href="/register">Register</a>
+<!-- MAIN CONTAINER -->
+<div class="container">
 
-<hr>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
 
-<h2>Reset Password</h2>
+        <h1>Create a new password</h1>
 
-<form method="POST">
+        <p>Remember it?</p>
 
-    <!-- USER DISPLAY -->
-    <p>User: <b>{{ username }}</b></p>
+        <a href="/login" class="register-btn">Back to Login</a>
 
-    <!-- NEW PASSWORD -->
-    <label>New Password:</label><br>
-    <input type="password" name="password" required autocomplete="new-password"><br><br>
+    </div>
 
-    <button type="submit">Reset Password</button>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
 
-</form>
+        <h2>Reset Password</h2>
 
-<!-- ERROR -->
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+        <p class="user-display">Resetting for: <b>{{ username }}</b></p>
 
-<!-- SUCCESS -->
-{% if success %}
-<p style="color:green;">{{ success }}</p>
-{% endif %}
+        <form action="/reset/{{ username }}" method="POST">
+
+            <!-- NEW PASSWORD -->
+            <div class="input-box">
+
+                <i class="fa-solid fa-lock"></i>
+
+                <input
+                 type="password"
+                 id="newPassword"
+                 name="password"
+                 placeholder="New Password"
+                 required
+                 autocomplete="new-password">
+
+                <span
+                 id="newEye"
+                 class="toggle-eye"
+                 onclick="togglePassword('newPassword','newEye')">
+
+                 🙈
+
+                </span>
+
+            </div>
+
+            <div class="password-rules">
+              Password: 8+ chars • Uppercase • Lowercase • Number
+            </div>
+
+            <button type="submit">Reset Password</button>
+
+        </form>
+
+        <!-- ERROR -->
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        <!-- SUCCESS -->
+        {% if success %}
+        <p class="success-message">{{ success }}</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+function togglePassword(inputId, eyeId) {
+    const input = document.getElementById(inputId);
+    const eye = document.getElementById(eyeId);
+    if (input.type === "password") {
+        input.type = "text";
+        eye.textContent = "🙉";
+    } else {
+        input.type = "password";
+        eye.textContent = "🙈";
+    }
+}
+</script>
 
 </body>
 </html>

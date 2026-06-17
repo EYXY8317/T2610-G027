@@ -1,4 +1,4 @@
-from flask import render_template, session, request, redirect
+from flask import app, render_template, session, request, redirect
 from password_system.password_hashing import hash_password
 import json
 import os
@@ -127,3 +127,99 @@ def register_profile_routes(app):
             "edit_profile.html",
             user=current_user
         )
+    
+    @app.route("/upload_wallpaper", methods=["POST"])
+    def upload_wallpaper():
+
+        wallpaper = request.files["wallpaper"]
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        for user in users:
+
+            if user["username"] == session["user"]:
+
+                if wallpaper.filename != "":
+
+                    filename = wallpaper.filename
+
+                    folder = os.path.join(
+                        "Profile_Pages",
+                        "static",
+                        "wallpapers"
+                    )
+
+                    os.makedirs(folder, exist_ok=True)
+
+                    save_path = os.path.join(
+                        folder,
+                        filename
+                    )
+
+                    wallpaper.save(save_path)
+
+                    user["wallpaper"] = filename
+
+                break
+
+        with open("users.json", "w") as f:
+            json.dump(users, f, indent=4)
+
+        return redirect("/profile")
+    
+    # =========================
+    # CHANGE THEME
+    # =========================
+
+    @app.route("/change_theme", methods=["POST"])
+    def change_theme():
+
+        if "user" not in session:
+
+            return redirect("/login")
+
+        current_user = session["user"]
+
+        selected_theme = request.form.get("theme")
+
+        if not selected_theme:
+
+            return redirect("/profile")
+
+        with open("users.json", "r") as file:
+
+            users = json.load(file)
+
+        for user in users:
+
+            if user["username"] == current_user:
+
+                user["theme"] = selected_theme
+
+                break
+
+        with open("users.json", "w") as file:
+
+            json.dump(users, file, indent=4)
+
+        return redirect("/profile")
+    
+    @app.route("/remove_wallpaper",methods=["POST"])
+    def remove_wallpaper():
+
+        with open("users.json", "r") as f:
+            users = json.load(f)
+
+        for user in users:
+
+            if user["username"] == session["user"]:
+
+                user["wallpaper"] = None
+
+                break
+
+        with open("users.json", "w") as f:
+            json.dump(users, f, indent=4)
+
+        return redirect("/profile")

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Financial Goals</title>
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='finance.css') }}"
+    >
+
+    <link
+    rel="stylesheet"
+    href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
+
+</head>
+
+<body
+class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
+
+{% if wallpaper %}
+
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ wallpaper }}');
+"
+
+{% endif %}
+>
+
+<div class="wallpaper-overlay"></div>
+
+<!-- ================================================= -->
+<!-- ==================== TOPBAR ===================== -->
+<!-- ================================================= -->
+
+<div class="topbar">
+
+    <div class="topbar-title">
+        🎯 Financial Goals
+    </div>
+
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals" class="active-link">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
+
+<!-- ================================================= -->
+<!-- ===================== MAIN ====================== -->
+<!-- ================================================= -->
+
+<div class="summary-wrapper">
+
+    <!-- ================= CREATE GOAL ================= -->
+
+    <div class="summary-card hover-card">
+
+        <h1 class="summary-main-title">
+            🎯 Create Financial Goal
+        </h1>
+
+        <p class="goal-subtitle">
+
+            Track your savings progress
+            and achieve your targets.
+
+        </p>
+
+        <form
+        method="POST"
+        class="goal-form"
+        >
+
+            <input
+                type="hidden"
+                name="action"
+                value="create"
+            >
+
+            <input
+                type="hidden"
+                name="goal_name"
+                value="{{ g.name }}"
+            >
+
+            <input
+                type="hidden"
+                name="goal_id"
+                value="{{ g.id }}"
+            >
+
+            <div class="summary-grid">
+
+                <!-- GOAL NAME -->
+
+                <div>
+
+                    <label>
+
+                        Goal Name
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="Example: Gaming PC"
+                        required
+                    >
+
+                </div>
+
+                <!-- GOAL TYPE -->
+
+                <div>
+
+                    <label>
+
+                        Goal Type
+
+                    </label>
+
+                    <select
+                    name="type"
+                    required
+                    >
+
+                        <option value="">
+
+                            Select Goal Type
+
+                        </option>
+
+                        <option value="short">
+
+                            🎯 Short-Term
+
+                        </option>
+
+                        <option value="long">
+
+                            🚀 Long-Term
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <label>
+
+                Target Amount (RM)
+
+            </label>
+
+            <input
+                type="text"
+                id="amountInput"
+                name="target"
+                value="0.00"
+                readonly
+                required
+            >
+
+            <br><br>
+
+            <button type="submit">
+
+                Create Goal
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- ================= SHORT GOALS ================= -->
+
+    <div class="summary-card hover-card">
+
+        <h2 class="goal-section-title">
+
+            🎯 Short-Term Goals
+
+        </h2>
+
+        {% if short_goals %}
+
+        <div class="summary-grid">
+
+            {% for g in short_goals %}
+
+            <div class="goal-card hover-card">
+
+                <!-- TOP -->
+
+                <div class="budget-card-top">
+
+                    <div>
+
+                        <h3>
+
+                            {{ g.name }}
+
+                        </h3>
+
+                        <small class="goal-status">
+
+                            {% if g.status == "Completed" %}
+
+                                🎉 Completed
+
+                            {% else %}
+
+                                🚀 In Progress
+
+                            {% endif %}
+
+                        </small>
+
+                    </div>
+
+                    <div class="action-buttons">
+
+                        <a href="/edit_goal/{{ g.id }}"
+                        class="edit-btn">
+                        ✏️ Edit
+                        </a>
+
+                        <a href="/delete_goal/{{ g.id }}"
+                        class="delete-btn">
+                        🗑 Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- AMOUNT -->
+
+                <h2>
+
+                    RM {{ "%.2f"|format(g.saved) }}
+
+                </h2>
+
+                <p>
+
+                    Target:
+                    RM {{ "%.2f"|format(g.target) }}
+
+                </p>
+
+                <!-- PROGRESS -->
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar
+                        {% if g.percent >= 100 %}
+                            over
+                        {% elif g.percent >= 80 %}
+                            warning
+                        {% else %}
+                            safe
+                        {% endif %}"
+                        style="
+                        --width:
+                        {{ g.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
+
+                <!-- FOOTER -->
+
+                <div class="goal-footer">
+
+                    <span>
+
+                        {{ "%.0f"|format(g.percent) }}% Complete
+
+                    </span>
+
+                    <span>
+
+                        RM {{ "%.2f"|format(g.remaining) }} left
+
+                    </span>
+
+                </div>
+
+                <!-- SAVE -->
+
+                <form method="POST">
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="save"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="goal_name"
+                        value="{{ g.name }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="goal_id"
+                        value="{{ g.id }}"
+                    >
+                    
+                    <div class="goal-add-savings-row">
+
+                        <select name="account" class="goal-account-select" required>
+
+                            <option value="">
+
+                                Select Account
+
+                            </option>
+
+                            {% for account in accounts %}
+
+                            <option value="{{ account.name }}">
+
+                                {{ account.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <input
+                            type="number"
+                            name="amount"
+                            class="goal-amount-input"
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0.01"
+                            required
+                        >
+
+                    </div>
+
+                    <br><br>
+
+                    <button type="submit">
+
+                        Add Savings
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No short-term goals yet
+
+            </h3>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <!-- ================= LONG GOALS ================= -->
+
+    <div class="summary-card hover-card">
+
+        <h2 class="goal-section-title">
+
+            🚀 Long-Term Goals
+
+        </h2>
+
+        {% if long_goals %}
+
+        <div class="summary-grid">
+
+            {% for g in long_goals %}
+
+            <div class="goal-card hover-card">
+
+                <!-- TOP -->
+
+                <div class="budget-card-top">
+
+                    <div>
+
+                        <h3>
+
+                            {{ g.name }}
+
+                        </h3>
+
+                        <small class="goal-status">
+
+                            {% if g.status == "Completed" %}
+
+                                🎉 Completed
+
+                            {% else %}
+
+                                🚀 In Progress
+
+                            {% endif %}
+
+                        </small>
+
+                    </div>
+
+                    <div class="action-buttons">
+
+                        <a
+                        href="/edit_goal/{{ g.id }}"
+                        class="edit-btn"
+                        >
+                            ✏️ Edit
+                        </a>
+
+                        <a
+                        href="/delete_goal/{{ g.id }}"
+                        class="delete-btn"
+                        >
+                            🗑 Delete
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- AMOUNT -->
+
+                <h2>
+
+                    RM {{ "%.2f"|format(g.saved) }}
+
+                </h2>
+
+                <p>
+
+                    Target:
+                    RM {{ "%.2f"|format(g.target) }}
+
+                </p>
+
+                <!-- PROGRESS -->
+
+                <div class="progress-container">
+
+                    <div
+                        class="progress-bar
+                        {% if g.percent >= 100 %}
+                            over
+                        {% elif g.percent >= 80 %}
+                            warning
+                        {% else %}
+                            safe
+                        {% endif %}"
+                        style="
+                        --width:
+                        {{ g.display_percent }}%;
+                        "
+                    ></div>
+
+                </div>
+
+                <!-- FOOTER -->
+
+                <div class="goal-footer">
+
+                    <span>
+
+                        {{ "%.0f"|format(g.percent) }}% Complete
+
+                    </span>
+
+                    <span>
+
+                        RM {{ "%.2f"|format(g.remaining) }} left
+
+                    </span>
+
+                </div>
+
+                <!-- SAVE -->
+
+                <form method="POST">
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="save"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="goal_name"
+                        value="{{ g.name }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="goal_id"
+                        value="{{ g.id }}"
+                    >
+
+                    <div class="goal-add-savings-row">
+
+                        <select name="account" required>
+
+                            <option value="">
+
+                                Select Account
+
+                            </option>
+
+                            {% for account in accounts %}
+
+                            <option value="{{ account.name }}">
+
+                                {{ account.name }}
+
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <input
+                            type="number"
+                            name="amount"
+                            class="goal-amount-input"
+                            placeholder="0.00"
+                            step="0.01"
+                            min="0.01"
+                            required
+                        >
+
+                    </div>
+
+                    <br><br>
+
+                    <button type="submit">
+
+                        Add Savings
+
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-card">
+
+            <h3>
+
+                No long-term goals yet
+
+            </h3>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tngInputs = document.querySelectorAll(
+        "#amountInput, input[name='amount']"
+    );
+
+    tngInputs.forEach(function(amountInput) {
+
+        let value = Math.round(
+
+            parseFloat(amountInput.value || "0") * 100
+
+        ) || 0;
+
+        let active = false;
+
+        amountInput.addEventListener(
+            "focus",
+            () => active = true
+        );
+
+        amountInput.addEventListener(
+            "blur",
+            () => active = false
+        );
+
+        document.addEventListener(
+            "keydown",
+            function(e) {
+
+                if (!active) return;
+
+                if (e.key >= "0" && e.key <= "9") {
+
+                    value =
+                    value * 10 + parseInt(e.key);
+
+                }
+
+                else if (e.key === "Backspace") {
+
+                    value =
+                    Math.floor(value / 10);
+
+                }
+
+                else {
+
+                    return;
+                }
+
+                e.preventDefault();
+
+                amountInput.value =
+                (value / 100).toFixed(2);
+
+            }
+        );
+
+    });
+
+});
+
+(function () {
+
+    const body = document.body;
+
+    if (!body.classList.contains("adaptive")) {
+
+        return;
+    }
+
+    const bg = window.getComputedStyle(body)
+        .backgroundImage;
+
+    const match =
+        bg.match(/url\([\"']?(.*?)[\"']?\)/);
+
+    if (!match) {
+
+        return;
+    }
+
+    const img = new Image();
+
+    img.crossOrigin = "Anonymous";
+
+    img.src = match[1];
+
+    img.onload = function () {
+
+        const canvas =
+            document.createElement("canvas");
+
+        const ctx =
+            canvas.getContext("2d");
+
+        canvas.width = 80;
+
+        canvas.height = 80;
+
+        ctx.drawImage(img, 0, 0, 80, 80);
+
+        const data =
+            ctx.getImageData(0, 0, 80, 80).data;
+
+        let total = 0;
+
+        let darkPixels = 0;
+
+        let count = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+
+            const r = data[i];
+
+            const g = data[i + 1];
+
+            const b = data[i + 2];
+
+            const brightness =
+                (r * 0.299) +
+                (g * 0.587) +
+                (b * 0.114);
+
+            total += brightness;
+
+            if (brightness < 95) {
+
+                darkPixels++;
+            }
+
+            count++;
+        }
+
+        const average = total / count;
+
+        const darkRatio =
+            darkPixels / count;
+
+        if (
+            average < 135 ||
+            darkRatio > 0.45
+        ) {
+
+            body.classList.add(
+                "dark-wallpaper"
+            );
+        }
+
+        else {
+
+            body.classList.remove(
+                "dark-wallpaper"
+            );
+        }
+
+    };
+
+})();
+
+
+const goalAmountInput =
+    document.getElementById(
+        "goalAmountInput"
+    );
+
+const goalAmountDisplay =
+    document.getElementById(
+        "goalAmountDisplay"
+    );
+
+let goalValue = 0;
+
+function updateGoalAmount() {
+
+    const formatted =
+        (goalValue / 100).toFixed(2);
+
+    goalAmountInput.value =
+        formatted;
+
+    goalAmountDisplay.textContent =
+        formatted;
+}
+
+updateGoalAmount();
+
+goalAmountDisplay.addEventListener(
+    "keydown",
+    function(e) {
+
+        if (
+            e.key >= "0"
+            &&
+            e.key <= "9"
+        ) {
+
+            goalValue =
+                goalValue * 10 +
+                parseInt(e.key);
+
+        }
+
+        else if (
+            e.key === "Backspace"
+        ) {
+
+            goalValue =
+                Math.floor(
+                    goalValue / 10
+                );
+
+        }
+
+        else {
+
+            return;
+        }
+
+        e.preventDefault();
+
+        updateGoalAmount();
+
+    }
+);
+
+goalAmountDisplay.addEventListener(
+    "click",
+    function() {
+
+        goalAmountDisplay.focus();
+
+    }
+);
+
+</script>
+</body>
+</html>

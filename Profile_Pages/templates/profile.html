@@ -1,44 +1,290 @@
-<hr>
-<a href="/view">Finance</a> |
-<a href="/calendar">Calendar</a> |
-<a href="/diary">Diary</a> |
-<a href="/logout">Logout</a>
-<hr>
+<!DOCTYPE html>
 
-<h1>User Profile</h1>
+<html lang="en">
 
-{% if user.profile_picture %}
+<head>
 
-<img
-    src="/profile_static/profile_pictures/{{ user.profile_picture }}"    
-    width="150"
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Profile</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('profile_static', filename='profile.css') }}"
+    >
+
+</head>
+
+<body
+class="{{ user.theme if user.theme else 'cozy' }}"
 >
 
-{% else %}
+<body
 
-<img
-    src="https://via.placeholder.com/150"
-    width="150"
->
-
+{% if user.wallpaper %}
+style="
+background-image:
+linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
+url('/profile_static/wallpapers/{{ user.wallpaper }}');
+"
 {% endif %}
 
-<h2>Username</h2>
-<p>{{ user.username }}</p>
+>
 
-<h2>Email</h2>
-<p>{{ user.email }}</p>
+    <!-- TOPBAR -->
 
-<form method="POST" action="/upload_profile_picture" enctype="multipart/form-data">
+<div class="topbar">
 
-    <input type="file" name="profile_picture">
+    <div class="topbar-title">
 
-    <button type="submit">
-        Upload Profile Picture
-    </button>
+        👤 Profile
 
-</form>
+    </div>
 
-<a href="/verify_profile">
-    <button>Edit Profile</button>
-</a>
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals">Goals</a>
+    </div>
+
+    <div class="topbar-actions">
+        <a href="/dashboard">Home</a>
+        <a href="/calendar">Calendar</a>
+        <a href="/diary">Diary</a>
+        <a href="/profile" class="active-link">Profile</a>
+        <a href="/logout">Logout</a>
+    </div>
+
+</div>
+
+    <div class="profile-wrapper">
+
+        <!-- LEFT -->
+
+        <div class="card">
+
+            <div class="profile-top">
+
+                {% if user.profile_picture %}
+
+                <img
+                    src="/profile_static/profile_pictures/{{ user.profile_picture }}"
+                    class="profile-pic"
+                >
+
+                {% else %}
+
+                <img
+                    src="https://via.placeholder.com/160"
+                    class="profile-pic"
+                >
+
+                {% endif %}
+
+                <div class="profile-info">
+
+                    <h1>{{ user.username }}</h1>
+
+                    <p>{{ user.email }}</p>
+
+                    <p>Personal Finance Dashboard User</p>
+
+                    <div class="quick-actions">
+
+                        <a href="/verify_profile">
+
+                            <button class="btn">
+                                Edit Profile
+                            </button>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PROFILE PICTURE -->
+
+            <div class="upload-box">
+
+                <div class="section-title">
+                    Upload Profile Picture
+                </div>
+
+                <form
+                    method="POST"
+                    action="/upload_profile_picture"
+                    enctype="multipart/form-data"
+                >
+
+                    <input type="file" name="profile_picture">
+
+                    <button type="submit" class="btn">
+                        Upload Picture
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="card">
+
+            <div class="section-title">
+                Customize Wallpaper
+            </div>
+
+            {% if user.wallpaper %}
+
+            <img
+                src="/profile_static/wallpapers/{{ user.wallpaper }}"
+                class="wallpaper-preview"
+            >
+
+            {% else %}
+
+            <p style="margin-bottom:20px;">
+                No wallpaper uploaded
+            </p>
+
+            {% endif %}
+
+            <form
+                method="POST"
+                action="/upload_wallpaper"
+                enctype="multipart/form-data"
+            >
+
+                <input type="file" name="wallpaper">
+
+                <button type="submit" class="btn">
+                    Upload Wallpaper
+                </button>
+
+            </form>
+
+            <form
+                method="POST"
+                action="/remove_wallpaper"
+                style="margin-top:10px;"
+            >
+
+                <button
+                    type="submit"
+                    class="secondary-btn"
+                >
+                    Remove Wallpaper
+                </button>
+
+            </form>
+            
+            <!-- STATS -->
+
+            <div class="section-title dashboard-title">
+                Dashboard
+            </div>
+
+            <div class="stat-grid">
+
+    <!-- THEME -->
+
+    <div class="stat-card">
+
+        <h3>🎨 Theme</h3>
+
+        <p>{{ user.theme if user.theme else "Adaptive" }}</p>
+
+        <span>
+            Current interface appearance
+        </span>
+
+        <form
+            action="/change_theme"
+            method="POST"
+        >
+
+            <select
+                name="theme"
+                class="theme-select"
+            >
+
+                <option
+                    value="cozy"
+                    {% if user.theme == "cozy" %}selected{% endif %}
+                >
+                    Cozy Beige
+                </option>
+
+                <option
+                    value="dark"
+                    {% if user.theme == "dark" %}selected{% endif %}
+                >
+                    Dark Mode
+                </option>
+
+            </select>
+
+            <button
+                type="submit"
+                class="mini-btn"
+            >
+                Apply Theme
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- STATUS -->
+
+    <div class="stat-card">
+
+        <h3>🟢 Status</h3>
+
+        <p>Active</p>
+
+        <span>
+            System running normally
+        </span>
+
+    </div>
+
+</div>
+</div>
+
+<script>
+
+const themeSelect = document.querySelector('select[name="theme"]');
+
+function updateBodyClasses(){
+
+    const selectedTheme = themeSelect.value;
+
+    document.body.className =
+        selectedTheme;
+}
+
+if(themeSelect){
+
+    themeSelect.addEventListener(
+        "change",
+        updateBodyClasses
+    );
+}
+
+</script>
+
+</body>
+
+</html>

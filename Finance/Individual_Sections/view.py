@@ -1,145 +1,115 @@
-# ------------------------
-# PYTHON LIBRARIES
-# ------------------------
-
-# import system lets is to be able to control how python run and behaves
-# be able to use functions like sys.path
-import sys
-import os
-
-#os.path helps python find and work with files
-#_file_ is this current file (app.py)
-# os.path.dirname (dirname means get folder name which is finance)
-# ".." means go back to previous folder
-# os.path.join(finance, "..") = combine paths
-# os.path.abspath (abspath means convert to full path (starting from c drive))
-# sys.path is the lists of folders python searches for modules
-# append means add to the list
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-# from flask import Flask creates the web app; able to use functions like redirect() and app.route()
-# render_template loads HTML files
-# request.form ges data from user input
-# redirect & url_for sends user to another page after a certain action
-from flask import Flask, render_template, request, redirect, url_for
-from flask import session
-import json #To store and read data; be able to use functions like json.load and json.dump
-import os #For clear the screen; be able to use functions like os.system and os.path.exists
-from datetime import datetime #Handles dates and time; be able to use functions like datetime.strptime and datetime.now
-
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+from Journal_Pages.diary_system.routes import diary_bp
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
 
-# create a web app using this file
-# Flask is the framework, somewhat like the engine
-# _name_ is the curent file name
-# !without this, nothing runs!
-app = Flask(__name__)
+import json
+import os
+from datetime import datetime, timedelta
+from jinja2 import ChoiceLoader, FileSystemLoader
 
-app.secret_key = "your_secret_key"
-# -----------
-# JSON
-#------------
+from Profile_Pages.profile_routes import register_profile_routes
 
-f_expense = "expenses.json"
+# ================= BASE =================
+BASE_DIR = os.path.dirname(__file__)
 
-# ---------------
-# FUNCTIONS
-# ---------------
+app = Flask(
+    __name__,
+    static_folder=os.path.join(BASE_DIR, "Finance", "static")
+)
 
-#purpose is to pause the program
-#stop the program temporarily until user press enter
-#/n means enter a new line
-def pause():
-    input("\nPress Enter to continue...")
+app.secret_key = "my_secret_key"
 
-#purpose is to load data from a file
-#file is to see if the file exists or not
-#default is a fake but valid data if the file does not exist
+register_profile_routes(app)
+
+# ================= TEMPLATE LOADER =================
+app.jinja_loader = ChoiceLoader([
+    FileSystemLoader(os.path.join(BASE_DIR, "Finance", "templates")),
+    FileSystemLoader(os.path.join(BASE_DIR, "Calendar_Pages", "templates")),
+    FileSystemLoader(os.path.join(BASE_DIR, "Journal_Pages", "templates")),
+    FileSystemLoader(os.path.join(BASE_DIR, "Profile_Pages", "templates")),
+])
+
+# ================= BLUEPRINT =================
+app.register_blueprint(diary_bp)
+
+# ================= FILE PATHS =================
+f_expense = os.path.join(BASE_DIR, "Finance", "expenses.json")
+f_budget = os.path.join(BASE_DIR, "Finance", "budget.json")
+f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
+f_users = os.path.join(BASE_DIR, "users.json")
+f_goals = os.path.join(BASE_DIR, "goals.json")
+
+# ================= HELPERS =================
 def load_data(file, default):
-
-    #os.path.exists checks whether the file exists
-    #not means file does not exist
     if not os.path.exists(file):
-
-        #go back to default
         return default
-    
-    #With function is used to open a file and to make sure it is properly closed after finished
-    #If file exists, open the file and read (r)
-    #As f is a temporary variable to store the opened file
-    with open(file, "r") as f:
+    try:
+        with open(file, "r") as f:
+            return json.load(f)
+    except:
+        return default
 
-        # try is a safe way to open files
-        try:
-
-            # reads the json file (f) and converts it to python
-            # python data stored in variable data
-            data = json.load(f)
-        
-        # if error occurs
-        except:
-
-            # return an empty list ( [ ] )
-            return default
-
-        # checks if it is a dictionary
-        # isinstance is a built-in python function; checks if something is a specific type
-        # data is the variable
-        # dictionary (dict) is the type to check
-        if isinstance(data, dict):
-
-            # return as {[ data ]}
-            return [data]
-
-        # returns data when everything is correct
-        return data
-
-#purpose is to save data to a file
-#file is the file to be saved
-#data is the data to be saved
 def save_data(file, data):
-
-    #"w" means write; if the file exists, it will be overwritten; if not, a new file will be created
     with open(file, "w") as f:
-
-        #Dump means put the data into the file (converts python to .json)
-        #f is the file to write to
-        #Indent=4 means the json file will be 4 spaces indented(空四格)
         json.dump(data, f, indent=4)
 
-#purpose is to check if date is valid
-#d is the date that enter by user
-def valid_date(d):
+def get_user_wallpaper():
 
-    #try is to try to run the code, if error, run except
-    try:
+    if "user" not in session:
+        return None
 
-        #striptime is check if date in correct format
-        #%Y-%m-%d means year-month-day
-        datetime.strptime(d, "%Y-%m-%d")
+    users = load_data(f_users, [])
 
-        #Means date is valid
-        return True
-    except:
-        #Means date is invalid
-        return False
+    for u in users:
 
-#purpose is to check if the casing of the value is valid
-#value is the value input by the user; allowed is the list of allowed values to be checked
-def valid_casing(value, allowed):
-    return (
-        value == value.lower() #makes value all lower case
-        or value == value.upper() #makes value all upper case
-        or value == value.capitalize() #makes value first letter capitalized
-    ) and value.lower() in allowed #check if value (in lower case) is in the allowed list
+        if u["username"] == session["user"]:
 
-# ----------------
-# ARRAYS
-# ----------------
+            return u.get("wallpaper")
 
-TYPES = ["expense", "income", "saving"]
-CATEGORIES = ["food", "other", "rent","entertainment", "education", "transportation"]
+    return None
+
+def get_current_user():
+
+    if "user" not in session:
+        return None
+
+    users = load_data(f_users, [])
+
+    for u in users:
+
+        if u["username"] == session["user"]:
+
+            return u
+
+    return None
+
+# =============== ARRAYS ==================
+CATEGORY_MAP = {
+
+    "income": [
+        "Salary",
+        "Freelance",
+        "Business",
+        "Gift",
+        "Bonus"
+    ],
+
+    "expense": [
+        "Food",
+        "Transport",
+        "Travel",
+        "Entertainment",
+        "Rent",
+        "Education"
+    ],
+
+    "saving": [
+        "Savings",
+        "Investment",
+        "Emergency Fund"
+    ]
+}
 
 # ----------
 # ROUTES
@@ -157,33 +127,60 @@ def home():
 @app.route("/view")
 def view_financial():
 
-    # 🔒 Check login
     if "user" not in session:
         return redirect(url_for("login"))
 
-    # 📥 Load all records
+    user = session["user"]
+
     records = load_data(f_expense, [])
+    accounts = load_data(f_accounts, [])
 
-    # 👤 Get current user
-    user = session.get("user")
+    # ===== USER RECORDS =====
+    user_records = [
 
-    # 🔍 Filter only this user's records
-    user_records = [r for r in records if r["username"] == user]
+        r for r in records
 
+        if r["username"] == user
+    ]
+
+    # ===== FILTER =====
     selected_account = request.args.get("account")
 
-    if selected_account:
-        user_records = [r for r in user_records if r.get("account") == selected_account]
+    if selected_account and selected_account != "All Accounts":
 
-    # 🔄 Sort by date (newest first)
-    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
+        user_records = [
 
-    accounts = load_data("accounts.json", [])
-    user_accounts = [a for a in accounts if a["username"] == user]
+            r for r in user_records
+
+            if r.get("account") == selected_account
+        ]
+
+    # ===== SORT =====
+    sorted_records = sorted(
+        user_records,
+        key=lambda x: x["date"],
+        reverse=True
+    )
+
+    # ===== USER ACCOUNTS =====
+    user_accounts = [
+
+        a for a in accounts
+
+        if a["username"] == user
+    ]
 
     return render_template(
+
         "view.html",
+
         records=sorted_records,
+
+        accounts=user_accounts,
+
         selected_account=selected_account,
-        accounts=user_accounts   # 🔥 THIS LINE FIXES EVERYTHING
+
+        wallpaper=get_user_wallpaper(),
+
+        user=get_current_user(),
     )
