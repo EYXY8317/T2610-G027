@@ -96,6 +96,8 @@
     justify-content: center;
 
     font-size: calc(var(--widget-font-scale, 1) * 14px);
+    transform: scale(var(--widget-content-scale, 1));
+    transform-origin: center center;
 
 }
 
@@ -123,8 +125,8 @@
 
 .widget.edit-mode {
 
-    outline:
-        2px solid #1a1a1a;
+    border: 2px solid #1a1a1a !important;
+    clip-path: none !important;
 
 }
 
@@ -883,9 +885,7 @@
     gap: 0.08em;
     padding: 0.3em 0.6em;
     width: 100%;
-    height: 100%;
     box-sizing: border-box;
-    justify-content: flex-start;
 }
 
 .ww-row {
@@ -1158,4 +1158,175 @@
     border: 1px solid #ddd8cf;
     border-radius: 8px;
     padding: 2px;
+}
+
+/* ── Diary Card ──────────────────────────────────────────────── */
+
+.dc-body {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.dc-cover {
+    flex: 0 0 46%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    box-sizing: border-box;
+    background: transparent;
+}
+
+.dc-cover-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    transition: filter 0.15s;
+}
+
+.dc-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.9em 1em;
+    gap: 0.45em;
+    min-width: 0;
+}
+
+.dc-title {
+    font-size: 1.35em;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.dc-divider {
+    width: 1.8em;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.22;
+    border-radius: 1px;
+}
+
+.dc-subtitle {
+    font-size: 0.76em;
+    opacity: 0.52;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.dc-btn {
+    display: inline-block;
+    margin-top: 0.2em;
+    padding: 0.42em 0.88em;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    align-self: flex-start;
+    transition: opacity 0.15s;
+}
+
+.dc-btn:hover {
+    opacity: 0.75;
+}
+
+.dc-cover-full {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.dc-direct {
+    cursor: pointer;
+}
+
+.dc-direct:hover .dc-cover-img {
+    filter: brightness(0.88);
+}
+
+/* Settings */
+
+.dc-book-slots {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.dc-book-slot {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 6px;
+    background: #f5f3ef;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+}
+
+.dc-book-slot.active {
+    border-color: #1a1a1a;
+}
+
+.dc-slot-preview {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #e8e5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dc-slot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dc-slot-empty {
+    font-size: 1.5em;
+    opacity: 0.32;
+}
+
+.dc-slot-label {
+    font-size: 0.68em;
+    text-align: center;
+    opacity: 0.55;
+    margin-bottom: 2px;
+}
+
+.dc-slot-select-btn {
+    width: 100%;
+    font-size: 0.68em;
+    padding: 3px 4px;
+    border-radius: 6px;
+    border: 1px solid #ddd8cf;
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+.dc-slot-select-btn.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
 }

@@ -116,22 +116,8 @@ function renderSelectMode(state) {
 
     }).join("");
 
-    let summary = "";
-
-    if (state.selectedIndexes.length) {
-
-        const parts = state.selectedIndexes
-            .filter(i => i < emojis.length)
-            .map(i => emojis[i])
-            .join(" ");
-
-        summary = `<div class="te-summary">${parts}</div>`;
-
-    }
-
     return `
         <div class="te-emoji-row">${buttons}</div>
-        ${summary}
     `;
 
 }

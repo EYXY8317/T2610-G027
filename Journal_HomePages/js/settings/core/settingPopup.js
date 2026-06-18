@@ -79,7 +79,8 @@ from "../appearance/appearanceSettings.js";
 
 import {
     getWidgetAppearance,
-    saveWidgetAppearance
+    saveWidgetAppearance,
+    applyWidgetAppearance
 }
 from "../appearance/widgetAppearance.js";
 
@@ -185,6 +186,16 @@ import {
 }
 from "../../widgets/todayEmotion.js";
 
+import {
+    getDiaryCardSettings
+}
+from "../widgets/diaryCardSettings.js";
+
+import {
+    updateDiaryCardState
+}
+from "../../widgets/diaryCard.js";
+
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
     "weather-hour-widget":    "Weather Hours",
@@ -195,7 +206,8 @@ const WIDGET_NAMES = {
     "high-streak-widget":     "High Streak",
     "picture-streak-widget":  "Picture Streak",
     "emotion-summary-widget": "Emotion Summary",
-    "quote-widget":           "Quote"
+    "quote-widget":           "Quote",
+    "diary-card-widget":      "Diary"
 };
 
 // ── Auto-expand any widget when settings cause content to overflow ────────────
@@ -258,6 +270,9 @@ export function createSettingPopup(widgetId) {
     }
     else if (widgetId === "emotion-summary-widget") {
         widgetTabs = getEmotionSummarySettings();
+    }
+    else if (widgetId === "diary-card-widget") {
+        widgetTabs = getDiaryCardSettings();
     }
     else {
         widgetTabs = { style: "", location: "", graph: "", display: "<p>Coming Soon</p>" };
@@ -382,6 +397,28 @@ export function createSettingPopup(widgetId) {
             btn.classList.toggle("active", btn.dataset.value === "false");
         });
     }
+
+    // Pre-select content scale (S/M/L)
+    const _curScale = savedApp.contentScale || "3";
+    popup.querySelectorAll(".content-scale-segment .segment-option").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.value === _curScale);
+    });
+
+    /* ── Content scale (S / M / L) — shared across all widgets ─── */
+    const contentScaleBtns = popup.querySelectorAll(".content-scale-segment .segment-option");
+    contentScaleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            contentScaleBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { contentScale: btn.dataset.value });
+            const updatedApp = getWidgetAppearance(widgetId);
+            const widgetEl = document.getElementById(widgetId);
+            if (updatedApp && widgetEl) {
+                applyWidgetAppearance(widgetEl, updatedApp);
+                widgetEl.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    });
 
     /* ── Weather Hour: graph controls ─────────────────────── */
 
@@ -908,6 +945,30 @@ export function createSettingPopup(widgetId) {
                 updatePictureStreakState({ scrollInterval: event.target.value });
             });
         }
+
+    }
+
+    /* ── Diary Card ───────────────────────────────────────── */
+
+    if (widgetId === "diary-card-widget") {
+
+        const dcSelectBtns = popup.querySelectorAll(".dc-slot-select-btn");
+        dcSelectBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                updateDiaryCardState({ activeBook: Number(btn.dataset.index) });
+                popup.remove();
+                createSettingPopup(widgetId);
+            });
+        });
+
+        const dcModeBtns = popup.querySelectorAll(".dc-mode-segment .segment-option");
+        dcModeBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                dcModeBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateDiaryCardState({ mode: btn.dataset.value });
+            });
+        });
 
     }
 

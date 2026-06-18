@@ -48,6 +48,11 @@ import {
 }
 from "./emotionSummary.js";
 
+import {
+    createDiaryCardWidget
+}
+from "./diaryCard.js";
+
 export const widgets = [
 
     {
@@ -117,6 +122,12 @@ export const widgets = [
         id: "emotion-summary",
         name: "Emotion Summary",
         create: createEmotionSummaryWidget
+    },
+
+    {
+        id: "diary-card",
+        name: "Diary",
+        create: createDiaryCardWidget
     },
 
 ];
