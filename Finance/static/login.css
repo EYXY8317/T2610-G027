@@ -524,3 +524,18 @@ button:hover{
     color:#7a4e33;
 
 }
+
+/* ===== USER DISPLAY ===== */
+.user-display{
+
+    text-align:center;
+
+    font-size:16px;
+
+    color:#7a4e33;
+
+    margin-bottom:20px;
+
+    font-weight:500;
+
+}

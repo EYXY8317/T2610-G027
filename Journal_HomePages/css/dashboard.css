@@ -1,0 +1,380 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+html,
+body {
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    font-family: 'Inter', sans-serif;
+
+}
+
+/* ── Navbar (Life Pages style, fixed overlay) ── */
+
+.navbar {
+
+    position: fixed;
+
+    top: 0;
+
+    left: 0;
+
+    right: 0;
+
+    background: white;
+
+    border-bottom: 1px solid #eee4da;
+
+    padding: 14px 45px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    z-index: 200;
+
+    font-family: Arial, sans-serif;
+
+}
+
+.logo-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+}
+
+.logo-box {
+
+    width: 52px;
+
+    height: 52px;
+
+    background: #f2e5d8;
+
+    border-radius: 14px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+}
+
+.logo-box img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+.logo-text {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    color: #3b2f2a;
+
+}
+
+.nav-links {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+.nav-links a {
+
+    text-decoration: none;
+
+    color: #333;
+
+    border: 1px solid #d2d2d2;
+
+    border-radius: 8px;
+
+    padding: 8px 16px;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+
+}
+
+.nav-links a.active {
+
+    background: #8b5e3c;
+
+    color: white;
+
+    border: none;
+
+}
+
+.nav-links a:hover {
+
+    background: #c9a88a;
+
+    color: white;
+
+}
+
+.navbar-right {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+#homepage-settings {
+
+    border: 1px solid #ddd8cf;
+
+    border-radius: 8px;
+
+    padding: 7px 16px;
+
+    background: transparent;
+
+    color: #555;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    font-family: 'Inter', sans-serif;
+
+    font-weight: 400;
+
+    letter-spacing: 0.03em;
+
+    transition: all 0.15s;
+
+}
+
+#homepage-settings:hover {
+
+    background: #1a1a1a;
+
+    color: #F2EFE9;
+
+    border-color: #1a1a1a;
+
+}
+
+#dashboard {
+
+    position: relative;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background: #F2EFE9;
+
+    overflow: hidden;
+
+}
+
+#homepage-menu {
+
+    position: fixed;
+
+    top: 95px;
+
+    right: 20px;
+
+    width: 200px;
+
+    display: none;
+
+    background: white;
+
+    border: 1px solid #e8e3dc;
+
+    border-radius: 12px;
+
+    padding: 6px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.10),
+        0 2px 6px  rgba(0, 0, 0, 0.06);
+
+    z-index: 9999;
+
+}
+
+#homepage-menu button {
+
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    text-align: left;
+
+    padding: 9px 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: 13px;
+
+    color: #444;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    transition: background 0.12s, color 0.12s;
+
+}
+
+#homepage-menu button:hover {
+
+    background: #f0ece6;
+
+    color: #1a1a1a;
+
+}
+
+.menu-icon {
+
+    font-size: 14px;
+
+    width: 18px;
+
+    text-align: center;
+
+    flex-shrink: 0;
+
+}
+
+#homepage-menu-divider {
+
+    height: 1px;
+
+    background: #e8e3dc;
+
+    margin: 4px 6px;
+
+}
+
+#reset-layout-btn {
+
+    color: #c0392b;
+
+    margin-top: 2px;
+
+}
+
+#reset-layout-btn:hover {
+
+    background: #fdf0ef !important;
+
+    color: #a93226 !important;
+
+}
+
+#snap-line,
+#snap-line-horizontal {
+
+    display: none;
+
+    background:
+        rgba(
+            148,
+            163,
+            184,
+            0.45
+        );
+
+    pointer-events: none;
+
+    z-index: 9999;
+
+}
+
+#snap-line {
+
+    position: absolute;
+
+    top: 0;
+
+    bottom: 0;
+
+    width: 1.5px;
+
+}
+
+#snap-line-horizontal {
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    height: 1.5px;
+
+}
+
+#gap-guide {
+
+    display: none;
+
+    position: absolute;
+
+    height: 2px;
+
+    background:
+        rgba(
+            148,
+            163,
+            184,
+            0.6
+        );
+
+    z-index: 9999;
+
+    pointer-events: none;
+
+}
+

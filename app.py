@@ -100,7 +100,7 @@ def calendar_static(filename):
 def calendar():
     return render_template("mypage.html")
 
-# ================= DIARY ===================
+# ================= DIARY STATIC =================
 @app.route('/diary_static/<path:filename>')
 def diary_static(filename):
     return send_from_directory(
@@ -115,9 +115,12 @@ def profile_static(filename):
         filename
     )
 
-@app.route("/diary")
-def diary():
-    return render_template("diary.html")
+@app.route('/journal_home_static/<path:filename>')
+def journal_home_static(filename):
+    return send_from_directory(
+        os.path.join('Journal_HomePages'),
+        filename
+    )
 
 # ================= RUN =================
 if __name__ == "__main__":

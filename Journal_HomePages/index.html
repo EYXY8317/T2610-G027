@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Journal Homepage
+    </title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/journal_home_static/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/journal_home_static/css/widget.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/journal_home_static/css/settings.css"
+    >
+
+</head>
+
+<body>
+
+    <nav class="navbar">
+
+        <div class="logo-section">
+            <div class="logo-box">
+                <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+            </div>
+            <div class="logo-text">Life Pages</div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/dashboard">Home</a>
+            <a href="/finance">Finance Page</a>
+            <a href="/journal" class="active">Diary Page</a>
+            <a href="/calendar">Calendar Page</a>
+            <a href="/logout">Logout</a>
+        </div>
+
+        <div class="navbar-right">
+            <button id="homepage-settings">⚙ Customize</button>
+        </div>
+
+    </nav>
+
+    <div id="homepage-menu">
+
+        <button id="edit-layout-btn">
+            <span class="menu-icon">✏️</span> Edit Layout
+        </button>
+
+        <button>
+            <span class="menu-icon">➕</span> Add Widget
+        </button>
+
+        <button>
+            <span class="menu-icon">🖼️</span> Wallpaper
+        </button>
+
+        <button>
+            <span class="menu-icon">🎨</span> Theme
+        </button>
+
+        <div id="homepage-menu-divider"></div>
+
+        <button id="reset-layout-btn">
+            <span class="menu-icon">↺</span> Reset Layout
+        </button>
+
+    </div>
+
+    <div id="snap-line"></div>
+
+    <div id="snap-line-horizontal"></div>
+
+    <div id="gap-guide"></div>
+
+    <div id="dashboard"></div>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/chart.js"
+    ></script>
+
+    <script
+        type="module"
+        src="/journal_home_static/js/main.js"
+    ></script>
+
+</body>
+
+</html>

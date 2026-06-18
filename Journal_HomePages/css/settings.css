@@ -1,0 +1,334 @@
+.setting-popup {
+
+    position: fixed;
+
+    top: 100px;
+    left: 100px;
+
+    width: 420px;
+    height: 600px;
+
+    background: #F2EFE9;
+
+    border: 1px solid #ddd8cf;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 24px rgba(
+            0,
+            0,
+            0,
+            0.1
+        );
+
+    z-index: 10000;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    font-family: 'Inter', sans-serif;
+
+}
+
+.setting-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 16px;
+
+    background: #ebe7e0;
+
+    border-bottom:
+        1px solid #ddd8cf;
+
+    cursor: move;
+
+    flex-shrink: 0;
+
+    font-weight: 500;
+
+    color: #1a1a1a;
+
+    font-size: 14px;
+
+}
+
+.setting-body {
+
+    padding: 16px;
+
+    overflow-y: auto;
+
+    flex: 1;
+
+}
+
+.setting-body h3 {
+
+    margin: 16px 0 10px;
+
+    font-size: 11px;
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1em;
+
+    color: #aaa;
+
+}
+
+.setting-body h3:first-child {
+
+    margin-top: 0;
+
+}
+
+.setting-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 12px;
+
+    font-size: 14px;
+
+}
+
+.setting-row span:first-child {
+
+    flex-shrink: 0;
+
+    color: #1a1a1a;
+
+}
+
+.setting-row-muted {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.setting-row-muted .segment-option[disabled] {
+    cursor: not-allowed;
+}
+
+.setting-row select {
+
+    padding: 4px 8px;
+
+    border: 1px solid #ddd8cf;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+
+    font-family: 'Inter', sans-serif;
+
+    background: transparent;
+
+    color: #555;
+
+    cursor: pointer;
+
+}
+
+.setting-close {
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+}
+
+/* ── Tab bar ─────────────────────────────────────────────── */
+
+.setting-tabs {
+
+    display: flex;
+
+    border-bottom: 1px solid #ddd8cf;
+
+    flex-shrink: 0;
+
+    background: #F2EFE9;
+
+}
+
+.setting-tab {
+
+    flex: 1;
+
+    padding: 10px 4px;
+
+    border: none;
+
+    border-bottom: 2px solid transparent;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+    font-weight: 400;
+
+    font-family: 'Inter', sans-serif;
+
+    color: #888;
+
+    transition: color 0.15s, border-color 0.15s;
+
+    letter-spacing: 0.02em;
+
+}
+
+.setting-tab.active {
+
+    color: #1a1a1a;
+
+    border-bottom-color: #1a1a1a;
+
+    font-weight: 600;
+
+}
+
+.setting-tab:hover:not(.active) {
+
+    color: #555;
+
+}
+
+/* ── Tab panes ───────────────────────────────────────────── */
+
+.setting-pane {
+
+    display: none;
+
+}
+
+.setting-pane.active {
+
+    display: block;
+
+}
+
+
+.segment-button {
+
+    display: flex;
+
+    gap: 4px;
+
+}
+
+/* ── Multi-select chip rows (Quote: categories + sources) ─── */
+
+.quote-cat-chips,
+.quote-src-chips {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-bottom: 4px;
+
+}
+
+/* ── Saved quote full-text item ──────────────────────────── */
+
+.quote-saved-item {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+    padding: 8px 0;
+
+    border-bottom: 1px solid #ddd8cf;
+
+}
+
+.quote-saved-text {
+
+    flex: 1;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+
+    color: #1a1a1a;
+
+    word-break: break-word;
+
+}
+
+.quote-remove-saved {
+
+    flex-shrink: 0;
+
+    border: none;
+
+    background: none;
+
+    cursor: pointer;
+
+    color: #ef4444;
+
+    font-size: 14px;
+
+    padding: 0 2px;
+
+}
+
+.segment-option {
+
+    border: 1px solid #ddd8cf;
+
+    padding: 6px 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    background: transparent;
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: 12px;
+
+    color: #555;
+
+    transition: all 0.15s;
+
+}
+
+.segment-option.active {
+
+    background: #1a1a1a;
+
+    color: #F2EFE9;
+
+    border-color: #1a1a1a;
+
+}
