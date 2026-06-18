@@ -1,27 +1,612 @@
+/* ============================================================
+   DIARY — Refined Journaling UI
+   Palette: parchment bg, ink text, warm accent
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500&display=swap');
+
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #F2EFE9;
+    color: #1a1a1a;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding-top: 80px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #eee4da;
+    padding: 14px 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 200;
+    font-family: Arial, sans-serif;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-box {
+    width: 52px;
+    height: 52px;
+    background: #f2e5d8;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3b2f2a;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #d2d2d2;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.nav-links a.active {
+    background: #8b5e3c;
+    color: white;
+    border: none;
+}
+
+.nav-links a:hover {
+    background: #c9a88a;
+    color: white;
+}
+
+/* ===== SEARCH WIDGET (navbar right) ===== */
+#navRight {
+    display: flex;
+    align-items: center;
+}
+
+#searchWidget {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ebe7e0;
+    border-radius: 20px;
+    padding: 6px 14px;
+    transition: all 0.2s ease;
+}
+
+#searchIconBtn {
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+    line-height: 1;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+#searchIconBtn:hover {
+    opacity: 1;
+}
+
+#searchBox,
+#searchBtn {
+    display: none;
+}
+
+#searchWidget.open #searchBox,
+#searchWidget.open #searchBtn {
+    display: inline-block;
+}
+
+#searchBox {
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #1a1a1a;
+    outline: none;
+    width: 180px;
+}
+
+#searchBox::placeholder {
+    color: #aaa;
+}
+
+#searchBtn {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border: none;
+    border-radius: 12px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#searchBtn:hover {
+    background: #333;
+}
+
+/* ===== SEARCH RESULTS DROPDOWN ===== */
+#searchResults {
+    position: absolute;
+    top: 62px;
+    right: 40px;
+    width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    z-index: 200;
+    overflow: hidden;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+#searchResults:empty {
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0ede8;
+    transition: background 0.12s;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: #faf8f5;
+}
+
+.result-date {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.result-topic {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.result-preview {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===== MAIN LAYOUT ===== */
+#mainContent {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+}
+
+/* ===== DATE DISPLAY ===== */
+#dateSection {
+    text-align: center;
+    padding: 32px 0 24px;
+    border-bottom: 1px solid #ddd8cf;
+    margin-bottom: 32px;
+}
+
+#dayName {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+#dateDisplay {
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    color: #1a1a1a;
+    display: inline-block;
+    transition: opacity 0.15s;
+}
+
+#dateDisplay:hover {
+    opacity: 0.7;
+}
+
+#monthYear {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: 6px;
+}
+
+/* ===== TOOLBAR (mood + topic) ===== */
+#toolbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #ddd8cf;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+#toolbar label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+}
+
+#mood {
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #1a1a1a;
+    outline: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+#mood:hover:not(:disabled) {
+    background: #ebe7e0;
+}
+
+#mood:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+#topic {
+    border: none;
+    border-bottom: 1px solid #ddd8cf;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #1a1a1a;
+    outline: none;
+    padding: 4px 4px;
+    width: 180px;
+    transition: border-color 0.15s;
+}
+
+#topic::placeholder {
+    color: #bbb;
+}
+
+#topic:focus {
+    border-color: #888;
+}
+
+#topic[readonly] {
+    border-color: transparent;
+    cursor: default;
+}
+
+/* ===== CANVAS / WRITING AREA ===== */
 #canvas {
     position: relative;
-    border: 1px solid #ccc;
-    min-height: 400px;
+    min-height: 420px;
     width: 100%;
     overflow: visible;
+    background: transparent;
 }
 
 #box {
-    padding: 15px;
-    min-height: 100%;
+    padding: 0;
+    min-height: 420px;
     outline: none;
     position: relative;
     z-index: 1;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #2a2a2a;
+    caret-color: #888;
+}
+
+#box:empty::before {
+    content: "Start writing your diary...";
+    color: #ccc;
+    font-style: italic;
+    pointer-events: none;
 }
 
 #canvas img {
     position: absolute;
     cursor: move;
     user-select: none;
-    z-index: 5;   /* ⭐关键 */
+    z-index: 5;
     image-rendering: crisp-edges;
     transform-origin: center center;
     backface-visibility: hidden;
 }
 
+/* ===== BOTTOM ACTION BAR ===== */
+#actionBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-top: 1px solid #ddd8cf;
+    margin-top: 28px;
+}
 
+#leftActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#saveStatus {
+    font-size: 12px;
+    color: #888;
+    font-style: italic;
+}
+
+/* ===== BUTTONS ===== */
+button {
+    font-family: 'Inter', sans-serif;
+}
+
+#editBtn, #deleteBtn {
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    border-radius: 8px;
+    padding: 7px 18px;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+}
+
+#editBtn:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+#deleteBtn:hover {
+    background: #c0392b;
+    color: white;
+    border-color: #c0392b;
+}
+
+/* ===== FILE UPLOAD ===== */
+#uploadImg {
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+}
+
+/* ===== DATE NAV ===== */
+#dateNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+}
+
+#prevDate, #nextDate {
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#prevDate:hover, #nextDate:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+/* ===== QUOTE / MSG ===== */
+#quoteSection {
+    margin-top: 48px;
+    padding: 24px 32px;
+    border: 1px solid #ddd8cf;
+    border-radius: 4px;
+    background: #ebe7e0;
+    text-align: center;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#msg {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-style: italic;
+    color: #555;
+    line-height: 1.7;
+}
+
+#msg:empty::before {
+    content: "Your quote will appear here once you write in your diary.";
+    color: #bbb;
+    font-size: 13px;
+}
+
+/* ===== FORMAT BAR ===== */
+#formatBar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd8cf;
+    flex-wrap: wrap;
+}
+
+#uploadLabel {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+#uploadLabel:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+.fbar-divider {
+    width: 1px;
+    height: 22px;
+    background: #ddd8cf;
+    margin: 0 4px;
+}
+
+#formatBar select {
+    border: 1px solid #ddd8cf;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #555;
+    border-radius: 8px;
+    padding: 4px 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+#formatBar select:hover,
+#formatBar select:focus {
+    border-color: #888;
+}
+
+#fontColor {
+    width: 32px;
+    height: 28px;
+    border: 1px solid #ddd8cf;
+    border-radius: 8px;
+    padding: 2px;
+    cursor: pointer;
+    background: transparent;
+    outline: none;
+}
+
+.fbar-btn {
+    background: transparent;
+    border: 1px solid #ddd8cf;
+    color: #555;
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+}
+
+.fbar-btn:hover {
+    background: #1a1a1a;
+    color: #F2EFE9;
+    border-color: #1a1a1a;
+}
+
+/* ===== WHITE PAPER CANVAS ===== */
+#canvas {
+    position: relative;
+    min-height: 520px;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #ddd8cf;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+}
+
+#box {
+    position: absolute;
+    inset: 0;
+    padding: 32px 40px;
+    min-height: 520px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.9;
+    color: #2a2a2a;
+    caret-color: #888;
+    white-space: pre-wrap;
+    word-break: break-word;
+    z-index: 1;
+    cursor: text;
+}
