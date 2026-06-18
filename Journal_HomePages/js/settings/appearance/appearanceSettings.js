@@ -28,6 +28,11 @@ import {
 }
 from "./borderSetting.js";
 
+import {
+    getFontSizeSetting
+}
+from "./fontSizeSetting.js";
+
 export function getAppearanceSettings() {
 
     return `
@@ -35,6 +40,10 @@ export function getAppearanceSettings() {
         <h3>
             Appearance
         </h3>
+
+        ${getFontSizeSetting()}
+
+        <hr>
 
         ${getShowTitleSetting()}
 

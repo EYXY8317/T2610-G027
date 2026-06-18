@@ -1,80 +1,12 @@
 export function getFontSizeSetting() {
-
     return `
-
-        <div
-            class="setting-row"
-        >
-
-            <span>
-                Content Size
-            </span>
-
-            <button
-                class="
-                apply-all-button
-                "
-            >
-                All
-            </button>
-
+        <div class="setting-row">
+            <span>Content Size</span>
+            <div class="segment-button content-scale-segment">
+                <button class="segment-option" data-value="1">1</button>
+                <button class="segment-option" data-value="2">2</button>
+                <button class="segment-option active" data-value="3">3</button>
+            </div>
         </div>
-
-        <div
-            class="
-            content-size-value
-            "
-        >
-
-            18px
-
-        </div>
-
-        <div
-            class="
-            content-size-slider-row
-            "
-        >
-
-            <span>
-                12
-            </span>
-
-            <input
-                type="range"
-                min="12"
-                max="32"
-                value="18"
-                class="
-                content-size-slider
-                "
-            >
-
-            <span>
-                32
-            </span>
-
-        </div>
-
     `;
-
-}
-
-export function applyFontSize(
-    widget,
-    size
-) {
-
-    const content =
-        widget.querySelector(
-            ".widget-content"
-        );
-
-    if (!content) {
-        return;
-    }
-
-    content.style.fontSize =
-        size + "px";
-
 }

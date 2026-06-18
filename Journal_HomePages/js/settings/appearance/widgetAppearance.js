@@ -6,8 +6,12 @@ const DEFAULTS = {
     titleColor: "#000000",
     contentColor: "#000000",
     showTitle: true,
-    showBorder: true
+    showBorder: true,
+    contentScale: "3"
 };
+
+// 3 = original/default size, 2 = noticeably smaller, 1 = much smaller (more space around content)
+const CONTENT_SCALE_MAP = { "1": 0.75, "2": 0.85, "3": 1.0 };
 
 export function getWidgetAppearance(widgetId) {
     const raw = localStorage.getItem(KEY(widgetId));
@@ -51,4 +55,7 @@ export function applyWidgetAppearance(widget, app) {
 
     widget.style.border    = app.showBorder !== false ? "" : "none";
     widget.style.boxShadow = app.showBorder !== false ? "" : "none";
+
+    const cs = CONTENT_SCALE_MAP[app.contentScale] ?? 1;
+    widget.style.setProperty("--widget-content-scale", cs);
 }

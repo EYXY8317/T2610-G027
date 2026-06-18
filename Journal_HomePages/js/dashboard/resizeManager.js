@@ -51,6 +51,13 @@ function attachEdgeHandle(widget, dir) {
             newT = startT + (startH - newH);
         }
 
+        // Snap to guides (other widgets, dashboard centre)
+        const snapped = applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir);
+        newW = snapped.width;
+        newH = snapped.height;
+        newL = snapped.left;
+        newT = snapped.top;
+
         // Clamp to dashboard + navbar bounds
         const bounds = getDashboardBounds();
         if (dir.includes("w") && newL < bounds.minLeft) {
@@ -87,6 +94,7 @@ function attachEdgeHandle(widget, dir) {
 
     el.addEventListener("pointerup", () => {
         if (!active) return;
+        hideGuideLines();
         if (isOverlapping(widget)) {
             widget.style.transition = "width 0.3s ease-out, height 0.3s ease-out";
             widget.style.width  = startW + "px";
@@ -101,9 +109,15 @@ function attachEdgeHandle(widget, dir) {
 }
 
 import {
-    applyResizeSnap
+    applyResizeSnap,
+    applyEdgeResizeSnap
 }
 from "./resizeSnap.js";
+
+import {
+    hideGuideLines
+}
+from "./guideUtils.js";
 
 import {
     isOverlapping
