@@ -14,11 +14,19 @@ from flask import (
 )
 
 from .calendar_logic import (
+
     get_user_tasks,
+
     add_task,
-    update_task
+
+    update_task,
+
+    delete_task,
+
+    empty_trash
 
 )
+
 
 # ===============================
 # BLUEPRINT
@@ -141,6 +149,75 @@ def update_task_api():
         session["user"],
 
         data
+
+    )
+
+    return jsonify({
+
+        "success": True
+
+    })
+
+# ===============================
+# DELETE TASK API
+# Permanently remove task
+# from database
+# ===============================
+
+@calendar_bp.route(
+    "/calendar/delete_task",
+    methods=["POST"]
+)
+def delete_task_api():
+
+    if "user" not in session:
+
+        return jsonify({
+
+            "success": False
+
+        })
+
+    data = request.json
+
+    delete_task(
+
+        data["id"],
+
+        session["user"]
+
+    )
+
+    return jsonify({
+
+        "success": True
+
+    })
+
+
+# ===============================
+# EMPTY TRASH API
+# Permanently remove all
+# trash tasks
+# ===============================
+
+@calendar_bp.route(
+    "/calendar/empty_trash",
+    methods=["POST"]
+)
+def empty_trash_api():
+
+    if "user" not in session:
+
+        return jsonify({
+
+            "success": False
+
+        })
+
+    empty_trash(
+
+        session["user"]
 
     )
 
