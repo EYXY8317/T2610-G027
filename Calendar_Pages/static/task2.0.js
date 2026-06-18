@@ -360,7 +360,7 @@ function completeTask(listType, id) {
 // to Trash page
 // ===============================
 
-function deleteTask(listType, id) {
+async function deleteTask(listType, id) {
 
     // Find selected task
     let task =
@@ -374,6 +374,34 @@ function deleteTask(listType, id) {
     // Move task to trash
     task.status = "trash";
 
+    const response =
+        await fetch(
+            "/calendar/update_task",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(task)
+            }
+        );
+
+    const result =
+        await response.json();
+
+    if (!result.success) {
+
+        alert(
+            "Failed to update task"
+        );
+
+        return;
+
+    }
+
     // Refresh active task list
     renderTasks(listType);
 
@@ -385,9 +413,6 @@ function deleteTask(listType, id) {
 
     // Refresh Today Dashboard
     updateTodayDashboard();
-
-    // Save changes
-    saveTasks();
 
     // Refresh tag filters
     renderTagFilters();
@@ -858,7 +883,7 @@ function renderCompleted() {
 
                     <button
                         class="task-action-btn"
-                        onclick="restoreFromCompleted('${listType}', ${task.id})"
+                        onclick="restoreTask('${listType}', ${task.id})"
                     >
 
                         <span class="material-symbols-rounded">
@@ -1135,7 +1160,7 @@ function renderTrash() {
 // back to Active Tasks
 // ===============================
 
-function restoreTask(listType, id) {
+async function restoreTask(listType, id) {
 
     // Find selected task
     let task =
@@ -1148,6 +1173,34 @@ function restoreTask(listType, id) {
 
     // Restore task to active status
     task.status = "active";
+
+    
+       const response =
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(task)
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert("Restore failed");
+
+    return;
+
+}
 
     // Refresh Trash page
     renderTrash();
@@ -1679,11 +1732,13 @@ document.addEventListener(
 // and Completed
 // ===============================
 
-function toggleComplete(
+async function toggleComplete(
     listType,
     id,
     checkbox
 ) {
+
+    console.log("TOGGLE RUNNING");
 
     let task =
         taskData[listType].find(
@@ -1772,6 +1827,20 @@ function toggleComplete(
 
 }
 
+await fetch(
+    "/calendar/update_task",
+    {
+        method: "POST",
+
+        headers: {
+            "Content-Type":
+                "application/json"
+        },
+
+        body: JSON.stringify(task)
+    }
+);
+
     // Refresh pages
     renderTasks(listType);
 
@@ -1783,9 +1852,7 @@ function toggleComplete(
 
     renderTagFilters();
 
-    // Save changes
-    saveTasks();
-
+ 
     // Refresh calendar if open
     if (
         document.getElementById("calendar")
@@ -2070,10 +2137,7 @@ function deleteCurrentTask() {
 // Move task back to active list
 // ===============================
 
-function restoreFromCompleted(
-    listType,
-    id
-) {
+async function restoreTask(listType, id) {
 
     let task =
         taskData[listType].find(
@@ -2084,6 +2148,33 @@ function restoreFromCompleted(
 
     // Restore task
     task.status = "active";
+
+    const response =
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(task)
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert("Restore failed");
+
+    return;
+
+}
 
     // Refresh pages
     renderCompleted();
