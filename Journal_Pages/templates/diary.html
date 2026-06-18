@@ -473,9 +473,6 @@
 
     /* ════════════════════════════════
        ROTATE HELPER
-       rotateBtn: the element user drags
-       target:    the element that rotates
-       getCX/getCY: center point functions
     ════════════════════════════════ */
     function makeRotatable(rotateBtn, target) {
         rotateBtn.addEventListener("mousedown", function(e){
@@ -518,7 +515,6 @@
         wrap.style.left = x + "px";
         wrap.style.top  = y + "px";
 
-        /* toolbar row: drag handle | rotate btn | delete btn */
         const toolbar = document.createElement("div");
         toolbar.className = "tb-toolbar";
 
@@ -540,7 +536,6 @@
         toolbar.appendChild(rotBtn);
         toolbar.appendChild(delBtn);
 
-        /* content */
         const tb = document.createElement("div");
         tb.className       = "tb-content";
         tb.contentEditable = canEdit ? "true" : "false";
@@ -559,7 +554,6 @@
         });
         tb.addEventListener("blur", ()=>{
             wrap.classList.remove("active");
-            // remove if empty
             setTimeout(()=>{
                 if (tb.innerText.trim() === "" && !wrap.matches(":hover")) {
                     wrap.remove();
@@ -620,7 +614,6 @@
         wrap.style.height= h + "px";
         if (imgId) wrap.dataset.imgId = imgId;
 
-        /* inner (rotates) */
         const inner = document.createElement("div");
         inner.className = "img-inner";
         if (rotateDeg) {
@@ -631,7 +624,6 @@
         const img = document.createElement("img");
         img.src = src;
 
-        /* toolbar */
         const toolbar = document.createElement("div");
         toolbar.className = "img-toolbar";
 
@@ -647,7 +639,6 @@
         toolbar.appendChild(rotBtn);
         toolbar.appendChild(delBtn);
 
-        /* resize handle */
         const resizeHandle = document.createElement("div");
         resizeHandle.className = "img-resize";
 
@@ -657,13 +648,9 @@
         wrap.appendChild(resizeHandle);
         canvas.appendChild(wrap);
 
-        /* drag whole wrap */
         makeDraggable(wrap, wrap);
-
-        /* rotate inner */
         makeRotatable(rotBtn, inner);
 
-        /* delete */
         delBtn.addEventListener("mousedown", function(e){
             if (!canEdit) return;
             e.preventDefault();
@@ -671,7 +658,6 @@
             schedSave();
         });
 
-        /* resize */
         resizeHandle.addEventListener("mousedown", function(e){
             if (!canEdit) return;
             e.preventDefault();
@@ -730,8 +716,6 @@
 
     /* ════════════════════════════════
        SAVE
-       Images are saved as data URLs
-       so they survive page reload
     ════════════════════════════════ */
     function schedSave(){
         clearTimeout(saveTimer);
@@ -741,7 +725,6 @@
     function doSave(){
         const chunks = [];
 
-        /* save textboxes */
         canvas.querySelectorAll(".tb-wrap").forEach(wrap => {
             const tb  = wrap.querySelector(".tb-content");
             if (!tb || tb.innerText.trim() === "") return;
@@ -757,7 +740,6 @@
             }));
         });
 
-        /* save images — just store the URL, no base64 */
         canvas.querySelectorAll(".img-wrap").forEach(wrap => {
             const imgEl = wrap.querySelector("img");
             const inner = wrap.querySelector(".img-inner");
@@ -774,7 +756,6 @@
 
         box.innerHTML = chunks.join("||ITEM||");
         sendSave();
-
     }
 
     function sendSave(){
@@ -818,7 +799,6 @@
                     makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
                 }
             } catch(e) {
-                /* legacy plain text fallback */
                 if (item.length > 0) makeTb(40, 40, item, 0, false);
             }
         });

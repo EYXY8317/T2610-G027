@@ -123,13 +123,11 @@ body {
     opacity: 1;
 }
 
-/* 默认隐藏 */
 #searchBox,
 #searchBtn {
     display: none;
 }
 
-/* 展开后显示 */
 #searchWidget.open #searchBox,
 #searchWidget.open #searchBtn {
     display: inline-block;
