@@ -54,5 +54,25 @@
         "account": "CIMB",
         "item": "Transfer from TnG",
         "amount": 1000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-18",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 4,
+        "account": "CIMB",
+        "item": "Goal: laptop",
+        "amount": 100.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-18",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 7,
+        "account": "MAE",
+        "item": "Goal: Japan",
+        "amount": 500.0
     }
 ]
