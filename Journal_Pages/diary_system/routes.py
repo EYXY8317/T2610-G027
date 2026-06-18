@@ -246,7 +246,7 @@ def weather():
     api_key = "825799c844694c8dcff5bf94fa943a5a"
 
     url = (
-        f"[api.openweathermap.org](https://api.openweathermap.org/data/2.5/weather)"
+        f"https://api.openweathermap.org/data/2.5/weather"
         f"?q={city}"
         f"&appid={api_key}"
         f"&units=metric"
@@ -267,7 +267,7 @@ def weather_forecast():
     api_key = "825799c844694c8dcff5bf94fa943a5a"
 
     url = (
-        f"[api.openweathermap.org](https://api.openweathermap.org/data/2.5/forecast)"
+        f"https://api.openweathermap.org/data/2.5/forecast"
         f"?q={city}"
         f"&appid={api_key}"
         f"&units=metric"

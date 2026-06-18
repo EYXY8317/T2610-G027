@@ -48,25 +48,6 @@ def add_task(task_data):
 
     save_tasks(tasks)
 
-# ===============================
-# ADD TASK
-# Save new task
-# ===============================
-
-def add_task(task_data):
-
-    tasks = load_tasks()
-
-    print("Before:", tasks)
-
-    tasks.append(task_data)
-
-    print("After:", tasks)
-
-    save_tasks(tasks)
-
-    print("Saved to:", task_data)
-
 
 # ===============================
 # UPDATE TASK
@@ -77,7 +58,11 @@ def update_task(task_id, username, new_data):
 
     tasks = load_tasks()
 
+    print("LOOKING FOR:", task_id)
+
     for task in tasks:
+
+        print("CHECKING:", task.get("id"))
 
         if (
 
@@ -89,8 +74,84 @@ def update_task(task_id, username, new_data):
 
         ):
 
+            print("FOUND TASK")
+
             task.update(new_data)
 
             break
+
+    save_tasks(tasks)
+
+# ===============================
+# DELETE TASK
+# Permanently remove task
+# from task list
+# ===============================
+
+def delete_task(task_id, username):
+
+    tasks = load_tasks()
+
+    print("DELETE ID:", task_id)
+
+    print("BEFORE:", len(tasks))
+
+    tasks = [
+
+        task
+
+        for task in tasks
+
+        if not (
+
+            task.get("id") == task_id
+
+            and
+
+            task.get("username")
+            == username
+
+        )
+
+    ]
+
+    print("AFTER:", len(tasks))
+
+    save_tasks(tasks)
+
+
+# ===============================
+# EMPTY TRASH
+# Permanently remove all
+# trash tasks
+# ===============================
+
+def empty_trash(username):
+
+    tasks = load_tasks()
+
+    print("BEFORE:", len(tasks))
+
+    tasks = [
+
+        task
+
+        for task in tasks
+
+        if not (
+
+            task.get("username")
+            == username
+
+            and
+
+            task.get("status")
+            == "trash"
+
+        )
+
+    ]
+
+    print("AFTER:", len(tasks))
 
     save_tasks(tasks)

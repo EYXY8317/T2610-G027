@@ -11,8 +11,6 @@ from jinja2 import ChoiceLoader, FileSystemLoader
 
 from Profile_Pages.profile_routes import register_profile_routes
 
-from Journal_Pages.diary_system.routes import diary_bp
-
 # ================= BASE =================
 BASE_DIR = os.path.dirname(__file__)
 
@@ -102,7 +100,7 @@ def calendar_static(filename):
 def calendar():
     return render_template("mypage.html")
 
-# ================= DIARY ===================
+# ================= DIARY STATIC =================
 @app.route('/diary_static/<path:filename>')
 def diary_static(filename):
     return send_from_directory(
