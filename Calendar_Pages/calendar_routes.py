@@ -132,6 +132,8 @@ def update_task_api():
 
     data = request.json
 
+    print("UPDATE DATA:", data)
+
     update_task(
 
         data["id"],

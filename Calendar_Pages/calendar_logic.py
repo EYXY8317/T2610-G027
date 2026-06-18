@@ -77,7 +77,11 @@ def update_task(task_id, username, new_data):
 
     tasks = load_tasks()
 
+    print("LOOKING FOR:", task_id)
+
     for task in tasks:
+
+        print("CHECKING:", task.get("id"))
 
         if (
 
@@ -88,6 +92,8 @@ def update_task(task_id, username, new_data):
             task.get("username") == username
 
         ):
+
+            print("FOUND TASK")
 
             task.update(new_data)
 
