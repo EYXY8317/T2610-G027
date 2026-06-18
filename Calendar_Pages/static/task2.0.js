@@ -1235,7 +1235,7 @@ if (!result.success) {
 // Remove task forever from storage
 // ===============================
 
-function permanentlyDeleteTask(listType, id) {
+async function permanentlyDeleteTask(listType, id) {
 
     if (
         !confirm(
@@ -1249,6 +1249,37 @@ function permanentlyDeleteTask(listType, id) {
         taskData[listType].filter(
             task => task.id !== id
         );
+
+const response =
+    await fetch(
+        "/calendar/delete_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify({
+                    id: id
+                })
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Delete failed"
+    );
+
+    return;
+
+}
 
     renderTrash();
 
@@ -2018,7 +2049,7 @@ function closeDetailPanel() {
 // Save edited task information
 // ===============================
 
-function saveTaskChanges() {
+async function saveTaskChanges() {
 
     let task =
         taskData[currentTaskListType]
@@ -2069,6 +2100,35 @@ function saveTaskChanges() {
             .value
             .trim()
             .toLowerCase();
+
+    const response =
+      await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(task)
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Failed to save task"
+    );
+
+    return;
+
+}   
 
     // Save data
     saveTasks();
@@ -2208,7 +2268,7 @@ if (!result.success) {
 // Permanently delete all trashed tasks
 // ===============================
 
-function emptyTrash() {
+async function emptyTrash() { 
 
     if (
         !confirm(
@@ -2226,6 +2286,32 @@ function emptyTrash() {
             );
 
     });
+
+const response =
+    await fetch(
+        "/calendar/empty_trash",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            }
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Failed to empty trash"
+    );
+
+    return;
+
+}
 
     renderTrash();
 
