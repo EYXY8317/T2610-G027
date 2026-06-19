@@ -67,10 +67,10 @@
         "priority": "orange",
         "tag": "testing",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T06:27:51.793Z"
+        "completedDate": "2026-06-19T15:12:16.213Z"
     },
     {
         "id": 1781850362470,
@@ -82,10 +82,10 @@
         "priority": "",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "workout",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T06:28:01.780Z"
+        "completedDate": "2026-06-19T15:19:53.253Z"
     },
     {
         "id": 1781850419981,

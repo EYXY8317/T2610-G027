@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="/calendar_static/today.css">
 
+</head>   
 <body>
     
 <!-- TOP NAVIGATION -->
@@ -171,7 +172,7 @@
 
 </div>   
 
-
+<!-- TODAY PAGE -->
 <div id="today" class="page active">
 
     <!-- TODAY HEADER -->
@@ -187,7 +188,6 @@
         ></p>
 
     </div>
-
 
 <!-- TOP SECTION -->
 <div class="today-top-grid">
@@ -220,79 +220,167 @@
 
     </div>
 
-    <!-- PROGRESS -->
-    <div class="dashboard-card progress-card">
+    <!-- RIGHT COLUMN -->
+    <div class="today-right-column">
 
-        <div class="card-header">
+        <!-- PROGRESS -->
+        <div class="dashboard-card progress-card">
 
-            <div class="header-left">
+            <div class="card-header">
 
-                <div class="card-icon">
+                <div class="header-left">
 
-                    <span class="material-symbols-rounded">
-                        donut_large
-                    </span>
+                    <div class="card-icon">
+
+                        <span class="material-symbols-rounded">
+                            donut_large
+                        </span>
+
+                    </div>
+
+                    <h2 class="card-title">
+                        Progress Overview
+                    </h2>
 
                 </div>
 
-                <h2 class="card-title">
-                    Progress Overview
-                </h2>
+                <div
+                    class="progress-badge"
+                    id="progressBadge"
+                >
+                    🚀 Ready to Start
+                </div>
 
             </div>
 
-            <div
-                class="progress-badge"
-                id="progressBadge"
-            >
-                🚀 Ready to Start
+            <div class="progress-content">
+
+                <div class="progress-right">
+
+                    <!-- PROGRESS RING -->
+
+                    <div class="progress-ring-wrapper">
+
+                        <div
+                            class="progress-circle"
+                            id="progressCircle"
+                        >
+
+                            <span
+                                id="progressPercent"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <p class="progress-label">
+
+                            Overall Progress
+
+                        </p>
+
+                    </div>
+
+                    <!-- STATS GRID -->
+
+                    <div class="progress-stats">
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Total
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="totalStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Completed
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="completedStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Remaining
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="remainingStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Overdue
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="overdueStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
-        <div class="progress-content">
+        <!-- DAILY QUOTE -->
+        <div class="dashboard-card quote-card">
 
-            <div>
+            <div class="quote-left">
 
-                <h1
-                    class="progress-number"
-                    id="progressPercent"
-                >
-                    0%
-                </h1>
+                <div class="header-left">
 
-                <p class="progress-label">
-                    Overall Progress
-                </p>
+                    <div class="card-icon">
 
-            </div>
+                        <span class="material-symbols-rounded">
+                            auto_awesome
+                        </span>
 
-            <div class="progress-right">
+                    </div>
 
-                <div class="progress-bar">
-
-                    <div
-                        class="progress-fill"
-                        id="progressFill"
-                    ></div>
+                    <h2 class="card-title">
+                        Daily Quote
+                    </h2>
 
                 </div>
 
-                <p class="progress-task-text">
-
-                    <span id="completedTasksCount">
-                        0
-                    </span>
-
-                    of
-
-                    <span id="totalTasksCount">
-                        0
-                    </span>
-
-                    tasks completed
-
-                </p>
+                <h2
+                    class="quote-text"
+                    id="dailyQuote"
+                >
+                    “Small progress is still progress.”
+                </h2>
 
             </div>
 
@@ -301,38 +389,6 @@
     </div>
 
 </div>
-
-    <!-- DAILY QUOTE -->
-    <div class="dashboard-card quote-card">
-
-        <div class="quote-left">
-
-            <div class="header-left">
-
-                <div class="card-icon">
-
-                    <span class="material-symbols-rounded">
-                        auto_awesome
-                    </span>
-
-                </div>
-
-                <h2 class="card-title">
-                    Daily Quote
-                </h2>
-
-            </div>
-
-            <h2
-            class="quote-text"
-            id="dailyQuote"
-            >
-                “Small progress is still progress.”
-            </h2>
-
-        </div>
-
-    </div>
 
 </div>
 

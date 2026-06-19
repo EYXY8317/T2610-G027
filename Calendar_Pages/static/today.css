@@ -385,23 +385,6 @@
 
 
 /* ==================================================
-   PROGRESS NUMBER
-================================================== */
-
-.progress-number{
-
-    margin:0;
-
-    font-size:60px;
-
-    font-weight:700;
-
-    color:#7c5cff;
-
-}
-
-
-/* ==================================================
    PROGRESS LABEL
 ================================================== */
 
@@ -427,61 +410,143 @@
 }
 
 
-/* ==================================================
-   PROGRESS BAR
-================================================== */
+/* =====================================
+   PROGRESS RING
+===================================== */
 
-.progress-bar{
+.progress-ring-wrapper{
 
-    height:14px;
+    display:flex;
 
-    background:#efe8ff;
+    flex-direction:column;
 
-    border-radius:30px;
+    align-items:center;
 
-    overflow:hidden;
+    margin-bottom:32px;
 
 }
 
+.progress-circle{
 
-/* ==================================================
-   PROGRESS FILL
-================================================== */
+    width:180px;
+    height:180px;
 
-.progress-fill{
+    border-radius:50%;
 
-    width:0%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    height:100%;
-
-    border-radius:30px;
+    position:relative;
 
     background:
-    linear-gradient(
-        135deg,
-        #c08cff,
-        #7c5cff
+    conic-gradient(
+        #7c5cff 0deg,
+        #ece7f7 0deg
     );
 
-    transition:0.35s ease;
+    transition:0.8s ease;
+
+}
+
+.progress-circle span{
+
+    position:relative;
+
+    z-index:2;
+
+    font-size:48px;
+
+    font-weight:700;
+
+    color:#6f5cff;
+
+}
+
+.progress-circle::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:145px;
+    height:145px;
+
+    border-radius:50%;
+
+    background:white;
 
 }
 
 
-/* ==================================================
-   PROGRESS TEXT
-================================================== */
 
-.progress-task-text{
 
-    margin-top:12px;
+/* =====================================
+   PROGRESS STATS
+===================================== */
 
-    color:#8f8cab;
+.progress-stats{
 
-    font-size:14px;
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+
+    margin-top:20px;
 
 }
 
+.stat-box{
+
+    background:#f8f5ff;
+
+    border:1px solid #ece7f7;
+
+    border-radius:14px;
+
+    padding:14px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+}
+
+.stat-label{
+
+    font-size:12px;
+
+    color:#8c8ca6;
+
+}
+
+.stat-value{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#6f5cff;
+
+}
+
+/* =====================================
+   RIGHT COLUMN
+===================================== */
+
+.today-right-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
 
 /* ==================================================
    QUOTE CARD
