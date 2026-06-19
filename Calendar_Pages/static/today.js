@@ -89,6 +89,9 @@ function updateProgress() {
     // Completed tasks scheduled for today
     let completedTasks = 0;
 
+    // Overdue tasks
+    let overdueTasks = 0;
+
     // Loop through all task categories
     Object.keys(taskData).forEach(list => {
 
@@ -109,6 +112,28 @@ function updateProgress() {
 
                 }
 
+                // Count overdue tasks
+                if (
+                    task.status === "active" &&
+                    task.startTime
+                ) {
+
+                    const now =
+                        new Date();
+
+                    const due =
+                        new Date(
+                            `${today}T${task.startTime}`
+                        );
+
+                    if (due < now) {
+
+                        overdueTasks++;
+
+                    }
+
+                }
+
             }
 
         });
@@ -123,25 +148,57 @@ function updateProgress() {
             (completedTasks / totalTasks) * 100
         );
 
-    // Update percentage text
-    document.getElementById("progressPercent")
-        .textContent = progress + "%";
+    // Update progress percentage
+    document.getElementById(
+        "progressPercent"
+    ).textContent =
+        progress + "%";
 
-    // Update completed task count
-    document.getElementById("completedTasksCount")
-        .textContent = completedTasks;
 
-    // Update total task count
-    document.getElementById("totalTasksCount")
-        .textContent = totalTasks;
+    // =====================================
+    // Update Progress Ring
+    // =====================================
 
-    // Update progress bar width
-    document.getElementById("progressFill")
-        .style.width = progress + "%";
+    const angle =
+        progress * 3.6;
+
+    document.getElementById(
+         "progressCircle"
+    ).style.background =
+`
+    conic-gradient(
+          #7c5cff ${angle}deg,
+          #ece7f7 ${angle}deg
+    )
+    `;
+
+    // Update statistics cards
+
+    document.getElementById(
+        "totalStat"
+    ).textContent =
+        totalTasks;
+
+    document.getElementById(
+        "completedStat"
+    ).textContent =
+        completedTasks;
+
+    document.getElementById(
+        "remainingStat"
+    ).textContent =
+        totalTasks - completedTasks;
+
+    document.getElementById(
+        "overdueStat"
+    ).textContent =
+        overdueTasks;
 
     // Get progress badge element
     const badge =
-        document.getElementById("progressBadge");
+        document.getElementById(
+            "progressBadge"
+        );
 
     // Update motivational message
     if (progress === 0) {
