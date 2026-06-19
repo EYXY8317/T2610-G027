@@ -188,6 +188,7 @@ function updateProgress() {
 
 }
 
+
 // =====================================
 // TODAY TASKS SECTION
 // Display all active tasks
@@ -291,7 +292,7 @@ function renderTodayTasks() {
 
     }
 
-    
+
 // =====================================
 // RENDER TIMELINE TASK
 // =====================================
@@ -340,9 +341,19 @@ todayTasks.forEach(task => {
 
     }
 
-    container.innerHTML += `
+container.innerHTML += `
 
-    <div class="today-timeline-item">
+<div class="today-timeline-item">
+
+    <div class="timeline-left">
+
+        <div class="timeline-dot"></div>
+
+        <div class="timeline-line"></div>
+
+    </div>
+
+    <div class="timeline-right">
 
         <div class="today-time">
 
@@ -350,42 +361,40 @@ todayTasks.forEach(task => {
 
         </div>
 
-        <div class="today-content">
+        <div class="today-title">
 
-            <div class="today-title">
+            ${task.text}
 
-                ${task.text}
+        </div>
 
-            </div>
+        <div class="today-info">
 
-            <div class="today-info">
+            <span class="today-category-badge">
 
-                <span class="today-category-badge">
+                ${
+                    task.category
+                        .charAt(0)
+                        .toUpperCase()
+                    +
+                    task.category
+                        .slice(1)
+                }
 
-                    ${
-                        task.category
-                            .charAt(0)
-                            .toUpperCase()
-                        +
-                        task.category
-                            .slice(1)
-                    }
+            </span>
 
-                </span>
+            <span class="today-due-text">
 
-                <span class="today-due-text">
+                • ${dueText}
 
-                    • ${dueText}
-
-                </span>
-
-            </div>
+            </span>
 
         </div>
 
     </div>
 
-    `;
+</div>
+
+`;
 
 });
 
