@@ -106,7 +106,7 @@ let selectedRepeat = "";
 
 // Selected task settings
 let selectedPriority = "";
-let selectedTag = "";
+
 
 // ===============================
 // TASK STORAGE
@@ -173,7 +173,9 @@ async function addTask(listType) {
     // Date is required
     if (!selectedDate) {
 
-        alert("Please select a date first");
+        alert(
+            "Please select a date first"
+        );
 
         return;
 
@@ -210,37 +212,38 @@ async function addTask(listType) {
 
     };
 
-    // Save task into category
+    // Save task into local taskData
     taskData[listType].push(task);
 
-   // SAVE TASK TO FLASK
-   // Send new task data to backend JSON storage
+    // ===============================
+    // SAVE TASK TO FLASK
+    // ===============================
+
     await fetch(
-    "/calendar/add_task",
-    {
-        method: "POST",
+        "/calendar/add_task",
+        {
+            method: "POST",
 
-        headers: {
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
 
-            "Content-Type":
-                "application/json"
+            body: JSON.stringify({
 
-        },
+                ...task,
 
-        body: JSON.stringify({
+                category: listType
 
-            // Task information
-            ...task,
+            })
 
-            // Task category
-            category: listType
+        }
+    );
 
-        })
+    // ===============================
+    // CLEAR INPUTS
+    // ===============================
 
-    }
-);
-
-    // Clear inputs
     document.getElementById(
         listType + "TaskText"
     ).value = "";
@@ -249,19 +252,16 @@ async function addTask(listType) {
         "taskTag"
     ).value = "";
 
-    // Refresh task list
+    // ===============================
+    // REFRESH UI
+    // ===============================
+
     renderTasks(listType);
 
-    // Refresh Today Dashboard
     updateTodayDashboard();
 
-    // Refresh tag filters
     renderTagFilters();
 
-    // Save to localStorage
-    saveTasks();
-
-    // Refresh calendar if currently open
     if (
         document.getElementById("calendar")
             .classList.contains("active")
@@ -272,25 +272,18 @@ async function addTask(listType) {
     }
 
     // ===============================
-    // RESET INPUT AND TEMPORARY DATA
+    // RESET TEMPORARY DATA
     // ===============================
 
-    // Clear task title input
-    document.getElementById(
-        listType + "TaskText"
-    ).value = "";
-
-    // Reset selected date and time
     selectedDate = "";
+
     selectedStart = "";
+
     selectedEnd = "";
 
-    // Reset repeat settings
     selectedRepeat = "";
 
-    // Reset task settings
     selectedPriority = "";
-    selectedTag = "";
 
     // Reset priority button selection
     document
@@ -308,49 +301,6 @@ async function addTask(listType) {
 }
 
 
-
-// ===============================
-// COMPLETE TASK
-// Move task to completed status
-// ===============================
-
-function completeTask(listType, id) {
-
-    // Find selected task
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    // Stop if task doesn't exist
-    if (!task) return;
-
-    // Update task status
-    task.status = "completed";
-
-    // Refresh active task list
-    renderTasks(listType);
-
-    // Refresh completed page
-    renderCompleted();
-
-    // Refresh Today Dashboard
-    updateTodayDashboard();
-
-    // Save changes
-    saveTasks();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById("calendar")
-            .classList.contains("active")
-    ) {
-
-        generateCalendar();
-
-    }
-
-}
 
 
 
@@ -1153,83 +1103,6 @@ function renderTrash() {
 }
 
 
-
-// ===============================
-// RESTORE TASK
-// Move task from Trash
-// back to Active Tasks
-// ===============================
-
-async function restoreTask(listType, id) {
-
-    // Find selected task
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    // Stop if task doesn't exist
-    if (!task) return;
-
-    // Restore task to active status
-    task.status = "active";
-
-    
-       const response =
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert("Restore failed");
-
-    return;
-
-}
-
-    // Refresh Trash page
-    renderTrash();
-
-    // Refresh task list page
-    renderTasks(listType);
-
-    // Refresh Today Dashboard
-    updateTodayDashboard();
-
-    // Save changes
-    saveTasks();
-
-    // Refresh tag filters
-    renderTagFilters();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById("calendar")
-            .classList.contains("active")
-    ) {
-
-        generateCalendar();
-
-    }
-
-}
-
-
 // ===============================
 // DELETE TASK PERMANENTLY
 // Remove task forever from storage
@@ -1284,8 +1157,6 @@ if (!result.success) {
     renderTrash();
 
     renderTagFilters();
-
-    saveTasks();
 
 }
 
@@ -1622,15 +1493,6 @@ function applyDate() {
 // Load task data from Flask API
 // ===============================
 
-function saveTasks() {
-
-    localStorage.setItem(
-        "taskData",
-        JSON.stringify(taskData)
-    );
-
-}
-
 async function loadTasks() {
 
     try {
@@ -1642,11 +1504,6 @@ async function loadTasks() {
 
         taskData =
             await response.json();
-
-        console.log(
-            "Tasks Loaded:",
-            taskData
-        );
 
     }
 
@@ -1759,6 +1616,7 @@ document.addEventListener(
 
 // ===============================
 // TOGGLE COMPLETE STATUS
+// Active ↔ Completed
 // Move task between Active
 // and Completed
 // ===============================
@@ -1768,8 +1626,6 @@ async function toggleComplete(
     id,
     checkbox
 ) {
-
-    console.log("TOGGLE RUNNING");
 
     let task =
         taskData[listType].find(
@@ -2130,9 +1986,6 @@ if (!result.success) {
 
 }   
 
-    // Save data
-    saveTasks();
-
     // Refresh pages
     renderTasks(
         currentTaskListType
@@ -2245,9 +2098,6 @@ if (!result.success) {
 
     renderTagFilters();
 
-    // Save changes
-    saveTasks();
-
     // Refresh calendar if open
     if (
         document.getElementById(
@@ -2316,9 +2166,6 @@ if (!result.success) {
     renderTrash();
 
     renderTagFilters();
-
-    saveTasks();
-
 }
 
 // ===============================

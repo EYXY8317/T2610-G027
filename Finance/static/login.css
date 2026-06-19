@@ -539,3 +539,27 @@ button:hover{
     font-weight:500;
 
 }
+
+
+/* ========================================= */
+/* LOGO */
+/* ========================================= */
+.login-logo{
+
+    width:240px;
+
+    height:240px;
+
+    border-radius:30px;
+
+}
+
+.logo-wrapper{
+
+    background:#f8f1ea;
+
+    padding:20px;
+
+    border-radius:30px;
+
+}
