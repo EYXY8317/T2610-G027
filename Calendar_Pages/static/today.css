@@ -227,42 +227,79 @@
 
     display:flex;
 
-    gap:24px;
+    gap:18px;
 
-    padding:18px 0;
+    position:relative;
 
-    border-bottom:
-        1px solid #ece7f7;
-
-}
-
-.today-time{
-
-    min-width:70px;
-
-    font-size:14px;
-
-    font-weight:600;
-
-    color:#6f5cff;
+    padding-bottom:28px;
 
 }
 
-.today-content{
+.timeline-left{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    width:24px;
+
+}
+
+.timeline-dot{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    background:#7b61ff;
+
+    z-index:2;
+
+}
+
+.timeline-line{
+
+    width:2px;
+
+    flex:1;
+
+    background:#d9d0ff;
+
+    margin-top:4px;
+
+}
+
+.timeline-right{
 
     flex:1;
 
 }
 
+.today-time{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#7b61ff;
+
+    margin-bottom:6px;
+
+}
+
 .today-title{
 
-    font-size:17px;
+    font-size:18px;
 
-    font-weight:600;
+    font-weight:700;
 
     color:#27325c;
 
-    margin-bottom:8px;
+    margin-bottom:10px;
 
 }
 
