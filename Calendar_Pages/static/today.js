@@ -190,43 +190,64 @@ function updateProgress() {
 
 // =====================================
 // TODAY TASKS SECTION
-// Display all active tasks scheduled
-// for today's date
+// Display all active tasks
+// scheduled for today's date
+//
+// Features:
+// 1. Show all today's tasks
+// 2. Display priority flag
+// 3. Display task category
+// 4. Display remaining time
+// 5. Show overdue status
 // =====================================
 
 function renderTodayTasks() {
 
     // Get Today task container
     const container =
-        document.getElementById("todayTasks");
+        document.getElementById(
+            "todayTasks"
+        );
 
     // Clear previous content
     container.innerHTML = "";
 
     // Get today's date
     const today =
-        new Date().toISOString().split("T")[0];
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
-    // Track whether any task exists
-    let hasTask = false;
-
-    // Store today's tasks
+    // Store today's active tasks
     let todayTasks = [];
 
-    // Loop through all task categories
+    // =====================================
+    // COLLECT TODAY'S TASKS
+    // Loop through all categories
+    // and collect active tasks
+    // scheduled for today
+    // =====================================
+
     Object.keys(taskData).forEach(list => {
 
         taskData[list].forEach(task => {
 
-            // Show only active tasks for today
             if (
+
                 task.status === "active" &&
+
                 task.date === today
+
             ) {
 
-                hasTask = true;
+                // Save task and category
+                todayTasks.push({
 
-                todayTasks.push(task);
+                    ...task,
+
+                    category: list
+
+                });
 
             }
 
@@ -234,81 +255,142 @@ function renderTodayTasks() {
 
     });
 
-    // Sort tasks by start time
+    // =====================================
+    // SORT TASKS BY START TIME
+    // Earlier tasks appear first
+    // =====================================
+
     todayTasks.sort((a, b) => {
 
-      return (
-         a.startTime || "99:99"
-     ).localeCompare(
-         b.startTime || "99:99"
-     );
+        return (
+            a.startTime || "99:99"
+        ).localeCompare(
+            b.startTime || "99:99"
+        );
 
-});
+    });
 
-    // Show first 3 tasks only
-    todayTasks
-    .slice(0, 3)
-    .forEach(task => {
+    // =====================================
+    // SHOW EMPTY STATE
+    // No tasks scheduled today
+    // =====================================
 
-        container.innerHTML += `
+    if (todayTasks.length === 0) {
 
-        <div class="today-task-card">
+        container.innerHTML = `
 
-            <div class="today-task-title">
+            <div class="empty">
+
+                No tasks for today
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    
+// =====================================
+// RENDER TIMELINE TASK
+// =====================================
+
+todayTasks.forEach(task => {
+
+    let dueText = "";
+
+    if (task.startTime) {
+
+        const now =
+            new Date();
+
+        const due =
+            new Date(
+                `${today}T${task.startTime}`
+            );
+
+        const diff =
+            due - now;
+
+        if (diff > 0) {
+
+            const hours =
+                Math.floor(
+                    diff / 3600000
+                );
+
+            const minutes =
+                Math.floor(
+                    (diff % 3600000)
+                    / 60000
+                );
+
+            dueText =
+                `Due in ${hours}h ${minutes}m`;
+
+        }
+
+        else {
+
+            dueText =
+                "Overdue";
+
+        }
+
+    }
+
+    container.innerHTML += `
+
+    <div class="today-timeline-item">
+
+        <div class="today-time">
+
+            ${task.startTime || "--:--"}
+
+        </div>
+
+        <div class="today-content">
+
+            <div class="today-title">
 
                 ${task.text}
 
             </div>
 
-            <div class="today-task-meta">
+            <div class="today-info">
 
-                ${
-                    task.startTime &&
-                    task.endTime
-                    ? `${task.startTime} - ${task.endTime}`
-                    : task.startTime || ""
-                }
+                <span class="today-category-badge">
+
+                    ${
+                        task.category
+                            .charAt(0)
+                            .toUpperCase()
+                        +
+                        task.category
+                            .slice(1)
+                    }
+
+                </span>
+
+                <span class="today-due-text">
+
+                    • ${dueText}
+
+                </span>
 
             </div>
 
         </div>
 
-        `;
+    </div>
 
-    });
+    `;
 
-    // Show remaining task count
-    if (todayTasks.length > 3) {
-
-        container.innerHTML += `
-
-        <div class="today-more-tasks">
-
-            + ${todayTasks.length - 3}
-            more tasks
-
-        </div>
-
-        `;
-
-    }
-
-    // Show message when no task exists
-    if (!hasTask) {
-
-        container.innerHTML = `
-
-        <div class="empty">
-
-            No tasks for today
-
-        </div>
-
-        `;
-
-    }
+});
 
 }
+
 
 // =====================================
 // TODAY DASHBOARD CONTROLLER
