@@ -372,6 +372,22 @@ body{
 
 }
 
+/* =====================================
+   TODAY PAGE GRID
+===================================== */
+
+.today-top-grid{
+
+    display:grid;
+
+    grid-template-columns: 1.7fr 1fr;
+
+    gap:24px;
+
+    align-items:start;
+
+}
+
 
 /* ==================================================
    DASHBOARD CARD
