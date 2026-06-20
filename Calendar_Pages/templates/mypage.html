@@ -731,53 +731,71 @@
 
     </h2>
 
-    <!-- COMPLETED FILTERS -->
+<!-- COMPLETED FILTERS -->
 
-    <div class="completed-filters">
+<div class="completed-filters">
 
-        <button
-            class="completed-filter-btn active"
-            onclick="filterCompleted('all', this)"
-        >
-            All
-        </button>
+    <select id="dateFilter">
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('work', this)"
-        >
+        <option value="all">
+            All Dates
+        </option>
+
+        <option value="today">
+            Today
+        </option>
+
+        <option value="thisWeek">
+            This Week
+        </option>
+
+        <option value="lastWeek">
+            Last Week
+        </option>
+
+        <option value="thisMonth">
+            This Month
+        </option>
+
+        <option value="lastMonth">
+            Last Month
+        </option>
+
+        <option value="older">
+            Older
+        </option>
+
+    </select>
+
+    <select id="categoryFilter">
+
+        <option value="all">
+            All Categories
+        </option>
+
+        <option value="work">
             Work
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('shopping', this)"
-        >
+        <option value="shopping">
             Shopping
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('study', this)"
-        >
+        <option value="study">
             Study
-        </button>
-        
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('personal', this)"
-        >
+        </option>
+
+        <option value="personal">
             Personal
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('workout', this)"
-        >
+        <option value="workout">
             Workout
-        </button>
+        </option>
 
-    </div>
+    </select>
+
+</div>
 
     <div id="completedList"></div>
 

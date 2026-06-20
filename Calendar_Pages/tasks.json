@@ -69,10 +69,10 @@
         "priority": "orange",
         "tag": "testing",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T15:12:16.213Z"
+        "completedDate": "2026-06-20T16:12:12.709Z"
     },
     {
         "id": 1781850362470,
@@ -84,10 +84,10 @@
         "priority": "",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "workout",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T15:19:53.253Z"
+        "completedDate": "2026-06-20T16:11:30.498Z"
     },
     {
         "id": 1781850419981,
@@ -127,9 +127,10 @@
         "priority": "orange",
         "tag": "foundation s3",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "study",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-20T16:11:23.965Z"
     },
     {
         "id": 1781863069568,
@@ -159,5 +160,49 @@
         "status": "active",
         "category": "study",
         "username": "moonlit_xiny"
+    },
+    {
+        "id": 1781973928660,
+        "text": "OOO",
+        "date": "2026-06-26",
+        "startTime": "04:45",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "",
+        "tag": "",
+        "description": "",
+        "status": "completed",
+        "category": "workout",
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-20T16:47:41.752Z"
+    },
+    {
+        "id": 1781974005820,
+        "text": "Maths Test 2",
+        "date": "2026-06-26",
+        "startTime": "20:00",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "",
+        "description": "",
+        "status": "active",
+        "category": "workout",
+        "username": "moonlit_xiny"
+    },
+    {
+        "id": 1781974041877,
+        "text": "LLL",
+        "date": "2026-06-27",
+        "startTime": "13:03",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "",
+        "tag": "",
+        "description": "",
+        "status": "completed",
+        "category": "shopping",
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-20T16:47:27.918Z"
     }
 ]
