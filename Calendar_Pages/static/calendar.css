@@ -262,7 +262,7 @@
 
 
 /* ==================================================
-   TASK BADGE
+    CALENDAR TASK NOTIFICATION BADGE (铃铛通知）
 ================================================== */
 
 .task-badge{
@@ -273,25 +273,54 @@
 
     right:8px;
 
-    min-width:18px;
+    display:flex;
 
-    height:18px;
+    align-items:center;
 
-    line-height:18px;
+    gap:3px;
 
-    padding:0 4px;
+    padding:4px 8px;
 
-    border-radius:50%;
+    border-radius:999px;
 
-    background:#ff6b97;
+    background:#f8f3ed;
+
+    color:#8b6b4f;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    transition:all 0.25s ease;
+
+    cursor:pointer;
+
+}
+
+/* Bell Icon */
+
+.task-badge
+.material-symbols-rounded{
+
+    font-size:20px;
+
+}
+
+/* Hover */
+
+.task-badge:hover{
+
+    background:#8b6b4f;
 
     color:white;
 
-    font-size:10px;
+    transform:
+        translateY(-2px)
+        scale(1.05);
 
-    font-weight:600;
-
-    text-align:center;
+    box-shadow:
+        0 8px 18px
+        rgba(139,107,79,0.25);
 
 }
 

@@ -53,13 +53,38 @@ function generateCalendar() {
             taskCount += taskData[list].filter(t => t.status === "active" && t.date === dateStr).length;
         });
 
-        // Task badge
-        if (taskCount > 0) {
-            const badge = document.createElement("div");
-            badge.className = "task-badge";
-            badge.textContent = taskCount > 9 ? "9+" : taskCount;
-            dayEl.appendChild(badge);
+// =====================================
+// TASK NOTIFICATION BELL
+// Show 🔔 + task count
+// =====================================
+
+if (taskCount > 0) {
+
+    const badge =
+        document.createElement("div");
+
+    badge.className =
+        "task-badge";
+
+    badge.innerHTML = `
+        <span
+            class="material-symbols-rounded"
+        >
+            notifications
+        </span>
+
+        ${
+            taskCount > 9
+            ? "9+"
+            : taskCount
         }
+    `;
+
+    dayEl.appendChild(
+        badge
+    );
+
+}
 
         // Click to show tasks modal
         dayEl.style.cursor = "pointer";
