@@ -93,8 +93,15 @@ let today = new Date();
 //Tag Filter
 let currentTagFilter = "all";
 
-// Completed page filter
-let currentCompletedFilter = "all";
+// =====================================
+// COMPLETED PAGE FILTERS
+// =====================================
+
+let selectedDateFilter =
+    "all";
+
+let selectedCategoryFilter =
+    "all";
 
 // Selected schedule information
 let selectedDate = "";
@@ -652,33 +659,7 @@ function renderTasks(listType) {
 
 }
 
-// ===============================
-// FILTER COMPLETED TASKS
-// ===============================
 
-function filterCompleted(type, btn) {
-
-    currentCompletedFilter = type;
-
-    document
-    .querySelectorAll(
-        ".completed-filter-btn"
-    )
-    .forEach(button => {
-
-        button.classList.remove(
-            "active"
-        );
-
-    });
-
-    btn.classList.add(
-        "active"
-    );
-
-    renderCompleted();
-
-}
 
 
 // ===============================
@@ -702,24 +683,246 @@ function renderCompleted() {
     // Loop through all categories
     Object.keys(taskData).forEach(listType => {
 
-        // Skip categories not selected
-        if (
+   // =====================================
+   // CATEGORY FILTER
+   // Show only selected category
+   // =====================================
 
-            currentCompletedFilter !== "all" &&
+    if (
 
-            listType !== currentCompletedFilter
+    selectedCategoryFilter !==
+    "all"
 
-         ) {
+    &&
 
-             return;
+    listType !==
+    selectedCategoryFilter
+
+) {
+
+    return;
+
+}
+
+let completedTasks =
+    taskData[listType].filter(
+        task => {
+
+            // Only show completed tasks
+            if (
+                task.status !==
+                "completed"
+            ) {
+
+                return false;
+
+            }
+
+            // Skip date filter if All Dates selected
+            if (
+                selectedDateFilter ===
+                "all"
+            ) {
+
+                return true;
+
+            }
+
+            const completedDate =
+                new Date(
+                    task.completedDate
+                );
+
+            const today =
+                new Date();
+
+            // =====================================
+            // TODAY
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "today"
+            ) {
+
+                return (
+
+                    completedDate
+                    .toDateString()
+
+                    ===
+
+                    today
+                    .toDateString()
+
+                );
+
+            }
+
+            // =====================================
+            // THIS WEEK
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "thisWeek"
+            ) {
+
+                const weekAgo =
+                    new Date();
+
+                weekAgo.setDate(
+                    today.getDate() - 7
+                );
+
+                return (
+                    completedDate >=
+                    weekAgo
+                );
+
+            }
+
+            // =====================================
+            // THIS MONTH
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "thisMonth"
+            ) {
+
+                return (
+
+                    completedDate
+                    .getMonth()
+
+                    ===
+
+                    today
+                    .getMonth()
+
+                    &&
+
+                    completedDate
+                    .getFullYear()
+
+                    ===
+
+                    today
+                    .getFullYear()
+
+                );
+
+            }
+
+            // =====================================
+            // LAST WEEK
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "lastWeek"
+            ) {
+
+                const startOfThisWeek =
+                    new Date();
+
+                startOfThisWeek.setDate(
+                    today.getDate() - 7
+                );
+
+                const startOfLastWeek =
+                    new Date();
+
+                startOfLastWeek.setDate(
+                    today.getDate() - 14
+                );
+
+                return (
+
+                    completedDate >=
+                    startOfLastWeek
+
+                    &&
+
+                    completedDate <
+                    startOfThisWeek
+
+                );
+
+            }
+
+            // =====================================
+            // LAST MONTH
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "lastMonth"
+            ) {
+
+                const lastMonthDate =
+                    new Date();
+
+                lastMonthDate.setMonth(
+                    today.getMonth() - 1
+                );
+
+                return (
+
+                    completedDate
+                    .getMonth()
+
+                    ===
+
+                    lastMonthDate
+                    .getMonth()
+
+                    &&
+
+                    completedDate
+                    .getFullYear()
+
+                    ===
+
+                    lastMonthDate
+                    .getFullYear()
+
+                );
+
+            }
+
+            // =====================================
+            // OLDER
+            // More than 30 days ago
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "older"
+            ) {
+
+                const thirtyDaysAgo =
+                    new Date();
+
+                thirtyDaysAgo.setDate(
+                    today.getDate() - 30
+                );
+
+                return (
+
+                    completedDate <
+                    thirtyDaysAgo
+
+                );
+
+            }
+
+            return true;
 
         }
-
-        let completedTasks =
-            taskData[listType].filter(
-                task => task.status === "completed"
-            );
-
+    );
+    
         if (completedTasks.length === 0) return;
 
         hasCompleted = true;
@@ -1585,6 +1788,52 @@ document.addEventListener(
 
         // Refresh Tag filters
         renderTagFilters();
+
+// =====================================
+// COMPLETED PAGE FILTER EVENTS
+// =====================================
+
+const dateFilter =
+    document.getElementById(
+        "dateFilter"
+    );
+
+if (dateFilter) {
+
+    dateFilter.addEventListener(
+        "change",
+        e => {
+
+            selectedDateFilter =
+                e.target.value;
+
+            renderCompleted();
+
+        }
+    );
+
+}
+
+const categoryFilter =
+    document.getElementById(
+        "categoryFilter"
+    );
+
+if (categoryFilter) {
+
+    categoryFilter.addEventListener(
+        "change",
+        e => {
+
+            selectedCategoryFilter =
+                e.target.value;
+
+            renderCompleted();
+
+        }
+    );
+
+}
 
         // Tag suggestion
         const tagInput =
