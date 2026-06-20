@@ -1698,22 +1698,109 @@ async function toggleComplete(
 
     }
 
-    // Update task status
-    if (checkbox.checked) {
+// =====================================
+// COMPLETE TASK ANIMATION
+// Play completion animation
+// before moving task into
+// Completed page
+// =====================================
 
-    task.status = "completed";
+if (checkbox.checked) {
 
-    task.completedDate =
-        new Date()
-        .toISOString();
+    // Get current task card
+    const taskCard =
+        checkbox.closest(
+            ".task-card"
+        );
+
+    // Add slide-out animation
+    if (taskCard) {
+
+        taskCard.classList.add(
+            "task-completing"
+        );
 
     }
-    else {
 
-    task.status = "active";
+    // Wait for animation to finish
+    setTimeout(async () => {
+
+        // Update task status
+        task.status =
+            "completed";
+
+        // Save completion timestamp
+        task.completedDate =
+            new Date()
+            .toISOString();
+
+        // Save updated task to Flask
+        await fetch(
+            "/calendar/update_task",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(
+                    task
+                )
+            }
+        );
+
+        // Refresh active task page
+        renderTasks(
+            listType
+        );
+
+        // Refresh completed page
+        renderCompleted();
+
+        // Refresh trash page
+        renderTrash();
+
+        // Refresh Today Dashboard
+        updateTodayDashboard();
+
+        // Refresh tag filters
+        renderTagFilters();
+
+        // Show completion message
+        showToast(
+            "✨ Task Completed"
+        );
+
+        // Refresh calendar if open
+        if (
+            document.getElementById(
+                "calendar"
+            )
+            .classList.contains(
+                "active"
+            )
+        ) {
+
+            generateCalendar();
+
+        }
+
+    }, 600);
+
+    return;
 
 }
 
+// =====================================
+// UNCHECK TASK
+// Move task back to active
+// =====================================
+
+task.status =
+    "active";
+    
 await fetch(
     "/calendar/update_task",
     {
@@ -2369,5 +2456,45 @@ function renderPopupTagSuggestions(keyword) {
 
     container.style.display =
         "block";
+
+}
+
+
+// =====================================
+// SHOW TOAST MESSAGE
+// Display a temporary notification
+// on the top-right corner
+//
+// Features:
+// 1. Show custom message
+// 2. Smooth fade-in animation
+// 3. Auto hide after 2 seconds
+// =====================================
+
+function showToast(message){
+
+    // Get toast element
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    // Update toast text
+    toast.textContent =
+        message;
+
+    // Show toast animation
+    toast.classList.add(
+        "show"
+    );
+
+    // Auto hide after 2 seconds
+    setTimeout(() => {
+
+        toast.classList.remove(
+            "show"
+        );
+
+    }, 2000);
 
 }
