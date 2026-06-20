@@ -2498,3 +2498,63 @@ function showToast(message){
     }, 2000);
 
 }
+
+
+// =====================================
+// COMPLETE TASK FROM CALENDAR MODAL
+// Complete task directly from calendar
+// =====================================
+
+async function completeTask(
+    listType,
+    id
+) {
+
+    const task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Update task status
+    task.status =
+        "completed";
+
+    task.completedDate =
+        new Date().toISOString();
+
+    // Save to Flask
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify(task)
+        }
+    );
+
+    // Refresh all pages
+    renderTasks(listType);
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    renderTagFilters();
+
+    generateCalendar();
+
+    // Success toast
+    showToast(
+        "✨ Completed"
+    );
+
+}

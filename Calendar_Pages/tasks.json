@@ -9,7 +9,7 @@
         "priority": "red",
         "tag": "testing",
         "description": "",
-        "status": "completed",
+        "status": "trash",
         "category": "work",
         "username": "moonlit_xiny",
         "completedDate": "2026-06-19T17:02:40.818Z"
@@ -27,7 +27,7 @@
         "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T17:02:04.519Z"
+        "completedDate": "2026-06-20T10:28:12.748Z"
     },
     {
         "id": 1781718585005,
@@ -54,10 +54,10 @@
         "priority": "",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T16:51:06.603Z"
+        "completedDate": "2026-06-20T08:54:14.407Z"
     },
     {
         "id": 1781850193068,
@@ -113,7 +113,7 @@
         "priority": "blue",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "trash",
         "category": "personal",
         "username": "moonlit_xiny"
     },
@@ -145,5 +145,19 @@
         "category": "shopping",
         "username": "moonlit_xiny",
         "completedDate": "2026-06-19T09:58:50.111Z"
+    },
+    {
+        "id": 1781953370714,
+        "text": "MINI IT PROJECT",
+        "date": "2026-06-25",
+        "startTime": "10:30",
+        "endTime": "",
+        "repeat": "weekly",
+        "priority": "orange",
+        "tag": "meeting",
+        "description": "",
+        "status": "active",
+        "category": "study",
+        "username": "moonlit_xiny"
     }
 ]

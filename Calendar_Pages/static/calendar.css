@@ -802,12 +802,17 @@
 }
 
 
-
 /* ==================================================
    CALENDAR TASK CARD
 ================================================== */
 
 .calendar-task-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
 
     background:#faf8ff;
 
@@ -816,6 +821,66 @@
     padding:18px;
 
     margin-bottom:12px;
+
+}
+
+/* ==================================================
+   TASK CONTENT
+================================================== */
+
+.calendar-task-content{
+
+    flex:1;
+
+}
+
+/* ==================================================
+   TASK TITLE
+================================================== */
+
+.calendar-task-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2f3367;
+
+    margin:8px 0 12px;
+
+}
+
+/* ==================================================
+   TASK META
+================================================== */
+
+.calendar-task-meta{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    font-size:14px;
+
+    color:#7d7d98;
+
+}
+
+/* ==================================================
+   TASK ACTIONS
+================================================== */
+
+.calendar-task-actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-left:24px;
 
 }
 
@@ -846,32 +911,66 @@
 
 }
 
-/* ==================================================
-   TASK TITLE
-================================================== */
-
-.calendar-task-title{
-
-    font-size:18px;
-
-    font-weight:700;
-
-    color:#2f3367;
-
-    margin:12px 0 16px;
-
-}
 
 
-/* ==================================================
-   TASK ACTIONS
-================================================== */
 
-.calendar-task-actions{
+
+/* =====================================
+   PRIORITY DISPLAY
+===================================== */
+
+.task-priority{
 
     display:flex;
 
-    gap:10px;
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+/* Flag Icon */
+
+.task-priority
+.material-symbols-rounded{
+
+    font-size:18px;
+
+}
+
+/* High */
+
+.priority-red{
+
+    color:#ff5c70;
+
+}
+
+/* Medium */
+
+.priority-orange{
+
+    color:#ff9d2e;
+
+}
+
+/* Low */
+
+.priority-blue{
+
+    color:#5b8cff;
+
+}
+
+/* No Priority */
+
+.priority-gray{
+
+    color:#9c9c9c;
 
 }
 
@@ -882,21 +981,33 @@
 
 .calendar-complete-btn{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
     border:none;
 
-    padding:8px 16px;
+    padding:10px 16px;
 
-    border-radius:10px;
+    border-radius:12px;
 
     background:#8b6cff;
 
     color:white;
 
-    font-size:12px;
-
-    font-weight:500;
+    font-weight:600;
 
     cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.calendar-complete-btn:hover{
+
+    transform:translateY(-2px);
 
 }
 
@@ -907,21 +1018,35 @@
 
 .calendar-delete-btn{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
     border:none;
 
-    padding:8px 16px;
+    padding:10px 16px;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    background:#8b6cff;
+    background:#f3ecff;
 
-    color:white;
+    color:#8b6cff;
 
-    font-size:12px;
-
-    font-weight:500;
+    font-weight:600;
 
     cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.calendar-delete-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:#ece3ff;
 
 }
 
