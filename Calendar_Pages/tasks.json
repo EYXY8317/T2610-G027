@@ -9,9 +9,10 @@
         "priority": "red",
         "tag": "testing",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-19T17:02:40.818Z"
     },
     {
         "id": 1781717918193,
@@ -23,9 +24,10 @@
         "priority": "orange",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-19T17:02:04.519Z"
     },
     {
         "id": 1781718585005,
@@ -37,10 +39,10 @@
         "priority": "blue",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T10:07:57.270Z"
+        "completedDate": "2026-06-19T17:02:13.468Z"
     },
     {
         "id": 1781719502779,
@@ -55,7 +57,7 @@
         "status": "active",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T10:08:00.365Z"
+        "completedDate": "2026-06-19T16:51:06.603Z"
     },
     {
         "id": 1781850193068,
@@ -67,7 +69,7 @@
         "priority": "orange",
         "tag": "testing",
         "description": "",
-        "status": "completed",
+        "status": "active",
         "category": "work",
         "username": "moonlit_xiny",
         "completedDate": "2026-06-19T15:12:16.213Z"
@@ -82,7 +84,7 @@
         "priority": "",
         "tag": "",
         "description": "",
-        "status": "completed",
+        "status": "active",
         "category": "workout",
         "username": "moonlit_xiny",
         "completedDate": "2026-06-19T15:19:53.253Z"

@@ -1399,3 +1399,69 @@ body{
     color:white;
 
 }
+
+/* =====================================
+   COMPLETE ANIMATION
+===================================== */
+
+.task-completing{
+
+    transform:
+        translateX(60px)
+        scale(0.92);
+
+    opacity:0;
+
+    transition:0.6s ease;
+
+}
+
+/* =====================================
+   TOAST NOTIFICATION
+===================================== */
+
+#toast{
+
+    position:fixed;
+
+    top:-100px;
+
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    background:#7c5cff;
+
+    color:white;
+
+    padding:14px 24px;
+
+    border-radius:16px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    box-shadow:
+        0 10px 25px
+        rgba(124,92,255,0.25);
+
+    opacity:0;
+
+    transition:
+        top 0.4s ease,
+        opacity 0.4s ease;
+
+    z-index:9999;
+
+}
+
+
+#toast.show{
+
+    top:30px;
+
+    opacity:1;
+
+}
