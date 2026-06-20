@@ -98,13 +98,16 @@ if (taskCount > 0) {
 
 // ==================================================
 // DAY TASKS MODAL
+// Display all active tasks for selected date
 // ==================================================
 
 function showDayTasks(dateStr) {
 
+    // Convert date string into Date object
     const date =
-    new Date(dateStr);
+        new Date(dateStr);
 
+    // Format date for modal title
     const displayDate =
     `${date.getDate()} ${
         date.toLocaleString(
@@ -115,35 +118,39 @@ function showDayTasks(dateStr) {
         date.getFullYear()
     }`;
 
+    // Modal HTML start
     let html = `
 
     <div class="calendar-modal-header">
 
-    <h2>
+        <h2>
 
-        ${displayDate}
+            ${displayDate}
 
-    </h2>
+        </h2>
 
-    <button
-        class="calendar-close-icon"
-        onclick="closeDayModal()"
-    >
+        <button
+            class="calendar-close-icon"
+            onclick="closeDayModal()"
+        >
 
-        ✕
+            ✕
 
-    </button>
+        </button>
 
-</div>
+    </div>
 
     <div class="calendar-modal-content">
 
     `;
 
+    // Track whether tasks exist
     let hasTasks = false;
 
+    // Loop through all task categories
     Object.keys(taskData).forEach(list => {
 
+        // Get active tasks for selected date
         const tasks =
             taskData[list].filter(
                 t =>
@@ -155,6 +162,7 @@ function showDayTasks(dateStr) {
 
             hasTasks = true;
 
+            // Get priority border color
             const color =
                 getPriorityColor(
                     task.priority
@@ -169,25 +177,107 @@ function showDayTasks(dateStr) {
                 "
             >
 
-                <div class="calendar-task-category">
+                <!-- LEFT CONTENT -->
 
-                    ${
-                        list.charAt(0).toUpperCase()
-                        + list.slice(1)
-                    }
+                <div class="calendar-task-content">
+
+                    <!-- Task Category -->
+
+                    <div
+                        class="calendar-task-category"
+                    >
+
+                        ${
+                            list.charAt(0)
+                                .toUpperCase()
+                            +
+                            list.slice(1)
+                        }
+
+                    </div>
+
+                    <!-- Task Title -->
+
+                    <div
+                        class="calendar-task-title"
+                    >
+
+                        ${task.text}
+
+                    </div>
+
+                    <!-- Task Information -->
+
+                    <div
+                        class="calendar-task-meta"
+                    >
+
+                        <div>
+
+                            🕒
+
+                            ${
+                                task.startTime &&
+                                task.endTime
+
+                                ? `${task.startTime}
+                                   - ${task.endTime}`
+
+                                : task.startTime
+
+                                ? task.startTime
+
+                                : "No Time"
+                            }
+
+                        </div>
+
+                        <div
+                            class="
+                            task-priority
+                            priority-${task.priority}
+                            "
+                        >
+                            <span
+                                class="
+                                material-symbols-rounded
+                  "
+                            >
+                              flag
+                            </span>
+
+                            ${
+                               task.priority === "red"
+
+                               ? "High"
+
+                               : task.priority === "orange"
+
+                               ? "Medium"
+
+                               : task.priority === "blue"
+
+                               ? "Low"
+
+                               : "No Priority"
+                             }
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <div class="calendar-task-title">
+                <!-- RIGHT BUTTONS -->
 
-                    ${task.text}
-
-                </div>
-
-                <div class="calendar-task-actions">
+                <div
+                    class="calendar-task-actions"
+                >
 
                     <button
-                        class="calendar-complete-btn"
+                        class="
+                        calendar-complete-btn
+                        "
                         onclick="
                             completeTask(
                                 '${list}',
@@ -197,12 +287,22 @@ function showDayTasks(dateStr) {
                         "
                     >
 
+                        <span
+                            class="
+                            material-symbols-rounded
+                            "
+                        >
+                            task_alt
+                        </span>
+
                         Complete
 
                     </button>
 
                     <button
-                        class="calendar-delete-btn"
+                        class="
+                        calendar-delete-btn
+                        "
                         onclick="
                             deleteTask(
                                 '${list}',
@@ -211,6 +311,14 @@ function showDayTasks(dateStr) {
                             closeDayModal();
                         "
                     >
+
+                        <span
+                            class="
+                            material-symbols-rounded
+                            "
+                        >
+                            delete
+                        </span>
 
                         Delete
 
@@ -226,6 +334,7 @@ function showDayTasks(dateStr) {
 
     });
 
+    // Display message if no tasks found
     if (!hasTasks) {
 
         html += `
@@ -246,17 +355,20 @@ function showDayTasks(dateStr) {
 
     }
 
+    // Close modal content
     html += `
 
     </div>
 
     `;
 
+    // Get existing modal
     let modal =
         document.getElementById(
             "dayModal"
         );
 
+    // Create modal if it doesn't exist
     if (!modal) {
 
         modal =
@@ -276,8 +388,10 @@ function showDayTasks(dateStr) {
 
     }
 
+    // Insert generated HTML
     modal.innerHTML = html;
 
+    // Show modal
     modal.style.display =
         "block";
 
