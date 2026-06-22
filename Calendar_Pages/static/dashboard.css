@@ -9,7 +9,7 @@
 
 body{
 
-    padding:20px;
+    padding:82px 20px 20px;
 
     background:#f7f3ee;
 
@@ -31,18 +31,18 @@ body{
 /* ================= NAVBAR ================= */
 
 .navbar{
-    
+
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
     background:white;
-
-    border:1px solid #eee4da;
-
-    border-radius:12px;
-
-    padding:22px 45px;
-
+    border-bottom:1px solid #eee4da;
+    padding:14px 45px;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    z-index:100;
 }
 
 /* ================= LEFT SIDE ================= */
@@ -60,14 +60,12 @@ body{
 
 .logo-box{
 
-    width:79px;
-    height:79px;
+    width:52px;
+    height:52px;
 
     background:#f2e5d8;
 
-    border:none;
-
-    border-radius:21px;
+    border-radius:14px;
 
     display:flex;
 
@@ -92,8 +90,9 @@ body{
 /* NAME（Life Pages) */
 
 .logo-text{
-    font-size:42px;
+    font-size:28px;
     font-weight:700;
+    color:#3b2f2a;
 }
 
 /* ================= NAVIGATION ================= */
@@ -101,7 +100,7 @@ body{
 .nav-links{
     display:flex;
     align-items:center;
-    gap:14px;
+    gap:10px;
 }
 
 .nav-links a{
@@ -112,9 +111,9 @@ body{
 
     border-radius:8px;
 
-    padding:12px 22px;
+    padding:8px 16px;
 
-    font-size:15px;
+    font-size:14px;
 
     transition:0.2s;
 }
