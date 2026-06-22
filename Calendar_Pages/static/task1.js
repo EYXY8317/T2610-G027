@@ -2063,7 +2063,7 @@ if (checkbox.checked) {
 
         // Show completion message
         showToast(
-            "✨ Task Completed"
+            "✨ You Did It!"
         );
 
         // Refresh calendar if open
@@ -2847,7 +2847,7 @@ async function completeTask(
 
     // Success toast
     showToast(
-        "✨ Completed"
+        "✨ You Did It!"
     );
 
 }
