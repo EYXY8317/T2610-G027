@@ -72,7 +72,7 @@
         "status": "completed",
         "category": "work",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-20T16:12:12.709Z"
+        "completedDate": "2026-06-22T08:53:51.362Z"
     },
     {
         "id": 1781850362470,
@@ -99,9 +99,10 @@
         "priority": "blue",
         "tag": "alphabet",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "workout",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-22T07:25:22.709Z"
     },
     {
         "id": 1781850547178,

@@ -8,23 +8,15 @@
 
 }
 
-.today-title{
+.today-date{
 
-    font-size:42px;
+    font-size:27px;
 
     font-weight:700;
 
-    color:#2f2f52;
+    color:#7c5cff;
 
-    margin-bottom:8px;
-
-}
-
-.today-date{
-
-    color:#8f8cab;
-
-    font-size:15px;
+    letter-spacing:.3px;
 
 }
 
@@ -291,7 +283,7 @@
 
 }
 
-.today-title{
+.timeline-task-title{
 
     font-size:18px;
 

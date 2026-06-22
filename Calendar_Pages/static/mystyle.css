@@ -1187,6 +1187,27 @@ body{
 
 }
 
+/* =====================================
+   TRASH CATEGORY TITLE
+   Category heading for deleted tasks
+===================================== */
+
+.trash-section-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#2f3367;
+
+    margin-bottom:14px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid #ece7ff;
+
+}
+
 
 /* ==================================================
    EMPTY TRASH BUTTON

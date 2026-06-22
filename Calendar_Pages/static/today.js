@@ -418,7 +418,7 @@ container.innerHTML += `
 
         </div>
 
-        <div class="today-title">
+        <div class="timeline-task-title">
 
             ${task.text}
 
