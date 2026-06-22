@@ -1188,7 +1188,7 @@ function renderTrash() {
             + listType.slice(1)
             }
 
-                Tasks (${trashTasks.length})
+                 (${trashTasks.length})
 
             </h3>
 
