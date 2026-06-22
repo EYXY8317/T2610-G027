@@ -689,12 +689,13 @@ body{
 
     display:flex;
 
-    flex-direction:column;
+    align-items:center;
 
-    gap:8px;
+    gap:24px;
+
+    flex-wrap:wrap;
 
 }
-
 
 /* ==================================================
    DATE
@@ -1351,6 +1352,210 @@ body{
 
 }
 
+
+/* =====================================
+   COMPLETED PAGE FILTERS
+===================================== */
+
+.completed-filters{
+
+    display:flex;
+
+    gap:14px;
+
+    margin:20px 0 28px;
+
+}
+
+/* =====================================
+   FILTER DROPDOWN
+===================================== */
+
+.completed-filters select{
+
+    width:180px;
+
+    height:44px;
+
+    padding:0 16px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#ffffff;
+
+    color:#2f3367;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    font-family:'Poppins',sans-serif;
+
+    cursor:pointer;
+
+    outline:none;
+
+    box-shadow:
+        0 3px 12px
+        rgba(
+            124,
+            92,
+            255,
+            .08
+        );
+
+    transition:.25s;
+
+}
+
+/* =====================================
+   HOVER
+===================================== */
+
+.completed-filters select:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(
+            124,
+            92,
+            255,
+            .12
+        );
+
+}
+
+/* =====================================
+   FOCUS
+===================================== */
+
+.completed-filters select:focus{
+
+    box-shadow:
+        0 0 0 3px
+        rgba(
+            124,
+            92,
+            255,
+            .15
+        );
+
+}
+
+/* =====================================
+   COMPLETED GROUP CARD
+===================================== */
+
+.completed-group-card{
+
+    background:white;
+
+    border-radius:28px;
+
+    border:1px solid #efe8ff;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 5px 18px
+        rgba(124,92,255,.05);
+
+}
+
+/* =====================================
+   GROUP HEADER
+===================================== */
+
+.completed-group-header{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:24px 28px;
+
+    border-bottom:
+        1px solid #efe8ff;
+
+}
+
+.completed-group-icon{
+
+    width:56px;
+
+    height:56px;
+
+    border-radius:18px;
+
+    background:#f4efff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.completed-group-icon
+.material-symbols-rounded{
+
+    color:#7c5cff;
+
+    font-size:30px;
+
+}
+
+.completed-group-name{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+}
+
+.completed-group-count{
+
+    font-size:14px;
+
+    color:#8f8cab;
+
+    margin-top:4px;
+
+}
+
+/* =====================================
+   TASK ROW
+===================================== */
+
+.completed-task-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 28px;
+
+    border-bottom:
+        1px solid #f5f0ff;
+
+}
+
+.completed-task-row:last-child{
+
+    border-bottom:none;
+
+}
 
 /* =====================================
    COMPLETED FILTERS
