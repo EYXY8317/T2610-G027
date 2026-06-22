@@ -25,6 +25,14 @@ from "./showTitleSetting.js";
 
 import {
     getBorderSetting
+<<<<<<< HEAD
+=======
+}
+from "./borderSetting.js";
+
+import {
+    getFontSizeSetting
+>>>>>>> 045b1a003df943324b73368ab658a8541a55e802
 }
 from "./borderSetting.js";
 
@@ -35,6 +43,10 @@ export function getAppearanceSettings() {
         <h3>
             Appearance
         </h3>
+
+        ${getFontSizeSetting()}
+
+        <hr>
 
         ${getShowTitleSetting()}
 

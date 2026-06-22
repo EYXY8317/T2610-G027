@@ -1,3 +1,119 @@
+<<<<<<< HEAD
+=======
+import {
+    showVerticalLine,
+    showHorizontalLine,
+    hideVerticalLine,
+    hideHorizontalLine
+} from "./guideUtils.js";
+
+const SNAP_DIST = 12;
+const GAP_SIZE  = 20;
+
+// Returns the nearest snap value within SNAP_DIST, or null if nothing is close enough.
+function nearestSnap(value, candidates) {
+    let best = null;
+    let bestDist = SNAP_DIST;
+    for (const c of candidates) {
+        const d = Math.abs(value - c);
+        if (d < bestDist) { bestDist = d; best = c; }
+    }
+    return best;
+}
+
+/**
+ * Snap during edge/corner resize handles (N/S/E/W/NE/NW/SW).
+ * Snaps to: dashboard centre X/Y, other widgets' edges ± gap.
+ * Shows guide lines while snapping, hides them when not.
+ *
+ * @param {string} dir - direction string, e.g. "e", "sw", "nw"
+ * @returns {{ width, height, left, top }}
+ */
+export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
+    const dashboard = document.getElementById("dashboard");
+    const dashCX    = dashboard.clientWidth  / 2;
+    const dashCY    = dashboard.clientHeight / 2;
+    const others    = Array.from(document.querySelectorAll(".widget"))
+                          .filter(w => w !== widget);
+
+    // Fixed edges: the opposite side that doesn't move during this drag.
+    const fixedRight  = newL + newW;
+    const fixedBottom = newT + newH;
+
+    let guideX = null;
+    let guideY = null;
+
+    // ── East (right edge moves) ────────────────────────────
+    if (dir.includes("e")) {
+        const cur = newL + newW;
+        const candidates = [
+            dashCX,
+            ...others.flatMap(o => [
+                o.offsetLeft,
+                o.offsetLeft - GAP_SIZE,
+                o.offsetLeft + o.offsetWidth / 2,       // other centre X
+                o.offsetLeft + o.offsetWidth
+            ])
+        ];
+        const snap = nearestSnap(cur, candidates);
+        if (snap !== null) { newW = snap - newL; guideX = snap; }
+    }
+
+    // ── West (left edge moves, right edge is fixed) ────────
+    if (dir.includes("w")) {
+        const cur = newL;
+        const candidates = [
+            dashCX,
+            ...others.flatMap(o => [
+                o.offsetLeft,
+                o.offsetLeft + o.offsetWidth / 2,       // other centre X
+                o.offsetLeft + o.offsetWidth,
+                o.offsetLeft + o.offsetWidth + GAP_SIZE
+            ])
+        ];
+        const snap = nearestSnap(cur, candidates);
+        if (snap !== null) { newL = snap; newW = fixedRight - newL; guideX = snap; }
+    }
+
+    // ── South (bottom edge moves) ──────────────────────────
+    if (dir.includes("s")) {
+        const cur = newT + newH;
+        const candidates = [
+            dashCY,
+            ...others.flatMap(o => [
+                o.offsetTop,
+                o.offsetTop - GAP_SIZE,
+                o.offsetTop + o.offsetHeight / 2,       // other centre Y
+                o.offsetTop + o.offsetHeight
+            ])
+        ];
+        const snap = nearestSnap(cur, candidates);
+        if (snap !== null) { newH = snap - newT; guideY = snap; }
+    }
+
+    // ── North (top edge moves, bottom edge is fixed) ───────
+    if (dir.includes("n")) {
+        const cur = newT;
+        const candidates = [
+            dashCY,
+            ...others.flatMap(o => [
+                o.offsetTop,
+                o.offsetTop + o.offsetHeight / 2,       // other centre Y
+                o.offsetTop + o.offsetHeight,
+                o.offsetTop + o.offsetHeight + GAP_SIZE
+            ])
+        ];
+        const snap = nearestSnap(cur, candidates);
+        if (snap !== null) { newT = snap; newH = fixedBottom - newT; guideY = snap; }
+    }
+
+    if (guideX !== null) showVerticalLine(guideX);   else hideVerticalLine();
+    if (guideY !== null) showHorizontalLine(guideY); else hideHorizontalLine();
+
+    return { width: newW, height: newH, left: newL, top: newT };
+}
+
+>>>>>>> 045b1a003df943324b73368ab658a8541a55e802
 export function applyResizeSnap(
     widget,
     width,

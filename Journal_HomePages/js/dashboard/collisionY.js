@@ -244,6 +244,54 @@ export function computeVerticalSnap(widget, newTop) {
 
             }
 
+            // ── Pair-center snap (vertical) ───────────────────────────────
+            // Snap W so that the pair (W, otherWidget) stacked vertically
+            // is centred beside a third widget P.
+
+            widgets.forEach(pWidget => {
+
+                if (pWidget === widget || pWidget === otherWidget) return;
+
+                const pMiddleY =
+                    pWidget.offsetTop +
+                    pWidget.offsetHeight / 2;
+
+                // W ABOVE otherWidget
+                const aboveTarget =
+                    2 * pMiddleY -
+                    otherTop -
+                    otherWidget.offsetHeight;
+
+                if (aboveTarget < otherTop) {
+
+                    distance = Math.abs(newTop - aboveTarget);
+
+                    if (distance < bestTopDistance) {
+                        bestTopDistance = distance;
+                        bestTop = aboveTarget;
+                    }
+
+                }
+
+                // W BELOW otherWidget
+                const belowTarget =
+                    2 * pMiddleY -
+                    otherTop -
+                    widget.offsetHeight;
+
+                if (belowTarget > otherBottom) {
+
+                    distance = Math.abs(newTop - belowTarget);
+
+                    if (distance < bestTopDistance) {
+                        bestTopDistance = distance;
+                        bestTop = belowTarget;
+                    }
+
+                }
+
+            });
+
         }
 
     );

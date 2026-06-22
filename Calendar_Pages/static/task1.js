@@ -1405,6 +1405,45 @@ if (!result.success) {
 
     renderTagFilters();
 
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+            .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
+    }
+
+}
+
+
+// ===============================
+// DELETE TASK PERMANENTLY
+// Remove task forever from storage
+// ===============================
+
+function permanentlyDeleteTask(listType, id) {
+
+    if (
+        !confirm(
+            "Permanently delete this task?"
+        )
+    ) {
+        return;
+    }
+
+    taskData[listType] =
+        taskData[listType].filter(
+            task => task.id !== id
+        );
+
+    renderTrash();
+
+    renderTagFilters();
+
+    saveTasks();
+
 }
 
 
@@ -2337,34 +2376,8 @@ async function saveTaskChanges() {
             .trim()
             .toLowerCase();
 
-    const response =
-      await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert(
-        "Failed to save task"
-    );
-
-    return;
-
-}   
+    // Save data
+    saveTasks();
 
     // Refresh pages
     renderTasks(
@@ -2516,6 +2529,32 @@ async function emptyTrash() {
             );
 
     });
+
+const response =
+    await fetch(
+        "/calendar/empty_trash",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            }
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Failed to empty trash"
+    );
+
+    return;
+
+}
 
 const response =
     await fetch(

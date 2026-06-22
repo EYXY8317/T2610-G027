@@ -26,33 +26,7 @@
         "mood": "Angry",
         "topic": "",
         "quote": "Stay grounded."
-    },
-    {
-        "date": "11/06/2026",
-        "content": "{\"type\":\"img\",\"x\":40,\"y\":40,\"w\":180,\"h\":135,\"r\":0,\"src\":\"http://127.0.0.1:5000/static/uploads/image-removebg-preview_4_1781142972.png\"}",
-        "mood": "",
-        "topic": "",
-        "quote": ""
-    },
-    {
-        "date": "17/06/2026",
-        "content": "{\"type\":\"text\",\"x\":165,\"y\":1,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"a'sa\"}",
-        "mood": "",
-        "topic": "",
-        "quote": ""
-    },
-    {
-        "date": "04/06/2026",
-        "content": "",
-        "mood": "",
-        "topic": "",
-        "quote": ""
-    },
-    {
-        "date": "18/06/2026",
-        "content": "",
-        "mood": "Sad",
-        "topic": "",
-        "quote": "This weight won\u2019t last forever."
+=========
+>>>>>>>>> Temporary merge branch 2
     }
 ]

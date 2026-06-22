@@ -226,6 +226,57 @@ export function computeHorizontalSnap(widget, newLeft) {
 
             }
 
+            // ── Pair-center snap ──────────────────────────────────────────
+            // For each third widget P, snap W so that the pair (W, otherWidget)
+            // is horizontally centred under/beside P.
+            //
+            //   W left of other:  targetLeft = 2*Pcx − otherLeft − otherWidth
+            //   W right of other: targetLeft = 2*Pcx − otherLeft − widget.width
+
+            widgets.forEach(pWidget => {
+
+                if (pWidget === widget || pWidget === otherWidget) return;
+
+                const pCenterX =
+                    pWidget.offsetLeft +
+                    pWidget.offsetWidth / 2;
+
+                // W to the LEFT of otherWidget
+                const leftTarget =
+                    2 * pCenterX -
+                    otherLeft -
+                    otherWidget.offsetWidth;
+
+                if (leftTarget < otherLeft) {
+
+                    distance = Math.abs(newLeft - leftTarget);
+
+                    if (distance < bestLeftDistance) {
+                        bestLeftDistance = distance;
+                        bestLeft = leftTarget;
+                    }
+
+                }
+
+                // W to the RIGHT of otherWidget
+                const rightTarget =
+                    2 * pCenterX -
+                    otherLeft -
+                    widget.offsetWidth;
+
+                if (rightTarget > otherRight) {
+
+                    distance = Math.abs(newLeft - rightTarget);
+
+                    if (distance < bestLeftDistance) {
+                        bestLeftDistance = distance;
+                        bestLeft = rightTarget;
+                    }
+
+                }
+
+            });
+
         }
 
     );
