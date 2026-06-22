@@ -78,12 +78,6 @@ import {
 from "../appearance/appearanceSettings.js";
 
 import {
-    getWidgetAppearance,
-    saveWidgetAppearance
-}
-from "../appearance/widgetAppearance.js";
-
-import {
     getDigitalClockSettings
 }
 from "../widgets/digitalClockSettings.js";
@@ -121,170 +115,90 @@ import {
 from "../widgets/weatherWeekSettings.js";
 
 import {
-    getNowStreakSettings
-}
-from "../widgets/nowStreakSettings.js";
-
-import {
-    updateNowStreakState
-}
-from "../../widgets/nowStreak.js";
-
-import {
-    getHighStreakSettings
-}
-from "../widgets/highStreakSettings.js";
-
-import {
-    updateHighStreakState
-}
-from "../../widgets/highStreak.js";
-
-import {
-    getPictureStreakSettings
-}
-from "../widgets/pictureStreakSettings.js";
-
-import {
-    updatePictureStreakState,
-    addPictureStreakPhoto,
-    removePictureStreakPhoto
-}
-from "../../widgets/pictureStreak.js";
-
-import {
-    getEmotionSummarySettings
-}
-from "../widgets/emotionSummarySettings.js";
-
-import {
-    updateEmotionSummaryState
-}
-from "../../widgets/emotionSummary.js";
-
-import {
-    updateQuoteState,
-    getQuoteState,
-    initializeQuote
-}
-from "../../widgets/quote.js";
-
-import {
-    autoExpandWidget
-}
-from "../../dashboard/expandWidget.js";
-
-import {
-    getTodayEmotionSettings
-}
-from "../widgets/todayEmotionSettings.js";
-
-import {
     getTodayEmotionState,
     updateTodayEmotionState
 }
 from "../../widgets/todayEmotion.js";
 
-const WIDGET_NAMES = {
-    "digital-clock-widget":   "Digital Clock",
-    "weather-hour-widget":    "Weather Hours",
-    "weather-day-widget":     "Weather Day",
-    "weather-week-widget":    "Weather Week",
-    "today-emotion-widget":   "Emotion Today",
-    "now-streak-widget":      "Now Streak",
-    "high-streak-widget":     "High Streak",
-    "picture-streak-widget":  "Picture Streak",
-    "emotion-summary-widget": "Emotion Summary",
-    "quote-widget":           "Quote"
-};
+export function createSettingPopup(
+    widgetId
+) {
 
-// ── Auto-expand any widget when settings cause content to overflow ────────────
-
-let _contentObserver = null;
-
-function attachContentObserver(widgetId) {
-    if (_contentObserver) {
-        _contentObserver.disconnect();
-        _contentObserver = null;
-    }
-    const widgetEl  = document.getElementById(widgetId);
-    const contentEl = widgetEl?.querySelector(".widget-content");
-    if (!contentEl) return;
-    let debounce = null;
-    _contentObserver = new MutationObserver(() => {
-        clearTimeout(debounce);
-        debounce = setTimeout(() => autoExpandWidget(widgetId), 120);
-    });
-    _contentObserver.observe(contentEl, { childList: true, subtree: true });
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-
-export function createSettingPopup(widgetId) {
-
-    if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
     closeCurrentPopup();
 
-    const appearanceHTML = getAppearanceSettings();
+    const appearanceContent =
+        getAppearanceSettings();
 
-    let widgetTabs = { style: "", location: "", graph: "", display: "" };
+    let widgetContent = "";
 
-    if (widgetId === "digital-clock-widget") {
-        widgetTabs = getDigitalClockSettings();
+    if (
+        widgetId ===
+        "digital-clock-widget"
+    ) {
+
+        widgetContent =
+            getDigitalClockSettings();
+
     }
-    else if (widgetId === "weather-day-widget") {
-        widgetTabs = getWeatherDaySettings();
+
+    else if (
+        widgetId ===
+        "weather-day-widget"
+    ) {
+
+        widgetContent =
+            getWeatherDaySettings();
+
     }
-    else if (widgetId === "weather-hour-widget") {
-        widgetTabs = getWeatherHourSettings();
+
+    else if (
+        widgetId ===
+        "weather-hour-widget"
+    ) {
+
+        widgetContent =
+            getWeatherHourSettings();
+
     }
-    else if (widgetId === "weather-week-widget") {
-        widgetTabs = getWeatherWeekSettings();
+
+    else if (
+        widgetId ===
+        "quote-widget"
+    ) {
+
+        widgetContent =
+            getQuoteSettings();
+
     }
-    else if (widgetId === "quote-widget") {
-        widgetTabs = getQuoteSettings();
+
+    else if (
+        widgetId ===
+        "today-emotion-widget"
+    ) {
+
+        widgetContent =
+            getTodayEmotionSettings();
+
     }
-    else if (widgetId === "today-emotion-widget") {
-        widgetTabs = getTodayEmotionSettings();
-    }
-    else if (widgetId === "now-streak-widget") {
-        widgetTabs = getNowStreakSettings();
-    }
-    else if (widgetId === "high-streak-widget") {
-        widgetTabs = getHighStreakSettings();
-    }
-    else if (widgetId === "picture-streak-widget") {
-        widgetTabs = getPictureStreakSettings();
-    }
-    else if (widgetId === "emotion-summary-widget") {
-        widgetTabs = getEmotionSummarySettings();
-    }
+
     else {
-        widgetTabs = { style: "", location: "", graph: "", display: "<p>Coming Soon</p>" };
+
+        widgetContent =
+            `
+                <p>
+                    Coming Soon
+                </p>
+            `;
+
     }
 
-    const widgetName = WIDGET_NAMES[widgetId] || widgetId;
+    const popup =
+        document.createElement(
+            "div"
+        );
 
-    // Only include tabs that have content
-    const ALL_TABS = [
-        { key: "style",    label: "Style",    content: appearanceHTML + (widgetTabs.style || "") },
-        { key: "location", label: "Location", content: widgetTabs.location || "" },
-        { key: "graph",    label: "Graph",    content: widgetTabs.graph    || "" },
-        { key: "display",  label: "Display",  content: widgetTabs.display  || "" }
-    ];
-
-    const visibleTabs = ALL_TABS.filter(t => t.content.trim() !== "");
-
-    const tabBarHTML = visibleTabs.map((t, i) =>
-        `<button class="setting-tab${i === 0 ? " active" : ""}" data-tab="${t.key}">${t.label}</button>`
-    ).join("");
-
-    const panesHTML = visibleTabs.map((t, i) =>
-        `<div class="setting-pane${i === 0 ? " active" : ""}" data-pane="${t.key}">${t.content}</div>`
-    ).join("");
-
-    const popup = document.createElement("div");
-    popup.className = "setting-popup";
+    popup.className =
+        "setting-popup";
 
     popup.innerHTML = `
 
@@ -308,105 +222,150 @@ export function createSettingPopup(widgetId) {
         closeCurrentPopup();
     });
 
-    const tabBtns = popup.querySelectorAll(".setting-tab");
-    tabBtns.forEach(tab => {
-        tab.addEventListener("click", () => {
-            tabBtns.forEach(t => t.classList.remove("active"));
-            popup.querySelectorAll(".setting-pane").forEach(p => p.classList.remove("active"));
-            tab.classList.add("active");
-            popup.querySelector(`.setting-pane[data-pane="${tab.dataset.tab}"]`).classList.add("active");
-        });
-    });
+    document.body.append(
+        popup
+    );
 
-    document.body.append(popup);
+    const frequencyButtons =
+        popup.querySelectorAll(
+            ".frequency-segment .segment-option"
+        );
 
-    // Position popup outside the widget card
-    const widgetEl = document.getElementById(widgetId);
-    if (widgetEl) {
-        const r  = widgetEl.getBoundingClientRect();
-        const pw = popup.offsetWidth  || 420;
-        const ph = popup.offsetHeight || 600;
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const GAP = 12;
+    const showIconButtons =
+        popup.querySelectorAll(
+            ".show-icon-segment .segment-option"
+        );
 
-        // Prefer right side; fall back to left; clamp within viewport
-        let left = r.right + GAP;
-        if (left + pw > vw - GAP) left = r.left - pw - GAP;
-        if (left < GAP) left = vw - pw - GAP;
+    const showTemperatureButtons =
+        popup.querySelectorAll(
+            ".show-temperature-segment .segment-option"
+        );
 
-        // Align top with widget, clamp vertically
-        let top = Math.min(r.top, vh - ph - GAP);
-        if (top < GAP) top = GAP;
+    const graphColorPicker =
+        popup.querySelector(
+            ".graph-color-picker"
+        );
 
-        popup.style.left = left + "px";
-        popup.style.top  = top  + "px";
+    const graphSizeSlider =
+        popup.querySelector(
+            ".graph-size-slider"
+        );
+
+    const graphSizeValue =
+        popup.querySelector(
+            ".graph-size-value"
+        );
+
+    if (
+        graphSizeSlider &&
+        graphSizeValue
+    ) {
+
+        graphSizeSlider
+            .addEventListener(
+                "input",
+                event => {
+
+                    const size =
+                        Number(
+                            event.target.value
+                        );
+
+                    graphSizeValue
+                        .textContent =
+                        size + "%";
+
+                    setGraphSize(
+                        size
+                    );
+
+                    renderWeatherHour();
+
+                }
+            );
+
     }
 
-    attachContentObserver(widgetId);
+    if (
+        graphColorPicker
+    ) {
 
-    /* ── Pre-fill appearance controls from saved state ───────── */
+        graphColorPicker
+            .addEventListener(
+                "input",
+                event => {
 
-    const savedApp = getWidgetAppearance(widgetId) || {};
+                    setGraphColor(
+                        event.target.value
+                    );
 
-    const _bgColorEl = popup.querySelector(".background-color-picker");
-    if (_bgColorEl && savedApp.backgroundColor) {
-        _bgColorEl.value = savedApp.backgroundColor;
+                    renderWeatherHour();
+
+                }
+            );
+
     }
 
-    const _bgOpEl = popup.querySelector(".background-opacity-slider");
-    if (_bgOpEl && savedApp.backgroundOpacity !== undefined) {
-        _bgOpEl.value = savedApp.backgroundOpacity;
-        const _bgOpVal = popup.querySelector(".background-opacity-value");
-        if (_bgOpVal) _bgOpVal.textContent = savedApp.backgroundOpacity + "%";
-    }
+    frequencyButtons.forEach(
+        button => {
 
-    const _titleColorEl = popup.querySelector(".title-color-picker");
-    if (_titleColorEl && savedApp.titleColor) {
-        _titleColorEl.value = savedApp.titleColor;
-    }
+            button.addEventListener(
+                "click",
+                () => {
 
-    const _contentColorEl = popup.querySelector(".content-color-picker");
-    if (_contentColorEl && savedApp.contentColor) {
-        _contentColorEl.value = savedApp.contentColor;
-    }
+                    frequencyButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
 
-    if (savedApp.showTitle === false) {
-        popup.querySelectorAll(".title-segment-option").forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.value === "false");
-        });
-    }
+                    button.classList.add(
+                        "active"
+                    );
 
-    if (savedApp.showBorder === false) {
-        popup.querySelectorAll(".border-segment-option").forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.value === "false");
-        });
-    }
+                    setWeatherFrequency(
+                        button.dataset.value
+                    );
 
-    /* ── Weather Hour: graph controls ─────────────────────── */
+                    renderWeatherHour();
 
-    const frequencyButtons = popup.querySelectorAll(".frequency-segment .segment-option");
-    const showIconButtons = popup.querySelectorAll(".show-icon-segment .segment-option");
-    const showTemperatureButtons = popup.querySelectorAll(".show-temperature-segment .segment-option");
-    const graphColorPicker = popup.querySelector(".graph-color-picker");
-    const graphSizeSlider = popup.querySelector(".graph-size-slider");
-    const graphSizeValue = popup.querySelector(".graph-size-value");
+                }
+            );
 
-    if (graphSizeSlider && graphSizeValue) {
-        graphSizeSlider.addEventListener("input", event => {
-            const size = Number(event.target.value);
-            graphSizeValue.textContent = size + "%";
-            setGraphSize(size);
-            renderWeatherHour();
-        });
-    }
+        }
+    );
 
-    if (graphColorPicker) {
-        graphColorPicker.addEventListener("input", event => {
-            setGraphColor(event.target.value);
-            renderWeatherHour();
-        });
-    }
+    showIconButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showIconButtons.forEach(
+                        item =>
+                            item.classList.remove(
+                                "active"
+                            )
+                    );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    setShowWeatherIcon(
+                        button.dataset.value
+                        === "true"
+                    );
+
+                    renderWeatherHour();
+
+                }
+            );
+
+        }
+    );
 
     frequencyButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -873,106 +832,133 @@ export function createSettingPopup(widgetId) {
                 reader.readAsDataURL(file);
             });
         }
+    );
 
-        const psRemoveBtns = popup.querySelectorAll(".ps-remove-btn");
-        psRemoveBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = Number(btn.dataset.index);
-                removePictureStreakPhoto(idx);
-                popup.remove();
-                createSettingPopup(widgetId);
-            });
-        });
+    const imageInput =
+        popup.querySelector(
+            ".today-emotion-image-input"
+        );
 
-        const psDisplayBtns = popup.querySelectorAll(".ps-display-segment .segment-option");
-        psDisplayBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                psDisplayBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                updatePictureStreakState({ displayMode: btn.dataset.value });
-            });
-        });
+    if (
+        imageInput
+    ) {
 
-        const psDateLabelBtns = popup.querySelectorAll(".ps-date-label-segment .segment-option");
-        psDateLabelBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                psDateLabelBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                updatePictureStreakState({ showDateLabel: btn.dataset.value === "true" });
-            });
-        });
+        imageInput
+            .addEventListener(
+                "change",
+                event => {
+                    const file =
+                        event.target.files[0];
 
-        const psIntervalSelect = popup.querySelector(".ps-interval-select");
-        if (psIntervalSelect) {
-            psIntervalSelect.addEventListener("change", event => {
-                updatePictureStreakState({ scrollInterval: event.target.value });
-            });
+                    if (!file) {
+                        return;
+                    }
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload = () => {
+                        updateTodayEmotionState({
+                            customImage: reader.result
+                        });
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            );
+
+    }
+
+    if (
+        widgetId ===
+        "today-emotion-widget"
+    ) {
+        const todayEmotionState =
+            getTodayEmotionState();
+
+        const selectedTypeButton =
+            popup.querySelector(
+                `.emotion-type-segment .segment-option[data-value="${todayEmotionState.emotionType}"]`
+            );
+
+        if (
+            selectedTypeButton
+        ) {
+            emotionTypeButtons.forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
+
+            selectedTypeButton.classList.add(
+                "active"
+            );
         }
 
-    }
+        const selectedTitleButton =
+            popup.querySelector(
+                `.today-emotion-title-segment .segment-option[data-value="${todayEmotionState.showTitle}"]`
+            );
 
-    /* ── High Streak ──────────────────────────────────────── */
+        if (
+            selectedTitleButton
+        ) {
+            todayEmotionTitleButtons.forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
 
-    if (widgetId === "high-streak-widget") {
+            selectedTitleButton.classList.add(
+                "active"
+            );
+        }
 
-        const hsDisplayBtns = popup.querySelectorAll(".hs-display-segment .segment-option");
-        hsDisplayBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                hsDisplayBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                updateHighStreakState({ displayMode: btn.dataset.value });
-            });
-        });
+        const selectedCurrentMoodButton =
+            popup.querySelector(
+                `.current-mood-segment .segment-option[data-value="${todayEmotionState.showCurrentMood}"]`
+            );
 
-        const hsCelebrateBtns = popup.querySelectorAll(".hs-celebrate-segment .segment-option");
-        hsCelebrateBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                hsCelebrateBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                updateHighStreakState({ celebrationEnabled: btn.dataset.value === "true" });
-            });
-        });
+        if (
+            selectedCurrentMoodButton
+        ) {
+            currentMoodButtons.forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
 
-    }
+            selectedCurrentMoodButton.classList.add(
+                "active"
+            );
+        }
 
-    /* ── Now Streak ───────────────────────────────────────── */
+        const selectedSelectionModeButton =
+            popup.querySelector(
+                `.selection-mode-segment .segment-option[data-value="${todayEmotionState.selectionMode}"]`
+            );
 
-    if (widgetId === "now-streak-widget") {
+        if (
+            selectedSelectionModeButton
+        ) {
+            selectionModeButtons.forEach(
+                item =>
+                    item.classList.remove(
+                        "active"
+                    )
+            );
 
-        const nsDisplayBtns = popup.querySelectorAll(".ns-display-segment .segment-option");
-        nsDisplayBtns.forEach(btn => {
-            btn.addEventListener("click", () => {
-                nsDisplayBtns.forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                updateNowStreakState({ displayMode: btn.dataset.value });
-            });
-        });
+            selectedSelectionModeButton.classList.add(
+                "active"
+            );
+        }
 
-    }
-
-    /* ── Today Emotion ────────────────────────────────────── */
-
-    if (widgetId === "today-emotion-widget") {
-
-        const teState = getTodayEmotionState();
-
-        function wireSegment(selector, stateKey) {
-            const btns = popup.querySelectorAll(`${selector} .segment-option`);
-            btns.forEach(btn => {
-                btn.addEventListener("click", () => {
-                    btns.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-                    updateTodayEmotionState({ [stateKey]: btn.dataset.value === "true"
-                        ? true
-                        : btn.dataset.value === "false"
-                            ? false
-                            : btn.dataset.value
-                    });
-                });
-            });
-
-            const active = popup.querySelector(
-                `${selector} .segment-option[data-value="${teState[stateKey]}"]`
+        const selectedEffectButton =
+            popup.querySelector(
+                `.selected-effect-segment .segment-option[data-value="${todayEmotionState.selectedEffect}"]`
             );
             if (active) {
                 btns.forEach(b => b.classList.remove("active"));

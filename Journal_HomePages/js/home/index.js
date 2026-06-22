@@ -92,6 +92,11 @@ import {
 }
 from "../widgets/todayEmotion.js";
 
+import {
+    initializeDiaryCard
+}
+from "../widgets/diaryCard.js";
+
 export function initializeHomepage() {
 
     const dashboard =
@@ -201,6 +206,10 @@ export function initializeHomepage() {
     initializePictureStreak();
     initializeEmotionSummary();
     initializeQuote();
+<<<<<<< HEAD
+=======
+    initializeDiaryCard();
+>>>>>>> 045b1a003df943324b73368ab658a8541a55e802
     
     setupEditMode(
         settingsButton,

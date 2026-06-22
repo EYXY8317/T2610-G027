@@ -109,6 +109,16 @@ const DEFAULTS = [
                       titleColor: "#888888", contentColor: "#888888" }
     },
 
+    // ── Diary Card ────────────────────────────────────────────
+    // Book cover + open button — placed below the streak cards
+    {
+        id: "diary-card-widget",
+        layout:     { left: "30px", top: "558px", width: "460px", height: "180px" },
+        appearance: { backgroundColor: "#f5f3ef", backgroundOpacity: 100,
+                      showTitle: false, showBorder: true,
+                      titleColor: "#1a1a1a", contentColor: "#1a1a1a" }
+    },
+
 ];
 
 function getNavbarHeight() {
