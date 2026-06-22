@@ -927,32 +927,79 @@ let completedTasks =
 
         hasCompleted = true;
 
-        // Create category section
-        const section =
-            document.createElement("div");
+// Create category section
+const section =
+    document.createElement("div");
 
-        section.style.marginBottom = "25px";
+section.style.marginBottom = "25px";
 
-        section.innerHTML = `
+section.innerHTML = `
 
-            <h3 class="completed-section-title">
+<div class="completed-group-card">
 
-                <span class="material-symbols-rounded">
-                    task_alt
-                </span>
+    <div class="completed-group-header">
 
-                ${listType.charAt(0).toUpperCase()
-            + listType.slice(1)
-            }
+        <div class="completed-group-icon">
 
-                Tasks (${completedTasks.length})
+            <span class="material-symbols-rounded">
 
-            </h3>
+                ${
+                    listType === "work"
+                    ? "work"
 
-        `;
+                    : listType === "shopping"
+                    ? "shopping_cart"
 
-        const taskContainer =
-            document.createElement("div");
+                    : listType === "study"
+                    ? "menu_book"
+
+                    : listType === "personal"
+                    ? "person"
+
+                    : "fitness_center"
+                }
+
+            </span>
+
+        </div>
+
+        <div>
+
+            <div class="completed-group-name">
+
+                ${
+                    listType.charAt(0)
+                    .toUpperCase()
+                    +
+                    listType.slice(1)
+                }
+
+            </div>
+
+            <div class="completed-group-count">
+
+                ${completedTasks.length}
+                Completed Tasks
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="completed-group-list">
+
+    </div>
+
+</div>
+
+`;
+
+
+    const taskContainer =
+       section.querySelector(
+           ".completed-group-list"
+        );
 
         // Create completed task cards
         completedTasks.forEach(task => {
@@ -961,10 +1008,7 @@ let completedTasks =
                 document.createElement("div");
 
             card.className =
-                "task-card completed";
-
-            card.style.marginBottom =
-                "8px";
+                 "completed-task-row";
 
             card.innerHTML = `
 
@@ -1064,8 +1108,6 @@ let completedTasks =
 
         });
 
-        section.appendChild(taskContainer);
-
         container.appendChild(section);
 
     });
@@ -1132,7 +1174,7 @@ function renderTrash() {
         const section =
             document.createElement("div");
 
-        section.style.marginBottom = "25px";
+        section.style.marginBottom = "16px";
 
         section.innerHTML = `
 
@@ -1274,8 +1316,10 @@ function renderTrash() {
 
         });
 
-        // Add task list into section
-        section.appendChild(taskContainer);
+        // Insert task cards into section
+        section.appendChild(
+              taskContainer
+);
 
         // Add section into page
         container.appendChild(section);
