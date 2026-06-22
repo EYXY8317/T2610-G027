@@ -14,7 +14,7 @@
 
     font-weight:700;
 
-    color:#7c5cff;
+     color:var(--primary);
 
     letter-spacing:.3px;
 
@@ -51,10 +51,10 @@
 
     margin-bottom:24px;
 
-    border:1px solid #f0ebff;
+    border:1px solid var(--primary-border);
 
     box-shadow:
-    0 8px 30px rgba(124,92,255,0.05);
+    0 8px 30px var(--shadow-light);
 
 }
 
@@ -98,7 +98,7 @@
 
     border-radius:14px;
 
-    background:#f3ecff;
+    background:var(--primary-light);
 
     display:flex;
 
@@ -110,7 +110,7 @@
 
 .card-icon .material-symbols-rounded{
 
-    color:#7c5cff;
+    color:var(--primary);
 
     font-size:24px;
 
@@ -152,9 +152,9 @@
 
 .today-task-card{
 
-    background:#faf8ff;
+    background:var(--primary-light);
 
-    border-left:4px solid #8b6cff;
+    border-left:4px solid var(--primary);
 
     border-radius:16px;
 
@@ -247,7 +247,7 @@
 
     border-radius:50%;
 
-    background:#7b61ff;
+    background:var(--primary);
 
     z-index:2;
 
@@ -259,7 +259,7 @@
 
     flex:1;
 
-    background:#d9d0ff;
+    background:var(--primary-border);
 
     margin-top:4px;
 
@@ -277,7 +277,7 @@
 
     font-weight:700;
 
-    color:#7b61ff;
+    color:var(--primary);
 
     margin-bottom:6px;
 
@@ -315,9 +315,9 @@
 
     font-weight:500;
 
-    background:#eef4ff;
+    background:var(--primary-hover);
 
-    color:#5f6cff;
+    color:var(--primary);
 
 }
 
@@ -346,9 +346,9 @@
 
 .progress-badge{
 
-    background:#f4efff;
+    background:var(--primary-light);
 
-    color:#7c5cff;
+    color:var(--primary);
 
     padding:10px 14px;
 
@@ -433,8 +433,8 @@
 
     background:
     conic-gradient(
-        #7c5cff 0deg,
-        #ece7f7 0deg
+        var(--primary) 0deg,
+        var(--primary-border) 0deg
     );
 
     transition:0.8s ease;
@@ -451,7 +451,7 @@
 
     font-weight:700;
 
-    color:#6f5cff;
+    color:var(--primary);
 
 }
 
@@ -492,9 +492,9 @@
 
 .stat-box{
 
-    background:#f8f5ff;
+    background:var(--primary-light);
 
-    border:1px solid #ece7f7;
+    border:1px solid var(--primary-border);
 
     border-radius:14px;
 
@@ -522,7 +522,7 @@
 
     font-weight:700;
 
-    color:#6f5cff;
+    color:var(--primary);
 
 }
 
@@ -549,8 +549,8 @@
     background:
     linear-gradient(
         135deg,
-        #fff8fd,
-        #f7f2ff
+        var(--quote-start),
+        var(--quote-end)
     );
 
 }
