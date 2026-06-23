@@ -91,14 +91,16 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <!-- ERROR -->
 
         {% if error %}
-
-        <div class="budget-error">
-
-            {{ error }}
-
-        </div>
-
+        <div class="budget-error">{{ error }}</div>
         {% endif %}
+
+        <!-- OVERSPENDING WARNINGS -->
+
+        {% for w in warnings %}
+        <div style="margin-bottom:8px;padding:10px 14px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:13px;font-weight:600;">
+            ⚠️ Warning: <strong>{{ w.category }}</strong> budget exceeded by <strong>RM {{ "%.2f"|format(w.overspent) }}</strong>
+        </div>
+        {% endfor %}
 
         <!-- ===== FORM ===== -->
 
@@ -107,62 +109,36 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             <div class="summary-grid">
 
                 <!-- CATEGORY -->
-
                 <div>
-
-                    <label>
-                        Category
-                    </label>
-
-                    <select
-                    name="category"
-                    required
-                    >
-
-                        <option value="">
-                            -- Select Category --
-                        </option>
-
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="">-- Select Category --</option>
                         {% for cat in categories|default([]) %}
-
-                        <option value="{{ cat }}">
-                            {{ cat }}
-                        </option>
-
+                        <option value="{{ cat }}">{{ cat }}</option>
                         {% endfor %}
-
                     </select>
+                </div>
 
+                <!-- PERIOD -->
+                <div>
+                    <label>Budget Period</label>
+                    <select name="period">
+                        <option value="monthly">📅 Monthly</option>
+                        <option value="weekly">📅 Weekly</option>
+                        <option value="yearly">📅 Yearly</option>
+                    </select>
                 </div>
 
                 <!-- AMOUNT -->
-
                 <div>
-
-                    <label>
-                        Budget Amount (RM)
-                    </label>
-
-                    <input
-                        type="text"
-                        id="amountInput"
-                        name="amount"
-                        value="0.00"
-                        readonly
-                    >
-
+                    <label>Budget Amount (RM)</label>
+                    <input type="text" id="amountInput" name="amount" value="0.00" readonly>
                 </div>
 
             </div>
 
             <div class="budget-button-row">
-
-                <button type="submit">
-
-                    Save Budget
-
-                </button>
-
+                <button type="submit">Save Budget</button>
             </div>
 
         </form>
@@ -189,41 +165,54 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 <div class="budget-card-top">
 
-                    <h3>
-
-                        {{ b.category }}
-
-                    </h3>
-
-                        <div class="budget-actions">
-
-                            <a
-                                href="/edit_budget/{{ b.category }}"
-                                class="edit-btn"
-                            >
-                                ✏️ Edit
-                            </a>
-
-                            <a
-                                href="/delete_budget/{{ b.category }}"
-                                class="delete-btn"
-                            >
-                                🗑 Delete
-                            </a>
-
+                    <div>
+                        <h3>{{ b.category }}</h3>
+                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+                            <span style="padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600;background:#dbeafe;color:#1e40af;">
+                                📅 {{ b.period | capitalize }}
+                            </span>
+                            <span style="padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600;
+                                {% if b.status == 'over' %}background:#fee2e2;color:#991b1b;
+                                {% elif b.status == 'warning' %}background:#fef3c7;color:#92400e;
+                                {% else %}background:#86efac;color:#14532d;{% endif %}">
+                                {% if b.status == 'over' %}🚨 Exceeded
+                                {% elif b.status == 'warning' %}⚠️ Near Limit
+                                {% else %}✅ Safe{% endif %}
+                            </span>
                         </div>
+                    </div>
 
-                </div>
-
-                <div class="budget-amount-wrapper">
-
-                    <div class="budget-amount">
-
-                        RM {{ "%.2f"|format(b.amount) }}
-
+                    <div class="budget-actions">
+                        <a href="/edit_budget/{{ b.category }}" class="edit-btn">✏️ Edit</a>
+                        <a href="/delete_budget/{{ b.category }}" class="delete-btn">🗑 Delete</a>
                     </div>
 
                 </div>
+
+                <!-- AMOUNTS -->
+                <div style="display:flex;margin:12px 0;">
+                    <div style="flex:1;padding:12px 16px;border-right:2px solid #bbb;">
+                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Budget</div>
+                        <div style="font-weight:700;font-size:22px;">RM {{ "%.2f"|format(b.amount) }}</div>
+                    </div>
+                    <div style="flex:1;padding:12px 16px;border-right:2px solid #bbb;">
+                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Spent</div>
+                        <div style="font-weight:700;font-size:22px;color:#ef4444;">RM {{ "%.2f"|format(b.spent) }}</div>
+                    </div>
+                    <div style="flex:1;padding:12px 16px;">
+                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Remaining</div>
+                        <div style="font-weight:700;font-size:22px;{% if b.remaining < 0 %}color:#ef4444;{% else %}color:#10b981;{% endif %}">
+                            RM {{ "%.2f"|format(b.remaining | abs) }}{% if b.remaining < 0 %} over{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROGRESS BAR -->
+                <div class="progress-container">
+                    <div class="progress-bar {{ b.status }}" style="--width: {{ b.display_percent }}%;"></div>
+                </div>
+
+                <div style="font-size:16px;color:var(--text-muted);margin-top:6px;">{{ "%.0f"|format(b.percent) }}% Used</div>
 
             </div>
 

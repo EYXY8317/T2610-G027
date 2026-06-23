@@ -80,124 +80,68 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
     <div class="summary-card hover-card">
 
-        <h1 class="summary-main-title">
-            🎯 Create Financial Goal
-        </h1>
+        <h1 class="summary-main-title">🎯 Create Financial Goal</h1>
 
-        <p class="goal-subtitle">
+        <p class="goal-subtitle">Track your savings progress and achieve your targets.</p>
 
-            Track your savings progress
-            and achieve your targets.
+        <form method="POST" class="goal-form">
 
-        </p>
-
-        <form
-        method="POST"
-        class="goal-form"
-        >
-
-            <input
-                type="hidden"
-                name="action"
-                value="create"
-            >
-
-            <input
-                type="hidden"
-                name="goal_name"
-                value="{{ g.name }}"
-            >
-
-            <input
-                type="hidden"
-                name="goal_id"
-                value="{{ g.id }}"
-            >
+            <input type="hidden" name="action" value="create">
 
             <div class="summary-grid">
 
                 <!-- GOAL NAME -->
-
                 <div>
-
-                    <label>
-
-                        Goal Name
-
-                    </label>
-
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Example: Gaming PC"
-                        required
-                    >
-
+                    <label>Goal Name</label>
+                    <input type="text" name="name" placeholder="Example: Japan Trip" required>
                 </div>
 
                 <!-- GOAL TYPE -->
-
                 <div>
-
-                    <label>
-
-                        Goal Type
-
-                    </label>
-
-                    <select
-                    name="type"
-                    required
-                    >
-
-                        <option value="">
-
-                            Select Goal Type
-
-                        </option>
-
-                        <option value="short">
-
-                            🎯 Short-Term
-
-                        </option>
-
-                        <option value="long">
-
-                            🚀 Long-Term
-
-                        </option>
-
+                    <label>Goal Type</label>
+                    <select name="type" required>
+                        <option value="">Select Goal Type</option>
+                        <option value="short">🎯 Short-Term</option>
+                        <option value="long">🚀 Long-Term</option>
                     </select>
+                </div>
 
+                <!-- PRIORITY -->
+                <div>
+                    <label>Priority</label>
+                    <select name="priority">
+                        <option value="medium">🟡 Medium</option>
+                        <option value="high">🔴 High</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                </div>
+
+                <!-- TARGET DATE -->
+                <div>
+                    <label>Target Date (Optional)</label>
+                    <input type="date" name="target_date">
                 </div>
 
             </div>
 
             <br>
 
-            <label>
-
-                Target Amount (RM)
-
-            </label>
-
-            <input
-                type="text"
-                id="amountInput"
-                name="target"
-                value="0.00"
-                readonly
-                required
-            >
+            <label>Target Amount (RM)</label>
+            <input type="text" id="amountInput" name="target" value="0.00" readonly required>
 
             <br><br>
 
-            <button type="submit">
+            <label>Notes (Optional)</label>
+            <textarea
+                name="notes"
+                placeholder="Example: Flight + Hotel + Food"
+                rows="2"
+                style="resize:none;"
+            ></textarea>
 
-                Create Goal
+            <br><br>
 
-            </button>
+            <button type="submit">Create Goal</button>
 
         </form>
 
@@ -207,183 +151,145 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
     <div class="summary-card hover-card">
 
-        <h2 class="goal-section-title">
-
-            🎯 Short-Term Goals
-
-        </h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h2 class="goal-section-title" style="margin:0;">🎯 Short-Term Goals</h2>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;color:var(--text-muted);white-space:nowrap;">Sort:</span>
+                <select id="shortSortSelect" onchange="syncSort(this.value)" style="width:auto;padding:5px 10px;border-radius:8px;font-size:13px;">
+                    <option value="default">Default</option>
+                    <option value="priority">Priority (High → Low)</option>
+                    <option value="progress_desc">Progress (Highest → Lowest)</option>
+                    <option value="progress_asc">Progress (Lowest → Highest)</option>
+                    <option value="date_asc">Target Date (Nearest First)</option>
+                    <option value="date_desc">Target Date (Latest First)</option>
+                    <option value="remaining_asc">Amount Remaining (Lowest First)</option>
+                    <option value="remaining_desc">Amount Remaining (Highest First)</option>
+                    <option value="name">Goal Name (A → Z)</option>
+                </select>
+            </div>
+        </div>
 
         {% if short_goals %}
 
-        <div class="summary-grid">
+        <div class="summary-grid" id="short-goals-grid">
 
             {% for g in short_goals %}
 
-            <div class="goal-card hover-card">
-
-                <!-- TOP -->
+            <div class="goal-card hover-card"
+                 data-priority="{{ {'high':0,'medium':1,'low':2}.get(g.priority, 1) }}"
+                 data-percent="{{ g.percent }}"
+                 data-remaining="{{ g.remaining }}"
+                 data-date="{{ g.target_date or '9999-12-31' }}"
+                 data-name="{{ g.name }}">
 
                 <div class="budget-card-top">
-
                     <div>
-
-                        <h3>
-
-                            {{ g.name }}
-
-                        </h3>
-
-                        <small class="goal-status">
-
-                            {% if g.status == "Completed" %}
-
-                                🎉 Completed
-
-                            {% else %}
-
-                                🚀 In Progress
-
-                            {% endif %}
-
-                        </small>
-
+                        <h3>{{ g.name }}</h3>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;
+                                {% if g.status == 'Completed' %}background:#d1fae5;color:#065f46;
+                                {% elif g.status == 'Paused' %}background:#fef3c7;color:#92400e;
+                                {% elif g.status == 'Cancelled' %}background:#fee2e2;color:#991b1b;
+                                {% else %}background:#dbeafe;color:#1e40af;{% endif %}">
+                                {% if g.status == 'Completed' %}🎉 Completed
+                                {% elif g.status == 'Paused' %}⏸ Paused
+                                {% elif g.status == 'Cancelled' %}❌ Cancelled
+                                {% else %}🚀 In Progress{% endif %}
+                            </small>
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;
+                                {% if g.priority == 'high' %}background:#fee2e2;color:#991b1b;
+                                {% elif g.priority == 'low' %}background:#d1fae5;color:#065f46;
+                                {% else %}background:#fef3c7;color:#92400e;{% endif %}">
+                                {% if g.priority == 'high' %}🔴 High
+                                {% elif g.priority == 'low' %}🟢 Low
+                                {% else %}🟡 Medium{% endif %}
+                            </small>
+                        </div>
                     </div>
-
                     <div class="action-buttons">
-
-                        <a href="/edit_goal/{{ g.id }}"
-                        class="edit-btn">
-                        ✏️ Edit
-                        </a>
-
-                        <a href="/delete_goal/{{ g.id }}"
-                        class="delete-btn">
-                        🗑 Delete
-                        </a>
-
+                        <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">🗑 Delete</a>
                     </div>
-
                 </div>
 
-                <!-- AMOUNT -->
+                <h2>RM {{ "%.2f"|format(g.saved) }}</h2>
+                <p>Target: RM {{ "%.2f"|format(g.target) }}</p>
 
-                <h2>
-
-                    RM {{ "%.2f"|format(g.saved) }}
-
-                </h2>
-
-                <p>
-
-                    Target:
-                    RM {{ "%.2f"|format(g.target) }}
-
-                </p>
+                <!-- MILESTONES -->
+                <div style="display:flex;gap:6px;margin:8px 0;">
+                    {% for pct, reached in [('25%', g.milestone_25), ('50%', g.milestone_50), ('75%', g.milestone_75), ('100%', g.milestone_100)] %}
+                    <span style="padding:4px 10px;border-radius:10px;font-size:13px;font-weight:700;
+                        {% if reached %}background:#6366f1;color:#fff;{% else %}background:var(--border);color:var(--text-muted);{% endif %}">
+                        {{ pct }}
+                    </span>
+                    {% endfor %}
+                </div>
 
                 <!-- PROGRESS -->
-
                 <div class="progress-container">
-
-                    <div
-                        class="progress-bar
-                        {% if g.percent >= 100 %}
-                            over
-                        {% elif g.percent >= 80 %}
-                            warning
-                        {% else %}
-                            safe
-                        {% endif %}"
-                        style="
-                        --width:
-                        {{ g.display_percent }}%;
-                        "
-                    ></div>
-
+                    <div class="progress-bar {% if g.percent >= 100 %}over{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
+                        style="--width: {{ g.display_percent }}%;"></div>
                 </div>
-
-                <!-- FOOTER -->
 
                 <div class="goal-footer">
-
-                    <span>
-
-                        {{ "%.0f"|format(g.percent) }}% Complete
-
-                    </span>
-
-                    <span>
-
-                        RM {{ "%.2f"|format(g.remaining) }} left
-
-                    </span>
-
+                    <span>{{ "%.0f"|format(g.percent) }}% Complete</span>
+                    <span>RM {{ "%.2f"|format(g.remaining) }} left</span>
                 </div>
 
-                <!-- SAVE -->
+                <!-- TARGET DATE & TIME REMAINING -->
+                {% if g.target_date %}
+                <div style="margin-top:10px;padding:8px;border-radius:8px;background:var(--card-alt, rgba(0,0,0,0.04));font-size:15px;">
+                    <div>📅 Target: <strong>{{ g.target_date }}</strong></div>
+                    {% if g.overdue %}
+                    <div style="color:#ef4444;margin-top:4px;">⚠️ Overdue</div>
+                    {% else %}
+                    <div style="margin-top:4px;">⏳ <strong>{{ g.days_remaining }}</strong> days left ({{ g.months_remaining }} months)</div>
+                    {% endif %}
+                </div>
+                {% endif %}
 
-                <form method="POST">
+                <!-- REQUIRED SAVINGS RATE -->
+                {% if g.target_date and not g.overdue and g.remaining > 0 %}
+                <div style="margin-top:8px;padding:8px;border-radius:8px;background:var(--card-alt, rgba(99,102,241,0.07));font-size:14px;color:var(--text-main);">
+                    📊 Need <strong>RM {{ "%.2f"|format(g.required_daily) }}/day</strong>
+                    &nbsp;·&nbsp; RM {{ "%.2f"|format(g.required_weekly) }}/week
+                    &nbsp;·&nbsp; RM {{ "%.2f"|format(g.required_monthly) }}/month
+                </div>
+                {% endif %}
 
-                    <input
-                        type="hidden"
-                        name="action"
-                        value="save"
-                    >
+                <!-- NOTES -->
+                {% if g.notes %}
+                <div style="margin-top:8px;font-size:15px;color:var(--text-muted);">
+                    📝 {{ g.notes }}
+                </div>
+                {% endif %}
 
-                    <input
-                        type="hidden"
-                        name="goal_name"
-                        value="{{ g.name }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="goal_id"
-                        value="{{ g.id }}"
-                    >
-                    
+                <!-- ADD SAVINGS FORM -->
+                <form method="POST" style="margin-top:12px;">
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="goal_name" value="{{ g.name }}">
+                    <input type="hidden" name="goal_id" value="{{ g.id }}">
                     <div class="goal-add-savings-row">
-
                         <select name="account" class="goal-account-select" required>
-
-                            <option value="">
-
-                                Select Account
-
-                            </option>
-
+                            <option value="">Select Account</option>
                             {% for account in accounts %}
-
-                            <option value="{{ account.name }}">
-
-                                {{ account.name }}
-
-                            </option>
-
+                            <option value="{{ account.name }}">{{ account.name }}</option>
                             {% endfor %}
-
                         </select>
-
-                        <input
-                            type="number"
-                            name="amount"
-                            class="goal-amount-input"
-                            placeholder="0.00"
-                            step="0.01"
-                            min="0.01"
-                            required
-                        >
-
+                        <input type="number" name="amount" class="goal-amount-input" placeholder="0.00" step="0.01" min="0.01" required>
                     </div>
-
-                    <br><br>
-
-                    <button type="submit">
-
-                        Add Savings
-
-                    </button>
-
+                    <br>
+                    <button type="submit">Add Savings</button>
                 </form>
+
+                <!-- CONTRIBUTION HISTORY BUTTON -->
+                {% if g.contributions %}
+                <button type="button"
+                    onclick='openContributions({{ g.contributions | tojson }}, "{{ g.name }}")'
+                    style="margin-top:12px;width:100%;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card-bg-2);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-main);text-align:left;">
+                    📋 Contributions ({{ g.contributions|length }})
+                </button>
+                {% endif %}
 
             </div>
 
@@ -393,15 +299,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% else %}
 
-        <div class="empty-card">
-
-            <h3>
-
-                No short-term goals yet
-
-            </h3>
-
-        </div>
+        <div class="empty-card"><h3>No short-term goals yet</h3></div>
 
         {% endif %}
 
@@ -411,187 +309,145 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
     <div class="summary-card hover-card">
 
-        <h2 class="goal-section-title">
-
-            🚀 Long-Term Goals
-
-        </h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h2 class="goal-section-title" style="margin:0;">🚀 Long-Term Goals</h2>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:13px;color:var(--text-muted);white-space:nowrap;">Sort:</span>
+                <select id="longSortSelect" onchange="syncSort(this.value)" style="width:auto;padding:5px 10px;border-radius:8px;font-size:13px;">
+                    <option value="default">Default</option>
+                    <option value="priority">Priority (High → Low)</option>
+                    <option value="progress_desc">Progress (Highest → Lowest)</option>
+                    <option value="progress_asc">Progress (Lowest → Highest)</option>
+                    <option value="date_asc">Target Date (Nearest First)</option>
+                    <option value="date_desc">Target Date (Latest First)</option>
+                    <option value="remaining_asc">Amount Remaining (Lowest First)</option>
+                    <option value="remaining_desc">Amount Remaining (Highest First)</option>
+                    <option value="name">Goal Name (A → Z)</option>
+                </select>
+            </div>
+        </div>
 
         {% if long_goals %}
 
-        <div class="summary-grid">
+        <div class="summary-grid" id="long-goals-grid">
 
             {% for g in long_goals %}
 
-            <div class="goal-card hover-card">
-
-                <!-- TOP -->
+            <div class="goal-card hover-card"
+                 data-priority="{{ {'high':0,'medium':1,'low':2}.get(g.priority, 1) }}"
+                 data-percent="{{ g.percent }}"
+                 data-remaining="{{ g.remaining }}"
+                 data-date="{{ g.target_date or '9999-12-31' }}"
+                 data-name="{{ g.name }}">
 
                 <div class="budget-card-top">
-
                     <div>
-
-                        <h3>
-
-                            {{ g.name }}
-
-                        </h3>
-
-                        <small class="goal-status">
-
-                            {% if g.status == "Completed" %}
-
-                                🎉 Completed
-
-                            {% else %}
-
-                                🚀 In Progress
-
-                            {% endif %}
-
-                        </small>
-
+                        <h3>{{ g.name }}</h3>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;
+                                {% if g.status == 'Completed' %}background:#d1fae5;color:#065f46;
+                                {% elif g.status == 'Paused' %}background:#fef3c7;color:#92400e;
+                                {% elif g.status == 'Cancelled' %}background:#fee2e2;color:#991b1b;
+                                {% else %}background:#dbeafe;color:#1e40af;{% endif %}">
+                                {% if g.status == 'Completed' %}🎉 Completed
+                                {% elif g.status == 'Paused' %}⏸ Paused
+                                {% elif g.status == 'Cancelled' %}❌ Cancelled
+                                {% else %}🚀 In Progress{% endif %}
+                            </small>
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;
+                                {% if g.priority == 'high' %}background:#fee2e2;color:#991b1b;
+                                {% elif g.priority == 'low' %}background:#d1fae5;color:#065f46;
+                                {% else %}background:#fef3c7;color:#92400e;{% endif %}">
+                                {% if g.priority == 'high' %}🔴 High
+                                {% elif g.priority == 'low' %}🟢 Low
+                                {% else %}🟡 Medium{% endif %}
+                            </small>
+                        </div>
                     </div>
-
                     <div class="action-buttons">
-
-                        <a
-                        href="/edit_goal/{{ g.id }}"
-                        class="edit-btn"
-                        >
-                            ✏️ Edit
-                        </a>
-
-                        <a
-                        href="/delete_goal/{{ g.id }}"
-                        class="delete-btn"
-                        >
-                            🗑 Delete
-                        </a>
-
+                        <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">🗑 Delete</a>
                     </div>
-
                 </div>
 
-                <!-- AMOUNT -->
+                <h2>RM {{ "%.2f"|format(g.saved) }}</h2>
+                <p>Target: RM {{ "%.2f"|format(g.target) }}</p>
 
-                <h2>
-
-                    RM {{ "%.2f"|format(g.saved) }}
-
-                </h2>
-
-                <p>
-
-                    Target:
-                    RM {{ "%.2f"|format(g.target) }}
-
-                </p>
+                <!-- MILESTONES -->
+                <div style="display:flex;gap:6px;margin:8px 0;">
+                    {% for pct, reached in [('25%', g.milestone_25), ('50%', g.milestone_50), ('75%', g.milestone_75), ('100%', g.milestone_100)] %}
+                    <span style="padding:4px 10px;border-radius:10px;font-size:13px;font-weight:700;
+                        {% if reached %}background:#6366f1;color:#fff;{% else %}background:var(--border);color:var(--text-muted);{% endif %}">
+                        {{ pct }}
+                    </span>
+                    {% endfor %}
+                </div>
 
                 <!-- PROGRESS -->
-
                 <div class="progress-container">
-
-                    <div
-                        class="progress-bar
-                        {% if g.percent >= 100 %}
-                            over
-                        {% elif g.percent >= 80 %}
-                            warning
-                        {% else %}
-                            safe
-                        {% endif %}"
-                        style="
-                        --width:
-                        {{ g.display_percent }}%;
-                        "
-                    ></div>
-
+                    <div class="progress-bar {% if g.percent >= 100 %}over{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
+                        style="--width: {{ g.display_percent }}%;"></div>
                 </div>
-
-                <!-- FOOTER -->
 
                 <div class="goal-footer">
-
-                    <span>
-
-                        {{ "%.0f"|format(g.percent) }}% Complete
-
-                    </span>
-
-                    <span>
-
-                        RM {{ "%.2f"|format(g.remaining) }} left
-
-                    </span>
-
+                    <span>{{ "%.0f"|format(g.percent) }}% Complete</span>
+                    <span>RM {{ "%.2f"|format(g.remaining) }} left</span>
                 </div>
 
-                <!-- SAVE -->
+                <!-- TARGET DATE & TIME REMAINING -->
+                {% if g.target_date %}
+                <div style="margin-top:10px;padding:8px;border-radius:8px;background:var(--card-alt, rgba(0,0,0,0.04));font-size:15px;">
+                    <div>📅 Target: <strong>{{ g.target_date }}</strong></div>
+                    {% if g.overdue %}
+                    <div style="color:#ef4444;margin-top:4px;">⚠️ Overdue</div>
+                    {% else %}
+                    <div style="margin-top:4px;">⏳ <strong>{{ g.days_remaining }}</strong> days left ({{ g.months_remaining }} months)</div>
+                    {% endif %}
+                </div>
+                {% endif %}
 
-                <form method="POST">
+                <!-- REQUIRED SAVINGS RATE -->
+                {% if g.target_date and not g.overdue and g.remaining > 0 %}
+                <div style="margin-top:8px;padding:8px;border-radius:8px;background:var(--card-alt, rgba(99,102,241,0.07));font-size:14px;color:var(--text-main);">
+                    📊 Need <strong>RM {{ "%.2f"|format(g.required_daily) }}/day</strong>
+                    &nbsp;·&nbsp; RM {{ "%.2f"|format(g.required_weekly) }}/week
+                    &nbsp;·&nbsp; RM {{ "%.2f"|format(g.required_monthly) }}/month
+                </div>
+                {% endif %}
 
-                    <input
-                        type="hidden"
-                        name="action"
-                        value="save"
-                    >
+                <!-- NOTES -->
+                {% if g.notes %}
+                <div style="margin-top:8px;font-size:15px;color:var(--text-muted);">
+                    📝 {{ g.notes }}
+                </div>
+                {% endif %}
 
-                    <input
-                        type="hidden"
-                        name="goal_name"
-                        value="{{ g.name }}"
-                    >
-
-                    <input
-                        type="hidden"
-                        name="goal_id"
-                        value="{{ g.id }}"
-                    >
-
+                <!-- ADD SAVINGS FORM -->
+                <form method="POST" style="margin-top:12px;">
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="goal_name" value="{{ g.name }}">
+                    <input type="hidden" name="goal_id" value="{{ g.id }}">
                     <div class="goal-add-savings-row">
-
-                        <select name="account" required>
-
-                            <option value="">
-
-                                Select Account
-
-                            </option>
-
+                        <select name="account" class="goal-account-select" required>
+                            <option value="">Select Account</option>
                             {% for account in accounts %}
-
-                            <option value="{{ account.name }}">
-
-                                {{ account.name }}
-
-                            </option>
-
+                            <option value="{{ account.name }}">{{ account.name }}</option>
                             {% endfor %}
-
                         </select>
-
-                        <input
-                            type="number"
-                            name="amount"
-                            class="goal-amount-input"
-                            placeholder="0.00"
-                            step="0.01"
-                            min="0.01"
-                            required
-                        >
-
+                        <input type="number" name="amount" class="goal-amount-input" placeholder="0.00" step="0.01" min="0.01" required>
                     </div>
-
-                    <br><br>
-
-                    <button type="submit">
-
-                        Add Savings
-
-                    </button>
-
+                    <br>
+                    <button type="submit">Add Savings</button>
                 </form>
+
+                <!-- CONTRIBUTION HISTORY BUTTON -->
+                {% if g.contributions %}
+                <button type="button"
+                    onclick='openContributions({{ g.contributions | tojson }}, "{{ g.name }}")'
+                    style="margin-top:12px;width:100%;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card-bg-2);cursor:pointer;font-size:13px;font-weight:600;color:var(--text-main);text-align:left;">
+                    📋 Contributions ({{ g.contributions|length }})
+                </button>
+                {% endif %}
 
             </div>
 
@@ -601,23 +457,175 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
         {% else %}
 
-        <div class="empty-card">
-
-            <h3>
-
-                No long-term goals yet
-
-            </h3>
-
-        </div>
+        <div class="empty-card"><h3>No long-term goals yet</h3></div>
 
         {% endif %}
 
     </div>
 
+    <!-- ================= COMPLETED GOALS ================= -->
+
+    {% if completed_goals %}
+
+    <div class="summary-card hover-card">
+
+        <h2 class="goal-section-title">🏆 Completed Goals</h2>
+
+        <div class="summary-grid">
+
+            {% for g in completed_goals %}
+
+            <div class="goal-card hover-card">
+
+                <div class="budget-card-top">
+                    <div>
+                        <h3>{{ g.name }}</h3>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;">
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:#d1fae5;color:#065f46;">
+                                🎉 {{ g.status }}
+                            </small>
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;
+                                {% if g.priority == 'high' %}background:#fee2e2;color:#991b1b;
+                                {% elif g.priority == 'low' %}background:#d1fae5;color:#065f46;
+                                {% else %}background:#fef3c7;color:#92400e;{% endif %}">
+                                {% if g.priority == 'high' %}🔴 High
+                                {% elif g.priority == 'low' %}🟢 Low
+                                {% else %}🟡 Medium{% endif %}
+                            </small>
+                            <small style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:#dbeafe;color:#1e40af;">
+                                {% if g.goal_type == 'short' %}🎯 Short-Term{% else %}🚀 Long-Term{% endif %}
+                            </small>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">🗑 Delete</a>
+                    </div>
+                </div>
+
+                <h2>RM {{ "%.2f"|format(g.saved) }}</h2>
+                <p>Target: RM {{ "%.2f"|format(g.target) }}</p>
+
+                <div class="progress-container">
+                    <div class="progress-bar safe" style="--width: 100%;"></div>
+                </div>
+
+                <div class="goal-footer">
+                    <span>100% Complete</span>
+                    <span>🎉 Goal Achieved!</span>
+                </div>
+
+                {% if g.completion_date %}
+                <div style="margin-top:10px;padding:8px;border-radius:8px;background:#d1fae5;font-size:13px;color:#065f46;font-weight:600;">
+                    📅 Completed on {{ g.completion_date }}
+                </div>
+                {% endif %}
+
+                {% if g.notes %}
+                <div style="margin-top:8px;font-size:14px;color:var(--text-muted);">
+                    📝 {{ g.notes }}
+                </div>
+                {% endif %}
+
+                <div style="margin-top:12px;">
+                    <a href="/reopen_goal/{{ g.id }}"
+                       style="display:inline-block;padding:7px 14px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:13px;font-weight:600;text-decoration:none;">
+                        🔄 Reopen Goal
+                    </a>
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- ================= CONTRIBUTIONS MODAL ================= -->
+<div id="contribModal" onclick="if(event.target===this)closeContributions()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:var(--card-bg);border-radius:16px;padding:24px;max-width:500px;width:92%;max-height:75vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.2);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 id="contribModalTitle" style="margin:0;font-size:16px;">📋 Contributions</h3>
+            <button onclick="closeContributions()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);line-height:1;">✕</button>
+        </div>
+        <div id="contribModalBody"></div>
+    </div>
 </div>
 
 <script>
+
+function syncSort(value) {
+    ['shortSortSelect', 'longSortSelect'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    });
+    sortGoals(value);
+}
+
+function openContributions(contributions, goalName) {
+    document.getElementById('contribModalTitle').textContent = '📋 ' + goalName + ' — Contributions';
+    const body = document.getElementById('contribModalBody');
+    if (!contributions.length) {
+        body.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:16px 0;">No contributions yet.</p>';
+    } else {
+        body.innerHTML = contributions.map(function(c) {
+            return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.07);">' +
+                '<div>' +
+                    '<div style="font-size:13px;font-weight:600;">' + c.date + '</div>' +
+                    '<div style="font-size:12px;color:var(--text-muted);">' + c.account + '</div>' +
+                '</div>' +
+                '<div style="display:flex;align-items:center;gap:12px;">' +
+                    '<span style="font-size:14px;font-weight:700;color:#16a34a;">+RM ' + Number(c.amount).toFixed(2) + '</span>' +
+                    '<a href="/update/' + c.edit_idx + '" title="Edit" style="text-decoration:none;font-size:15px;">✏️</a>' +
+                    '<a href="/delete/' + c.delete_idx + '" title="Delete" style="text-decoration:none;font-size:15px;" onclick="return confirm(\'Delete this contribution?\')">🗑</a>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+    document.getElementById('contribModal').style.display = 'flex';
+}
+
+function closeContributions() {
+    document.getElementById('contribModal').style.display = 'none';
+}
+
+function sortGoals(sortBy) {
+    ['short-goals-grid', 'long-goals-grid'].forEach(function(gridId) {
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        const cards = Array.from(grid.querySelectorAll('.goal-card'));
+        cards.sort(function(a, b) {
+            switch (sortBy) {
+                case 'priority':
+                    return parseInt(a.dataset.priority) - parseInt(b.dataset.priority);
+                case 'progress_desc':
+                    return parseFloat(b.dataset.percent) - parseFloat(a.dataset.percent);
+                case 'progress_asc':
+                    return parseFloat(a.dataset.percent) - parseFloat(b.dataset.percent);
+                case 'date_asc':
+                    return a.dataset.date.localeCompare(b.dataset.date);
+                case 'date_desc':
+                    return b.dataset.date.localeCompare(a.dataset.date);
+                case 'remaining_asc':
+                    return parseFloat(a.dataset.remaining) - parseFloat(b.dataset.remaining);
+                case 'remaining_desc':
+                    return parseFloat(b.dataset.remaining) - parseFloat(a.dataset.remaining);
+                case 'name':
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                default:
+                    return 0;
+            }
+        });
+        cards.forEach(function(card) { grid.appendChild(card); });
+    });
+}
+
 
 document.addEventListener("DOMContentLoaded", function () {
 

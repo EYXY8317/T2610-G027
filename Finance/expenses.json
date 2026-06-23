@@ -74,5 +74,35 @@
         "account": "MAE",
         "item": "Goal: Japan",
         "amount": 500.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-23",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 4,
+        "account": "TnG",
+        "item": "Goal: laptop",
+        "amount": 600.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-23",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 4,
+        "account": "TnG",
+        "item": "Goal: laptop",
+        "amount": 300.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-23",
+        "type": "expense",
+        "category": "Goal Savings",
+        "goal_id": 7,
+        "account": "TnG",
+        "item": "Goal: Japan",
+        "amount": 3000.0
     }
 ]
