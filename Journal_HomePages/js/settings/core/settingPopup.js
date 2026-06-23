@@ -31,35 +31,10 @@ import {
 from "../../widgets/weatherConfig.js";
 
 import {
-    applyBackgroundOpacity
-}
-from "../appearance/backgroundOpacitySetting.js";
-
-import {
-    applyBackgroundColor
-}
-from "../appearance/backgroundColorSetting.js";
-
-import {
-    applyTitleColor
-}
-from "../appearance/titleColorSetting.js";
-
-import {
-    applyContentColor
-}
-from "../appearance/contentColorSetting.js";
-
-
-import {
     applyShowTitle
 }
 from "../appearance/showTitleSetting.js";
 
-import {
-    applyBorder
-}
-from "../appearance/borderSetting.js";
 
 import {
     enableSettingDrag
@@ -73,9 +48,14 @@ import {
 from "./settingManager.js";
 
 import {
-    getAppearanceSettings
+    getAppearanceSectionsHTML
 }
 from "../appearance/appearanceSettings.js";
+
+import {
+    saveLayout
+}
+from "../../home/saveLayout.js";
 
 import {
     getWidgetAppearance,
@@ -196,6 +176,11 @@ import {
 }
 from "../../widgets/diaryCard.js";
 
+import {
+    syncLayoutToServer
+}
+from "../../home/serverLayout.js";
+
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
     "weather-hour-widget":    "Weather Hours",
@@ -237,7 +222,8 @@ export function createSettingPopup(widgetId) {
     if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
     closeCurrentPopup();
 
-    const appearanceHTML = getAppearanceSettings();
+    const savedApp       = getWidgetAppearance(widgetId) || {};
+    const appearanceHTML = getAppearanceSectionsHTML(savedApp);
 
     let widgetTabs = { style: "", location: "", graph: "", display: "" };
 
@@ -265,8 +251,8 @@ export function createSettingPopup(widgetId) {
     else if (widgetId === "high-streak-widget") {
         widgetTabs = getHighStreakSettings();
     }
-    else if (widgetId === "picture-streak-widget") {
-        widgetTabs = getPictureStreakSettings();
+    else if (widgetId.startsWith("picture-streak-widget")) {
+        widgetTabs = getPictureStreakSettings(widgetId);
     }
     else if (widgetId === "emotion-summary-widget") {
         widgetTabs = getEmotionSummarySettings();
@@ -280,57 +266,30 @@ export function createSettingPopup(widgetId) {
 
     const widgetName = WIDGET_NAMES[widgetId] || widgetId;
 
-    // Only include tabs that have content
-    const ALL_TABS = [
-        { key: "style",    label: "Style",    content: appearanceHTML + (widgetTabs.style || "") },
-        { key: "location", label: "Location", content: widgetTabs.location || "" },
-        { key: "graph",    label: "Graph",    content: widgetTabs.graph    || "" },
-        { key: "display",  label: "Display",  content: widgetTabs.display  || "" }
-    ];
-
-    const visibleTabs = ALL_TABS.filter(t => t.content.trim() !== "");
-
-    const tabBarHTML = visibleTabs.map((t, i) =>
-        `<button class="setting-tab${i === 0 ? " active" : ""}" data-tab="${t.key}">${t.label}</button>`
-    ).join("");
-
-    const panesHTML = visibleTabs.map((t, i) =>
-        `<div class="setting-pane${i === 0 ? " active" : ""}" data-pane="${t.key}">${t.content}</div>`
-    ).join("");
+    const widgetExtra = [widgetTabs.style, widgetTabs.location, widgetTabs.graph, widgetTabs.display]
+        .filter(s => s && s.trim())
+        .flatMap(s => s.trim().split(/(?=<h3\b[^>]*>)/i).filter(p => p.trim()))
+        .map(s => `<div class="setting-section">${s}</div>`)
+        .join("");
 
     const popup = document.createElement("div");
     popup.className = "setting-popup";
 
     popup.innerHTML = `
-
         <div class="setting-header">
             <span>${widgetName}</span>
             <button class="setting-close">✕</button>
         </div>
-
-        <div class="setting-tabs">
-            ${tabBarHTML}
-        </div>
-
         <div class="setting-body">
-            ${panesHTML}
+            ${appearanceHTML}
+            ${widgetExtra}
         </div>
-
     `;
 
     popup.querySelector(".setting-close").addEventListener("click", () => {
         if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
+        syncLayoutToServer();
         closeCurrentPopup();
-    });
-
-    const tabBtns = popup.querySelectorAll(".setting-tab");
-    tabBtns.forEach(tab => {
-        tab.addEventListener("click", () => {
-            tabBtns.forEach(t => t.classList.remove("active"));
-            popup.querySelectorAll(".setting-pane").forEach(p => p.classList.remove("active"));
-            tab.classList.add("active");
-            popup.querySelector(`.setting-pane[data-pane="${tab.dataset.tab}"]`).classList.add("active");
-        });
     });
 
     document.body.append(popup);
@@ -360,48 +319,31 @@ export function createSettingPopup(widgetId) {
 
     attachContentObserver(widgetId);
 
-    /* ── Pre-fill appearance controls from saved state ───────── */
+    /* ── Title alignment ─────────────────────────────────────── */
 
-    const savedApp = getWidgetAppearance(widgetId) || {};
-
-    const _bgColorEl = popup.querySelector(".background-color-picker");
-    if (_bgColorEl && savedApp.backgroundColor) {
-        _bgColorEl.value = savedApp.backgroundColor;
-    }
-
-    const _bgOpEl = popup.querySelector(".background-opacity-slider");
-    if (_bgOpEl && savedApp.backgroundOpacity !== undefined) {
-        _bgOpEl.value = savedApp.backgroundOpacity;
-        const _bgOpVal = popup.querySelector(".background-opacity-value");
-        if (_bgOpVal) _bgOpVal.textContent = savedApp.backgroundOpacity + "%";
-    }
-
-    const _titleColorEl = popup.querySelector(".title-color-picker");
-    if (_titleColorEl && savedApp.titleColor) {
-        _titleColorEl.value = savedApp.titleColor;
-    }
-
-    const _contentColorEl = popup.querySelector(".content-color-picker");
-    if (_contentColorEl && savedApp.contentColor) {
-        _contentColorEl.value = savedApp.contentColor;
-    }
-
-    if (savedApp.showTitle === false) {
-        popup.querySelectorAll(".title-segment-option").forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.value === "false");
+    const titleAlignBtns = popup.querySelectorAll(".title-align-option");
+    titleAlignBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            titleAlignBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { titleAlign: btn.dataset.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
-    }
+    });
 
-    if (savedApp.showBorder === false) {
-        popup.querySelectorAll(".border-segment-option").forEach(btn => {
-            btn.classList.toggle("active", btn.dataset.value === "false");
+    /* ── Title scale (1 / 2 / 3) ─────────────────────────────── */
+    const titleScaleBtns = popup.querySelectorAll(".title-scale-option");
+    titleScaleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            titleScaleBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { titleScale: btn.dataset.value });
+            const widgetEl = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (updatedApp && widgetEl) applyWidgetAppearance(widgetEl, updatedApp);
         });
-    }
-
-    // Pre-select content scale (S/M/L)
-    const _curScale = savedApp.contentScale || "3";
-    popup.querySelectorAll(".content-scale-segment .segment-option").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.value === _curScale);
     });
 
     /* ── Content scale (S / M / L) — shared across all widgets ─── */
@@ -571,32 +513,80 @@ export function createSettingPopup(widgetId) {
         });
     }
 
+    /* ── Universal Color Palette ─────────────────────────── */
+
+    const apPaletteBtns = popup.querySelectorAll(".ap-palette-card");
+    apPaletteBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const colors   = JSON.parse(btn.dataset.colors);
+            const isActive = btn.classList.contains("active");
+            const prevRot  = isActive ? (parseInt(btn.dataset.rotate || "0", 10)) : -1;
+            const rot      = (prevRot + 1) % 3;
+            const bg       = colors[rot];
+            const titleC   = colors[(rot + 1) % 3];
+            const contentC = colors[(rot + 2) % 3];
+            saveWidgetAppearance(widgetId, {
+                backgroundColor: bg,
+                titleColor:      titleC,
+                contentColor:    contentC
+            });
+            const widgetEl   = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widgetEl && updatedApp) applyWidgetAppearance(widgetEl, updatedApp);
+            const bgPicker      = popup.querySelector(".background-color-picker");
+            const titlePicker   = popup.querySelector(".title-color-picker");
+            const contentPicker = popup.querySelector(".content-color-picker");
+            if (bgPicker)      bgPicker.value      = bg;
+            if (titlePicker)   titlePicker.value   = titleC;
+            if (contentPicker) contentPicker.value = contentC;
+            apPaletteBtns.forEach(b => { b.classList.remove("active"); delete b.dataset.rotate; });
+            btn.classList.add("active");
+            btn.dataset.rotate = String(rot);
+        });
+    });
+
+    /* ── Palette category chips ──────────────────────────── */
+
+    const catChips = popup.querySelectorAll(".palette-cat-chip");
+    catChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+            catChips.forEach(c => c.classList.remove("active"));
+            popup.querySelectorAll(".palette-cat-grid").forEach(g => g.classList.remove("active"));
+            chip.classList.add("active");
+            const grid = popup.querySelector(`.palette-cat-grid[data-cat="${chip.dataset.cat}"]`);
+            if (grid) grid.classList.add("active");
+        });
+    });
+
     /* ── Appearance controls ──────────────────────────────── */
 
     const titleColorPicker = popup.querySelector(".title-color-picker");
     if (titleColorPicker) {
         titleColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyTitleColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { titleColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
     const contentColorPicker = popup.querySelector(".content-color-picker");
     if (contentColorPicker) {
         contentColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyContentColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { contentColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
     const backgroundColorPicker = popup.querySelector(".background-color-picker");
     if (backgroundColorPicker) {
         backgroundColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyBackgroundColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { backgroundColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
@@ -606,9 +596,119 @@ export function createSettingPopup(widgetId) {
         backgroundOpacitySlider.addEventListener("input", event => {
             const opacity = event.target.value;
             backgroundOpacityValue.textContent = opacity + "%";
-            const widget = document.getElementById(widgetId);
-            applyBackgroundOpacity(widget, opacity);
             saveWidgetAppearance(widgetId, { backgroundOpacity: Number(opacity) });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+        });
+    }
+
+    const borderColorPicker = popup.querySelector(".border-color-picker");
+    if (borderColorPicker) {
+        borderColorPicker.addEventListener("input", event => {
+            saveWidgetAppearance(widgetId, { borderColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+        });
+    }
+
+    const borderWidthSlider = popup.querySelector(".border-width-slider");
+    const borderWidthValue  = popup.querySelector(".border-width-value");
+    if (borderWidthSlider) {
+        borderWidthSlider.addEventListener("input", event => {
+            const bw = parseFloat(event.target.value);
+            if (borderWidthValue) borderWidthValue.textContent = bw + "px";
+            saveWidgetAppearance(widgetId, { borderWidth: bw });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+        });
+    }
+
+    /* ── Background Opacity: Apply to All ───────────────────── */
+
+    const opacityAllBtn = popup.querySelector(".apply-all-button");
+    if (opacityAllBtn) {
+        opacityAllBtn.addEventListener("click", () => {
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply Opacity to All Widgets</div>
+                    <div class="confirm-modal-body">
+                        This will apply the current background opacity to all widgets.
+                    </div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const opacity = sourceApp.backgroundOpacity ?? 100;
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, { backgroundOpacity: opacity });
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    }
+
+    /* ── Apply to All ────────────────────────────────────────── */
+
+    const applyToAllBtn = popup.querySelector(".apply-to-all-btn");
+    if (applyToAllBtn) {
+        applyToAllBtn.addEventListener("click", () => {
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply to All Widgets</div>
+                    <div class="confirm-modal-body">
+                        This will apply the current colors and border style to all widgets. Each widget's other settings will not be affected.
+                    </div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const shared = {
+                    backgroundColor:   sourceApp.backgroundColor,
+                    backgroundOpacity: sourceApp.backgroundOpacity,
+                    titleColor:        sourceApp.titleColor,
+                    contentColor:      sourceApp.contentColor,
+                    borderColor:       sourceApp.borderColor,
+                    borderWidth:       sourceApp.borderWidth,
+                    showBorder:        sourceApp.showBorder
+                };
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, shared);
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
         });
     }
 
@@ -623,6 +723,10 @@ export function createSettingPopup(widgetId) {
             saveWidgetAppearance(widgetId, { showTitle: visible });
             // Header lives outside .widget-content so MutationObserver won't catch this
             autoExpandWidget(widgetId);
+            ["title-color-row", "title-align-row", "title-size-row"].forEach(cls => {
+                const row = popup.querySelector("." + cls);
+                if (row) row.style.display = visible ? "" : "none";
+            });
         });
     });
 
@@ -632,11 +736,52 @@ export function createSettingPopup(widgetId) {
             borderButtons.forEach(item => item.classList.remove("active"));
             button.classList.add("active");
             const show = button.dataset.value === "true";
-            const widget = document.getElementById(widgetId);
-            applyBorder(widget, show);
             saveWidgetAppearance(widgetId, { showBorder: show });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+            popup.querySelectorAll(".border-color-row, .border-width-row, .border-width-slider-row")
+                .forEach(el => { el.style.display = show ? "" : "none"; });
         });
     });
+
+    /* ── Section accordion toggles ──────────────────────── */
+
+    popup.querySelectorAll(".setting-section-toggle").forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            toggle.closest(".setting-section").classList.toggle("open");
+        });
+    });
+
+    /* ── Width / Height size inputs ─────────────────────── */
+
+    const targetWidget = document.getElementById(widgetId);
+    const widthInput   = popup.querySelector(".widget-width-input");
+    const heightInput  = popup.querySelector(".widget-height-input");
+
+    if (widthInput && targetWidget) {
+        widthInput.value = parseInt(targetWidget.style.width) || "";
+        widthInput.addEventListener("input", () => {
+            const v = parseInt(widthInput.value);
+            if (v >= 80) {
+                targetWidget.style.width = v + "px";
+                saveLayout(targetWidget);
+                targetWidget.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    }
+
+    if (heightInput && targetWidget) {
+        heightInput.value = parseInt(targetWidget.style.height) || "";
+        heightInput.addEventListener("input", () => {
+            const v = parseInt(heightInput.value);
+            if (v >= 60) {
+                targetWidget.style.height = v + "px";
+                saveLayout(targetWidget);
+                targetWidget.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    }
 
     /* ── Weather Week ─────────────────────────────────────── */
 
@@ -892,18 +1037,16 @@ export function createSettingPopup(widgetId) {
 
     /* ── Picture Streak ───────────────────────────────────── */
 
-    if (widgetId === "picture-streak-widget") {
+    if (widgetId.startsWith("picture-streak-widget")) {
 
         const psPhotoInput = popup.querySelector(".ps-photo-input");
         if (psPhotoInput) {
             psPhotoInput.addEventListener("change", event => {
                 const file = event.target.files[0];
-                if (!file) {
-                    return;
-                }
+                if (!file) return;
                 const reader = new FileReader();
                 reader.onload = () => {
-                    addPictureStreakPhoto(reader.result, file.name);
+                    addPictureStreakPhoto(widgetId, reader.result, file.name);
                     popup.remove();
                     createSettingPopup(widgetId);
                 };
@@ -915,7 +1058,7 @@ export function createSettingPopup(widgetId) {
         psRemoveBtns.forEach(btn => {
             btn.addEventListener("click", () => {
                 const idx = Number(btn.dataset.index);
-                removePictureStreakPhoto(idx);
+                removePictureStreakPhoto(widgetId, idx);
                 popup.remove();
                 createSettingPopup(widgetId);
             });
@@ -926,7 +1069,7 @@ export function createSettingPopup(widgetId) {
             btn.addEventListener("click", () => {
                 psDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                updatePictureStreakState({ displayMode: btn.dataset.value });
+                updatePictureStreakState(widgetId, { displayMode: btn.dataset.value });
             });
         });
 
@@ -935,14 +1078,14 @@ export function createSettingPopup(widgetId) {
             btn.addEventListener("click", () => {
                 psDateLabelBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                updatePictureStreakState({ showDateLabel: btn.dataset.value === "true" });
+                updatePictureStreakState(widgetId, { showDateLabel: btn.dataset.value === "true" });
             });
         });
 
         const psIntervalSelect = popup.querySelector(".ps-interval-select");
         if (psIntervalSelect) {
             psIntervalSelect.addEventListener("change", event => {
-                updatePictureStreakState({ scrollInterval: event.target.value });
+                updatePictureStreakState(widgetId, { scrollInterval: event.target.value });
             });
         }
 

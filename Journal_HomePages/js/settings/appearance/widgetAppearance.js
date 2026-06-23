@@ -5,13 +5,18 @@ const DEFAULTS = {
     backgroundOpacity: 100,
     titleColor: "#000000",
     contentColor: "#000000",
+    borderColor: "#ddd8cf",
+    borderWidth: 1.5,
     showTitle: true,
+    titleAlign: "left",
+    titleScale: "3",
     showBorder: true,
     contentScale: "3"
 };
 
 // 3 = original/default size, 2 = noticeably smaller, 1 = much smaller (more space around content)
 const CONTENT_SCALE_MAP = { "1": 0.75, "2": 0.85, "3": 1.0 };
+const TITLE_SCALE_MAP   = { "1": 0.75, "2": 0.85, "3": 1.0 };
 
 export function getWidgetAppearance(widgetId) {
     const raw = localStorage.getItem(KEY(widgetId));
@@ -44,8 +49,9 @@ export function applyWidgetAppearance(widget, app) {
 
     const header = widget.querySelector(".widget-header");
     if (header) {
-        header.style.color   = app.titleColor || "";
-        header.style.display  = app.showTitle !== false ? "flex" : "none";
+        header.style.color          = app.titleColor || "";
+        header.style.display        = app.showTitle !== false ? "flex" : "none";
+        header.style.justifyContent = app.titleAlign === "center" ? "center" : "";
     }
 
     const content = widget.querySelector(".widget-content");
@@ -53,9 +59,23 @@ export function applyWidgetAppearance(widget, app) {
         content.style.color = app.contentColor || "";
     }
 
-    widget.style.border    = app.showBorder !== false ? "" : "none";
-    widget.style.boxShadow = app.showBorder !== false ? "" : "none";
+    const dcBtn = widget.querySelector(".dc-btn");
+    if (dcBtn) {
+        dcBtn.style.backgroundColor = app.titleColor || "";
+        dcBtn.style.color = app.titleColor ? "#fff" : "";
+    }
+
+    if (app.showBorder !== false) {
+        widget.style.border    = `${app.borderWidth ?? 1.5}px solid ${app.borderColor || "#ddd8cf"}`;
+        widget.style.boxShadow = "";
+    } else {
+        widget.style.border    = "none";
+        widget.style.boxShadow = "none";
+    }
 
     const cs = CONTENT_SCALE_MAP[app.contentScale] ?? 1;
     widget.style.setProperty("--widget-content-scale", cs);
+
+    const ts = TITLE_SCALE_MAP[app.titleScale] ?? 1;
+    widget.style.setProperty("--widget-title-size-scale", ts);
 }

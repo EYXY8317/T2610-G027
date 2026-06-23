@@ -20,9 +20,18 @@ import {
 from "../dashboard/index.js";
 
 import {
-    setupEditMode
+    setupEditMode,
+    showDeleteAllConfirm
 }
 from "./edit.js";
+
+import {
+    hideWidget,
+    clearHiddenWidgets,
+    getHiddenWidgets
+}
+from "./widgetVisibility.js";
+
 
 import {
     loadLayout
@@ -34,6 +43,17 @@ import {
     resetToDefaultLayout
 }
 from "./defaultLayout.js";
+
+import {
+    loadLayoutFromServer,
+    syncLayoutToServer
+}
+from "./serverLayout.js";
+
+import {
+    openTemplatePicker
+}
+from "./templatePicker.js";
 
 import {
     getWidgetAppearance,
@@ -78,6 +98,11 @@ import {
 from "../widgets/pictureStreak.js";
 
 import {
+    getExtraPictureInstances
+}
+from "./addWidgetPanel.js";
+
+import {
     initializeEmotionSummary
 }
 from "../widgets/emotionSummary.js";
@@ -97,7 +122,7 @@ import {
 }
 from "../widgets/diaryCard.js";
 
-export function initializeHomepage() {
+export async function initializeHomepage() {
 
     const dashboard =
         document.getElementById(
@@ -107,6 +132,11 @@ export function initializeHomepage() {
     if (!dashboard) {
         return;
     }
+
+    // Load this user's saved layout from the server before rendering.
+    // For first-time users the server returns {}, so localStorage stays empty
+    // and applyDefaultLayout() seeds it with the built-in defaults below.
+    await loadLayoutFromServer();
 
     dashboard.innerHTML =
         renderWidgets();
@@ -204,6 +234,7 @@ export function initializeHomepage() {
     initializeNowStreak();
     initializeHighStreak();
     initializePictureStreak();
+    getExtraPictureInstances().forEach(id => initializePictureStreak(id));
     initializeEmotionSummary();
     initializeQuote();
     initializeDiaryCard();
@@ -215,22 +246,45 @@ export function initializeHomepage() {
         widgets
     );
 
+    if (sessionStorage.getItem("restore-edit-mode")) {
+        sessionStorage.removeItem("restore-edit-mode");
+        editLayoutButton.click();
+    }
+
+    const templatesBtn = document.getElementById("templates-btn");
+    if (templatesBtn) {
+        templatesBtn.addEventListener("click", () => {
+            menu.style.display = "none";
+            openTemplatePicker();
+        });
+    }
+
+    // Delete All Widgets button
+    const deleteAllBtn = document.getElementById("delete-all-widgets-btn");
+    if (deleteAllBtn) {
+        deleteAllBtn.addEventListener("click", () => {
+            menu.style.display = "none";
+            showDeleteAllConfirm(() => {
+                const allWidgets = Array.from(document.querySelectorAll(".widget"));
+                allWidgets.forEach(w => {
+                    hideWidget(w.id);
+                    w.remove();
+                });
+            });
+        });
+    }
+
     // Reset Layout button — re-applies default positions + styles to all widgets
     const resetLayoutButton = document.getElementById("reset-layout-btn");
     if (resetLayoutButton) {
-        resetLayoutButton.addEventListener("click", () => {
+        resetLayoutButton.addEventListener("click", async () => {
             if (!confirm("Reset all widgets to the default layout? This will undo your current arrangement.")) return;
 
+            clearHiddenWidgets();
             resetToDefaultLayout();
-
-            widgets.forEach(widget => {
-                loadLayout(widget);
-                const savedApp = getWidgetAppearance(widget.id);
-                if (savedApp) applyWidgetAppearance(widget, savedApp);
-                widget.dispatchEvent(new CustomEvent("widgetresize"));
-            });
-
+            await syncLayoutToServer();
             menu.style.display = "none";
+            window.location.reload();
         });
     }
 

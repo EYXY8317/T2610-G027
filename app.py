@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory, jsonify
 from Journal_Pages.diary_system.routes import diary_bp
 from auth_routes import auth_bp
 from Finance.finance_routes import finance_bp
@@ -121,6 +121,31 @@ def journal_home_static(filename):
         os.path.join('Journal_HomePages'),
         filename
     )
+
+# ================= HOME LAYOUT (per-user, stored in users.json) =================
+@app.route('/api/home-layout', methods=['GET'])
+def get_home_layout():
+    if "user" not in session:
+        return jsonify({}), 401
+    users = load_data(f_users, [])
+    for u in users:
+        if u["username"] == session["user"]:
+            return jsonify(u.get("home_layout", {}))
+    return jsonify({})
+
+@app.route('/api/home-layout', methods=['POST'])
+def save_home_layout():
+    if "user" not in session:
+        return jsonify({"error": "not logged in"}), 401
+    data = request.get_json() or {}
+    users = load_data(f_users, [])
+    for u in users:
+        if u["username"] == session["user"]:
+            u["home_layout"] = data
+            break
+    with open(f_users, "w") as f:
+        json.dump(users, f, indent=4)
+    return jsonify({"ok": True})
 
 # ================= RUN =================
 if __name__ == "__main__":
