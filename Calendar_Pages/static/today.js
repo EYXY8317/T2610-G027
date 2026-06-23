@@ -155,22 +155,40 @@ function updateProgress() {
         progress + "%";
 
 
-    // =====================================
-    // Update Progress Ring
-    // =====================================
+// =====================================
+// Update Progress Ring
+// =====================================
 
-    const angle =
-        progress * 3.6;
+// Get current theme colors
+const primaryColor =
+    getComputedStyle(
+        document.documentElement
+    ).getPropertyValue(
+        '--primary'
+    );
 
-    document.getElementById(
-         "progressCircle"
-    ).style.background =
+const borderColor =
+    getComputedStyle(
+        document.documentElement
+    ).getPropertyValue(
+        '--primary-border'
+    );
+
+// Calculate ring angle
+const angle =
+    progress * 3.6;
+
+// Update progress ring color
+document.getElementById(
+    "progressCircle"
+).style.background =
+
 `
     conic-gradient(
-          #7c5cff ${angle}deg,
-          #ece7f7 ${angle}deg
+        ${primaryColor} ${angle}deg,
+        ${borderColor} ${angle}deg
     )
-    `;
+`;
 
     // Update statistics cards
 

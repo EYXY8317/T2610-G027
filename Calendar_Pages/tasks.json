@@ -229,8 +229,23 @@
         "priority": "orange",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "personal",
+        "username": "moonlit_xiny",
+        "completedDate": "2026-06-23T10:35:42.805Z"
+    },
+    {
+        "id": 1782210705051,
+        "text": "CRITICAL THINKING MCQ",
+        "date": "2026-06-30",
+        "startTime": "15:15",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "",
+        "tag": "",
+        "description": "",
+        "status": "active",
+        "category": "study",
         "username": "moonlit_xiny"
     }
 ]
