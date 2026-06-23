@@ -166,21 +166,27 @@ function renderWidget(state) {
     const fontFamily = FONT_STYLES[state.fontStyle] || FONT_STYLES.serif;
     const isItalic = state.fontStyle === "italic";
 
+    const authorText = state.showAuthor !== false && quote.author
+        ? `<span class="quote-author">— ${quote.author}</span>`
+        : "";
+
     return `
-        <div class="quote-body" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}">
+        <div class="quote-body">
             <div class="quote-main">
-                <div class="quote-text">${quote.text}</div>
-                ${state.showAuthor !== false && quote.author ? `<div class="quote-author">— ${quote.author}</div>` : ""}
+                <div class="quote-text" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}">${quote.text}</div>
+                <div class="quote-author-row">
+                    ${authorText}
+                    <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
+                        ${saved ? "★" : "☆"}
+                    </button>
+                </div>
                 ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
             </div>
-            <div class="quote-actions">
-                <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
-                    ${saved ? "★" : "☆"}
-                </button>
-                ${!state.autoRotate ? `
+            ${!state.autoRotate ? `
+                <div class="quote-actions">
                     <button class="quote-next-btn" title="Next quote">↻</button>
-                ` : ""}
-            </div>
+                </div>
+            ` : ""}
         </div>
     `;
 

@@ -115,7 +115,7 @@ export const widgets = [
     {
         id: "picture-streak",
         name: "Picture Streak",
-        create: createPictureStreakWidget
+        create: () => createPictureStreakWidget("picture-streak-widget")
     },
 
     {

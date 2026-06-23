@@ -1,3 +1,8 @@
+import {
+    getWidgetAppearance,
+    applyWidgetAppearance
+} from "../settings/appearance/widgetAppearance.js";
+
 export const BOOK_OPTIONS = [
     { label: "Black Classic",   src: "/journal_home_static/assets/books/book1.png" },
     { label: "Pink Strawberry", src: "/journal_home_static/assets/books/book2.png" },
@@ -101,5 +106,8 @@ export function updateDiaryCardState(partial) {
         content.innerHTML = renderContent(next);
         attachDirectClick(content);
     }
+    const widgetEl = document.getElementById("diary-card-widget");
+    const savedApp = getWidgetAppearance("diary-card-widget");
+    if (widgetEl && savedApp) applyWidgetAppearance(widgetEl, savedApp);
     return next;
 }

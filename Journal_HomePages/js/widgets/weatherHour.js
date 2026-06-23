@@ -21,6 +21,14 @@ export function setShowHumidity(value) { showHumidity = value; }
 export function setGraphColor(value) { graphColor = value; }
 export function setChartFontSize(value) { chartFontSize = Number(value); }
 
+function hexToRgba(hex, alpha) {
+    const h = hex.replace("#", "");
+    const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
+    const g = parseInt(h.length === 3 ? h[1]+h[1] : h.slice(2,4), 16);
+    const b = parseInt(h.length === 3 ? h[2]+h[2] : h.slice(4,6), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export function createWeatherHourWidget() {
 
     return `
@@ -96,8 +104,10 @@ export async function renderWeatherHour() {
 
         const start = startIndex < 0 ? 0 : startIndex;
 
+        // Always collect all hours so hover works at any position;
+        // labels and dots are shown only at the step interval.
         const indices = [];
-        for (let i = start; indices.length < 24 && i < allTemps.length; i += step) {
+        for (let i = start; indices.length < 24 && i < allTemps.length; i++) {
             indices.push(i);
         }
 
@@ -117,6 +127,18 @@ export async function renderWeatherHour() {
         const fontSize = Math.max(8, chartFontSize);
         const lineWidth = Math.max(1, Math.round(graphSize / 50));
 
+        const canvas = document.getElementById("weather-hour-chart");
+        const ctx = canvas.getContext("2d");
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.offsetHeight || 160);
+        gradient.addColorStop(0, hexToRgba(graphColor, 0.35));
+        gradient.addColorStop(1, hexToRgba(graphColor, 0.00));
+
+        // Show point dots only at the step interval; intermediate hours have invisible points
+        const dotR      = Math.max(2, lineWidth * 1.5);
+        const dotHoverR = Math.max(4, lineWidth * 2);
+        const pointRadii      = temperatures.map((_, i) => i % step === 0 ? dotR      : 0);
+        const pointHoverRadii = temperatures.map((_, i) => i % step === 0 ? dotHoverR : dotHoverR);
+
         const datasets = [
             {
                 label: "Temperature",
@@ -124,6 +146,10 @@ export async function renderWeatherHour() {
                 borderColor: graphColor,
                 borderWidth: lineWidth,
                 tension: 0.3,
+                fill: true,
+                backgroundColor: gradient,
+                pointRadius: pointRadii,
+                pointHoverRadius: pointHoverRadii,
                 yAxisID: "y"
             }
         ];
@@ -136,6 +162,8 @@ export async function renderWeatherHour() {
                 borderWidth: lineWidth,
                 tension: 0.3,
                 borderDash: [5, 3],
+                pointRadius: pointRadii,
+                pointHoverRadius: pointHoverRadii,
                 yAxisID: "y1"
             });
         }
@@ -150,6 +178,8 @@ export async function renderWeatherHour() {
                     maintainAspectRatio: false,
                     plugins: {
                         tooltip: {
+                            mode: "nearest",
+                            intersect: false,
                             titleFont: { size: fontSize },
                             bodyFont: { size: fontSize },
                             callbacks: {
@@ -181,7 +211,14 @@ export async function renderWeatherHour() {
                     },
                     scales: {
                         x: {
-                            ticks: { font: { size: fontSize } },
+                            ticks: {
+                                font: { size: fontSize },
+                                maxRotation: 0,
+                                minRotation: 0,
+                                autoSkip: false,
+                                // Only show labels at the step interval
+                                callback: (val, index) => index % step === 0 ? labels[index] : null
+                            },
                             grid: { display: false }
                         },
                         y: {

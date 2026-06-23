@@ -23,6 +23,8 @@ export function hideHorizontalLine() {
 export function hideGuideLines() {
     hideVerticalLine();
     hideHorizontalLine();
+    const gapGuide = document.getElementById("gap-guide");
+    if (gapGuide) gapGuide.style.display = "none";
 }
 
 export default {

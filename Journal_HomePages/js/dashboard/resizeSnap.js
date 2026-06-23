@@ -5,7 +5,7 @@ import {
     hideHorizontalLine
 } from "./guideUtils.js";
 
-const SNAP_DIST = 12;
+const SNAP_DIST = 8;
 const GAP_SIZE  = 20;
 
 // Returns the nearest snap value within SNAP_DIST, or null if nothing is close enough.
@@ -122,7 +122,7 @@ export function applyResizeSnap(
             ".widget"
         );
 
-    const SNAP = 12;
+    const SNAP = 8;
 
     const GAP = 20;
 

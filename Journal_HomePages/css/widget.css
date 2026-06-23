@@ -64,14 +64,11 @@
 
     min-height: 1.8em;
 
-    font-size: calc(var(--widget-font-scale, 1) * 17px);
+    font-size: calc(var(--widget-font-scale, 1) * var(--widget-title-size-scale, 1) * 17px);
 
     font-weight: 600;
 
     color: #1a1a1a;
-
-    border-bottom:
-        1px solid #ddd8cf;
 
     white-space: nowrap;
 
@@ -127,7 +124,34 @@
 
     border: 2px solid #1a1a1a !important;
     clip-path: none !important;
+    isolation: isolate;
 
+}
+
+.widget-delete-btn {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    z-index: 6;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(30, 30, 30, 0.72);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+    backdrop-filter: blur(4px);
+}
+
+.widget-delete-btn:hover {
+    background: #d93025;
+    transform: scale(1.12);
 }
 
 .drag-handle {
@@ -491,14 +515,18 @@
     font-size: 1em;
     line-height: 1.55;
     color: #1a1a1a;
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
+}
+
+.quote-author-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
 }
 
 .quote-author {
     font-size: 0.8em;
     color: #888;
-    margin-top: 2px;
 }
 
 .quote-source-tag {
@@ -511,9 +539,8 @@
 .quote-actions {
     flex-shrink: 0;
     display: flex;
-    gap: 8px;
     align-items: center;
-    padding-top: 8px;
+    padding-top: 4px;
 }
 
 .quote-save-btn,
@@ -662,6 +689,9 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .ps-date-label {
@@ -1165,7 +1195,8 @@
 .dc-body {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    align-self: stretch;
+    width: 100%;
     overflow: hidden;
     border-radius: 12px;
 }
@@ -1175,14 +1206,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 0;
     box-sizing: border-box;
     background: transparent;
+    overflow: hidden;
 }
 
 .dc-cover-img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 82%;
+    max-height: 82%;
     width: auto;
     height: auto;
     display: block;
@@ -1248,8 +1280,9 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding: 8px;
+    padding: 0;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .dc-direct {
@@ -1330,3 +1363,5 @@
     color: #fff;
     border-color: #1a1a1a;
 }
+
+
