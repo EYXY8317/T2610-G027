@@ -71,11 +71,11 @@
 
     cursor:pointer;
 
-    background:#f4efff;
+    background:var(--primary-light);
 
-    color:#6f67a5;
+    color:var(--primary);
 
-    border:1px solid #efe8ff;
+    border:1px solid var(--primary-border);
 
     transition:0.25s;
 
@@ -83,9 +83,9 @@
 
 .view-btn:hover{
 
-    background:#ece2ff;
+    background:var(--primary-hover);
 
-    color:#7c5cff;
+    color:var(--primary);
 
 }
 
@@ -123,21 +123,21 @@
 
     background:white;
 
-    color:#6f67a5;
+    color:var(--primary);
 
-    border:1px solid #efe8ff;
+    border:1px solid var(--primary-border);
 
     transition:0.25s;
 
     box-shadow:
-    0 4px 12px rgba(124,92,255,0.04);
+    0 4px 12px var(--shadow-light);
 
 }
 
 .calendar-nav-btn:hover,
 .calendar-today-btn:hover{
 
-    background:#f5efff;
+    background:var(--primary-light);
 
 }
 
@@ -193,12 +193,12 @@
 
     border-radius:22px;
 
-    border:1px solid #efe8ff;
+    border:1px solid var(--primary-border);
 
     background:white;
 
     box-shadow:
-    0 4px 14px rgba(124,92,255,0.04);
+    0 4px 14px var(--shadow-light);
 
 }
 
@@ -226,7 +226,7 @@
     transform:translateY(-2px);
 
     box-shadow:
-    0 8px 22px rgba(124,92,255,0.08);
+    0 8px 22px var(--shadow-medium);
 
 }
 
@@ -254,15 +254,15 @@
 
 .today{
 
-    background:#f5efff;
+    background:var(--primary-light);
 
-    border:1px solid #d8c7ff;
+    border:1px solid var(--primary-accent);
 
 }
 
 
 /* ==================================================
-   TASK BADGE
+    CALENDAR TASK NOTIFICATION BADGE (铃铛通知）
 ================================================== */
 
 .task-badge{
@@ -273,25 +273,54 @@
 
     right:8px;
 
-    min-width:18px;
+    display:flex;
 
-    height:18px;
+    align-items:center;
 
-    line-height:18px;
+    gap:3px;
 
-    padding:0 4px;
+    padding:4px 8px;
 
-    border-radius:50%;
+    border-radius:999px;
 
-    background:#ff6b97;
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+    font-size:12px;
+
+    font-weight:700;
+
+    transition:all 0.25s ease;
+
+    cursor:pointer;
+
+}
+
+/* Bell Icon */
+
+.task-badge
+.material-symbols-rounded{
+
+    font-size:20px;
+
+}
+
+/* Hover */
+
+.task-badge:hover{
+
+    background:var(--primary);
 
     color:white;
 
-    font-size:10px;
+    transform:
+        translateY(-2px)
+        scale(1.05);
 
-    font-weight:600;
-
-    text-align:center;
+    box-shadow:
+        0 8px 18px
+        var(--shadow-strong);
 
 }
 
@@ -321,7 +350,7 @@
 
     background:white;
 
-    border:1px solid #efe8ff;
+    border:1px solid var(--primary-border);
 
     border-radius:24px;
 
@@ -332,13 +361,13 @@
     transition:0.25s;
 
     box-shadow:
-    0 4px 18px rgba(124,92,255,0.04);
+    0 4px 18px var(--shadow-light);
 
 }
 
 .month-box:hover{
 
-    background:#faf7ff;
+    background:var(--primary-light);
 
     transform:translateY(-2px);
 
@@ -418,7 +447,7 @@
 
 .mini-day:hover{
 
-    background:#f2ebff;
+    background:var(--primary-hover);
 
 }
 
@@ -468,19 +497,14 @@
 
     background:white;
 
-    border:1px solid #eee6ff;
+    border:1px solid var(--primary-border);
 
     border-radius:24px;
 
     padding:24px;
 
     box-shadow:
-    0 10px 35px rgba(
-        124,
-        92,
-        255,
-        0.15
-    );
+    0 10px 35px var(--shadow-medium);
 
     z-index:9999;
 
@@ -531,9 +555,9 @@
 
     border-radius:12px;
 
-    background:#f4efff;
+    background:var(--primary-light);
 
-    color:#a69cc7;
+    color:var(--primary);
 
     font-size:20px;
 
@@ -589,9 +613,9 @@
 
     border-radius:14px;
 
-    border:1px solid #efe8ff;
+    border:1px solid var(--primary-border);
 
-    background:#faf7ff;
+    background:var(--primary-light);
 
     outline:none;
 
@@ -667,8 +691,8 @@
     background:
     linear-gradient(
         135deg,
-        #c08cff,
-        #7c5cff
+        var(--gradient-start),
+        var(--gradient-end)
     );
 
 }
@@ -717,12 +741,7 @@
     z-index:10000;
 
     box-shadow:
-    0 20px 50px rgba(
-        124,
-        92,
-        255,
-        0.18
-    );
+    0 20px 50px var(--shadow-strong);
 
 }
 
@@ -743,7 +762,7 @@
 
     padding-bottom:14px;
 
-    border-bottom:1px solid #efe8ff;
+    border-bottom:1px solid var(--primary-border);
 
 }
 
@@ -773,20 +792,85 @@
 }
 
 
-
 /* ==================================================
    CALENDAR TASK CARD
 ================================================== */
 
 .calendar-task-card{
 
-    background:#faf8ff;
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    background:var(--primary-light);
 
     border-radius:16px;
 
     padding:18px;
 
     margin-bottom:12px;
+
+}
+
+/* ==================================================
+   TASK CONTENT
+================================================== */
+
+.calendar-task-content{
+
+    flex:1;
+
+}
+
+/* ==================================================
+   TASK TITLE
+================================================== */
+
+.calendar-task-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2f3367;
+
+    margin:8px 0 12px;
+
+}
+
+/* ==================================================
+   TASK META
+================================================== */
+
+.calendar-task-meta{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    font-size:14px;
+
+    color:#7d7d98;
+
+}
+
+/* ==================================================
+   TASK ACTIONS
+================================================== */
+
+.calendar-task-actions{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-left:24px;
 
 }
 
@@ -801,9 +885,9 @@
 
     align-items:center;
 
-    background:#f4efff;
+    background:var(--primary-hover);
 
-    color:#7c5cff;
+    color:var(--primary);
 
     padding:8px 16px;
 
@@ -817,32 +901,66 @@
 
 }
 
-/* ==================================================
-   TASK TITLE
-================================================== */
-
-.calendar-task-title{
-
-    font-size:18px;
-
-    font-weight:700;
-
-    color:#2f3367;
-
-    margin:12px 0 16px;
-
-}
 
 
-/* ==================================================
-   TASK ACTIONS
-================================================== */
 
-.calendar-task-actions{
+
+/* =====================================
+   PRIORITY DISPLAY
+===================================== */
+
+.task-priority{
 
     display:flex;
 
-    gap:10px;
+    align-items:center;
+
+    gap:6px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+/* Flag Icon */
+
+.task-priority
+.material-symbols-rounded{
+
+    font-size:18px;
+
+}
+
+/* High */
+
+.priority-red{
+
+    color:#ff5c70;
+
+}
+
+/* Medium */
+
+.priority-orange{
+
+    color:#ff9d2e;
+
+}
+
+/* Low */
+
+.priority-blue{
+
+    color:#5b8cff;
+
+}
+
+/* No Priority */
+
+.priority-gray{
+
+    color:#9c9c9c;
 
 }
 
@@ -853,21 +971,33 @@
 
 .calendar-complete-btn{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
     border:none;
 
-    padding:8px 16px;
+    padding:10px 16px;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    background:#8b6cff;
+    background:var(--primary);
 
     color:white;
 
-    font-size:12px;
-
-    font-weight:500;
+    font-weight:600;
 
     cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.calendar-complete-btn:hover{
+
+    transform:translateY(-2px);
 
 }
 
@@ -878,21 +1008,35 @@
 
 .calendar-delete-btn{
 
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
     border:none;
 
-    padding:8px 16px;
+    padding:10px 16px;
 
-    border-radius:10px;
+    border-radius:12px;
 
-    background:#8b6cff;
+    background:var(--primary-light);
 
-    color:white;
+    color:var(--primary);
 
-    font-size:12px;
-
-    font-weight:500;
+    font-weight:600;
 
     cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.calendar-delete-btn:hover{
+
+    transform:translateY(-2px);
+
+    background:var(--primary-hover);
 
 }
 
@@ -914,9 +1058,9 @@
 
     border-radius:12px;
 
-    background:#f4efff;
+    background:var(--primary-light);
 
-    color:#a69cc7;
+    color:var(--primary);
 
     font-size:20px;
 

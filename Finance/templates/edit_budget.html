@@ -41,10 +41,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
     <div class="nav-links">
         <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
         <a href="/journal">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
-        <a href="/logout">Logout</a>
+        <a href="/profile">Settings</a>
     </div>
 </nav>
 
@@ -117,6 +118,18 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     min="0.01"
                     required
                 >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Budget Period</label>
+
+                <select name="period">
+                    <option value="monthly" {% if budget.period == 'monthly' or not budget.period %}selected{% endif %}>📅 Monthly</option>
+                    <option value="weekly" {% if budget.period == 'weekly' %}selected{% endif %}>📅 Weekly</option>
+                    <option value="yearly" {% if budget.period == 'yearly' %}selected{% endif %}>📅 Yearly</option>
+                </select>
 
             </div>
 

@@ -1,0 +1,591 @@
+/* ==================================================
+   TODAY PAGE HEADER
+================================================== */
+
+.today-header{
+
+    margin-bottom:28px;
+
+}
+
+.today-date{
+
+    font-size:27px;
+
+    font-weight:700;
+
+     color:var(--primary);
+
+    letter-spacing:.3px;
+
+}
+
+/* =====================================
+   TODAY PAGE GRID
+===================================== */
+
+.today-top-grid{
+
+    display:grid;
+
+    grid-template-columns: 1.7fr 1fr;
+
+    gap:24px;
+
+    align-items:start;
+
+}
+
+
+/* ==================================================
+   DASHBOARD CARD
+================================================== */
+
+.dashboard-card{
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:30px;
+
+    margin-bottom:24px;
+
+    border:1px solid var(--primary-border);
+
+    box-shadow:
+    0 8px 30px var(--shadow-light);
+
+}
+
+
+/* ==================================================
+   CARD HEADER
+================================================== */
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.header-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+
+/* ==================================================
+   CARD ICON
+================================================== */
+
+.card-icon{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:14px;
+
+    background:var(--primary-light);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.card-icon .material-symbols-rounded{
+
+    color:var(--primary);
+
+    font-size:24px;
+
+}
+
+
+/* ==================================================
+   CARD TITLE
+================================================== */
+
+.card-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2f2f52;
+
+}
+
+
+/* ==================================================
+   TODAY TASK LIST
+================================================== */
+
+#todayTasks{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+/* ==================================================
+   TODAY TASK CARD
+================================================== */
+
+.today-task-card{
+
+    background:var(--primary-light);
+
+    border-left:4px solid var(--primary);
+
+    border-radius:16px;
+
+    padding:12px 16px;
+
+
+}
+
+
+/* ==================================================
+   TODAY TASK TITLE
+================================================== */
+
+.today-task-title{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#2f3367;
+
+    margin-bottom:4px;
+
+}
+
+
+/* ==================================================
+   TODAY TASK TIME
+================================================== */
+
+.today-task-meta{
+
+    font-size:13px;
+
+    color:#8a8aa3;
+
+}
+
+/* ==================================================
+   MORE TASKS
+================================================== */
+
+.today-more-tasks{
+
+    text-align:center;
+
+    font-size:13px;
+
+    color:#8a8aa3;
+
+    margin-top:10px;
+
+    font-weight:500;
+
+}
+
+/* =====================================
+   TODAY TIMELINE
+===================================== */
+
+.today-timeline-item{
+
+    display:flex;
+
+    gap:18px;
+
+    position:relative;
+
+    padding-bottom:28px;
+
+}
+
+.timeline-left{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    width:24px;
+
+}
+
+.timeline-dot{
+
+    width:12px;
+
+    height:12px;
+
+    border-radius:50%;
+
+    background:var(--primary);
+
+    z-index:2;
+
+}
+
+.timeline-line{
+
+    width:2px;
+
+    flex:1;
+
+    background:var(--primary-border);
+
+    margin-top:4px;
+
+}
+
+.timeline-right{
+
+    flex:1;
+
+}
+
+.today-time{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+    margin-bottom:6px;
+
+}
+
+.timeline-task-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:#27325c;
+
+    margin-bottom:10px;
+
+}
+
+.today-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.today-category-badge{
+
+    padding:4px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:500;
+
+    background:var(--primary-hover);
+
+    color:var(--primary);
+
+}
+
+.today-due-text{
+
+    font-size:13px;
+
+    color:#7b7b9f;
+
+}
+
+/* ==================================================
+   PROGRESS CARD
+================================================== */
+
+.progress-card{
+
+    overflow:hidden;
+
+}
+
+
+/* ==================================================
+   PROGRESS BADGE
+================================================== */
+
+.progress-badge{
+
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+/* ==================================================
+   PROGRESS CONTENT
+================================================== */
+
+.progress-content{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+
+/* ==================================================
+   PROGRESS LABEL
+================================================== */
+
+.progress-label{
+
+    margin-top:8px;
+
+    color:#8f8cab;
+
+    font-size:15px;
+
+}
+
+
+/* ==================================================
+   PROGRESS RIGHT
+================================================== */
+
+.progress-right{
+
+    flex:1;
+
+}
+
+
+/* =====================================
+   PROGRESS RING
+===================================== */
+
+.progress-ring-wrapper{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    margin-bottom:32px;
+
+}
+
+.progress-circle{
+
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+
+    background:
+    conic-gradient(
+        var(--primary) 0deg,
+        var(--primary-border) 0deg
+    );
+
+    transition:0.8s ease;
+
+}
+
+.progress-circle span{
+
+    position:relative;
+
+    z-index:2;
+
+    font-size:48px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+.progress-circle::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:145px;
+    height:145px;
+
+    border-radius:50%;
+
+    background:white;
+
+}
+
+
+
+
+/* =====================================
+   PROGRESS STATS
+===================================== */
+
+.progress-stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+
+    margin-top:20px;
+
+}
+
+.stat-box{
+
+    background:var(--primary-light);
+
+    border:1px solid var(--primary-border);
+
+    border-radius:14px;
+
+    padding:14px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+}
+
+.stat-label{
+
+    font-size:12px;
+
+    color:#8c8ca6;
+
+}
+
+.stat-value{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+/* =====================================
+   RIGHT COLUMN
+===================================== */
+
+.today-right-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:24px;
+
+}
+
+/* ==================================================
+   QUOTE CARD
+================================================== */
+
+.quote-card{
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--quote-start),
+        var(--quote-end)
+    );
+
+}
+
+
+/* ==================================================
+   QUOTE TEXT
+================================================== */
+
+.quote-text{
+
+    margin-top:24px;
+
+    margin-bottom:14px;
+
+    font-size:32px;
+
+    font-style:italic;
+
+    line-height:1.5;
+
+    color:#353558;
+
+}
+
+/* ==================================================
+   EMPTY MESSAGE
+================================================== */
+
+.empty{
+
+    text-align:center;
+
+    color:#a4a1bf;
+
+    padding:40px 20px;
+
+}

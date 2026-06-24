@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 import {
     showVerticalLine,
     showHorizontalLine,
@@ -137,6 +139,7 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     return { width: newW, height: newH, left: newL, top: newT };
 }
 
+>>>>>>> 045b1a003df943324b73368ab658a8541a55e802
 export function applyResizeSnap(
     widget,
     width,

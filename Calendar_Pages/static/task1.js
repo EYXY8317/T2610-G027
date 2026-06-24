@@ -93,8 +93,15 @@ let today = new Date();
 //Tag Filter
 let currentTagFilter = "all";
 
-// Completed page filter
-let currentCompletedFilter = "all";
+// =====================================
+// COMPLETED PAGE FILTERS
+// =====================================
+
+let selectedDateFilter =
+    "all";
+
+let selectedCategoryFilter =
+    "all";
 
 // Selected schedule information
 let selectedDate = "";
@@ -106,7 +113,7 @@ let selectedRepeat = "";
 
 // Selected task settings
 let selectedPriority = "";
-let selectedTag = "";
+
 
 // ===============================
 // TASK STORAGE
@@ -173,7 +180,9 @@ async function addTask(listType) {
     // Date is required
     if (!selectedDate) {
 
-        alert("Please select a date first");
+        alert(
+            "Please select a date first"
+        );
 
         return;
 
@@ -210,37 +219,38 @@ async function addTask(listType) {
 
     };
 
-    // Save task into category
+    // Save task into local taskData
     taskData[listType].push(task);
 
-   // SAVE TASK TO FLASK
-   // Send new task data to backend JSON storage
+    // ===============================
+    // SAVE TASK TO FLASK
+    // ===============================
+
     await fetch(
-    "/calendar/add_task",
-    {
-        method: "POST",
+        "/calendar/add_task",
+        {
+            method: "POST",
 
-        headers: {
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
 
-            "Content-Type":
-                "application/json"
+            body: JSON.stringify({
 
-        },
+                ...task,
 
-        body: JSON.stringify({
+                category: listType
 
-            // Task information
-            ...task,
+            })
 
-            // Task category
-            category: listType
+        }
+    );
 
-        })
+    // ===============================
+    // CLEAR INPUTS
+    // ===============================
 
-    }
-);
-
-    // Clear inputs
     document.getElementById(
         listType + "TaskText"
     ).value = "";
@@ -249,19 +259,16 @@ async function addTask(listType) {
         "taskTag"
     ).value = "";
 
-    // Refresh task list
+    // ===============================
+    // REFRESH UI
+    // ===============================
+
     renderTasks(listType);
 
-    // Refresh Today Dashboard
     updateTodayDashboard();
 
-    // Refresh tag filters
     renderTagFilters();
 
-    // Save to localStorage
-    saveTasks();
-
-    // Refresh calendar if currently open
     if (
         document.getElementById("calendar")
             .classList.contains("active")
@@ -272,25 +279,18 @@ async function addTask(listType) {
     }
 
     // ===============================
-    // RESET INPUT AND TEMPORARY DATA
+    // RESET TEMPORARY DATA
     // ===============================
 
-    // Clear task title input
-    document.getElementById(
-        listType + "TaskText"
-    ).value = "";
-
-    // Reset selected date and time
     selectedDate = "";
+
     selectedStart = "";
+
     selectedEnd = "";
 
-    // Reset repeat settings
     selectedRepeat = "";
 
-    // Reset task settings
     selectedPriority = "";
-    selectedTag = "";
 
     // Reset priority button selection
     document
@@ -308,49 +308,6 @@ async function addTask(listType) {
 }
 
 
-
-// ===============================
-// COMPLETE TASK
-// Move task to completed status
-// ===============================
-
-function completeTask(listType, id) {
-
-    // Find selected task
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    // Stop if task doesn't exist
-    if (!task) return;
-
-    // Update task status
-    task.status = "completed";
-
-    // Refresh active task list
-    renderTasks(listType);
-
-    // Refresh completed page
-    renderCompleted();
-
-    // Refresh Today Dashboard
-    updateTodayDashboard();
-
-    // Save changes
-    saveTasks();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById("calendar")
-            .classList.contains("active")
-    ) {
-
-        generateCalendar();
-
-    }
-
-}
 
 
 
@@ -702,33 +659,7 @@ function renderTasks(listType) {
 
 }
 
-// ===============================
-// FILTER COMPLETED TASKS
-// ===============================
 
-function filterCompleted(type, btn) {
-
-    currentCompletedFilter = type;
-
-    document
-    .querySelectorAll(
-        ".completed-filter-btn"
-    )
-    .forEach(button => {
-
-        button.classList.remove(
-            "active"
-        );
-
-    });
-
-    btn.classList.add(
-        "active"
-    );
-
-    renderCompleted();
-
-}
 
 
 // ===============================
@@ -752,54 +683,323 @@ function renderCompleted() {
     // Loop through all categories
     Object.keys(taskData).forEach(listType => {
 
-        // Skip categories not selected
-        if (
+   // =====================================
+   // CATEGORY FILTER
+   // Show only selected category
+   // =====================================
 
-            currentCompletedFilter !== "all" &&
+    if (
 
-            listType !== currentCompletedFilter
+    selectedCategoryFilter !==
+    "all"
 
-         ) {
+    &&
 
-             return;
+    listType !==
+    selectedCategoryFilter
+
+) {
+
+    return;
+
+}
+
+let completedTasks =
+    taskData[listType].filter(
+        task => {
+
+            // Only show completed tasks
+            if (
+                task.status !==
+                "completed"
+            ) {
+
+                return false;
+
+            }
+
+            // Skip date filter if All Dates selected
+            if (
+                selectedDateFilter ===
+                "all"
+            ) {
+
+                return true;
+
+            }
+
+            const completedDate =
+                new Date(
+                    task.completedDate
+                );
+
+            const today =
+                new Date();
+
+            // =====================================
+            // TODAY
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "today"
+            ) {
+
+                return (
+
+                    completedDate
+                    .toDateString()
+
+                    ===
+
+                    today
+                    .toDateString()
+
+                );
+
+            }
+
+            // =====================================
+            // THIS WEEK
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "thisWeek"
+            ) {
+
+                const weekAgo =
+                    new Date();
+
+                weekAgo.setDate(
+                    today.getDate() - 7
+                );
+
+                return (
+                    completedDate >=
+                    weekAgo
+                );
+
+            }
+
+            // =====================================
+            // THIS MONTH
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "thisMonth"
+            ) {
+
+                return (
+
+                    completedDate
+                    .getMonth()
+
+                    ===
+
+                    today
+                    .getMonth()
+
+                    &&
+
+                    completedDate
+                    .getFullYear()
+
+                    ===
+
+                    today
+                    .getFullYear()
+
+                );
+
+            }
+
+            // =====================================
+            // LAST WEEK
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "lastWeek"
+            ) {
+
+                const startOfThisWeek =
+                    new Date();
+
+                startOfThisWeek.setDate(
+                    today.getDate() - 7
+                );
+
+                const startOfLastWeek =
+                    new Date();
+
+                startOfLastWeek.setDate(
+                    today.getDate() - 14
+                );
+
+                return (
+
+                    completedDate >=
+                    startOfLastWeek
+
+                    &&
+
+                    completedDate <
+                    startOfThisWeek
+
+                );
+
+            }
+
+            // =====================================
+            // LAST MONTH
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "lastMonth"
+            ) {
+
+                const lastMonthDate =
+                    new Date();
+
+                lastMonthDate.setMonth(
+                    today.getMonth() - 1
+                );
+
+                return (
+
+                    completedDate
+                    .getMonth()
+
+                    ===
+
+                    lastMonthDate
+                    .getMonth()
+
+                    &&
+
+                    completedDate
+                    .getFullYear()
+
+                    ===
+
+                    lastMonthDate
+                    .getFullYear()
+
+                );
+
+            }
+
+            // =====================================
+            // OLDER
+            // More than 30 days ago
+            // =====================================
+
+            if (
+                selectedDateFilter ===
+                "older"
+            ) {
+
+                const thirtyDaysAgo =
+                    new Date();
+
+                thirtyDaysAgo.setDate(
+                    today.getDate() - 30
+                );
+
+                return (
+
+                    completedDate <
+                    thirtyDaysAgo
+
+                );
+
+            }
+
+            return true;
 
         }
-
-        let completedTasks =
-            taskData[listType].filter(
-                task => task.status === "completed"
-            );
-
+    );
+    
         if (completedTasks.length === 0) return;
 
         hasCompleted = true;
 
-        // Create category section
-        const section =
-            document.createElement("div");
+// Create category section
+const section =
+    document.createElement("div");
 
-        section.style.marginBottom = "25px";
+section.style.marginBottom = "25px";
 
-        section.innerHTML = `
+section.innerHTML = `
 
-            <h3 class="completed-section-title">
+<div class="completed-group-card">
 
-                <span class="material-symbols-rounded">
-                    task_alt
-                </span>
+    <div class="completed-group-header">
 
-                ${listType.charAt(0).toUpperCase()
-            + listType.slice(1)
-            }
+        <div class="completed-group-icon">
 
-                Tasks (${completedTasks.length})
+            <span class="material-symbols-rounded">
 
-            </h3>
+                ${
+                    listType === "work"
+                    ? "work"
 
-        `;
+                    : listType === "shopping"
+                    ? "shopping_cart"
 
-        const taskContainer =
-            document.createElement("div");
+                    : listType === "study"
+                    ? "menu_book"
+
+                    : listType === "personal"
+                    ? "person"
+
+                    : "fitness_center"
+                }
+
+            </span>
+
+        </div>
+
+        <div>
+
+            <div class="completed-group-name">
+
+                ${
+                    listType.charAt(0)
+                    .toUpperCase()
+                    +
+                    listType.slice(1)
+                }
+
+            </div>
+
+            <div class="completed-group-count">
+
+                ${completedTasks.length}
+                Completed Tasks
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="completed-group-list">
+
+    </div>
+
+</div>
+
+`;
+
+
+    const taskContainer =
+       section.querySelector(
+           ".completed-group-list"
+        );
 
         // Create completed task cards
         completedTasks.forEach(task => {
@@ -808,10 +1008,7 @@ function renderCompleted() {
                 document.createElement("div");
 
             card.className =
-                "task-card completed";
-
-            card.style.marginBottom =
-                "8px";
+                 "completed-task-row";
 
             card.innerHTML = `
 
@@ -911,8 +1108,6 @@ function renderCompleted() {
 
         });
 
-        section.appendChild(taskContainer);
-
         container.appendChild(section);
 
     });
@@ -979,7 +1174,7 @@ function renderTrash() {
         const section =
             document.createElement("div");
 
-        section.style.marginBottom = "25px";
+        section.style.marginBottom = "16px";
 
         section.innerHTML = `
 
@@ -993,7 +1188,7 @@ function renderTrash() {
             + listType.slice(1)
             }
 
-                Tasks (${trashTasks.length})
+                 (${trashTasks.length})
 
             </h3>
 
@@ -1121,8 +1316,10 @@ function renderTrash() {
 
         });
 
-        // Add task list into section
-        section.appendChild(taskContainer);
+        // Insert task cards into section
+        section.appendChild(
+              taskContainer
+);
 
         // Add section into page
         container.appendChild(section);
@@ -1147,83 +1344,6 @@ function renderTrash() {
             </p>
 
         `;
-
-    }
-
-}
-
-
-
-// ===============================
-// RESTORE TASK
-// Move task from Trash
-// back to Active Tasks
-// ===============================
-
-async function restoreTask(listType, id) {
-
-    // Find selected task
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    // Stop if task doesn't exist
-    if (!task) return;
-
-    // Restore task to active status
-    task.status = "active";
-
-    
-       const response =
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert("Restore failed");
-
-    return;
-
-}
-
-    // Refresh Trash page
-    renderTrash();
-
-    // Refresh task list page
-    renderTasks(listType);
-
-    // Refresh Today Dashboard
-    updateTodayDashboard();
-
-    // Save changes
-    saveTasks();
-
-    // Refresh tag filters
-    renderTagFilters();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById("calendar")
-            .classList.contains("active")
-    ) {
-
-        generateCalendar();
 
     }
 
@@ -1284,8 +1404,6 @@ if (!result.success) {
     renderTrash();
 
     renderTagFilters();
-
-    saveTasks();
 
 }
 
@@ -1622,15 +1740,6 @@ function applyDate() {
 // Load task data from Flask API
 // ===============================
 
-function saveTasks() {
-
-    localStorage.setItem(
-        "taskData",
-        JSON.stringify(taskData)
-    );
-
-}
-
 async function loadTasks() {
 
     try {
@@ -1642,11 +1751,6 @@ async function loadTasks() {
 
         taskData =
             await response.json();
-
-        console.log(
-            "Tasks Loaded:",
-            taskData
-        );
 
     }
 
@@ -1729,6 +1833,52 @@ document.addEventListener(
         // Refresh Tag filters
         renderTagFilters();
 
+// =====================================
+// COMPLETED PAGE FILTER EVENTS
+// =====================================
+
+const dateFilter =
+    document.getElementById(
+        "dateFilter"
+    );
+
+if (dateFilter) {
+
+    dateFilter.addEventListener(
+        "change",
+        e => {
+
+            selectedDateFilter =
+                e.target.value;
+
+            renderCompleted();
+
+        }
+    );
+
+}
+
+const categoryFilter =
+    document.getElementById(
+        "categoryFilter"
+    );
+
+if (categoryFilter) {
+
+    categoryFilter.addEventListener(
+        "change",
+        e => {
+
+            selectedCategoryFilter =
+                e.target.value;
+
+            renderCompleted();
+
+        }
+    );
+
+}
+
         // Tag suggestion
         const tagInput =
             document.getElementById(
@@ -1759,6 +1909,7 @@ document.addEventListener(
 
 // ===============================
 // TOGGLE COMPLETE STATUS
+// Active ↔ Completed
 // Move task between Active
 // and Completed
 // ===============================
@@ -1768,8 +1919,6 @@ async function toggleComplete(
     id,
     checkbox
 ) {
-
-    console.log("TOGGLE RUNNING");
 
     let task =
         taskData[listType].find(
@@ -1842,22 +1991,109 @@ async function toggleComplete(
 
     }
 
-    // Update task status
-    if (checkbox.checked) {
+// =====================================
+// COMPLETE TASK ANIMATION
+// Play completion animation
+// before moving task into
+// Completed page
+// =====================================
 
-    task.status = "completed";
+if (checkbox.checked) {
 
-    task.completedDate =
-        new Date()
-        .toISOString();
+    // Get current task card
+    const taskCard =
+        checkbox.closest(
+            ".task-card"
+        );
+
+    // Add slide-out animation
+    if (taskCard) {
+
+        taskCard.classList.add(
+            "task-completing"
+        );
 
     }
-    else {
 
-    task.status = "active";
+    // Wait for animation to finish
+    setTimeout(async () => {
+
+        // Update task status
+        task.status =
+            "completed";
+
+        // Save completion timestamp
+        task.completedDate =
+            new Date()
+            .toISOString();
+
+        // Save updated task to Flask
+        await fetch(
+            "/calendar/update_task",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(
+                    task
+                )
+            }
+        );
+
+        // Refresh active task page
+        renderTasks(
+            listType
+        );
+
+        // Refresh completed page
+        renderCompleted();
+
+        // Refresh trash page
+        renderTrash();
+
+        // Refresh Today Dashboard
+        updateTodayDashboard();
+
+        // Refresh tag filters
+        renderTagFilters();
+
+        // Show completion message
+        showToast(
+            "✨ You Did It!"
+        );
+
+        // Refresh calendar if open
+        if (
+            document.getElementById(
+                "calendar"
+            )
+            .classList.contains(
+                "active"
+            )
+        ) {
+
+            generateCalendar();
+
+        }
+
+    }, 600);
+
+    return;
 
 }
 
+// =====================================
+// UNCHECK TASK
+// Move task back to active
+// =====================================
+
+task.status =
+    "active";
+    
 await fetch(
     "/calendar/update_task",
     {
@@ -2130,9 +2366,6 @@ if (!result.success) {
 
 }   
 
-    // Save data
-    saveTasks();
-
     // Refresh pages
     renderTasks(
         currentTaskListType
@@ -2245,9 +2478,6 @@ if (!result.success) {
 
     renderTagFilters();
 
-    // Save changes
-    saveTasks();
-
     // Refresh calendar if open
     if (
         document.getElementById(
@@ -2316,9 +2546,6 @@ if (!result.success) {
     renderTrash();
 
     renderTagFilters();
-
-    saveTasks();
-
 }
 
 // ===============================
@@ -2522,5 +2749,105 @@ function renderPopupTagSuggestions(keyword) {
 
     container.style.display =
         "block";
+
+}
+
+
+// =====================================
+// SHOW TOAST MESSAGE
+// Display a temporary notification
+// on the top-right corner
+//
+// Features:
+// 1. Show custom message
+// 2. Smooth fade-in animation
+// 3. Auto hide after 2 seconds
+// =====================================
+
+function showToast(message){
+
+    // Get toast element
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    // Update toast text
+    toast.textContent =
+        message;
+
+    // Show toast animation
+    toast.classList.add(
+        "show"
+    );
+
+    // Auto hide after 2 seconds
+    setTimeout(() => {
+
+        toast.classList.remove(
+            "show"
+        );
+
+    }, 2000);
+
+}
+
+
+// =====================================
+// COMPLETE TASK FROM CALENDAR MODAL
+// Complete task directly from calendar
+// =====================================
+
+async function completeTask(
+    listType,
+    id
+) {
+
+    const task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Update task status
+    task.status =
+        "completed";
+
+    task.completedDate =
+        new Date().toISOString();
+
+    // Save to Flask
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify(task)
+        }
+    );
+
+    // Refresh all pages
+    renderTasks(listType);
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    renderTagFilters();
+
+    generateCalendar();
+
+    // Success toast
+    showToast(
+        "✨ You Did It!"
+    );
 
 }

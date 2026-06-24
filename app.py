@@ -6,7 +6,7 @@ from Calendar_Pages.calendar_routes import calendar_bp
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 
 from Profile_Pages.profile_routes import register_profile_routes
@@ -146,6 +146,114 @@ def save_home_layout():
     with open(f_users, "w") as f:
         json.dump(users, f, indent=4)
     return jsonify({"ok": True})
+
+# ================= TODAY PAGE =================
+@app.route("/today")
+def today_page():
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    user = session["user"]
+    current_user = get_current_user()
+
+    f_expense  = os.path.join(BASE_DIR, "Finance", "expenses.json")
+    f_budget   = os.path.join(BASE_DIR, "Finance", "budget.json")
+    f_goals    = os.path.join(BASE_DIR, "goals.json")
+    f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
+
+    records     = load_data(f_expense, [])
+    budgets     = load_data(f_budget, [])
+    goals_list  = load_data(f_goals, [])
+    accounts    = load_data(f_accounts, [])
+
+    now            = datetime.now()
+    today_str      = now.strftime("%Y-%m-%d")
+    yesterday_str  = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    current_month  = now.strftime("%Y-%m")
+
+    user_records = [r for r in records if r.get("username") == user]
+
+    today_txns   = [r for r in user_records
+                    if r.get("date") == today_str
+                    and r.get("type") == "expense"
+                    and r.get("category") not in ("Transfer Out", "Goal Savings")]
+    today_spending = sum(r.get("amount", 0) for r in today_txns)
+
+    yest_spending  = sum(r.get("amount", 0) for r in user_records
+                         if r.get("date") == yesterday_str
+                         and r.get("type") == "expense"
+                         and r.get("category") not in ("Transfer Out", "Goal Savings"))
+
+    if yest_spending > 0:
+        spending_change = round(((today_spending - yest_spending) / yest_spending) * 100)
+    else:
+        spending_change = 0
+
+    month_expenses = [r for r in user_records
+                      if r.get("date", "").startswith(current_month)
+                      and r.get("type") == "expense"
+                      and r.get("category") not in ("Transfer Out", "Goal Savings")]
+    category_totals = {}
+    for r in month_expenses:
+        cat = r.get("category", "Other")
+        category_totals[cat] = category_totals.get(cat, 0) + r.get("amount", 0)
+
+    user_budgets = [b for b in budgets if b.get("username") == user]
+    budget_ok = True
+    for b in user_budgets:
+        spent = category_totals.get(b.get("category"), 0)
+        limit = b.get("amount", 0)
+        if limit > 0 and spent >= limit:
+            budget_ok = False
+            break
+    budget_status = "On Track" if budget_ok else "Over Budget"
+
+    all_user_goals = [g for g in goals_list if g.get("username") == user]
+    active_goals      = []
+    goals_in_progress = 0
+
+    for g in all_user_goals:
+        saved  = sum(r.get("amount", 0) for r in user_records
+                     if r.get("category") == "Goal Savings"
+                     and r.get("goal_id") == g.get("id"))
+        target = g.get("target", 0)
+        pct    = min((saved / target) * 100, 100) if target else 0
+
+        stored_status  = g.get("status") or "In Progress"
+        dynamic_status = "Completed" if pct >= 100 else stored_status
+
+        if dynamic_status not in ("Completed", "Cancelled"):
+            goals_in_progress += 1
+            if len(active_goals) < 3:
+                active_goals.append({
+                    "name":    g.get("name"),
+                    "saved":   saved,
+                    "target":  target,
+                    "percent": round(pct),
+                })
+
+    # Net savings: balance across all savings-purpose accounts (mirrors Finance page)
+    user_accounts    = [a for a in accounts if a.get("username") == user]
+    savings_acc_names = [a["name"] for a in user_accounts if a.get("purpose") == "savings"]
+    net_savings = 0
+    for acc in savings_acc_names:
+        for r in user_records:
+            if r.get("account") != acc:
+                continue
+            net_savings += r.get("amount", 0) if r.get("type") == "income" else -r.get("amount", 0)
+
+    return render_template(
+        "today_page.html",
+        today_spending   = today_spending,
+        spending_change  = spending_change,
+        today_txns       = today_txns,
+        category_totals  = category_totals,
+        budget_status    = budget_status,
+        active_goals     = active_goals,
+        goals_in_progress= goals_in_progress,
+        net_savings      = net_savings,
+        user             = current_user,
+    )
 
 # ================= RUN =================
 if __name__ == "__main__":
