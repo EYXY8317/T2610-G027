@@ -165,5 +165,25 @@
         "item": "",
         "amount": 7500.0,
         "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-02",
+        "type": "income",
+        "category": "Freelance",
+        "account": "TnG",
+        "item": "",
+        "amount": 3500.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-02",
+        "type": "income",
+        "category": "Business",
+        "account": "MAE",
+        "item": "",
+        "amount": 8500.0,
+        "receipt": null
     }
 ]
