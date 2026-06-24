@@ -70,10 +70,10 @@ const DEFAULTS = [
     },
 
     // ── Weather Week ──────────────────────────────────────────
-    // Wide table — needs horizontal space, top of mid-right column
+    // Card-column layout — wide and compact, top of mid-right column
     {
         id: "weather-week-widget",
-        layout:     { left: "726px", top: "24px",  width: "460px", height: "260px" },
+        layout:     { left: "726px", top: "24px",  width: "460px", height: "145px" },
         appearance: { backgroundColor: "#ffffff", backgroundOpacity: 100,
                       showTitle: true,  showBorder: true,
                       titleColor: "#1a1a1a", contentColor: "#1a1a1a" }

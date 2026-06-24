@@ -1,5 +1,6 @@
 import { getHiddenWidgets, showWidget } from "./widgetVisibility.js";
 import { syncLayoutToServer } from "./serverLayout.js";
+import { getConstraints } from "../dashboard/resizeConstraints.js";
 
 const WIDGET_INFO = {
     "digital-clock-widget":   { name: "Digital Clock",   icon: "🕐" },
@@ -95,9 +96,11 @@ function tryFit(occupied, w, h, navH) {
 }
 
 function findEmptySpot(targetId) {
-    const navH     = document.querySelector(".navbar")?.offsetHeight || 70;
-    const occupied = getOccupied(targetId);
-    return tryFit(occupied, 220, 160, navH);
+    const navH          = document.querySelector(".navbar")?.offsetHeight || 70;
+    const occupied      = getOccupied(targetId);
+    const baseId        = targetId.replace(/-\d+$/, "");
+    const { minW, minH } = getConstraints(baseId);
+    return tryFit(occupied, minW, minH, navH);
 }
 
 function showNoSpacePopup() {
