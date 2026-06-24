@@ -405,6 +405,35 @@
 
 }
 
+/* Color row left group — All button + label */
+
+.color-row-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+/* Color row All buttons — always visible, very subtle */
+
+.color-apply-btn {
+    padding: 3px 9px;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.13);
+    color: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.color-apply-btn:hover {
+    background: #1a1a1a !important;
+    color: #F2EFE9 !important;
+    border-color: #1a1a1a !important;
+}
+
 /* ── Palette category chips ──────────────────────────────── */
 
 .palette-cat-chips {
@@ -500,6 +529,130 @@
     text-align: center;
 }
 
+/* ── Clock type cards ────────────────────────────────────── */
+
+.clock-type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.clock-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 6px 8px;
+    border-radius: 10px;
+    background: #f5f3ef;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.clock-type-card:hover { background: #ede9e3; }
+.clock-type-card.active { border-color: #1a1a1a; }
+
+.clock-type-preview {
+    font-size: 0.85em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    padding: 4px 6px;
+    border-radius: 5px;
+}
+
+.ctp-digital {
+    font-family: 'Courier New', monospace;
+    background: #1a1a1a;
+    color: #f5f3ef;
+}
+
+.ctp-flip {
+    background: #2a1a0e;
+    color: #faf6f0;
+    border-radius: 5px;
+}
+
+.ctp-minimal {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    color: #555;
+    background: transparent;
+    border-bottom: 1px solid #bbb;
+    border-radius: 0;
+}
+
+.clock-type-name {
+    font-size: 0.65em;
+    color: #555;
+    text-align: center;
+}
+
+/* ── Timezone chips & cards ──────────────────────────────── */
+
+.tz-cat-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.tz-cat-chip {
+    padding: 3px 9px;
+    border-radius: 20px;
+    border: 1px solid #ddd8cf;
+    background: transparent;
+    font-size: 0.72em;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+
+.tz-cat-chip:hover { border-color: #aaa; color: #1a1a1a; }
+.tz-cat-chip.active { background: #1a1a1a; border-color: #1a1a1a; color: #F2EFE9; }
+
+.tz-grid {
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.tz-grid.active { display: grid; }
+
+.tz-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    background: #f5f3ef;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.tz-card:hover { background: #ede9e3; }
+.tz-card.active { border-color: #1a1a1a; }
+
+.tz-abbr {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.04em;
+}
+
+.tz-name {
+    font-size: 0.6em;
+    color: #888;
+    text-align: center;
+}
+
 /* ── Widget size inputs ───────────────────────────────────── */
 
 .size-input-wrap {
@@ -578,6 +731,12 @@
     cursor: pointer;
     user-select: none;
     padding-bottom: 2px;
+}
+
+.section-toggle-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
 }
 
 .setting-section-toggle h3 {

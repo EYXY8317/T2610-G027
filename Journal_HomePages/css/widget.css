@@ -1,3 +1,36 @@
+/* ── Size / Position HUD ─────────────────────────────────── */
+
+#size-hud {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    background: rgba(20, 20, 20, 0.80);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 5px;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* ── Same-size guide line (blue) ─────────────────────────── */
+
+#same-size-guide-v,
+#same-size-guide-h {
+    display: none;
+    position: absolute;
+    z-index: 9998;
+    background: rgba(59, 130, 246, 0.7);
+    pointer-events: none;
+}
+
+#same-size-guide-v { width: 1.5px; top: 0; bottom: 0; }
+#same-size-guide-h { height: 1.5px; left: 0; right: 0; }
+
 .widget {
 
     visibility: hidden;
@@ -122,7 +155,8 @@
 
 .widget.edit-mode {
 
-    border: 2px solid #1a1a1a !important;
+    outline: 2px solid #1a1a1a !important;
+    outline-offset: 1px;
     clip-path: none !important;
     isolation: isolate;
 
@@ -514,7 +548,6 @@
 .quote-text {
     font-size: 1em;
     line-height: 1.55;
-    color: #1a1a1a;
 }
 
 .quote-author-row {
@@ -526,7 +559,7 @@
 
 .quote-author {
     font-size: 0.8em;
-    color: #888;
+    opacity: 0.55;
 }
 
 .quote-source-tag {
@@ -587,72 +620,441 @@
     height: 320px;
 }
 
+/* ── Emotion Summary body ────────────────────────────────── */
+
+/* Stretch content to fill the card height instead of centering */
+#emotion-summary-widget .widget-content {
+    align-items: stretch;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Let es-body fill the full widget-content height so calendar outer can flex */
+#emotion-summary-widget .es-body {
+    flex: 1;
+    min-height: 0;
+}
+
 .es-body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 0.4em;
     width: 100%;
-    height: 100%;
-    padding: 0.65em;
+    min-height: 0;
+    padding: 0.6em 0.7em;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .es-empty {
-    font-size: 0.93em;
-    color: #9ca3af;
+    font-size: 0.85em;
+    color: #aaa;
     text-align: center;
+    line-height: 1.5;
+}
+
+.es-empty small { font-size: 0.88em; color: #c4bfb8; }
+
+/* ── Pie chart ───────────────────────────────────────────── */
+
+/* Outer wrapper — column by default, row when card is wide */
+.es-pie-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    gap: 10px;
+}
+
+.es-pie-outer--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* center the chart+legend unit, not stretch */
+    gap: 14px;
+}
+
+.es-pie-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* In row mode: square chart sized to the available height,
+   so legend stays glued to the chart edge, not the card edge */
+.es-pie-outer--row .es-pie-wrap {
+    flex: none;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.es-pie-wrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
+}
+
+.es-empty-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* HTML legend — side (column) */
+.es-pie-legend {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.es-pie-legend--side {
+    flex-direction: column;
+    gap: 7px;
+    justify-content: center;
+}
+
+.es-pie-legend--bottom {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    justify-content: center;
+}
+
+.es-leg-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 0.82em;
+    color: #3a3028;
+}
+
+.es-leg-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.es-leg-label {
+    line-height: 1.2;
 }
 
 .es-highlight {
-    font-size: 0.85em;
-    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82em;
+    color: #3a3028;
+    font-weight: 500;
+}
+
+.es-days-badge {
+    font-size: 0.88em;
+    background: #f0ece6;
+    color: #888;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 400;
 }
 
 .es-combo {
-    font-size: 0.78em;
-    color: #888;
+    font-size: 0.75em;
+    color: #aaa;
+    letter-spacing: 0.01em;
+}
+
+/* ── Line chart ──────────────────────────────────────────── */
+
+.es-line-wrap {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.es-line-wrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
 }
 
 .es-legend {
     display: flex;
-    gap: 10px;
-    font-size: 1.4em;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
-.es-calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
+.es-legend-item {
+    font-size: 1.1em;
+    line-height: 1;
+    position: relative;
+}
+
+.es-legend-item::after {
+    content: "";
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--c, #999);
+    margin-top: 2px;
+}
+
+/* ── Diary mood chips ────────────────────────────────────── */
+
+.es-diary-moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
     width: 100%;
+    padding-top: 5px;
+    border-top: 1px solid #ede9e2;
 }
 
-.es-cal-cell {
+.es-mood-chip {
+    font-size: 0.75em;
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: #fff;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* ── Calendar nav in widget header ───────────────────────── */
+
+/* Container injected into widget-header, right side (wide card) */
+.es-hdr-cal {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Tall card: header wraps so month nav sits on its own line below title */
+#emotion-summary-widget.es-cal-hdr-col .widget-header {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-bottom: 5px;
+}
+
+#emotion-summary-widget.es-cal-hdr-col .es-hdr-cal {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 4px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.9em;
+}
+
+.es-hdr-cal-month {
+    font-size: 0.78em;
+    font-weight: 600;
+    color: #3a3028;
+    letter-spacing: 0.01em;
+    padding: 0 2px;
+}
+
+.es-cal-prev,
+.es-cal-next {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: #b0a89e;
+    padding: 1px 6px;
+    border-radius: 5px;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s;
+}
+
+.es-cal-prev:hover,
+.es-cal-next:hover {
+    background: #ede9e2;
+    color: #1a1a1a;
+}
+
+/* ── Mood Heatmap ────────────────────────────────────────── */
+
+/* Outer wrapper: stacks heatmap + legend; switches to row when wide */
+.es-hm-outer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1px;
-    padding: 2px;
-    border-radius: 4px;
-    background: #f5f3ef;
-    font-size: 0.7em;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
 }
 
-.es-cal-cell.today {
-    background: #ebe7e0;
-    outline: 1px solid #1a1a1a;
+.es-hm-outer--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
 }
 
-.es-cal-day {
-    color: #aaa;
-    font-size: 0.85em;
+/* Heatmap: shrink-wraps around header + cell grid, always centered */
+.es-heatmap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
 }
 
-.es-cal-emoji {
-    font-size: 1.2em;
-    line-height: 1;
+/* DOW header row: Su Mo Tu We Th Fr Sa */
+.es-hm-header {
+    display: grid;
+    grid-template-columns: repeat(7, var(--cw, 14px));
+    gap: 3px;
 }
+
+.es-hm-header span {
+    width: var(--cw, 14px);
+    text-align: center;
+    font-size: 0.6em;
+    font-weight: 700;
+    color: #c4bfb8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding-bottom: 1px;
+    display: block;
+}
+
+/* Cell grid: 7 columns (one per DOW), rows = weeks */
+.es-hm-cells {
+    display: grid;
+    grid-template-columns: repeat(7, var(--cw, 14px));
+    gap: 3px;
+}
+
+.es-hm-cell {
+    width:  var(--cw, 14px);
+    height: var(--ch, 14px);
+    border-radius: 3px;
+    background: var(--hm-empty, #ede9e3);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.12s;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.es-hm-cell:hover {
+    transform: scale(1.2);
+    z-index: 2;
+    position: relative;
+}
+
+.es-hm-cell.es-hm-empty {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    cursor: default;
+    pointer-events: none;
+}
+
+.es-hm-cell.es-hm-today {
+    outline: 2px solid var(--hm-today, #1a1a1a);
+    outline-offset: 1px;
+}
+
+/* Legend — bottom (default) */
+.es-hm-legend {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 6px;
+    border-top: 1px solid #ede9e2;
+    width: 100%;
+}
+
+/* Legend — side (when card is wide) */
+.es-hm-legend--side {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 0;
+    padding-left: 14px;
+    border-top: none;
+    border-left: 1px solid #ede9e2;
+    width: auto;
+    align-self: stretch;
+}
+
+.es-hm-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72em;
+    color: #888;
+    white-space: nowrap;
+}
+
+.es-hm-leg-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Hover tooltip */
+.es-hm-tooltip {
+    display: none;
+    position: absolute;
+    background: #1e1e1e;
+    color: #fff;
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 0.78em;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    line-height: 1.5;
+}
+
+.es-hm-tt-date  { font-weight: 700; color: #fff; }
+.es-hm-tt-mood  { color: #a8d8a8; font-size: 0.95em; margin-top: 2px; }
+.es-hm-tt-topic { color: #c8c2bb; font-size: 0.9em; margin-top: 1px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+.es-hm-tt-empty { color: #888; font-size: 0.9em; margin-top: 2px; }
+
+/* ── Today Emotion diary mood badge ─────────────────────── */
+
+.te-diary-mood {
+    font-size: 0.78em;
+    margin-top: 5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-start;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.te-diary-mood:empty { display: none; }
+
+/* ── Shared mood colors ──────────────────────────────────── */
+
+.mood-happy  { background: #10b981; color: #fff; }
+.mood-sad    { background: #6366f1; color: #fff; }
+.mood-angry  { background: #ef4444; color: #fff; }
+
 
 /* ── Picture Streak ──────────────────────────────────────── */
 
@@ -905,64 +1307,88 @@
 #weather-week-widget {
     left: 1000px;
     top: 100px;
-    width: 460px;
-    height: 280px;
+    width: 580px;
+    height: 145px;
 }
 
-.ww-table {
-    display: flex;
-    flex-direction: column;
-    gap: 0.08em;
-    padding: 0.3em 0.6em;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.ww-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 2px 0;
-    font-size: 0.78em;
-    border-bottom: 1px solid #ebe7e0;
-}
-
-.ww-row:last-child {
-    border-bottom: none;
-}
-
-.ww-row.today {
+#weather-week-widget .widget-header {
+    padding: 0.3em 0.75em 0;
+    min-height: 0;
+    line-height: 1;
+    justify-content: center;
     font-weight: 700;
 }
 
+#weather-week-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.ww-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 3px 6px 2px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 2px;
+}
+
+.ww-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    padding: 5px 4px;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.ww-col.today {
+    background: rgba(0, 0, 0, 0.07);
+}
+
 .ww-day {
-    min-width: 36px;
+    font-size: 0.8em;
+    font-weight: 500;
     color: #1a1a1a;
+    white-space: nowrap;
+    opacity: 0.65;
+}
+
+.ww-col.today .ww-day {
+    font-weight: 700;
+    opacity: 1;
 }
 
 .ww-icon {
-    font-size: 1em;
-    min-width: 20px;
+    font-size: 1.9em;
+    line-height: 1;
 }
 
-.ww-range {
-    flex: 1;
-    color: #888;
-    font-size: 0.9em;
+.ww-temps {
+    display: flex;
+    gap: 3px;
+    align-items: baseline;
+    white-space: nowrap;
 }
 
-.ww-main {
-    min-width: 36px;
-    text-align: right;
-    font-weight: 600;
+.ww-max {
+    font-size: 0.78em;
     color: #1a1a1a;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
 }
 
-.ww-extra {
-    font-size: 0.8em;
+.ww-min {
+    font-size: 0.68em;
     color: #aaa;
-    min-width: 40px;
-    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ── Weather Day ─────────────────────────────────────────── */
@@ -1192,13 +1618,25 @@
 
 /* ── Diary Card ──────────────────────────────────────────────── */
 
+#diary-card-widget .widget-content {
+    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+    align-items: stretch;
+}
+
 .dc-body {
     display: flex;
     flex-direction: row;
     align-self: stretch;
     width: 100%;
+    max-width: 680px;
+    max-height: 100%;
+    margin: 0 auto;
     overflow: hidden;
     border-radius: 12px;
+    min-height: 0;
+    min-width: 0;
 }
 
 .dc-cover {
@@ -1213,8 +1651,8 @@
 }
 
 .dc-cover-img {
-    max-width: 82%;
-    max-height: 82%;
+    max-width: 96%;
+    max-height: 96%;
     width: auto;
     height: auto;
     display: block;
