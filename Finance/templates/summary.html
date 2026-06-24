@@ -65,6 +65,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <a href="/summary" class="active-link">Summary</a>
         <a href="/budget">Budget</a>
         <a href="/goals">Goals</a>
+        <a href="/accounts">Accounts</a>
     </div>
 
 </div>
@@ -456,6 +457,10 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     {% if b.status == "over" %}
 
                         🚨 Over budget
+
+                    {% elif b.status == "full" %}
+
+                        🔵 Reached limit
 
                     {% elif b.status == "warning" %}
 
