@@ -20,14 +20,6 @@ export function getBackgroundOpacitySetting() {
                 Background Opacity
             </span>
 
-            <button
-                class="
-                apply-all-button
-                "
-            >
-                All
-            </button>
-
         </div>
 
         <div

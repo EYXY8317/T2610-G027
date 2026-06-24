@@ -253,12 +253,18 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
     const h  = titleHidden  ? "display:none;" : "";
     const b  = borderHidden ? "display:none;" : "";
 
-    function section(label, bodyHTML) {
+    function section(label, bodyHTML, sectionKey = null) {
+        const allBtn = sectionKey
+            ? `<button class="color-apply-btn section-all-btn" data-section-all="${sectionKey}">All</button>`
+            : "";
         return `
         <div class="setting-section">
             <div class="setting-section-toggle">
                 <h3>${label}</h3>
-                <span class="setting-section-chevron">›</span>
+                <div class="section-toggle-right">
+                    ${allBtn}
+                    <span class="setting-section-chevron">›</span>
+                </div>
             </div>
             <div class="setting-section-body">
                 ${bodyHTML}
@@ -270,27 +276,42 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
         ${section("Palette", `
             <div class="palette-cat-chips">${chipBarHTML}</div>
             ${allCatGridsHTML}
-        `)}
+        `, "palette")}
 
         ${section("Colors", `
             <div class="setting-row">
-                <span>Background</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="backgroundColor">All</button>
+                    <span>Background</span>
+                </div>
                 <input type="color" class="background-color-picker" value="${bg}">
             </div>
             <div class="setting-row title-color-row" style="${h}">
-                <span>Title</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="titleColor">All</button>
+                    <span>Title</span>
+                </div>
                 <input type="color" class="title-color-picker" value="${titleC}">
             </div>
             <div class="setting-row">
-                <span>Content</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="contentColor">All</button>
+                    <span>Content</span>
+                </div>
                 <input type="color" class="content-color-picker" value="${contentC}">
             </div>
             <div class="setting-row border-color-row" style="${b}">
-                <span>Border</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="borderColor">All</button>
+                    <span>Border</span>
+                </div>
                 <input type="color" class="border-color-picker" value="${borderC}">
             </div>
             <div class="setting-row">
-                <span>Opacity</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="backgroundOpacity">All</button>
+                    <span>Opacity</span>
+                </div>
                 <span class="background-opacity-value">${opacity}%</span>
             </div>
             <div class="background-opacity-slider-row">
@@ -298,7 +319,7 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
                 <input type="range" min="0" max="100" value="${opacity}" class="background-opacity-slider">
                 <span>100</span>
             </div>
-        `)}
+        `, "colors")}
 
         ${section("Title", `
             <div class="setting-row">
@@ -309,7 +330,10 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
                 </div>
             </div>
             <div class="setting-row title-size-row" style="${h}">
-                <span>Size</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="titleScale">All</button>
+                    <span>Size</span>
+                </div>
                 <div class="segment-button">
                     <button class="segment-option title-scale-option${curTitleScale === "1" ? " active" : ""}" data-value="1">1</button>
                     <button class="segment-option title-scale-option${curTitleScale === "2" ? " active" : ""}" data-value="2">2</button>
@@ -317,24 +341,30 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
                 </div>
             </div>
             <div class="setting-row title-align-row" style="${h}">
-                <span>Align</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="titleAlign">All</button>
+                    <span>Align</span>
+                </div>
                 <div class="segment-button">
                     <button class="segment-option title-align-option${curAlign === "left"   ? " active" : ""}" data-value="left">Left</button>
                     <button class="segment-option title-align-option${curAlign === "center" ? " active" : ""}" data-value="center">Center</button>
                 </div>
             </div>
-        `)}
+        `, "title")}
 
         ${section("Content", `
             <div class="setting-row">
-                <span>Size</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="contentScale">All</button>
+                    <span>Size</span>
+                </div>
                 <div class="segment-button content-scale-segment">
                     <button class="segment-option${curContentScale === "1" ? " active" : ""}" data-value="1">1</button>
                     <button class="segment-option${curContentScale === "2" ? " active" : ""}" data-value="2">2</button>
                     <button class="segment-option${curContentScale === "3" ? " active" : ""}" data-value="3">3</button>
                 </div>
             </div>
-        `)}
+        `, "content")}
 
         ${section("Border", `
             <div class="setting-row">
@@ -345,7 +375,10 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
                 </div>
             </div>
             <div class="setting-row border-width-row" style="${b}">
-                <span>Width</span>
+                <div class="color-row-left">
+                    <button class="apply-all-button color-apply-btn" data-all-key="borderWidth">All</button>
+                    <span>Width</span>
+                </div>
                 <span class="border-width-value">${bw}px</span>
             </div>
             <div class="border-width-slider-row" style="${b}">
@@ -353,7 +386,7 @@ export function getAppearanceSectionsHTML(savedApp = {}) {
                 <input type="range" min="0.5" max="8" step="0.5" value="${bw}" class="border-width-slider">
                 <span>8</span>
             </div>
-        `)}
+        `, "border")}
 
         ${section("Size", `
             <div class="setting-row">
