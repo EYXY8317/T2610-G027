@@ -164,5 +164,15 @@
         "account": "TnG",
         "item": "Goal: laptop",
         "amount": 200.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-05",
+        "type": "income",
+        "category": "Business",
+        "account": "MAE",
+        "item": "",
+        "amount": 10000.0,
+        "receipt": null
     }
 ]
