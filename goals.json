@@ -29,28 +29,10 @@
         "type": "short",
         "target": 1000.0,
         "target_date": "2026-10-09",
-        "priority": "high",
+        "priority": "medium",
         "notes": "testing 123...",
         "status": "In Progress",
         "completion_date": "2026-06-23"
-    },
-    {
-        "id": 7,
-        "username": "Ethan",
-        "name": "Japan",
-        "type": "long",
-        "target": 10000.0,
-        "target_date": "2027-10-23",
-        "priority": "medium",
-        "notes": "Flight + Hotel + Shopping",
-        "status": "In Progress"
-    },
-    {
-        "id": 8,
-        "username": "Ethan",
-        "name": "phone",
-        "type": "short",
-        "target": 4999.0
     },
     {
         "id": 9,
@@ -58,7 +40,7 @@
         "name": "House",
         "type": "long",
         "target": 500000.0,
-        "target_date": null,
+        "target_date": "2029-12-24",
         "priority": "high",
         "notes": "",
         "status": "In Progress"

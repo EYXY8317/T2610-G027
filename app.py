@@ -215,7 +215,7 @@ def today_page():
         for r in user_records:
             if r.get("account") != acc:
                 continue
-            net_savings += r.get("amount", 0) if r.get("type") == "income" else -r.get("amount", 0)
+            net_savings += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
 
     return render_template(
         "today_page.html",
