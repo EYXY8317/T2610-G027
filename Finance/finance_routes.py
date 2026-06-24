@@ -254,8 +254,11 @@ def update_financial(idx):
     accounts = load_data(f_accounts, [])
     user_accounts = [a for a in accounts if a["username"] == user]
 
+    source = request.args.get("source", "")
+
     if request.method == "POST":
         form = request.form
+        source = form.get("source", "")
         purpose = form.get("purpose", "spending")
         date = form.get("date") or record["date"]
         type_ = form.get("type") or record["type"]
@@ -264,14 +267,14 @@ def update_financial(idx):
         amount_raw = form.get("amount")
 
         if not amount_raw:
-            return render_template("update.html", record=record, accounts=user_accounts, error="Amount is required")
+            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount is required")
 
         try:
             amount = float(amount_raw)
             if amount <= 0:
                 raise ValueError
         except:
-            return render_template("update.html", record=record, accounts=user_accounts, error="Amount must be greater than 0")
+            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount must be greater than 0")
 
         account = form.get("account")
         new_account = form.get("new_account")
@@ -302,12 +305,15 @@ def update_financial(idx):
         record["amount"] = amount
 
         save_data(f_expense, records)
+        if source == "goal":
+            return redirect(url_for("finance.goals"))
         return redirect(url_for("finance.view_financial"))
 
     return render_template(
         "update.html",
         record=record,
         accounts=user_accounts,
+        source=source,
         wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
@@ -370,10 +376,10 @@ def budget():
         limit = b.get("amount", 0)
         percent = (spent / limit) * 100 if limit else 0
         remaining = limit - spent
-        status = "safe" if percent < 80 else ("warning" if percent < 100 else "over")
+        status = "safe" if percent < 80 else ("warning" if percent < 100 else ("full" if percent == 100 else "over"))
         overspent = max(0, spent - limit)
 
-        if status == "over":
+        if status == "over" and overspent > 0:
             warnings.append({"category": b["category"], "overspent": overspent})
 
         budget_display.append({
@@ -488,7 +494,7 @@ def summary():
         limit = b.get("amount", 0)
         percent = (spent / limit) * 100 if limit else 0
         remaining = limit - spent
-        status = "safe" if percent < 80 else ("warning" if percent < 100 else "over")
+        status = "safe" if percent < 80 else ("warning" if percent < 100 else ("full" if percent == 100 else "over"))
         budget_usage.append({
             "category": b.get("category"),
             "spent": spent,
@@ -526,7 +532,7 @@ def summary():
         for r in records:
             if r.get("username") != user or r.get("account") != acc:
                 continue
-            if r.get("type") == "income":
+            if r.get("type") in ("income", "saving"):
                 balance_acc += r.get("amount", 0)
             elif r.get("type") == "expense":
                 balance_acc -= r.get("amount", 0)
@@ -797,6 +803,104 @@ def edit_goal(goal_id):
         user=get_current_user()
     )
 
+# ================= ACCOUNTS =================
+@finance_bp.route("/accounts", methods=["GET", "POST"])
+def accounts():
+    if "user" not in session:
+        return redirect(url_for("auth.login"))
+
+    user = session["user"]
+    accounts_data = load_data(f_accounts, [])
+    records = load_data(f_expense, [])
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        purpose = request.form.get("purpose", "spending")
+        if name and not any(a["name"] == name and a["username"] == user for a in accounts_data):
+            accounts_data.append({"username": user, "name": name, "purpose": purpose})
+            save_data(f_accounts, accounts_data)
+        return redirect(url_for("finance.accounts"))
+
+    user_accounts = [a for a in accounts_data if a.get("username") == user]
+    user_records  = [r for r in records if r.get("username") == user]
+
+    account_list = []
+    for acc in user_accounts:
+        acc_txns = [r for r in user_records if r.get("account") == acc["name"]]
+        balance  = sum(
+            r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
+            for r in acc_txns
+        )
+        last_txn = max((r.get("date", "") for r in acc_txns), default=None) if acc_txns else None
+        account_list.append({
+            "name":      acc["name"],
+            "purpose":   acc.get("purpose", "spending"),
+            "balance":   round(balance, 2),
+            "txn_count": len(acc_txns),
+            "last_txn":  last_txn,
+        })
+
+    return render_template(
+        "accounts.html",
+        account_list=account_list,
+        wallpaper=get_user_wallpaper(),
+        user=get_current_user(),
+    )
+
+
+@finance_bp.route("/edit_account/<name>", methods=["GET", "POST"])
+def edit_account(name):
+    if "user" not in session:
+        return redirect(url_for("auth.login"))
+
+    user = session["user"]
+    accounts_data = load_data(f_accounts, [])
+    records = load_data(f_expense, [])
+
+    account = next((a for a in accounts_data if a.get("username") == user and a.get("name") == name), None)
+    if not account:
+        return redirect(url_for("finance.accounts"))
+
+    error = None
+    if request.method == "POST":
+        new_name    = request.form.get("name", "").strip()
+        new_purpose = request.form.get("purpose", "spending")
+
+        if not new_name:
+            error = "Account name cannot be empty."
+        elif new_name != name and any(a["name"] == new_name and a["username"] == user for a in accounts_data):
+            error = f'An account named "{new_name}" already exists.'
+        else:
+            if new_name != name:
+                for r in records:
+                    if r.get("username") == user and r.get("account") == name:
+                        r["account"] = new_name
+                save_data(f_expense, records)
+            account["name"]    = new_name
+            account["purpose"] = new_purpose
+            save_data(f_accounts, accounts_data)
+            return redirect(url_for("finance.accounts"))
+
+    return render_template(
+        "edit_account.html",
+        account=account,
+        error=error,
+        wallpaper=get_user_wallpaper(),
+        user=get_current_user(),
+    )
+
+
+@finance_bp.route("/delete_account/<name>")
+def delete_account(name):
+    if "user" not in session:
+        return redirect(url_for("auth.login"))
+
+    user = session["user"]
+    accounts_data = load_data(f_accounts, [])
+    accounts_data = [a for a in accounts_data if not (a.get("username") == user and a.get("name") == name)]
+    save_data(f_accounts, accounts_data)
+    return redirect(url_for("finance.accounts"))
+
 # ================= FINANCE HOME =================
 @finance_bp.route("/finance")
 def finance_home():
@@ -827,7 +931,7 @@ def finance_home():
         for r in user_records:
             if r.get("account") != acc:
                 continue
-            balance_acc += r.get("amount", 0) if r.get("type") == "income" else -r.get("amount", 0)
+            balance_acc += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
         saving += balance_acc
 
     spending_accounts = [a["name"] for a in user_accounts if a.get("purpose") == "spending"]

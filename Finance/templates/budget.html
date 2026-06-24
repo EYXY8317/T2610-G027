@@ -61,6 +61,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <a href="/summary">Summary</a>
         <a href="/budget" class="active-link">Budget</a>
         <a href="/goals">Goals</a>
+        <a href="/accounts">Accounts</a>
     </div>
 
 </div>
@@ -98,7 +99,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <!-- OVERSPENDING WARNINGS -->
 
         {% for w in warnings %}
-        <div style="margin-bottom:8px;padding:10px 14px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:13px;font-weight:600;">
+        <div class="budget-warning-banner">
             ⚠️ Warning: <strong>{{ w.category }}</strong> budget exceeded by <strong>RM {{ "%.2f"|format(w.overspent) }}</strong>
         </div>
         {% endfor %}
@@ -168,15 +169,13 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                     <div>
                         <h3>{{ b.category }}</h3>
-                        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
-                            <span style="padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600;background:#dbeafe;color:#1e40af;">
+                        <div style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;margin-top:6px;">
+                            <span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;background:#dbeafe;color:#1e40af;">
                                 📅 {{ b.period | capitalize }}
                             </span>
-                            <span style="padding:4px 12px;border-radius:20px;font-size:14px;font-weight:600;
-                                {% if b.status == 'over' %}background:#fee2e2;color:#991b1b;
-                                {% elif b.status == 'warning' %}background:#fef3c7;color:#92400e;
-                                {% else %}background:#86efac;color:#14532d;{% endif %}">
+                            <span class="budget-status-pill budget-status-{{ b.status }}">
                                 {% if b.status == 'over' %}🚨 Exceeded
+                                {% elif b.status == 'full' %}🔵 At Limit
                                 {% elif b.status == 'warning' %}⚠️ Near Limit
                                 {% else %}✅ Safe{% endif %}
                             </span>
@@ -184,26 +183,26 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     </div>
 
                     <div class="budget-actions">
-                        <a href="/edit_budget/{{ b.category }}" class="edit-btn">✏️ Edit</a>
-                        <a href="/delete_budget/{{ b.category }}" class="delete-btn">🗑 Delete</a>
+                        <a href="/edit_budget/{{ b.category }}" class="budget-icon-btn" title="Edit">✏️</a>
+                        <a href="/delete_budget/{{ b.category }}" class="budget-icon-btn budget-icon-del" title="Delete" onclick="return confirm('Delete {{ b.category }} budget?')">✕</a>
                     </div>
 
                 </div>
 
                 <!-- AMOUNTS -->
                 <div style="display:flex;margin:12px 0;">
-                    <div style="flex:1;padding:12px 16px;border-right:2px solid #bbb;">
-                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Budget</div>
-                        <div style="font-weight:700;font-size:22px;">RM {{ "%.2f"|format(b.amount) }}</div>
+                    <div style="flex:1;padding:10px 12px;border-right:1px solid var(--border);min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Budget</div>
+                        <div style="font-weight:700;font-size:15px;white-space:nowrap;">RM {{ "%.2f"|format(b.amount) }}</div>
                     </div>
-                    <div style="flex:1;padding:12px 16px;border-right:2px solid #bbb;">
-                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Spent</div>
-                        <div style="font-weight:700;font-size:22px;color:#ef4444;">RM {{ "%.2f"|format(b.spent) }}</div>
+                    <div style="flex:1;padding:10px 12px;border-right:1px solid var(--border);min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Spent</div>
+                        <div style="font-weight:700;font-size:15px;white-space:nowrap;color:#ef4444;">RM {{ "%.2f"|format(b.spent) }}</div>
                     </div>
-                    <div style="flex:1;padding:12px 16px;">
-                        <div style="font-size:16px;color:var(--text-muted);margin-bottom:6px;">Remaining</div>
-                        <div style="font-weight:700;font-size:22px;{% if b.remaining < 0 %}color:#ef4444;{% else %}color:#10b981;{% endif %}">
-                            RM {{ "%.2f"|format(b.remaining | abs) }}{% if b.remaining < 0 %} over{% endif %}
+                    <div style="flex:1;padding:10px 12px;min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">{% if b.remaining < 0 %}Overspent{% else %}Remaining{% endif %}</div>
+                        <div class="budget-remaining {% if b.remaining < 0 %}budget-remaining-over{% else %}budget-remaining-ok{% endif %}">
+                            RM {{ "%.2f"|format(b.remaining | abs) }}
                         </div>
                     </div>
                 </div>
