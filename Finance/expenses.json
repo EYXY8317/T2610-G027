@@ -144,5 +144,15 @@
         "item": "",
         "amount": 50.0,
         "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-24",
+        "type": "saving",
+        "category": "Savings",
+        "account": "CIMB",
+        "item": "",
+        "amount": 1000.0,
+        "receipt": null
     }
 ]
