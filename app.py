@@ -160,11 +160,13 @@ def today_page():
     f_budget   = os.path.join(BASE_DIR, "Finance", "budget.json")
     f_goals    = os.path.join(BASE_DIR, "goals.json")
     f_accounts = os.path.join(BASE_DIR, "Finance", "accounts.json")
+    f_tasks    = os.path.join(BASE_DIR, "Calendar_Pages", "tasks.json")
 
     records     = load_data(f_expense, [])
     budgets     = load_data(f_budget, [])
     goals_list  = load_data(f_goals, [])
     accounts    = load_data(f_accounts, [])
+    all_tasks   = load_data(f_tasks, [])
 
     now            = datetime.now()
     today_str      = now.strftime("%Y-%m-%d")
@@ -242,6 +244,15 @@ def today_page():
                 continue
             net_savings += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
 
+    # Today's calendar tasks: exact date match OR daily repeat, not trashed
+    today_tasks = [
+        t for t in all_tasks
+        if t.get("username") == user
+        and t.get("status") != "trash"
+        and (t.get("date") == today_str or t.get("repeat") == "daily")
+    ]
+    today_tasks.sort(key=lambda t: t.get("startTime") or "")
+
     return render_template(
         "today_page.html",
         today_spending   = today_spending,
@@ -252,6 +263,7 @@ def today_page():
         active_goals     = active_goals,
         goals_in_progress= goals_in_progress,
         net_savings      = net_savings,
+        today_tasks      = today_tasks,
         user             = current_user,
     )
 
