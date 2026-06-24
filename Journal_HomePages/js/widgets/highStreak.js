@@ -76,14 +76,12 @@ function renderHeatmap(dates) {
 }
 
 function renderWidget(dates, state) {
-    const current = calculateStreak(dates);
-    const high    = calculateHighStreak(dates);
+    const high = calculateHighStreak(dates);
 
     if (state.displayMode === "heatmap") {
         return `
             <div class="streak-body">
                 <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
-                <div class="hs-current">Current: ${current} days</div>
                 ${renderHeatmap(dates)}
             </div>`;
     }
@@ -91,7 +89,6 @@ function renderWidget(dates, state) {
     return `
         <div class="streak-body">
             <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
-            <div class="hs-current">Current: ${current} days</div>
         </div>`;
 }
 

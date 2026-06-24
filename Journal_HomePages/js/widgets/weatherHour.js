@@ -5,7 +5,8 @@ import {
 }
 from "./weatherConfig.js";
 
-export let weatherFrequency = "1h";
+import { getWidgetAppearance } from "../settings/appearance/widgetAppearance.js";
+
 export let showWeatherIcon = true;
 export let showWeatherTemperature = true;
 export let showHumidity = false;
@@ -14,7 +15,6 @@ export let graphSize = 100;
 export let chartFontSize = 11;
 
 export function setGraphSize(value) { graphSize = value; }
-export function setWeatherFrequency(value) { weatherFrequency = value; }
 export function setShowWeatherIcon(value) { showWeatherIcon = value; }
 export function setShowWeatherTemperature(value) { showWeatherTemperature = value; }
 export function setShowHumidity(value) { showHumidity = value; }
@@ -66,11 +66,6 @@ async function fetchWeatherHourData(lat, lon) {
 
 }
 
-function getIntervalStep(freq) {
-    const map = { "1h": 1, "2h": 2, "3h": 3, "4h": 4, "5h": 5 };
-    return map[freq] || 1;
-}
-
 export async function renderWeatherHour() {
 
     const container = document.getElementById("weather-hour-content");
@@ -94,8 +89,6 @@ export async function renderWeatherHour() {
         const allFeelsLike = data.hourly.apparent_temperature;
         const allCodes = data.hourly.weather_code;
         const allTimes = data.hourly.time;
-
-        const step = getIntervalStep(weatherFrequency);
 
         const startIndex = allTimes.findIndex(t => {
             const h = new Date(t).getHours();
@@ -124,20 +117,22 @@ export async function renderWeatherHour() {
 
         container.innerHTML = `<canvas id="weather-hour-chart"></canvas>`;
 
+        const contentColor = getWidgetAppearance("weather-hour-widget")?.contentColor || "#555555";
         const fontSize = Math.max(8, chartFontSize);
-        const lineWidth = Math.max(1, Math.round(graphSize / 50));
+        const lineWidth = Math.max(2, Math.round(graphSize / 45));
+        const dotHoverR = Math.max(5, lineWidth * 2.5);
 
-        const canvas = document.getElementById("weather-hour-chart");
-        const ctx = canvas.getContext("2d");
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.offsetHeight || 160);
-        gradient.addColorStop(0, hexToRgba(graphColor, 0.35));
-        gradient.addColorStop(1, hexToRgba(graphColor, 0.00));
-
-        // Show point dots only at the step interval; intermediate hours have invisible points
-        const dotR      = Math.max(2, lineWidth * 1.5);
-        const dotHoverR = Math.max(4, lineWidth * 2);
-        const pointRadii      = temperatures.map((_, i) => i % step === 0 ? dotR      : 0);
-        const pointHoverRadii = temperatures.map((_, i) => i % step === 0 ? dotHoverR : dotHoverR);
+        const gradientPlugin = {
+            id: "areaGradient",
+            beforeDatasetsDraw(chart) {
+                const { ctx, chartArea: { top, bottom } } = chart;
+                const grad = ctx.createLinearGradient(0, top, 0, bottom);
+                grad.addColorStop(0,   hexToRgba(graphColor, 0.45));
+                grad.addColorStop(0.5, hexToRgba(graphColor, 0.18));
+                grad.addColorStop(1,   hexToRgba(graphColor, 0.00));
+                chart.data.datasets[0].backgroundColor = grad;
+            }
+        };
 
         const datasets = [
             {
@@ -145,11 +140,16 @@ export async function renderWeatherHour() {
                 data: temperatures,
                 borderColor: graphColor,
                 borderWidth: lineWidth,
-                tension: 0.3,
+                borderCapStyle: "round",
+                borderJoinStyle: "round",
+                tension: 0.4,
                 fill: true,
-                backgroundColor: gradient,
-                pointRadius: pointRadii,
-                pointHoverRadius: pointHoverRadii,
+                backgroundColor: hexToRgba(graphColor, 0.3),
+                pointRadius: 0,
+                pointHoverRadius: dotHoverR,
+                pointHoverBackgroundColor: graphColor,
+                pointHoverBorderColor: "#fff",
+                pointHoverBorderWidth: 2,
                 yAxisID: "y"
             }
         ];
@@ -162,8 +162,8 @@ export async function renderWeatherHour() {
                 borderWidth: lineWidth,
                 tension: 0.3,
                 borderDash: [5, 3],
-                pointRadius: pointRadii,
-                pointHoverRadius: pointHoverRadii,
+                pointRadius: 0,
+                pointHoverRadius: dotHoverR,
                 yAxisID: "y1"
             });
         }
@@ -173,9 +173,11 @@ export async function renderWeatherHour() {
             {
                 type: "line",
                 data: { labels, datasets },
+                plugins: [gradientPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: { padding: { right: 20, top: 6 } },
                     plugins: {
                         tooltip: {
                             mode: "nearest",
@@ -211,25 +213,24 @@ export async function renderWeatherHour() {
                     },
                     scales: {
                         x: {
-                            ticks: {
-                                font: { size: fontSize },
-                                maxRotation: 0,
-                                minRotation: 0,
-                                autoSkip: false,
-                                // Only show labels at the step interval
-                                callback: (val, index) => index % step === 0 ? labels[index] : null
-                            },
+                            ticks: { display: false },
                             grid: { display: false }
                         },
                         y: {
                             ticks: {
                                 font: { size: fontSize },
+                                color: contentColor,
+                                maxTicksLimit: 4,
                                 callback: val => {
                                     const unit = getWeatherConfig().tempUnit;
                                     return toDisplayTemp(val, unit);
                                 }
                             },
-                            grid: { display: false }
+                            grid: {
+                                display: true,
+                                color: "rgba(0,0,0,0.05)",
+                                drawBorder: false
+                            }
                         },
                         ...(showHumidity ? {
                             y1: {

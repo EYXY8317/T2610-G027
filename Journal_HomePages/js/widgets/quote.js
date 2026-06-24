@@ -51,7 +51,9 @@ const DEFAULT_STATE = {
     currentSource: "system",
     currentSystemIndex: 0,
     currentUserIndex: 0,
-    lastRotateDate: ""
+    lastRotateDate: "",
+    textColor: "",
+    authorColor: ""
 };
 
 function getState() {
@@ -166,14 +168,17 @@ function renderWidget(state) {
     const fontFamily = FONT_STYLES[state.fontStyle] || FONT_STYLES.serif;
     const isItalic = state.fontStyle === "italic";
 
+    const textColorStyle   = state.textColor   ? `color:${state.textColor};`              : "";
+    const authorColorStyle = state.authorColor ? `color:${state.authorColor};opacity:1;` : "";
+
     const authorText = state.showAuthor !== false && quote.author
-        ? `<span class="quote-author">— ${quote.author}</span>`
+        ? `<span class="quote-author" style="${authorColorStyle}">— ${quote.author}</span>`
         : "";
 
     return `
         <div class="quote-body">
             <div class="quote-main">
-                <div class="quote-text" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}">${quote.text}</div>
+                <div class="quote-text" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}${textColorStyle}">${quote.text}</div>
                 <div class="quote-author-row">
                     ${authorText}
                     <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
