@@ -183,6 +183,10 @@ body{
 
     min-height:540px;
 
+    display:flex;
+
+    flex-direction:column;
+
     box-shadow:
     0 8px 24px rgba(181,148,120,0.08);
 
@@ -282,6 +286,14 @@ body{
 
 }
 
+.finance-preview.preview-box{
+
+    height:auto;
+
+    flex:1;
+
+}
+
 /* BUTTON */
 
 .card-btn{
@@ -290,7 +302,7 @@ body{
 
     height:52px;
 
-    margin-top:25px;
+    margin-top:18px;
 
     border:none;
 
@@ -323,7 +335,19 @@ body{
 
     background:#f7f1ff;
 
-    padding:18px;
+    padding:22px;
+
+    height:auto;
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    margin-bottom:4px;
 
 }
 
@@ -449,6 +473,98 @@ body{
 
     color:#777;
 
+}
+
+.finance-right-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.badge-up      { background:#fee2e2; color:#991b1b; }
+.badge-down    { background:#dcfce7; color:#15803d; }
+.badge-neutral { background:#f3f4f6; color:#6b7280; }
+
+.finance-budget-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+.pill-ok   { background:#dcfce7; color:#15803d; }
+.pill-over { background:#fee2e2; color:#991b1b; }
+
+/* Mini dashboard */
+.fin-mini-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+.fin-mini-label {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+}
+.fin-mini-balance {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-top: 4px;
+    color: #2f2521;
+}
+
+.fin-mini-tiles {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 4px;
+}
+.fin-tile {
+    flex: 1;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #f5f3ff;
+}
+.fin-tile-savings { background: #f0fdf4; }
+.fin-tile-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #888;
+}
+.fin-tile-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2f2521;
+}
+.fin-savings-pct { color: #7c3aed; }
+.fin-tile-change {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.fin-change-up      { color: #dc2626; }
+.fin-change-down    { color: #16a34a; }
+.fin-change-neutral { color: #888; }
+.fin-vs { font-weight: 400; color: #aaa; }
+.fin-tile-sub { font-size: 13px; color: #888; }
+.fin-savings-bar-bg {
+    height: 5px;
+    background: #e9d5ff;
+    border-radius: 99px;
+    overflow: hidden;
+}
+.fin-savings-bar-fill {
+    height: 100%;
+    background: #7c3aed;
+    border-radius: 99px;
+    max-width: 100%;
 }
 
 /* ================= DIARY PREVIEW ================= */

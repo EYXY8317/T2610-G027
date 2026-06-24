@@ -97,52 +97,35 @@
 
          <div class="preview-box finance-preview">
 
-           <div class="finance-header"> <div>
+           <!-- ROW 1: Available balance -->
+           <div class="fin-mini-top">
+             <div>
+               <span class="fin-mini-label">Available Balance</span>
+               <div class="fin-mini-balance">
+                 RM {{ "{:,.2f}".format(fin_balance) }}
+               </div>
+             </div>
+           </div>
 
-            <span>This Month</span>
-
-            <h3>RM 1,850.00</h3>
-
-            <p>Total Expenses</p>
-
-           </div> <div class="finance-badge"> ↓ 12% </div>
-
-        </div>
-
-            <div class="finance-chart">
-
-            <div class="finance-bar-group">
-
-                <div class="bar bar1"></div>
-
-                <span>W1</span>
-
-            </div>
-
-            <div class="finance-bar-group">
-
-                <div class="bar bar2"></div>
-
-                <span>W2</span>
-
-            </div>
-
-            <div class="finance-bar-group">
-
-                <div class="bar bar3"></div>
-
-                <span>W3</span>
-
-            </div>
-
-                <div class="finance-bar-group">
-
-                    <div class="bar bar4"></div>
-
-                    <span>W4</span>
-                </div>
-
-            </div>
+           <!-- ROW 2: This Month Expenses | Savings Progress -->
+           <div class="fin-mini-tiles">
+             <div class="fin-tile fin-tile-expense">
+               <span class="fin-tile-label">This Month Expenses</span>
+               <span class="fin-tile-val">RM {{ "{:,.2f}".format(fin_expense) }}</span>
+               <span class="fin-tile-change {% if fin_change > 0 %}fin-change-up{% elif fin_change < 0 %}fin-change-down{% else %}fin-change-neutral{% endif %}">
+                 {% if fin_change > 0 %}↑{% elif fin_change < 0 %}↓{% endif %} {{ fin_change | abs }}%
+                 <span class="fin-vs">vs last month</span>
+               </span>
+             </div>
+             <div class="fin-tile fin-tile-savings">
+               <span class="fin-tile-label">Savings Progress</span>
+               <span class="fin-tile-val fin-savings-pct">{{ fin_savings_pct }}%</span>
+               <div class="fin-savings-bar-bg">
+                 <div class="fin-savings-bar-fill" style="width:{{ fin_savings_pct }}%;"></div>
+               </div>
+               <span class="fin-tile-sub">RM {{ "{:,.0f}".format(fin_saved) }} / RM {{ "{:,.0f}".format(fin_target) }}</span>
+             </div>
+           </div>
 
         </div>
 

@@ -73,18 +73,85 @@ def dashboard():
     if "user" not in session:
         return redirect(url_for("login"))
 
+    user = session["user"]
     users = load_data(f_users, [])
-    current_user = None
+    current_user = next((u for u in users if u["username"] == user), None)
 
-    for u in users:
-        if u["username"] == session["user"]:
-            current_user = u
-            break
+    # Finance data for home card
+    records   = load_data(os.path.join(BASE_DIR, "Finance", "expenses.json"), [])
+    budgets   = load_data(os.path.join(BASE_DIR, "Finance", "budget.json"), [])
+    goals_all = load_data(os.path.join(BASE_DIR, "goals.json"), [])
+    accounts  = load_data(os.path.join(BASE_DIR, "Finance", "accounts.json"), [])
+    now       = datetime.now()
+    cur_month = now.strftime("%Y-%m")
+    prev_month= (now.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+
+    user_records = [r for r in records if r.get("username") == user]
+
+    def month_expense(ym):
+        return sum(r.get("amount", 0) for r in user_records
+                   if r.get("type") == "expense"
+                   and r.get("category") not in ("Transfer Out", "Goal Savings")
+                   and r.get("date", "").startswith(ym))
+
+    cur_expense  = month_expense(cur_month)
+    prev_expense = month_expense(prev_month)
+
+    if prev_expense > 0:
+        expense_change = round(((cur_expense - prev_expense) / prev_expense) * 100)
+    else:
+        expense_change = 0
+
+    # Weekly breakdown (W1–W4) for current month
+    week_expenses = [0, 0, 0, 0]
+    for r in user_records:
+        if r.get("type") != "expense": continue
+        if r.get("category") in ("Transfer Out", "Goal Savings"): continue
+        d = r.get("date", "")
+        if not d.startswith(cur_month): continue
+        day = int(d.split("-")[2])
+        week_idx = min((day - 1) // 7, 3)
+        week_expenses[week_idx] += r.get("amount", 0)
+
+    max_week = max(week_expenses) if any(week_expenses) else 1
+
+    # Available balance: net across all spending accounts
+    user_accounts = [a for a in accounts if a.get("username") == user]
+    spending_names = {a["name"] for a in user_accounts if a.get("purpose") != "savings"}
+    available_balance = 0
+    for r in user_records:
+        if r.get("account") not in spending_names:
+            continue
+        if r.get("type") in ("income", "saving"):
+            available_balance += r.get("amount", 0)
+        elif r.get("type") == "expense":
+            available_balance -= r.get("amount", 0)
+
+    # Savings progress across all active goals
+    user_goals = [g for g in goals_all if g.get("username") == user
+                  and g.get("status") not in ("Completed", "Cancelled")]
+    total_saved  = 0
+    total_target = 0
+    for g in user_goals:
+        saved = sum(r.get("amount", 0) for r in user_records
+                    if r.get("category") == "Goal Savings"
+                    and r.get("goal_id") == g.get("id"))
+        total_saved  += min(saved, g.get("target", 0))
+        total_target += g.get("target", 0)
+    savings_pct = round((total_saved / total_target) * 100) if total_target else 0
 
     return render_template(
         "dashboard.html",
-        user=current_user,
-        wallpaper=get_user_wallpaper(),
+        user             = current_user,
+        wallpaper        = get_user_wallpaper(),
+        fin_expense      = cur_expense,
+        fin_change       = expense_change,
+        fin_weeks        = week_expenses,
+        fin_max_week     = max_week,
+        fin_balance      = available_balance,
+        fin_saved        = total_saved,
+        fin_target       = total_target,
+        fin_savings_pct  = savings_pct,
     )
 
 # ================= CALENDAR STATIC =================
