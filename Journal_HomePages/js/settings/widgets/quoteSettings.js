@@ -26,6 +26,9 @@ export function getQuoteSettings() {
         `).join("")
         : `<div style="font-size:12px;color:#9ca3af;margin-top:4px;">No saved quotes</div>`;
 
+    const textColor   = state.textColor   || "#1a1a1a";
+    const authorColor = state.authorColor || "#888888";
+
     return {
 
         style: `
@@ -38,6 +41,15 @@ export function getQuoteSettings() {
                     <button class="segment-option${state.fontStyle === "italic"  ? " active" : ""}" data-value="italic"  style="font-style:italic;font-family:Georgia,serif;">Italic</button>
                     <button class="segment-option${state.fontStyle === "cursive" ? " active" : ""}" data-value="cursive" style="font-family:cursive;">Cursive</button>
                 </div>
+            </div>
+            <h3>Color</h3>
+            <div class="setting-row">
+                <span>Content</span>
+                <input type="color" class="quote-text-color-picker" value="${textColor}">
+            </div>
+            <div class="setting-row">
+                <span>Author</span>
+                <input type="color" class="quote-author-color-picker" value="${authorColor}">
             </div>
         `,
 
