@@ -104,5 +104,25 @@
         "account": "TnG",
         "item": "Goal: Japan",
         "amount": 3000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-24",
+        "type": "expense",
+        "category": "Food",
+        "account": "TnG",
+        "item": "hotdog",
+        "amount": 30.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-24",
+        "type": "expense",
+        "category": "Entertainment",
+        "account": "TnG",
+        "item": "Pokemon",
+        "amount": 400.0,
+        "receipt": null
     }
 ]
