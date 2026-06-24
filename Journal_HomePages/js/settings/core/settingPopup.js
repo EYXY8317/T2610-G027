@@ -15,7 +15,6 @@ from "../../widgets/digitalClock/renderDigitalClock.js";
 
 import {
     renderWeatherHour,
-    setWeatherFrequency,
     setShowWeatherIcon,
     setShowWeatherTemperature,
     setShowHumidity,
@@ -181,6 +180,11 @@ import {
 }
 from "../../home/serverLayout.js";
 
+import {
+    pushHistory
+}
+from "../../home/historyManager.js";
+
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
     "weather-hour-widget":    "Weather Hours",
@@ -195,9 +199,68 @@ const WIDGET_NAMES = {
     "diary-card-widget":      "Diary"
 };
 
+// localStorage keys that hold widget-specific settings (non-appearance)
+const WIDGET_SETTING_KEYS = {
+    "weather-hour-widget":    ["weather-config"],
+    "weather-day-widget":     ["weather-day-state", "weather-config"],
+    "weather-week-widget":    ["weather-week-state", "weather-config"],
+    "today-emotion-widget":   ["today-emotion-state"],
+    "now-streak-widget":      ["now-streak-display"],
+    "high-streak-widget":     ["high-streak-display"],
+    "emotion-summary-widget": ["emotion-summary-state"],
+    "quote-widget":           ["quote-state"],
+    "diary-card-widget":      ["diary-card-state"],
+};
+
+function snapshotWidgetSettings(widgetId) {
+    const keys = widgetId.startsWith("picture-streak-widget")
+        ? [`${widgetId}-state`]
+        : (WIDGET_SETTING_KEYS[widgetId] || []);
+    const snap = {};
+    keys.forEach(k => { snap[k] = localStorage.getItem(k); });
+    return snap;
+}
+
+function snapshotsEqual(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function restoreWidgetSettings(snap) {
+    Object.entries(snap).forEach(([k, v]) => {
+        if (v === null) localStorage.removeItem(k);
+        else localStorage.setItem(k, v);
+    });
+}
+
+// Re-render a widget from its current localStorage state after a settings restore
+function reRenderWidget(widgetId) {
+    if (widgetId === "weather-hour-widget") {
+        renderWeatherHour();
+    } else if (widgetId === "weather-day-widget") {
+        renderWeatherDay();
+    } else if (widgetId === "weather-week-widget") {
+        renderWeatherWeek();
+    } else if (widgetId === "now-streak-widget") {
+        updateNowStreakState({});
+    } else if (widgetId === "high-streak-widget") {
+        updateHighStreakState({});
+    } else if (widgetId === "emotion-summary-widget") {
+        updateEmotionSummaryState({});
+    } else if (widgetId === "quote-widget") {
+        updateQuoteState({});
+    } else if (widgetId === "today-emotion-widget") {
+        updateTodayEmotionState({});
+    } else if (widgetId === "diary-card-widget") {
+        updateDiaryCardState({});
+    } else if (widgetId.startsWith("picture-streak-widget")) {
+        updatePictureStreakState(widgetId, {});
+    }
+}
+
 // ── Auto-expand any widget when settings cause content to overflow ────────────
 
 let _contentObserver = null;
+let _lastOpenSections = []; // global: whichever sections were open carries over to next widget
 
 function attachContentObserver(widgetId) {
     if (_contentObserver) {
@@ -219,8 +282,18 @@ function attachContentObserver(widgetId) {
 
 export function createSettingPopup(widgetId) {
 
+    // Save which sections are currently open so the next widget inherits them
+    const prev = document.querySelector(".setting-popup");
+    if (prev) {
+        _lastOpenSections = [];
+        prev.querySelectorAll(".setting-section.open .setting-section-toggle h3")
+            .forEach(h => _lastOpenSections.push(h.textContent.trim()));
+    }
+
     if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
     closeCurrentPopup();
+
+    const _settingsBefore = snapshotWidgetSettings(widgetId);
 
     const savedApp       = getWidgetAppearance(widgetId) || {};
     const appearanceHTML = getAppearanceSectionsHTML(savedApp);
@@ -269,7 +342,20 @@ export function createSettingPopup(widgetId) {
     const widgetExtra = [widgetTabs.style, widgetTabs.location, widgetTabs.graph, widgetTabs.display]
         .filter(s => s && s.trim())
         .flatMap(s => s.trim().split(/(?=<h3\b[^>]*>)/i).filter(p => p.trim()))
-        .map(s => `<div class="setting-section">${s}</div>`)
+        .map(s => {
+            const m = s.match(/^<h3[^>]*>(.*?)<\/h3>([\s\S]*)$/i);
+            if (m) {
+                return `
+                    <div class="setting-section">
+                        <div class="setting-section-toggle">
+                            <h3>${m[1]}</h3>
+                            <span class="setting-section-chevron">›</span>
+                        </div>
+                        <div class="setting-section-body">${m[2].trim()}</div>
+                    </div>`;
+            }
+            return `<div class="setting-section">${s}</div>`;
+        })
         .join("");
 
     const popup = document.createElement("div");
@@ -288,6 +374,24 @@ export function createSettingPopup(widgetId) {
 
     popup.querySelector(".setting-close").addEventListener("click", () => {
         if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
+
+        const _settingsAfter = snapshotWidgetSettings(widgetId);
+        if (!snapshotsEqual(_settingsBefore, _settingsAfter)) {
+            const wid    = widgetId;
+            const before = _settingsBefore;
+            const after  = _settingsAfter;
+            pushHistory({
+                revert() {
+                    restoreWidgetSettings(before);
+                    reRenderWidget(wid);
+                },
+                apply() {
+                    restoreWidgetSettings(after);
+                    reRenderWidget(wid);
+                }
+            });
+        }
+
         syncLayoutToServer();
         closeCurrentPopup();
     });
@@ -364,7 +468,6 @@ export function createSettingPopup(widgetId) {
 
     /* ── Weather Hour: graph controls ─────────────────────── */
 
-    const frequencyButtons = popup.querySelectorAll(".frequency-segment .segment-option");
     const showIconButtons = popup.querySelectorAll(".show-icon-segment .segment-option");
     const showTemperatureButtons = popup.querySelectorAll(".show-temperature-segment .segment-option");
     const graphColorPicker = popup.querySelector(".graph-color-picker");
@@ -386,15 +489,6 @@ export function createSettingPopup(widgetId) {
             renderWeatherHour();
         });
     }
-
-    frequencyButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            frequencyButtons.forEach(item => item.classList.remove("active"));
-            button.classList.add("active");
-            setWeatherFrequency(button.dataset.value);
-            renderWeatherHour();
-        });
-    });
 
     showIconButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -485,6 +579,14 @@ export function createSettingPopup(widgetId) {
         });
     });
 
+    const timezoneSelect = popup.querySelector(".clock-timezone-select");
+    if (timezoneSelect) {
+        timezoneSelect.addEventListener("change", event => {
+            setTimezone(event.target.value);
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
+    }
+
     const showDateButtons = popup.querySelectorAll(".show-date-segment .segment-option");
     showDateButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -505,13 +607,6 @@ export function createSettingPopup(widgetId) {
         });
     });
 
-    const timezoneSelect = popup.querySelector(".clock-timezone-select");
-    if (timezoneSelect) {
-        timezoneSelect.addEventListener("change", event => {
-            setTimezone(event.target.value);
-            renderDigitalClock(showSeconds, clockFormat, clockType);
-        });
-    }
 
     /* ── Universal Color Palette ─────────────────────────── */
 
@@ -626,45 +721,6 @@ export function createSettingPopup(widgetId) {
         });
     }
 
-    /* ── Background Opacity: Apply to All ───────────────────── */
-
-    const opacityAllBtn = popup.querySelector(".apply-all-button");
-    if (opacityAllBtn) {
-        opacityAllBtn.addEventListener("click", () => {
-            const overlay = document.createElement("div");
-            overlay.className = "confirm-overlay";
-            overlay.innerHTML = `
-                <div class="confirm-modal">
-                    <div class="confirm-modal-title">Apply Opacity to All Widgets</div>
-                    <div class="confirm-modal-body">
-                        This will apply the current background opacity to all widgets.
-                    </div>
-                    <div class="confirm-modal-btns">
-                        <button class="confirm-cancel-btn">Cancel</button>
-                        <button class="confirm-ok-btn">Apply</button>
-                    </div>
-                </div>
-            `;
-            document.body.append(overlay);
-
-            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => {
-                overlay.remove();
-            });
-
-            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
-                overlay.remove();
-                const sourceApp = getWidgetAppearance(widgetId) || {};
-                const opacity = sourceApp.backgroundOpacity ?? 100;
-                Object.keys(WIDGET_NAMES).forEach(id => {
-                    saveWidgetAppearance(id, { backgroundOpacity: opacity });
-                    const el = document.getElementById(id);
-                    const app = getWidgetAppearance(id);
-                    if (el && app) applyWidgetAppearance(el, app);
-                });
-            });
-        });
-    }
-
     /* ── Apply to All ────────────────────────────────────────── */
 
     const applyToAllBtn = popup.querySelector(".apply-to-all-btn");
@@ -711,6 +767,105 @@ export function createSettingPopup(widgetId) {
             });
         });
     }
+
+    /* ── Individual "Apply to All" buttons ──────────────────── */
+
+    const ALL_KEY_LABELS = {
+        backgroundColor:   "Background Color",
+        titleColor:        "Title Color",
+        contentColor:      "Content Color",
+        borderColor:       "Border Color",
+        backgroundOpacity: "Background Opacity",
+        titleScale:        "Title Size",
+        titleAlign:        "Title Align",
+        contentScale:      "Content Size",
+        borderWidth:       "Border Width",
+    };
+
+    /* ── Section-level "Apply All" buttons ──────────────────── */
+
+    const SECTION_ALL_KEYS = {
+        palette: ["backgroundColor", "titleColor", "contentColor"],
+        colors:  ["backgroundColor", "titleColor", "contentColor", "borderColor", "backgroundOpacity"],
+        title:   ["showTitle", "titleColor", "titleScale", "titleAlign"],
+        content: ["contentColor", "contentScale"],
+        border:  ["showBorder", "borderColor", "borderWidth"],
+    };
+    const SECTION_ALL_LABELS = {
+        palette: "Palette Colors",
+        colors:  "All Colors",
+        title:   "All Title Settings",
+        content: "All Content Settings",
+        border:  "All Border Settings",
+    };
+
+    popup.querySelectorAll(".section-all-btn[data-section-all]").forEach(btn => {
+        btn.addEventListener("click", e => {
+            e.stopPropagation();
+            const sKey  = btn.dataset.sectionAll;
+            const keys  = SECTION_ALL_KEYS[sKey] || [];
+            const label = SECTION_ALL_LABELS[sKey] || sKey;
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply ${label} to All Widgets</div>
+                    <div class="confirm-modal-body">This will apply the current ${label.toLowerCase()} to all widgets.</div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => overlay.remove());
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const patch = {};
+                keys.forEach(k => { if (sourceApp[k] !== undefined) patch[k] = sourceApp[k]; });
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, patch);
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    });
+
+    popup.querySelectorAll(".apply-all-button[data-all-key]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const key   = btn.dataset.allKey;
+            const label = ALL_KEY_LABELS[key] || key;
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply ${label} to All Widgets</div>
+                    <div class="confirm-modal-body">This will apply the current ${label.toLowerCase()} to all widgets.</div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => overlay.remove());
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const value = sourceApp[key];
+                if (value === undefined) return;
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, { [key]: value });
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    });
 
     const titleButtons = popup.querySelectorAll(".title-segment-option");
     titleButtons.forEach(button => {
@@ -802,11 +957,8 @@ export function createSettingPopup(widgetId) {
             });
         }
 
-        wireWwSegment(".ww-temp-display-segment", "tempDisplay");
         wireWwSegment(".ww-days-segment", "showDays");
         wireWwSegment(".ww-icon-segment", "showIcon");
-        wireWwSegment(".ww-feels-segment", "showFeelsLike");
-        wireWwSegment(".ww-humidity-segment", "showHumidity");
 
         const wwCitySelect = popup.querySelector(".weather-city-select");
         if (wwCitySelect) {
@@ -951,6 +1103,20 @@ export function createSettingPopup(widgetId) {
         wireQSegment(".quote-font-segment", "fontStyle");
         wireQSegment(".quote-show-author-seg",     "showAuthor");
         wireQSegment(".quote-show-source-tag-seg", "showSourceTag");
+
+        const qTextColorPicker = popup.querySelector(".quote-text-color-picker");
+        if (qTextColorPicker) {
+            qTextColorPicker.addEventListener("input", event => {
+                updateQuoteState({ textColor: event.target.value });
+            });
+        }
+
+        const qAuthorColorPicker = popup.querySelector(".quote-author-color-picker");
+        if (qAuthorColorPicker) {
+            qAuthorColorPicker.addEventListener("input", event => {
+                updateQuoteState({ authorColor: event.target.value });
+            });
+        }
 
         // Add user quote
         const qAddBtn = popup.querySelector(".quote-add-btn");
@@ -1190,6 +1356,20 @@ export function createSettingPopup(widgetId) {
         wireSegment(".te-show-most-segment", "showMost");
         wireSegment(".te-title-segment", "showTitle");
 
+        // Hide "Slider Mode Settings" section when in emoji-select mode
+        const sliderSection = [...popup.querySelectorAll(".setting-section h3")]
+            .find(h => h.textContent.trim() === "Slider Mode Settings")
+            ?.closest(".setting-section");
+
+        function syncSliderSection(mode) {
+            if (sliderSection) sliderSection.style.display = mode === "slider" ? "" : "none";
+        }
+        syncSliderSection(teState.displayMode || "select");
+
+        popup.querySelectorAll(".te-display-mode-segment .segment-option").forEach(btn => {
+            btn.addEventListener("click", () => syncSliderSection(btn.dataset.value));
+        });
+
         const countSlider = popup.querySelector(".te-count-slider");
         const countValue  = popup.querySelector(".te-count-value");
 
@@ -1226,6 +1406,13 @@ export function createSettingPopup(widgetId) {
         }
 
     }
+
+    /* ── Restore open sections from previous widget ─────────── */
+
+    popup.querySelectorAll(".setting-section").forEach(sec => {
+        const label = sec.querySelector(".setting-section-toggle h3")?.textContent.trim();
+        if (label && _lastOpenSections.includes(label)) sec.classList.add("open");
+    });
 
     /* ── Drag + register ──────────────────────────────────── */
 

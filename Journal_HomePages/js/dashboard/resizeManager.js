@@ -89,12 +89,15 @@ function attachEdgeHandle(widget, dir) {
             widget.style.top    = prevTop + "px";
         }
 
+        showSizeHud(widget, `${Math.round(widget.offsetWidth)} × ${Math.round(widget.offsetHeight)}`);
+
         widget.dispatchEvent(new CustomEvent("widgetresize"));
     });
 
     el.addEventListener("pointerup", () => {
         if (!active) return;
         hideGuideLines();
+        hideSizeHud();
         if (isOverlapping(widget)) {
             widget.style.transition = "width 0.3s ease-out, height 0.3s ease-out";
             widget.style.width  = startW + "px";
@@ -103,6 +106,33 @@ function attachEdgeHandle(widget, dir) {
             widget.style.top    = startT + "px";
             setTimeout(() => { widget.style.transition = "none"; }, 300);
         }
+
+        const finalW = parseFloat(widget.style.width);
+        const finalH = parseFloat(widget.style.height);
+        const finalL = parseFloat(widget.style.left);
+        const finalT = parseFloat(widget.style.top);
+        if (finalW !== startW || finalH !== startH || finalL !== startL || finalT !== startT) {
+            const widgetId = widget.id;
+            const before = { width: startW + "px", height: startH + "px", left: startL + "px", top: startT + "px" };
+            const after  = { width: widget.style.width, height: widget.style.height, left: widget.style.left, top: widget.style.top };
+            pushHistory({
+                revert() {
+                    const el = document.getElementById(widgetId);
+                    if (!el) return;
+                    Object.assign(el.style, before);
+                    saveLayout(el);
+                    el.dispatchEvent(new CustomEvent("widgetresize"));
+                },
+                apply() {
+                    const el = document.getElementById(widgetId);
+                    if (!el) return;
+                    Object.assign(el.style, after);
+                    saveLayout(el);
+                    el.dispatchEvent(new CustomEvent("widgetresize"));
+                }
+            });
+        }
+
         saveLayout(widget);
         active = false;
     });
@@ -115,7 +145,9 @@ import {
 from "./resizeSnap.js";
 
 import {
-    hideGuideLines
+    hideGuideLines,
+    showSizeHud,
+    hideSizeHud
 }
 from "./guideUtils.js";
 
@@ -130,6 +162,11 @@ import {
 from "../home/saveLayout.js";
 
 import {
+    pushHistory
+}
+from "../home/historyManager.js";
+
+import {
     getDashboardBounds
 }
 from "./boundaryManager.js";
@@ -137,6 +174,9 @@ from "./boundaryManager.js";
 
 // Returns how many extra px the widget needs so no content is clipped.
 export function contentOverflow(widget) {
+    // Diary card uses max-width + margin:auto centering; leaf scan gives false positives.
+    if (widget.id === "diary-card-widget") return 0;
+
     // Quote widget: quote-main uses overflow:hidden + flex:1 + min-height:0,
     // so leaf elements never escape the widget boundary and scrollHeight can
     // report the shrunken rendered size instead of the natural content size.
@@ -287,6 +327,8 @@ export function enableResize(
                 widget.style.height = prevH + "px";
             }
 
+            showSizeHud(widget, `${Math.round(widget.offsetWidth)} × ${Math.round(widget.offsetHeight)}`);
+
             // Notify scalable widgets to update their font sizes
             widget.dispatchEvent(new CustomEvent("widgetresize"));
 
@@ -323,6 +365,32 @@ export function enableResize(
                 );
 
             }
+
+            const finalW = parseFloat(widget.style.width);
+            const finalH = parseFloat(widget.style.height);
+            if (finalW !== startWidth || finalH !== startHeight) {
+                const widgetId = widget.id;
+                const before = { width: startWidth + "px", height: startHeight + "px", left: widget.style.left, top: widget.style.top };
+                const after  = { width: widget.style.width,  height: widget.style.height, left: widget.style.left, top: widget.style.top };
+                pushHistory({
+                    revert() {
+                        const el = document.getElementById(widgetId);
+                        if (!el) return;
+                        Object.assign(el.style, before);
+                        saveLayout(el);
+                        el.dispatchEvent(new CustomEvent("widgetresize"));
+                    },
+                    apply() {
+                        const el = document.getElementById(widgetId);
+                        if (!el) return;
+                        Object.assign(el.style, after);
+                        saveLayout(el);
+                        el.dispatchEvent(new CustomEvent("widgetresize"));
+                    }
+                });
+            }
+
+            hideSizeHud();
 
             saveLayout(widget);
 

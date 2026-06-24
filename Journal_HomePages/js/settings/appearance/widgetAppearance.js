@@ -1,4 +1,10 @@
+import { pushHistory } from "../../home/historyManager.js";
+
 const KEY = id => `${id}-appearance`;
+
+let _debounceTimer  = null;
+let _debounceBefore = null;
+let _debounceWid    = null;
 
 const DEFAULTS = {
     backgroundColor: "#ffffff",
@@ -31,7 +37,40 @@ export function getWidgetAppearance(widgetId) {
 
 export function saveWidgetAppearance(widgetId, partial) {
     const current = getWidgetAppearance(widgetId) || { ...DEFAULTS };
-    localStorage.setItem(KEY(widgetId), JSON.stringify({ ...current, ...partial }));
+    const next    = { ...current, ...partial };
+    localStorage.setItem(KEY(widgetId), JSON.stringify(next));
+
+    // Debounced history: rapid slider drags collapse into one entry
+    if (_debounceWid !== widgetId) {
+        _debounceBefore = current;
+        _debounceWid    = widgetId;
+    }
+    if (!_debounceBefore) _debounceBefore = current;
+
+    const before = _debounceBefore;
+    const after  = next;
+    const wid    = widgetId;
+
+    clearTimeout(_debounceTimer);
+    _debounceTimer = setTimeout(() => {
+        if (JSON.stringify(before) !== JSON.stringify(after)) {
+            pushHistory({
+                revert() {
+                    localStorage.setItem(KEY(wid), JSON.stringify(before));
+                    const w = document.getElementById(wid);
+                    if (w) applyWidgetAppearance(w, before);
+                },
+                apply() {
+                    localStorage.setItem(KEY(wid), JSON.stringify(after));
+                    const w = document.getElementById(wid);
+                    if (w) applyWidgetAppearance(w, after);
+                }
+            });
+        }
+        _debounceBefore = null;
+        _debounceWid    = null;
+        _debounceTimer  = null;
+    }, 800);
 }
 
 export function applyWidgetAppearance(widget, app) {

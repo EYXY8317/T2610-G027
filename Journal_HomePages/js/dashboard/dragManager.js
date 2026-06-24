@@ -9,6 +9,12 @@ import {
 from "./guide.js";
 
 import {
+    showSizeHud,
+    hideSizeHud
+}
+from "./guideUtils.js";
+
+import {
     isOverlapping
 }
 from "./overlapManager.js";
@@ -22,6 +28,11 @@ import {
     saveLayout
 }
 from "../home/saveLayout.js";
+
+import {
+    pushHistory
+}
+from "../home/historyManager.js";
 
 let currentZIndex = 1;
 
@@ -105,6 +116,8 @@ export function enableDrag(
 
             widget.style.top = snapped.top + "px";
 
+            showSizeHud(widget, `x: ${Math.round(snapped.left)}  y: ${Math.round(snapped.top)}`);
+
         }
 
     );
@@ -141,6 +154,31 @@ export function enableDrag(
             }
 
             hideGuideLines();
+
+            hideSizeHud();
+
+            const endLeft = parseFloat(widget.style.left);
+            const endTop  = parseFloat(widget.style.top);
+
+            if (endLeft !== startLeft || endTop !== startTop) {
+                const widgetId = widget.id;
+                const bl = startLeft + "px", bt = startTop + "px";
+                const al = widget.style.left,  at = widget.style.top;
+                pushHistory({
+                    revert() {
+                        const el = document.getElementById(widgetId);
+                        if (!el) return;
+                        el.style.left = bl; el.style.top = bt;
+                        saveLayout(el);
+                    },
+                    apply() {
+                        const el = document.getElementById(widgetId);
+                        if (!el) return;
+                        el.style.left = al; el.style.top = at;
+                        saveLayout(el);
+                    }
+                });
+            }
 
             saveLayout(widget);
 

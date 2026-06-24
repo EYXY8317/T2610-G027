@@ -62,6 +62,13 @@ import {
 from "../settings/appearance/widgetAppearance.js";
 
 import {
+    initHistoryButtons,
+    undo,
+    redo
+}
+from "./historyManager.js";
+
+import {
     enableFontScale
 }
 from "../dashboard/fontScale.js";
@@ -239,6 +246,21 @@ export async function initializeHomepage() {
     initializeQuote();
     initializeDiaryCard();
     
+    const undoBtn = document.getElementById("history-undo");
+    const redoBtn = document.getElementById("history-redo");
+    if (undoBtn && redoBtn) {
+        initHistoryButtons(undoBtn, redoBtn);
+        undoBtn.addEventListener("click", undo);
+        redoBtn.addEventListener("click", redo);
+        document.addEventListener("keydown", e => {
+            if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "z") {
+                e.preventDefault(); undo();
+            } else if ((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.shiftKey && e.key === "z"))) {
+                e.preventDefault(); redo();
+            }
+        });
+    }
+
     setupEditMode(
         settingsButton,
         menu,
