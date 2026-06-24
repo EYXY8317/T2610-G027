@@ -218,6 +218,52 @@ def get_entry():
     return entry or {}
 
 
+#================================ diary_moods API ================================
+
+@diary_bp.route("/diary_moods", methods=["GET"])
+def diary_moods():
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = load_entries()
+    moods = {}
+    for e in entries:
+        raw = e.get("date", "")
+        mood = e.get("mood", "")
+        if not mood:
+            continue
+        for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+            try:
+                dt = datetime.strptime(raw, fmt)
+                moods[dt.strftime("%Y-%m-%d")] = mood
+                break
+            except ValueError:
+                continue
+    return jsonify(moods)
+
+
+#================================ diary_data API ================================
+
+@diary_bp.route("/diary_data", methods=["GET"])
+def diary_data():
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = load_entries()
+    result = {}
+    for e in entries:
+        raw   = e.get("date", "")
+        mood  = e.get("mood", "")
+        topic = e.get("topic", "")
+        if not mood and not topic:
+            continue
+        for fmt in ("%d/%m/%Y", "%Y-%m-%d"):
+            try:
+                dt  = datetime.strptime(raw, fmt)
+                iso = dt.strftime("%Y-%m-%d")
+                result[iso] = {"mood": mood, "topic": topic}
+                break
+            except ValueError:
+                continue
+    return jsonify(result)
+
+
 #================================ get_message API ================================
 
 @diary_bp.route("/get_message")
