@@ -134,9 +134,70 @@ function renderSelectMode(state) {
         `;
 
     }).join("");
+}
+
+function renderCurrentMood(state) {
+    if (!state.showCurrentMood) {
+        return "";
+    }
+
+    if (state.emotionType === "rating") {
+        return `
+            <div class="today-emotion-current">
+                <span class="today-emotion-current-label">Current Mood</span>
+                <span class="today-emotion-current-value">${state.ratingValue} / 10</span>
+            </div>
+        `;
+    }
+
+    if (state.emotionType === "image") {
+        if (!state.customImage) {
+            return `
+                <div class="today-emotion-current">
+                    <span class="today-emotion-current-label">Current Mood</span>
+                    <span class="today-emotion-current-value">Upload an image in settings</span>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="today-emotion-current">
+                <span class="today-emotion-current-label">Current Mood</span>
+                <span class="today-emotion-current-value">Custom Image</span>
+            </div>
+        `;
+    }
+
+    const values = getEffectiveEmojis(state).slice(0, state.displayedCount);
+    const selectedIndexes = getSelectedIndexes(state).filter(index => index >= 0 && index < values.length);
+
+    if (!selectedIndexes.length) {
+        return `
+            <div class="today-emotion-current">
+                <span class="today-emotion-current-label">Current Mood</span>
+                <span class="today-emotion-current-value">No mood selected</span>
+            </div>
+        `;
+    }
+
+    const firstIndex = selectedIndexes[0];
+    const emoji = values[firstIndex] || values[0];
+    const label = getMoodLabel(emoji);
+
+    if (state.selectionMode === "multiple" && selectedIndexes.length > 1) {
+        return `
+            <div class="today-emotion-current">
+                <span class="today-emotion-current-label">Current Mood</span>
+                <span class="today-emotion-current-value">${emoji} ${label} +${selectedIndexes.length - 1} more</span>
+            </div>
+        `;
+    }
 
     return `
-        <div class="te-emoji-row">${buttons}</div>
+        <div class="today-emotion-current">
+            <span class="today-emotion-current-label">Current Mood</span>
+            <span class="today-emotion-current-value">${emoji} ${label}</span>
+        </div>
     `;
 
 }

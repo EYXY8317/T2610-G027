@@ -244,7 +244,10 @@ export async function initializeHomepage() {
     getExtraPictureInstances().forEach(id => initializePictureStreak(id));
     initializeEmotionSummary();
     initializeQuote();
+<<<<<<< HEAD
+=======
     initializeDiaryCard();
+>>>>>>> 045b1a003df943324b73368ab658a8541a55e802
     
     const undoBtn = document.getElementById("history-undo");
     const redoBtn = document.getElementById("history-redo");

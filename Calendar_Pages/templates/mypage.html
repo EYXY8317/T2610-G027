@@ -10,6 +10,8 @@
 
     <link rel="stylesheet" href="/calendar_static/calendar.css">
 
+    <link rel="stylesheet" href="/calendar_static/today.css">
+
 </head>
 
 <body>
@@ -23,10 +25,11 @@
     </div>
     <div class="nav-links">
         <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
         <a href="/finance">Finance Page</a>
         <a href="/journal">Diary Page</a>
         <a href="/calendar" class="active">Calendar Page</a>
-        <a href="/logout">Logout</a>
+         <a href="/profile">Settings</a>
     </div>
 </nav>
 
@@ -147,6 +150,17 @@
 
     </div>
 
+   <div class="menu-item"
+        onclick="openThemePopup()">
+
+    <span class="material-symbols-rounded">
+         palette
+    </span>
+
+    <span>Theme</span>
+
+</div>
+
 </div>
 
 </div> 
@@ -172,19 +186,21 @@
 
 </div>   
 
-      <!-- TODAY PAGE -->
-      <div id="today" class="page active">
+<!-- TODAY PAGE -->
+<div id="today" class="page active">
 
     <!-- TODAY HEADER -->
     <div class="today-header">
 
-        <h1 class="today-title">
-            Today
-        </h1>
-
-        <p class="today-date" id="date"></p>
+        <p
+            class="today-date"
+            id="date"
+        ></p>
 
     </div>
+
+<!-- TOP SECTION -->
+<div class="today-top-grid">
 
     <!-- TODAY TASKS -->
     <div class="dashboard-card task-section">
@@ -214,117 +230,175 @@
 
     </div>
 
-    <!-- PROGRESS -->
-    <div class="dashboard-card progress-card">
+    <!-- RIGHT COLUMN -->
+    <div class="today-right-column">
 
-        <div class="card-header">
+        <!-- PROGRESS -->
+        <div class="dashboard-card progress-card">
 
-            <div class="header-left">
+            <div class="card-header">
 
-                <div class="card-icon">
+                <div class="header-left">
 
-                    <span class="material-symbols-rounded">
-                        donut_large
-                    </span>
+                    <div class="card-icon">
+
+                        <span class="material-symbols-rounded">
+                            donut_large
+                        </span>
+
+                    </div>
+
+                    <h2 class="card-title">
+                        Progress Overview
+                    </h2>
 
                 </div>
 
-                <h2 class="card-title">
-                    Progress Overview
-                </h2>
-
-            </div>
-
-        <div
-            class="progress-badge"
-            id="progressBadge"
-        >
-            🚀 Ready to Start
-        </div>
-
-    </div>
-
-        <div class="progress-content">
-
-            <div>
-
-                <h1
-                class="progress-number"
-                id="progressPercent"
+                <div
+                    class="progress-badge"
+                    id="progressBadge"
                 >
-                    0%
-                </h1>
-
-                <p class="progress-label">
-                    Overall Progress
-                </p>
+                    🚀 Ready to Start
+                </div>
 
             </div>
 
-            <div class="progress-right">
+            <div class="progress-content">
 
-                <div class="progress-bar">
+                <div class="progress-right">
 
-                    <div
-                    class="progress-fill"
-                    id="progressFill"
-                    ></div>
+                    <!-- PROGRESS RING -->
+
+                    <div class="progress-ring-wrapper">
+
+                        <div
+                            class="progress-circle"
+                            id="progressCircle"
+                        >
+
+                            <span
+                                id="progressPercent"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+                        <p class="progress-label">
+
+                            Overall Progress
+
+                        </p>
+
+                    </div>
+
+                    <!-- STATS GRID -->
+
+                    <div class="progress-stats">
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Total
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="totalStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Completed
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="completedStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Remaining
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="remainingStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="stat-box">
+
+                            <span class="stat-label">
+                                Overdue
+                            </span>
+
+                            <span
+                                class="stat-value"
+                                id="overdueStat"
+                            >
+                                0
+                            </span>
+
+                        </div>
+
+                    </div>
 
                 </div>
-
-                <p class="progress-task-text">
-
-                    <span id="completedTasksCount">
-                        0
-                    </span>
-
-                    of
-
-                    <span id="totalTasksCount">
-                        0
-                    </span>
-
-                    tasks completed
-
-                </p>
 
             </div>
 
         </div>
 
-    </div>
+        <!-- DAILY QUOTE -->
+        <div class="dashboard-card quote-card">
 
-    <!-- DAILY QUOTE -->
-    <div class="dashboard-card quote-card">
+            <div class="quote-left">
 
-        <div class="quote-left">
+                <div class="header-left">
 
-            <div class="header-left">
+                    <div class="card-icon">
 
-                <div class="card-icon">
+                        <span class="material-symbols-rounded">
+                            auto_awesome
+                        </span>
 
-                    <span class="material-symbols-rounded">
-                        auto_awesome
-                    </span>
+                    </div>
+
+                    <h2 class="card-title">
+                        Daily Quote
+                    </h2>
 
                 </div>
 
-                <h2 class="card-title">
-                    Daily Quote
+                <h2
+                    class="quote-text"
+                    id="dailyQuote"
+                >
+                    “Small progress is still progress.”
                 </h2>
 
             </div>
 
-            <h2
-            class="quote-text"
-            id="dailyQuote"
-            >
-                “Small progress is still progress.”
-            </h2>
-
         </div>
 
     </div>
+
+</div>
 
 </div>
 
@@ -667,53 +741,71 @@
 
     </h2>
 
-    <!-- COMPLETED FILTERS -->
+<!-- COMPLETED FILTERS -->
 
-    <div class="completed-filters">
+<div class="completed-filters">
 
-        <button
-            class="completed-filter-btn active"
-            onclick="filterCompleted('all', this)"
-        >
-            All
-        </button>
+    <select id="dateFilter">
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('work', this)"
-        >
+        <option value="all">
+            All Dates
+        </option>
+
+        <option value="today">
+            Today
+        </option>
+
+        <option value="thisWeek">
+            This Week
+        </option>
+
+        <option value="lastWeek">
+            Last Week
+        </option>
+
+        <option value="thisMonth">
+            This Month
+        </option>
+
+        <option value="lastMonth">
+            Last Month
+        </option>
+
+        <option value="older">
+            Older
+        </option>
+
+    </select>
+
+    <select id="categoryFilter">
+
+        <option value="all">
+            All Categories
+        </option>
+
+        <option value="work">
             Work
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('shopping', this)"
-        >
+        <option value="shopping">
             Shopping
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('study', this)"
-        >
+        <option value="study">
             Study
-        </button>
-        
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('personal', this)"
-        >
+        </option>
+
+        <option value="personal">
             Personal
-        </button>
+        </option>
 
-        <button
-            class="completed-filter-btn"
-            onclick="filterCompleted('workout', this)"
-        >
+        <option value="workout">
             Workout
-        </button>
+        </option>
 
-    </div>
+    </select>
+
+</div>
 
     <div id="completedList"></div>
 
@@ -752,6 +844,8 @@
     <div id="trashList"></div>
 
 </div>
+
+
 
 <!-- CALENDAR POPUP -->
 <div id="calendarPopup" class="calendar-popup">
@@ -1240,11 +1334,98 @@
 
 </div>
 
-<!-- JS FILE -->
-<script src="/calendar_static/task2.0.js"></script>
+
+<!-- THEME POPUP -->
+
+<div id="themePopup"
+     class="theme-popup">
+
+    <div class="theme-popup-content">
+
+        <div class="theme-popup-header">
+
+            <h2>
+
+                <span class="material-symbols-rounded">
+                    palette
+                </span>
+
+                Choose Theme
+
+            </h2>
+
+           <button
+            class="theme-close-btn"
+            onclick="closeThemePopup()">
+
+             ✕
+
+            </button>
+
+    </div>
+
+        <div class="theme-grid">
+
+            <div class="theme-card"
+                 onclick="setTheme('mocha')">
+
+                 Mocha Latte
+
+            </div>
+
+            <div class="theme-card"
+                 onclick="setTheme('lavender')">
+
+                 Lavender Dream
+
+            </div>
+
+            <div class="theme-card"
+                 onclick="setTheme('matcha')">
+
+                 Matcha Green
+
+            </div>
+
+            <div class="theme-card"
+                 onclick="setTheme('ash')">
+
+                 Ash Gray
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================
+     JS FILES
+===================================== -->
+
+<script src="/calendar_static/task1.js"></script>
+
+<script src="/calendar_static/task2.js"></script>
+
 <script src="/calendar_static/calendar.js"></script>
+
 <script src="/calendar_static/today.js"></script>
 
+<script src="/calendar_static/themecolor.js"></script>
+
+
+
+<!-- =====================================
+     TOAST NOTIFICATION
+===================================== -->
+
+<div id="toast">
+
+    ✨ You Did It!
+
+</div>
 
 </body>
 </html>
