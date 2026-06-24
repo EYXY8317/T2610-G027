@@ -107,7 +107,7 @@
                         'Goal Savings':   {'emoji': '🎯', 'bg': '#fff7ed'},
                     } %}
                     {% if today_txns %}
-                        {% for tx in today_txns[:4] %}
+                        {% for tx in today_txns[:3] %}
                         {% set icon = cat_icons.get(tx.category, {'emoji': '💳', 'bg': '#f3f4f6'}) %}
                         <div class="tp-txn-item">
                             <div class="tp-txn-icon" style="background:{{ icon.bg }}">{{ icon.emoji }}</div>
@@ -140,7 +140,7 @@
             {% set priority_label = {'red': 'High', 'orange': 'Medium', 'blue': 'Low', 'gray': 'No Priority'} %}
             <div class="tp-col-body">
                 {% if today_tasks %}
-                    {% for t in today_tasks[:5] %}
+                    {% for t in today_tasks[:3] %}
                     <div class="tp-event-item tp-priority-{{ t.priority or 'none' }}">
                         <div class="tp-event-title">{{ t.text }}</div>
                         <div class="tp-event-date">
@@ -154,8 +154,8 @@
                         {% endif %}
                     </div>
                     {% endfor %}
-                    {% if today_tasks | length > 5 %}
-                        <a href="/calendar" class="tp-more-events">+{{ today_tasks | length - 5 }} more — Open Calendar</a>
+                    {% if today_tasks | length > 3 %}
+                        <a href="/calendar" class="tp-more-events">+{{ today_tasks | length - 3 }} more — Open Calendar</a>
                     {% endif %}
                 {% else %}
                     <div class="tp-no-more-events">No events today 🎉</div>

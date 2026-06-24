@@ -245,13 +245,18 @@ def today_page():
             net_savings += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
 
     # Today's calendar tasks: exact date match OR daily repeat, not trashed
+    _priority_order = {"red": 0, "orange": 1, "blue": 2, "gray": 3}
     today_tasks = [
         t for t in all_tasks
         if t.get("username") == user
         and t.get("status") != "trash"
         and (t.get("date") == today_str or t.get("repeat") == "daily")
     ]
-    today_tasks.sort(key=lambda t: t.get("startTime") or "")
+    today_tasks.sort(key=lambda t: (
+        1 if t.get("status") == "completed" else 0,
+        _priority_order.get(t.get("priority"), 4),
+        t.get("startTime") or ""
+    ))
 
     return render_template(
         "today_page.html",

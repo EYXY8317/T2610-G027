@@ -183,31 +183,29 @@ def view_financial():
     records = load_data(f_expense, [])
     accounts = load_data(f_accounts, [])
 
-    user_records = [r for r in records if r["username"] == user]
     selected_account = request.args.get("account")
-
-    if selected_account and selected_account != "All Accounts":
-        user_records = [r for r in user_records if r.get("account") == selected_account]
-
     start = request.args.get("start")
     end = request.args.get("end")
 
+    # Attach global index (position in full records list) before sorting
+    indexed = [(i, r) for i, r in enumerate(records) if r["username"] == user]
+    if selected_account and selected_account != "All Accounts":
+        indexed = [(i, r) for i, r in indexed if r.get("account") == selected_account]
     if start and end:
+        indexed = [(i, r) for i, r in indexed if start <= r["date"] <= end]
+    indexed.sort(key=lambda x: x[1]["date"], reverse=True)
 
-        user_records = [
+    display_records = []
+    for global_idx, r in indexed:
+        rc = dict(r)
+        rc["_global_idx"] = global_idx
+        display_records.append(rc)
 
-            r for r in user_records
-
-            if start <= r["date"] <= end
-
-        ]
-
-    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
     user_accounts = [a for a in accounts if a["username"] == user]
 
     return render_template(
         "view.html",
-        records=sorted_records,
+        records=display_records,
         accounts=user_accounts,
         selected_account=selected_account,
         wallpaper=get_user_wallpaper(),
@@ -222,14 +220,12 @@ def delete_financial(idx):
 
     records = load_data(f_expense, [])
     user = session["user"]
-    user_records = [r for r in records if r["username"] == user]
 
-    if idx < 0 or idx >= len(user_records):
+    if idx < 0 or idx >= len(records) or records[idx].get("username") != user:
         return redirect(url_for("finance.view_financial"))
 
-    target = user_records[idx]
-    _delete_receipt(target.get("receipt"))
-    records.remove(target)
+    _delete_receipt(records[idx].get("receipt"))
+    records.pop(idx)
     save_data(f_expense, records)
     return redirect(url_for("finance.view_financial"))
 
@@ -241,15 +237,11 @@ def update_financial(idx):
 
     records = load_data(f_expense, [])
     user = session["user"]
-    user_records = [r for r in records if r["username"] == user]
-    sorted_records = sorted(user_records, key=lambda x: x["date"], reverse=True)
 
-    if idx < 0 or idx >= len(sorted_records):
+    if idx < 0 or idx >= len(records) or records[idx].get("username") != user:
         return redirect(url_for("finance.view_financial"))
 
-    selected = sorted_records[idx]
-    real_index = records.index(selected)
-    record = records[real_index]
+    record = records[idx]
 
     accounts = load_data(f_accounts, [])
     user_accounts = [a for a in accounts if a["username"] == user]

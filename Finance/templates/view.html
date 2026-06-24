@@ -368,7 +368,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         <div class="action-buttons">
 
                             <a
-                            href="/update/{{ loop.index0 }}"
+                            href="/update/{{ r._global_idx }}"
                             class="edit-btn"
                             >
 
@@ -377,7 +377,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                             </a>
 
                             <a
-                            href="/delete/{{ loop.index0 }}"
+                            href="/delete/{{ r._global_idx }}"
                             class="delete-btn"
                             >
 
