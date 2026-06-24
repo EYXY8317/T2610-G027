@@ -14,14 +14,6 @@ export function getTitleSizeSetting() {
                 Title Size
             </span>
 
-            <button
-                class="
-                apply-all-button
-                "
-            >
-                All
-            </button>
-
         </div>
 
         <div
