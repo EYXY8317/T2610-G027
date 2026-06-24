@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accounts</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+    <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
+</head>
+
+<body
+class="{{ user.theme if user and user.theme else 'adaptive' }} {{ user.ui_style if user and user.ui_style else 'premium' }}"
+{% if wallpaper %}
+style="background-image:linear-gradient(rgba(0,0,0,0.18),rgba(0,0,0,0.18)),url('/profile_static/wallpapers/{{ wallpaper }}');"
+{% endif %}
+>
+
+<div class="wallpaper-overlay"></div>
+
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+        </div>
+        <div class="logo-text">Life Pages</div>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
+        <a href="/finance" class="active">Finance Page</a>
+        <a href="/journal">Diary Page</a>
+        <a href="/calendar">Calendar Page</a>
+        <a href="/profile">Settings</a>
+    </div>
+</nav>
+
+<div class="topbar">
+    <div class="topbar-title">🏦 Accounts</div>
+    <div class="topbar-links">
+        <a href="/finance">Dashboard</a>
+        <a href="/view">View</a>
+        <a href="/add">Add</a>
+        <a href="/summary">Summary</a>
+        <a href="/budget">Budget</a>
+        <a href="/goals">Goals</a>
+        <a href="/accounts" class="active-link">Accounts</a>
+    </div>
+</div>
+
+<div class="summary-wrapper">
+
+    <!-- ADD ACCOUNT -->
+    <div class="summary-card hover-card">
+        <div class="page-header">
+            <h1 class="summary-main-title">🏦 Accounts</h1>
+            <p class="add-subtitle">Manage your spending and savings accounts.</p>
+        </div>
+
+        <form method="POST" class="add-form" style="margin-top:16px;">
+            <div class="summary-grid">
+                <div>
+                    <label>Account Name</label>
+                    <input type="text" name="name" placeholder="e.g. Maybank, TnG, CIMB" required>
+                </div>
+                <div>
+                    <label>Purpose</label>
+                    <select name="purpose">
+                        <option value="spending">💳 Spending Account</option>
+                        <option value="savings">🏦 Savings Account</option>
+                    </select>
+                </div>
+            </div>
+            <div class="budget-button-row">
+                <button type="submit">+ Add Account</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ACCOUNT LIST -->
+    <div class="summary-card hover-card">
+        <h2 class="budget-section-title">Your Accounts</h2>
+
+        {% if account_list %}
+        <div class="budget-grid">
+            {% for acc in account_list %}
+            <div class="budget-modern hover-card">
+
+                <!-- HEADER -->
+                <div class="budget-card-top">
+                    <div>
+                        <h3>{{ acc.name }}</h3>
+                        <div style="display:flex;gap:6px;align-items:center;margin-top:6px;">
+                            <span class="acc-purpose-pill acc-purpose-{{ acc.purpose }}">
+                                {% if acc.purpose == 'savings' %}🏦 Savings{% else %}💳 Spending{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="budget-actions">
+                        <a href="/edit_account/{{ acc.name }}" class="budget-icon-btn" title="Edit">✏️</a>
+                        <a href="/delete_account/{{ acc.name }}" class="budget-icon-btn budget-icon-del" title="Delete"
+                           onclick="return confirm('Delete account {{ acc.name }}? This will not delete its transactions.')">✕</a>
+                    </div>
+                </div>
+
+                <!-- BALANCE -->
+                <div class="acc-balance-row">
+                    <div class="acc-balance-label">Balance</div>
+                    <div class="acc-balance-val {% if acc.balance < 0 %}acc-bal-neg{% endif %}">
+                        RM {{ "%.2f"|format(acc.balance) }}
+                    </div>
+                </div>
+
+                <!-- STATS -->
+                <div style="display:flex;gap:0;margin:10px 0;">
+                    <div style="flex:1;padding:8px 12px;border-right:1px solid var(--border);">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px;">Transactions</div>
+                        <div style="font-weight:700;font-size:15px;">{{ acc.txn_count }}</div>
+                    </div>
+                    <div style="flex:1;padding:8px 12px;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:3px;">Last Activity</div>
+                        <div style="font-weight:600;font-size:14px;white-space:nowrap;">
+                            {% if acc.last_txn %}{{ acc.last_txn }}{% else %}—{% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW TRANSACTIONS -->
+                <a href="/view?account={{ acc.name }}" class="acc-view-btn">View Transactions →</a>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="empty-card">
+            <h3>No accounts yet</h3>
+            <p>Add your first account above.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+(function () {
+    const body = document.body;
+    if (!body.classList.contains("adaptive")) return;
+    const bg = window.getComputedStyle(body).backgroundImage;
+    const match = bg.match(/url\([\"']?(.*?)[\"']?\)/);
+    if (!match) return;
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = match[1];
+    img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 80; canvas.height = 80;
+        ctx.drawImage(img, 0, 0, 80, 80);
+        const data = ctx.getImageData(0, 0, 80, 80).data;
+        let total = 0, darkPixels = 0, count = 0;
+        for (let i = 0; i < data.length; i += 4) {
+            const brightness = data[i]*0.299 + data[i+1]*0.587 + data[i+2]*0.114;
+            total += brightness;
+            if (brightness < 95) darkPixels++;
+            count++;
+        }
+        if (total/count < 135 || darkPixels/count > 0.45)
+            body.classList.add("dark-wallpaper");
+        else
+            body.classList.remove("dark-wallpaper");
+    };
+})();
+</script>
+</body>
+</html>
