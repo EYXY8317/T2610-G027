@@ -7,7 +7,8 @@
     {
         "username": "Ethan",
         "category": "Entertainment",
-        "amount": 3000.0
+        "amount": 3500.0,
+        "period": "monthly"
     },
     {
         "username": "Ethan",
