@@ -56,35 +56,12 @@ export function getWeatherWeekSettings() {
                     <button class="segment-option${state.showDays === 7 ? " active" : ""}" data-value="7">7</button>
                 </div>
             </div>
-            <h3>Temperature</h3>
-            <div class="setting-row">
-                <span>Display</span>
-                <div class="segment-button ww-temp-display-segment">
-                    <button class="segment-option${state.tempDisplay === "max" ? " active" : ""}" data-value="max">Max</button>
-                    <button class="segment-option${state.tempDisplay === "min" ? " active" : ""}" data-value="min">Min</button>
-                    <button class="segment-option${state.tempDisplay === "avg" ? " active" : ""}" data-value="avg">Avg</button>
-                </div>
-            </div>
             <h3>Show / Hide</h3>
             <div class="setting-row">
                 <span>Weather Icon</span>
                 <div class="segment-button ww-icon-segment">
                     <button class="segment-option${state.showIcon ? " active" : ""}" data-value="true">Show</button>
                     <button class="segment-option${!state.showIcon ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Feels Like</span>
-                <div class="segment-button ww-feels-segment">
-                    <button class="segment-option${state.showFeelsLike ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showFeelsLike ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Humidity</span>
-                <div class="segment-button ww-humidity-segment">
-                    <button class="segment-option${state.showHumidity ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showHumidity ? " active" : ""}" data-value="false">Hide</button>
                 </div>
             </div>
         `

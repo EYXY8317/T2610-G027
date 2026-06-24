@@ -52,17 +52,6 @@ export function getWeatherHourSettings() {
         `,
 
         graph: `
-            <h3>Interval</h3>
-            <div class="setting-row">
-                <span>Data Interval</span>
-                <div class="segment-button frequency-segment">
-                    <button class="segment-option active" data-value="1h">1H</button>
-                    <button class="segment-option" data-value="2h">2H</button>
-                    <button class="segment-option" data-value="3h">3H</button>
-                    <button class="segment-option" data-value="4h">4H</button>
-                    <button class="segment-option" data-value="5h">5H</button>
-                </div>
-            </div>
             <h3>Overlay</h3>
             <div class="setting-row">
                 <span>Show Humidity</span>
