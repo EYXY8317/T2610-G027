@@ -2,7 +2,10 @@ import {
     showVerticalLine,
     showHorizontalLine,
     hideVerticalLine,
-    hideHorizontalLine
+    hideHorizontalLine,
+    showSameSizeGuideV,
+    showSameSizeGuideH,
+    hideSameSizeGuides
 } from "./guideUtils.js";
 
 const SNAP_DIST = 8;
@@ -40,73 +43,96 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
 
     let guideX = null;
     let guideY = null;
+    let sameSizeX = null;
+    let sameSizeY = null;
 
     // ── East (right edge moves) ────────────────────────────
     if (dir.includes("e")) {
         const cur = newL + newW;
-        const candidates = [
+        const edgeCandidates = [
             dashCX,
             ...others.flatMap(o => [
                 o.offsetLeft,
                 o.offsetLeft - GAP_SIZE,
-                o.offsetLeft + o.offsetWidth / 2,       // other centre X
+                o.offsetLeft + o.offsetWidth / 2,
                 o.offsetLeft + o.offsetWidth
             ])
         ];
-        const snap = nearestSnap(cur, candidates);
+        const snap = nearestSnap(cur, edgeCandidates);
         if (snap !== null) { newW = snap - newL; guideX = snap; }
+        else {
+            const sameSnap = nearestSnap(newW, others.map(o => o.offsetWidth));
+            if (sameSnap !== null) { newW = sameSnap; sameSizeX = newL + sameSnap; }
+        }
     }
 
     // ── West (left edge moves, right edge is fixed) ────────
     if (dir.includes("w")) {
         const cur = newL;
-        const candidates = [
+        const edgeCandidates = [
             dashCX,
             ...others.flatMap(o => [
                 o.offsetLeft,
-                o.offsetLeft + o.offsetWidth / 2,       // other centre X
+                o.offsetLeft + o.offsetWidth / 2,
                 o.offsetLeft + o.offsetWidth,
                 o.offsetLeft + o.offsetWidth + GAP_SIZE
             ])
         ];
-        const snap = nearestSnap(cur, candidates);
+        const snap = nearestSnap(cur, edgeCandidates);
         if (snap !== null) { newL = snap; newW = fixedRight - newL; guideX = snap; }
+        else {
+            const sameSnap = nearestSnap(newW, others.map(o => o.offsetWidth));
+            if (sameSnap !== null) { newW = sameSnap; newL = fixedRight - sameSnap; sameSizeX = newL; }
+        }
     }
 
     // ── South (bottom edge moves) ──────────────────────────
     if (dir.includes("s")) {
         const cur = newT + newH;
-        const candidates = [
+        const edgeCandidates = [
             dashCY,
             ...others.flatMap(o => [
                 o.offsetTop,
                 o.offsetTop - GAP_SIZE,
-                o.offsetTop + o.offsetHeight / 2,       // other centre Y
+                o.offsetTop + o.offsetHeight / 2,
                 o.offsetTop + o.offsetHeight
             ])
         ];
-        const snap = nearestSnap(cur, candidates);
+        const snap = nearestSnap(cur, edgeCandidates);
         if (snap !== null) { newH = snap - newT; guideY = snap; }
+        else {
+            const sameSnap = nearestSnap(newH, others.map(o => o.offsetHeight));
+            if (sameSnap !== null) { newH = sameSnap; sameSizeY = newT + sameSnap; }
+        }
     }
 
     // ── North (top edge moves, bottom edge is fixed) ───────
     if (dir.includes("n")) {
         const cur = newT;
-        const candidates = [
+        const edgeCandidates = [
             dashCY,
             ...others.flatMap(o => [
                 o.offsetTop,
-                o.offsetTop + o.offsetHeight / 2,       // other centre Y
+                o.offsetTop + o.offsetHeight / 2,
                 o.offsetTop + o.offsetHeight,
                 o.offsetTop + o.offsetHeight + GAP_SIZE
             ])
         ];
-        const snap = nearestSnap(cur, candidates);
+        const snap = nearestSnap(cur, edgeCandidates);
         if (snap !== null) { newT = snap; newH = fixedBottom - newT; guideY = snap; }
+        else {
+            const sameSnap = nearestSnap(newH, others.map(o => o.offsetHeight));
+            if (sameSnap !== null) { newH = sameSnap; newT = fixedBottom - sameSnap; sameSizeY = newT; }
+        }
     }
 
-    if (guideX !== null) showVerticalLine(guideX);   else hideVerticalLine();
-    if (guideY !== null) showHorizontalLine(guideY); else hideHorizontalLine();
+    if (guideX !== null)     { showVerticalLine(guideX); hideSameSizeGuides(); }
+    else if (sameSizeX !== null) { showSameSizeGuideV(sameSizeX); hideVerticalLine(); }
+    else                     { hideVerticalLine(); hideSameSizeGuides(); }
+
+    if (guideY !== null)     { showHorizontalLine(guideY); }
+    else                     { hideHorizontalLine(); }
+    if (sameSizeY !== null)  { showSameSizeGuideH(sameSizeY); }
 
     return { width: newW, height: newH, left: newL, top: newT };
 }
