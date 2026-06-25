@@ -286,9 +286,10 @@
         "priority": "orange",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "personal",
-        "username": "Ethan"
+        "username": "Ethan",
+        "completedDate": "2026-06-25T02:28:26.492Z"
     },
     {
         "id": 1782317835680,
