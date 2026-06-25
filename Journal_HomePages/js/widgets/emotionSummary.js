@@ -19,6 +19,8 @@ const DEFAULT_STATE = {
     showHighlight:  true,
     calendarYear:   null,
     calendarMonth:  null,
+    graphColor:     "",
+    graphLineWidth: 2.5,
 };
 
 function getState() {
@@ -643,8 +645,8 @@ function initCharts(state) {
         const maxScore = Math.max(...validScores);
         const pad = Math.max(0.3, (maxScore - minScore) * 0.15);
 
-        // Line colour: use title colour (the primary accent)
-        const lineColor = pal.title;
+        const lineColor = state.graphColor || pal.title;
+        const lineWidth = Number(state.graphLineWidth) || 2.5;
 
         chartInstance = new Chart(canvas, {
             type: "line",
@@ -655,7 +657,7 @@ function initCharts(state) {
                     data: scores,
                     borderColor: lineColor,
                     backgroundColor: hexAlpha(lineColor, 0.08),
-                    borderWidth: 2.5,
+                    borderWidth: lineWidth,
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 5,
