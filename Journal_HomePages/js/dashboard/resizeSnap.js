@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 import {
     showVerticalLine,
     showHorizontalLine,
@@ -13,7 +11,6 @@ import {
 const SNAP_DIST = 8;
 const GAP_SIZE  = 20;
 
-// Returns the nearest snap value within SNAP_DIST, or null if nothing is close enough.
 function nearestSnap(value, candidates) {
     let best = null;
     let bestDist = SNAP_DIST;
@@ -24,14 +21,6 @@ function nearestSnap(value, candidates) {
     return best;
 }
 
-/**
- * Snap during edge/corner resize handles (N/S/E/W/NE/NW/SW).
- * Snaps to: dashboard centre X/Y, other widgets' edges ± gap.
- * Shows guide lines while snapping, hides them when not.
- *
- * @param {string} dir - direction string, e.g. "e", "sw", "nw"
- * @returns {{ width, height, left, top }}
- */
 export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     const dashboard = document.getElementById("dashboard");
     const dashCX    = dashboard.clientWidth  / 2;
@@ -39,7 +28,6 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     const others    = Array.from(document.querySelectorAll(".widget"))
                           .filter(w => w !== widget);
 
-    // Fixed edges: the opposite side that doesn't move during this drag.
     const fixedRight  = newL + newW;
     const fixedBottom = newT + newH;
 
@@ -48,7 +36,6 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     let sameSizeX = null;
     let sameSizeY = null;
 
-    // ── East (right edge moves) ────────────────────────────
     if (dir.includes("e")) {
         const cur = newL + newW;
         const edgeCandidates = [
@@ -68,7 +55,6 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
         }
     }
 
-    // ── West (left edge moves, right edge is fixed) ────────
     if (dir.includes("w")) {
         const cur = newL;
         const edgeCandidates = [
@@ -88,7 +74,6 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
         }
     }
 
-    // ── South (bottom edge moves) ──────────────────────────
     if (dir.includes("s")) {
         const cur = newT + newH;
         const edgeCandidates = [
@@ -108,7 +93,6 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
         }
     }
 
-    // ── North (top edge moves, bottom edge is fixed) ───────
     if (dir.includes("n")) {
         const cur = newT;
         const edgeCandidates = [
@@ -139,7 +123,7 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     return { width: newW, height: newH, left: newL, top: newT };
 }
 
->>>>>>> 045b1a003df943324b73368ab658a8541a55e802
+
 export function applyResizeSnap(
     widget,
     width,
