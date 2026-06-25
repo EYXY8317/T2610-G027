@@ -134,6 +134,8 @@ function renderSelectMode(state) {
         `;
 
     }).join("");
+
+    return `<div class="te-emoji-row">${buttons}</div>`;
 }
 
 function renderCurrentMood(state) {
