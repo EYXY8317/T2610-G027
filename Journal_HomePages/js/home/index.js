@@ -151,7 +151,7 @@ export async function initializeHomepage() {
     // Load this user's saved layout from the server before rendering.
     // For first-time users the server returns {}, so localStorage stays empty
     // and applyDefaultLayout() seeds it with the built-in defaults below.
-    await loadLayoutFromServer();
+    const hadSavedLayout = await loadLayoutFromServer();
 
     dashboard.innerHTML =
         renderWidgets();
@@ -159,6 +159,12 @@ export async function initializeHomepage() {
     // Seed localStorage with default positions/styles for first-time users.
     // Only writes entries that don't already exist, so saved layouts are never overwritten.
     applyDefaultLayout();
+
+    // If this is a brand-new user (no saved layout), sync the seeded defaults
+    // to the server immediately so they get the same layout on any device.
+    if (!hadSavedLayout) {
+        syncLayoutToServer();
+    }
 
     const settingsButton =
         document.getElementById(
