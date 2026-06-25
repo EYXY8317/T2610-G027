@@ -9,7 +9,7 @@
 
 body{
 
-    padding:82px 20px 20px;
+    padding:110px 20px 20px;
 
     background:#f7f3ee;
 
@@ -33,16 +33,20 @@ body{
 .navbar{
 
     position:fixed;
-    top:0;
-    left:0;
-    right:0;
+    top:14px;
+    left:50%;
+    transform:translateX(-50%);
+    width:calc(100% - 80px);
+    max-width:1400px;
     background:white;
-    border-bottom:1px solid #eee4da;
-    padding:14px 45px;
-    display:flex;
-    justify-content:space-between;
+    border:1px solid #eee4da;
+    border-radius:60px;
+    padding:10px 32px;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
     align-items:center;
-    z-index:100;
+    z-index:200;
+    box-shadow:0 4px 20px rgba(0,0,0,0.08);
 }
 
 /* ================= LEFT SIDE ================= */
@@ -101,6 +105,7 @@ body{
     display:flex;
     align-items:center;
     gap:10px;
+    justify-self:center;
 }
 
 .nav-links a{
@@ -134,6 +139,10 @@ body{
 
     color:white;
 
+}
+
+.profile{
+    justify-self:end;
 }
 
 /* ================= HERO字体 ================= */
