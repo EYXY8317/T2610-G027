@@ -2,78 +2,11 @@
     {
         "username": "Ethan",
         "date": "2026-06-01",
-        "type": "income",
-        "category": "Salary",
-        "account": "MAE",
-        "item": "",
-        "amount": 10000.0,
-        "receipt": null
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
-        "type": "saving",
-        "category": "Investment",
-        "account": "TnG",
-        "item": "",
-        "amount": 500.0,
-        "receipt": null
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
-        "type": "saving",
-        "category": "Savings",
-        "account": "CIMB",
-        "item": "",
-        "amount": 2500.0,
-        "receipt": null
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
         "type": "expense",
         "category": "Transfer Out",
         "account": "MAE",
         "item": "Transfer to CIMB",
         "amount": 3500.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
-        "type": "income",
-        "category": "Transfer In",
-        "account": "CIMB",
-        "item": "Transfer from MAE",
-        "amount": 3500.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
-        "type": "expense",
-        "category": "Transfer Out",
-        "account": "MAE",
-        "item": "Transfer to TnG",
-        "amount": 5000.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-01",
-        "type": "income",
-        "category": "Transfer In",
-        "account": "TnG",
-        "item": "Transfer from MAE",
-        "amount": 5000.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-24",
-        "type": "expense",
-        "category": "Goal Savings",
-        "goal_id": 4,
-        "account": "TnG",
-        "item": "Goal: laptop",
-        "amount": 200.0
     },
     {
         "username": "Ethan",
@@ -84,16 +17,6 @@
         "account": "TnG",
         "item": "Goal: House",
         "amount": 300.0
-    },
-    {
-        "username": "Ethan",
-        "date": "2026-06-12",
-        "type": "expense",
-        "category": "Food",
-        "account": "MAE",
-        "item": "Whole day meal",
-        "amount": 3000.0,
-        "receipt": null
     },
     {
         "username": "Ethan",
@@ -147,16 +70,6 @@
     },
     {
         "username": "Ethan",
-        "date": "2026-06-02",
-        "type": "income",
-        "category": "Gift",
-        "account": "TnG",
-        "item": "",
-        "amount": 200.0,
-        "receipt": null
-    },
-    {
-        "username": "Ethan",
         "date": "2026-06-24",
         "type": "expense",
         "category": "Goal Savings",
@@ -173,6 +86,104 @@
         "account": "MAE",
         "item": "",
         "amount": 10000.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Entertainment",
+        "account": "TnG",
+        "item": "Pokemon",
+        "amount": 700.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Food",
+        "account": "MAE",
+        "item": "item",
+        "amount": 50.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Food",
+        "account": "MAE",
+        "item": "item",
+        "amount": 50.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Food",
+        "account": "MAE",
+        "item": "hotdog",
+        "amount": 400.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Travel",
+        "account": "MAE",
+        "item": "Shopee",
+        "amount": 50.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "expense",
+        "category": "Transfer Out",
+        "account": "MAE",
+        "item": "Transfer to TnG",
+        "amount": 2000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-04",
+        "type": "income",
+        "category": "Transfer In",
+        "account": "TnG",
+        "item": "Transfer from MAE",
+        "amount": 2000.0
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-01",
+        "type": "saving",
+        "category": "Savings",
+        "account": "CIMB",
+        "item": "",
+        "amount": 7500.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-02",
+        "type": "income",
+        "category": "Freelance",
+        "account": "TnG",
+        "item": "",
+        "amount": 3500.0,
+        "receipt": null
+    },
+    {
+        "username": "Ethan",
+        "date": "2026-06-02",
+        "type": "income",
+        "category": "Business",
+        "account": "MAE",
+        "item": "",
+        "amount": 8500.0,
         "receipt": null
     }
 ]
