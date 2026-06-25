@@ -107,7 +107,7 @@
                         'Goal Savings':   {'emoji': '🎯', 'bg': '#fff7ed'},
                     } %}
                     {% if today_txns %}
-                        {% for tx in today_txns[:4] %}
+                        {% for tx in today_txns[:3] %}
                         {% set icon = cat_icons.get(tx.category, {'emoji': '💳', 'bg': '#f3f4f6'}) %}
                         <div class="tp-txn-item">
                             <div class="tp-txn-icon" style="background:{{ icon.bg }}">{{ icon.emoji }}</div>
@@ -137,16 +137,32 @@
                 <span class="tp-col-title">Today's Events</span>
                 <span class="tp-view-all">View Calendar</span>
             </div>
+            {% set priority_label = {'red': 'High', 'orange': 'Medium', 'blue': 'Low', 'gray': 'No Priority'} %}
             <div class="tp-col-body">
-                <div class="tp-event-placeholder">
-                    <div class="tp-event-title">No calendar data connected</div>
-                    <div class="tp-event-date">Calendar integration coming soon</div>
-                    <span class="tp-event-badge">Coming Soon</span>
-                </div>
-                <div class="tp-no-more-events">No more events today 🎉</div>
+                {% if today_tasks %}
+                    {% for t in today_tasks[:3] %}
+                    <div class="tp-event-item tp-priority-{{ t.priority or 'none' }}">
+                        <div class="tp-event-title">{{ t.text }}</div>
+                        <div class="tp-event-date">
+                            {% if t.startTime %}{{ t.startTime }}{% if t.endTime %} – {{ t.endTime }}{% endif %}{% else %}All day{% endif %}
+                            {% if t.category %} · {{ t.category | capitalize }}{% endif %}
+                        </div>
+                        {% if t.status == 'completed' %}
+                            <span class="tp-event-badge tp-badge-done">Done</span>
+                        {% elif t.priority and t.priority != 'gray' %}
+                            <span class="tp-event-badge tp-badge-{{ t.priority }}">{{ priority_label.get(t.priority, t.priority | capitalize) }}</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% if today_tasks | length > 3 %}
+                        <a href="/calendar" class="tp-more-events">+{{ today_tasks | length - 3 }} more — Open Calendar</a>
+                    {% endif %}
+                {% else %}
+                    <div class="tp-no-more-events">No events today 🎉</div>
+                {% endif %}
             </div>
             <div class="tp-col-foot">
-                <button class="tp-open-btn tp-btn-events" disabled>Open Calendar &rsaquo;</button>
+                <a href="/calendar" class="tp-open-btn tp-btn-events">Open Calendar &rsaquo;</a>
             </div>
         </div>
 
@@ -210,8 +226,11 @@
             <div class="tp-sc">
                 <span class="tp-sc-icon">📅</span>
                 <div class="tp-sc-label">Events Today</div>
-                <div class="tp-sc-val">—</div>
-                <div class="tp-sc-sub tp-sub-events">No events connected</div>
+                <div class="tp-sc-val">{{ today_tasks | length }}</div>
+                <div class="tp-sc-sub tp-sub-events">
+                    {% set done = today_tasks | selectattr('status', 'equalto', 'completed') | list | length %}
+                    {{ done }} completed
+                </div>
             </div>
 
             <div class="tp-sc">
