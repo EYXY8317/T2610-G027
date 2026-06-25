@@ -117,4 +117,5 @@ export function applyWidgetAppearance(widget, app) {
 
     const ts = TITLE_SCALE_MAP[app.titleScale] ?? 1;
     widget.style.setProperty("--widget-title-size-scale", ts);
+
 }

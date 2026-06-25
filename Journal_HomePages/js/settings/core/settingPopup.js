@@ -185,6 +185,7 @@ import {
 }
 from "../../home/historyManager.js";
 
+
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
     "weather-hour-widget":    "Weather Hours",
@@ -1184,6 +1185,14 @@ export function createSettingPopup(widgetId) {
         wireEsSegment(".es-range-segment", "timeRange");
         wireEsSegment(".es-combo-segment", "showCombo");
         wireEsSegment(".es-highlight-segment", "showHighlight");
+        wireEsSegment(".es-line-width-segment", "graphLineWidth");
+
+        const esGraphColor = popup.querySelector(".es-graph-color-picker");
+        if (esGraphColor) {
+            esGraphColor.addEventListener("input", event => {
+                updateEmotionSummaryState({ graphColor: event.target.value });
+            });
+        }
 
         const esStart = popup.querySelector(".es-custom-start");
         if (esStart) {
