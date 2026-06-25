@@ -14,12 +14,30 @@ const TEMPLATES = [
     //   Main R2:  Quote (left) + EmotionSummary (right, taller — free float)
     //   Main R3:  WeatherDay · WeatherHour · NowStreak · HighStreak      end≈800 ✓
     // Coordinates converted from ZOEY's saved home_layout in users.json.
+    // Deco positions use xPct/yPct (fraction of widget pixel dims) + wPct (fraction of width)
+    // so they scale correctly on any viewport size.
     {
         id:      "cozy-dashboard",
         name:    "Cozy Dashboard",
         desc:    "Warm browns — all cards on screen",
         palette: ["#4E3629","#FAF6EE","#F8F1E7","#EFE6D7","#7A5A3A","#D7C2A4"],
         hidden:  ["weather-week-widget"],
+        // Deco stickers — positions as fraction of each widget's pixel dimensions at apply time.
+        // xPct/yPct are fraction of widget pixel width/height; wPct is item width as fraction of widget width.
+        // aspect = item h/w ratio (flower-babysbreath ≈ 1.37).
+        // All positions are kept inside the widget bounds (overflow:hidden on .widget).
+        deco: {
+            "digital-clock-widget": [
+                { id: "tpl-dcw-1", src: "/journal_home_static/assets/deco/flower-babysbreath.png",
+                  xPct: 0.01, yPct: 0.01, wPct: 0.10, aspect: 1.37, rotation: -12, opacity: 0.88 },
+                { id: "tpl-dcw-2", src: "/journal_home_static/assets/deco/flower-babysbreath.png",
+                  xPct: 0.88, yPct: 0.01, wPct: 0.10, aspect: 1.37, rotation:  15, opacity: 0.88 },
+            ],
+            "today-emotion-widget": [
+                { id: "tpl-tew-1", src: "/journal_home_static/assets/deco/flower-babysbreath.png",
+                  xPct: 0.76, yPct: 0.01, wPct: 0.20, aspect: 1.37, rotation: 20, opacity: 0.82 },
+            ],
+        },
         widgets: [
             // ── Right sidebar ──────────────────────────────────────────────────
             { id:"today-emotion-widget",   x:672, y:0,   w:328, h:202,
@@ -252,6 +270,31 @@ export function applyTemplate(templateId) {
         localStorage.setItem(`${id}-layout`,     JSON.stringify(layout));
         if (ap) localStorage.setItem(`${id}-appearance`, JSON.stringify(ap));
     });
+
+    // Apply template deco — positions are stored as percentages and converted to pixels
+    // using each widget's actual rendered dimensions at this viewport size.
+    if (template.deco) {
+        Object.entries(template.deco).forEach(([widgetId, decoItems]) => {
+            const wRef = template.widgets.find(w => w.id === widgetId);
+            if (!wRef) return;
+            const pixelW = Math.round(wRef.w * scaleX);
+            const pixelH = Math.round(wRef.h * scaleY);
+            const scaled = decoItems.map(item => {
+                const w = Math.round(item.wPct * pixelW);
+                const h = Math.round(w * (item.aspect || 1));
+                return {
+                    id:       item.id,
+                    src:      item.src,
+                    x:        Math.round(item.xPct * pixelW),
+                    y:        Math.round(item.yPct * pixelH),
+                    w, h,
+                    opacity:  item.opacity  ?? 1,
+                    rotation: item.rotation ?? 0,
+                };
+            });
+            localStorage.setItem(`${templateId}:${widgetId}-deco`, JSON.stringify(scaled));
+        });
+    }
 
     localStorage.setItem("hidden-widgets", JSON.stringify(template.hidden || []));
 }
