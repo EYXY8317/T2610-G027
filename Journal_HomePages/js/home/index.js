@@ -27,7 +27,6 @@ from "./edit.js";
 
 import {
     hideWidget,
-    clearHiddenWidgets,
     getHiddenWidgets
 }
 from "./widgetVisibility.js";
@@ -49,11 +48,6 @@ import {
     syncLayoutToServer
 }
 from "./serverLayout.js";
-
-import {
-    openTemplatePicker
-}
-from "./templatePicker.js";
 
 import {
     getWidgetAppearance,
@@ -128,6 +122,20 @@ import {
     initializeDiaryCard
 }
 from "../widgets/diaryCard.js";
+
+import {
+    initDecoLayer,
+    applyDecoItems,
+    enableDecoClick,
+    exitDecoMode
+}
+from "../settings/deco/decoLayer.js";
+
+import {
+    getDecoItems,
+    clearDecoItems
+}
+from "../settings/deco/decoData.js";
 
 export async function initializeHomepage() {
 
@@ -244,10 +252,7 @@ export async function initializeHomepage() {
     getExtraPictureInstances().forEach(id => initializePictureStreak(id));
     initializeEmotionSummary();
     initializeQuote();
-<<<<<<< HEAD
-=======
     initializeDiaryCard();
->>>>>>> 045b1a003df943324b73368ab658a8541a55e802
     
     const undoBtn = document.getElementById("history-undo");
     const redoBtn = document.getElementById("history-redo");
@@ -276,13 +281,43 @@ export async function initializeHomepage() {
         editLayoutButton.click();
     }
 
-    const templatesBtn = document.getElementById("templates-btn");
-    if (templatesBtn) {
-        templatesBtn.addEventListener("click", () => {
+    // ── Deco ──────────────────────────────────────────────────────────────
+    widgets.forEach(widget => {
+        initDecoLayer(widget);
+        applyDecoItems(widget, getDecoItems(widget.id));
+        enableDecoClick(widget);
+    });
+
+    let _decoToolbar = null;
+    function _getDecoToolbar() {
+        if (_decoToolbar) return _decoToolbar;
+        _decoToolbar = document.createElement("div");
+        _decoToolbar.id = "deco-toolbar";
+        _decoToolbar.innerHTML = `<span>Click any card to add a decoration</span><button id="deco-toolbar-exit">Done</button>`;
+        document.body.appendChild(_decoToolbar);
+        document.getElementById("deco-toolbar-exit").addEventListener("click", _endDecoMode);
+        return _decoToolbar;
+    }
+
+    function _endDecoMode() {
+        exitDecoMode();
+    }
+
+    const decoBtn = document.getElementById("deco-btn");
+    if (decoBtn) {
+        decoBtn.addEventListener("click", () => {
             menu.style.display = "none";
-            openTemplatePicker();
+            document.body.classList.add("deco-mode");
+            _getDecoToolbar().classList.add("visible");
         });
     }
+
+    // Exit deco mode when pressing Escape
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && document.body.classList.contains("deco-mode")) {
+            _endDecoMode();
+        }
+    });
 
     // Delete All Widgets button
     const deleteAllBtn = document.getElementById("delete-all-widgets-btn");
@@ -293,8 +328,10 @@ export async function initializeHomepage() {
                 const allWidgets = Array.from(document.querySelectorAll(".widget"));
                 allWidgets.forEach(w => {
                     hideWidget(w.id);
+                    clearDecoItems(w.id);
                     w.remove();
                 });
+                syncLayoutToServer();
             });
         });
     }
@@ -305,7 +342,6 @@ export async function initializeHomepage() {
         resetLayoutButton.addEventListener("click", async () => {
             if (!confirm("Reset all widgets to the default layout? This will undo your current arrangement.")) return;
 
-            clearHiddenWidgets();
             resetToDefaultLayout();
             await syncLayoutToServer();
             menu.style.display = "none";
