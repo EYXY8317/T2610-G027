@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify
 from Journal_Pages.diary_system.crud import add_entry, delete_entry
 from Journal_Pages.diary_system.logic import get_today_entry, get_mode
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from Journal_Pages.diary_system.encouragement_data import (
     happy_list,
     sad_list,
@@ -10,9 +10,6 @@ from Journal_Pages.diary_system.encouragement_data import (
 import os
 import time
 import random
-import json
-import re
-import html as _html
 from werkzeug.utils import secure_filename
 
 
@@ -135,177 +132,6 @@ def autosave():
     add_entry(new_data)
 
     return {"message": message}
-
-
-#================================ diary_analyze helpers ================================
-
-def _extract_diary_text(content_html):
-    """Extract plain text from diary content (JSON chunks joined by ||ITEM||)."""
-    if not content_html:
-        return ""
-    chunks = content_html.split("||ITEM||")
-    texts = []
-    for chunk in chunks:
-        chunk = chunk.strip()
-        if not chunk:
-            continue
-        try:
-            d = json.loads(chunk)
-            if d.get("type") == "text":
-                raw_html = d.get("html", "")
-                text = re.sub(r"<[^>]+>", " ", raw_html)
-                text = _html.unescape(text)
-                text = re.sub(r"\s+", " ", text).strip()
-                if text:
-                    texts.append(text)
-        except Exception:
-            text = re.sub(r"<[^>]+>", " ", chunk)
-            text = _html.unescape(text)
-            text = re.sub(r"\s+", " ", text).strip()
-            if text and not text.startswith("{"):
-                texts.append(text)
-    return " ".join(texts)
-
-
-def _analyze_diary_with_ai(text, diary_date_iso):
-    """Call Claude API to extract todos, events, and purchase keywords from diary text."""
-    import requests as _req
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not api_key:
-        return {"todos": [], "events": [], "purchase_keywords": []}
-
-    today    = datetime.now().strftime("%Y-%m-%d")
-    tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-    year     = datetime.now().year
-
-    prompt = (
-        f"You are analyzing a personal diary entry. Extract structured data and return ONLY valid JSON.\n\n"
-        f"Diary date: {diary_date_iso}\nToday: {today}\nTomorrow: {tomorrow}\n\n"
-        f"Diary text:\n{text}\n\n"
-        f"Extract these fields:\n"
-        f'1. "todos": Items to buy or tasks to do. Each: {{"item": string, "date": "YYYY-MM-DD", "category": "shopping"|"personal"}}. '
-        f"Use {tomorrow} if no date is mentioned.\n"
-        f'2. "events": Scheduled events with a specific date. Each: {{"description": string, "date": "YYYY-MM-DD"}}.\n'
-        f'3. "purchase_keywords": Specific food items or products mentioned (for matching finance records). Array of strings.\n\n'
-        f'Date hints: "1/7" means {year}-07-01, "明天" means {tomorrow}, "后天" means '
-        f'{(datetime.now() + timedelta(days=2)).strftime("%Y-%m-%d")}.\n'
-        f'Return ONLY valid JSON. If nothing found return {{"todos":[],"events":[],"purchase_keywords":[]}}.'
-    )
-
-    try:
-        resp = _req.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": api_key,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": "claude-haiku-4-5-20251001",
-                "max_tokens": 600,
-                "messages": [{"role": "user", "content": prompt}],
-            },
-            timeout=20,
-        )
-        if resp.status_code != 200:
-            return {"todos": [], "events": [], "purchase_keywords": []}
-        raw = resp.json()["content"][0]["text"].strip()
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-            raw = raw.rstrip("`").strip()
-        return json.loads(raw)
-    except Exception:
-        return {"todos": [], "events": [], "purchase_keywords": []}
-
-
-def _find_finance_matches(plain_text, username, diary_date_iso, ai_keywords=None):
-    """Find today's finance records whose item names appear in the diary text."""
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    f_expense = os.path.join(BASE_DIR, "Finance", "expenses.json")
-    try:
-        with open(f_expense, "r", encoding="utf-8") as f:
-            expenses = json.load(f)
-    except Exception:
-        return []
-
-    user_expenses = [
-        e for e in expenses
-        if e.get("username") == username and e.get("date") == diary_date_iso
-    ]
-
-    text_lower = plain_text.lower()
-    matches = []
-    seen = set()
-
-    for exp in user_expenses:
-        item = (exp.get("item") or "").strip()
-        if not item or item in seen:
-            continue
-        if item.lower() in text_lower:
-            seen.add(item)
-            matches.append({
-                "word": item,
-                "amount": exp.get("amount", 0),
-                "category": exp.get("category", ""),
-                "type": exp.get("type", ""),
-            })
-
-    if ai_keywords:
-        for kw in ai_keywords:
-            kw = kw.strip()
-            if not kw or kw in seen:
-                continue
-            if kw.lower() not in text_lower:
-                continue
-            for exp in user_expenses:
-                item = (exp.get("item") or "").strip()
-                if item.lower() in kw.lower() or kw.lower() in item.lower():
-                    seen.add(kw)
-                    matches.append({
-                        "word": kw,
-                        "amount": exp.get("amount", 0),
-                        "category": exp.get("category", ""),
-                        "type": exp.get("type", ""),
-                    })
-                    break
-
-    return matches
-
-
-#================================ diary_analyze API ================================
-
-@diary_bp.route("/diary_analyze", methods=["POST"])
-def diary_analyze():
-    content_html = request.form.get("content", "")
-    diary_date   = request.form.get("date", "")
-    username     = session.get("user", "")
-
-    plain_text = _extract_diary_text(content_html)
-    if not plain_text or len(plain_text.strip()) < 3:
-        return jsonify({"todos": [], "events": [], "finance_matches": []})
-
-    diary_date_iso = ""
-    if diary_date:
-        try:
-            diary_date_iso = datetime.strptime(diary_date, "%d/%m/%Y").strftime("%Y-%m-%d")
-        except Exception:
-            pass
-    if not diary_date_iso:
-        diary_date_iso = datetime.now().strftime("%Y-%m-%d")
-
-    ai_result      = _analyze_diary_with_ai(plain_text, diary_date_iso)
-    finance_matches = _find_finance_matches(
-        plain_text, username, diary_date_iso,
-        ai_result.get("purchase_keywords", [])
-    )
-
-    return jsonify({
-        "todos":           ai_result.get("todos", []),
-        "events":          ai_result.get("events", []),
-        "finance_matches": finance_matches,
-    })
 
 
 #================================ journal_dates API ================================
