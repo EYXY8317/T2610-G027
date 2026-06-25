@@ -32,217 +32,252 @@
         "profile_picture": "download.jpg",
         "home_layout": {
             "digital-clock-widget-layout": {
-                "height": "193px",
                 "left": "16px",
                 "top": "89px",
-                "width": "1005px"
+                "width": "1005px",
+                "height": "193px"
             },
             "digital-clock-widget-appearance": {
                 "backgroundColor": "#4E3629",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#EFE6D7",
+                "titleColor": "#A67C52",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#EFE6D7",
-                "contentScale": "1",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "left",
-                "titleColor": "#A67C52",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "1"
             },
+            "cozy-dashboard:digital-clock-widget-deco": [
+                {
+                    "id": "tpl-dcw-1",
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "x": 10,
+                    "y": 2,
+                    "w": 101,
+                    "h": 138,
+                    "opacity": 0.88,
+                    "rotation": -12
+                },
+                {
+                    "id": "tpl-dcw-2",
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "x": 884,
+                    "y": 2,
+                    "w": 101,
+                    "h": 138,
+                    "opacity": 0.88,
+                    "rotation": 15
+                }
+            ],
             "weather-hour-widget-layout": {
-                "height": "169px",
                 "left": "228px",
                 "top": "591px",
-                "width": "229px"
+                "width": "229px",
+                "height": "169px"
             },
             "weather-hour-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
+                "showTitle": true,
+                "showBorder": true,
+                "contentColor": "#B08968",
+                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#B08968",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": true,
                 "titleAlign": "left",
-                "titleColor": "#5C4033",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "weather-day-widget-layout": {
-                "height": "166px",
                 "left": "16px",
                 "top": "591px",
-                "width": "193px"
+                "width": "193px",
+                "height": "166px"
             },
             "weather-day-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#7a5a3a",
+                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#7a5a3a",
-                "contentScale": "2",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "left",
-                "titleColor": "#5C4033",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "2"
             },
             "weather-week-widget-layout": {
-                "height": "75px",
                 "left": "16px",
                 "top": "89px",
-                "width": "271px"
+                "width": "271px",
+                "height": "75px"
             },
             "weather-week-widget-appearance": {
                 "backgroundColor": "#D7C2A4",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#7A5A3A",
+                "titleColor": "#FAF6EE",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#7A5A3A",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "center",
-                "titleColor": "#FAF6EE",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "today-emotion-widget-layout": {
-                "height": "169px",
                 "left": "1027px",
                 "top": "89px",
-                "width": "493px"
+                "width": "493px",
+                "height": "169px"
             },
             "today-emotion-widget-appearance": {
                 "backgroundColor": "#FAF6EE",
                 "backgroundOpacity": 100,
+                "showTitle": true,
+                "showBorder": true,
+                "contentColor": "#4e3629",
+                "titleColor": "#7A5A3A",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#4e3629",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": true,
                 "titleAlign": "center",
-                "titleColor": "#7A5A3A",
-                "titleScale": "2"
+                "titleScale": "2",
+                "contentScale": "3"
             },
+            "cozy-dashboard:today-emotion-widget-deco": [
+                {
+                    "id": "tpl-tew-1",
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "x": 375,
+                    "y": 2,
+                    "w": 99,
+                    "h": 136,
+                    "opacity": 0.82,
+                    "rotation": 20
+                }
+            ],
             "now-streak-widget-layout": {
-                "height": "135px",
                 "left": "476px",
                 "top": "627px",
-                "width": "247px"
+                "width": "247px",
+                "height": "135px"
             },
             "now-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
+                "showTitle": true,
+                "showBorder": true,
+                "contentColor": "#A67C52",
+                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#A67C52",
-                "contentScale": "2",
-                "showBorder": true,
-                "showTitle": true,
                 "titleAlign": "center",
-                "titleColor": "#4E3629",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "2"
             },
             "high-streak-widget-layout": {
-                "height": "134px",
                 "left": "735px",
                 "top": "627px",
-                "width": "274px"
+                "width": "274px",
+                "height": "134px"
             },
             "high-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
+                "showTitle": true,
+                "showBorder": true,
+                "contentColor": "#A67C52",
+                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#A67C52",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": true,
                 "titleAlign": "center",
-                "titleColor": "#4E3629",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "picture-streak-widget-layout": {
-                "height": "289px",
                 "left": "1027px",
                 "top": "269px",
-                "width": "493px"
+                "width": "493px",
+                "height": "289px"
             },
             "picture-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#A67C52",
+                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#A67C52",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "left",
-                "titleColor": "#4E3629",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "emotion-summary-widget-layout": {
-                "height": "320px",
                 "left": "470px",
                 "top": "294px",
-                "width": "550px"
+                "width": "550px",
+                "height": "320px"
             },
             "emotion-summary-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
+                "showTitle": true,
+                "showBorder": true,
+                "contentColor": "#B08968",
+                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#B08968",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": true,
                 "titleAlign": "center",
-                "titleColor": "#5C4033",
-                "titleScale": "1"
+                "titleScale": "1",
+                "contentScale": "3"
             },
             "quote-widget-layout": {
-                "height": "289px",
                 "left": "16px",
                 "top": "294px",
-                "width": "433px"
+                "width": "433px",
+                "height": "289px"
             },
             "quote-widget-appearance": {
                 "backgroundColor": "#FAF6EE",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#000000",
+                "titleColor": "#7A5A3A",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#000000",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "left",
-                "titleColor": "#7A5A3A",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "diary-card-widget-layout": {
-                "height": "190px",
                 "left": "1027px",
                 "top": "570px",
-                "width": "493px"
+                "width": "493px",
+                "height": "190px"
             },
             "diary-card-widget-appearance": {
                 "backgroundColor": "#7A5A3A",
                 "backgroundOpacity": 100,
+                "showTitle": false,
+                "showBorder": true,
+                "contentColor": "#FAF6EE",
+                "titleColor": "#D7C2A4",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
-                "contentColor": "#FAF6EE",
-                "contentScale": "3",
-                "showBorder": true,
-                "showTitle": false,
                 "titleAlign": "left",
-                "titleColor": "#D7C2A4",
-                "titleScale": "3"
+                "titleScale": "3",
+                "contentScale": "3"
             },
             "hidden-widgets": [
                 "weather-week-widget"
-            ]
+            ],
+            "active-template": "cozy-dashboard"
         }
     },
     {
