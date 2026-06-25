@@ -8,43 +8,48 @@
 const TEMPLATES = [
 
     // ── 1. COZY DASHBOARD ────────────────────────────────────────────────────
-    // All 11 widgets · 4 rows · matches screenshot layout
-    //   Row 1  y=0    h=240   Diary(30%) + Clock(70%)
-    //   Row 2  y=254  h=165   Today Emotion + Emotion Summary + Quote  (equal thirds)
-    //   Row 3  y=433  h=195   Weather Now(16%) + Hours(37%) + Week(45%)
-    //   Row 4  y=642  h=158   3 Streaks (equal thirds)                 end=800 ✓
+    // 10 visible widgets · main area (w=668) + right sidebar (x=672, w=328)
+    //   Sidebar:  TodayEmotion · PictureStreak · DiaryCard  (stacked full height)
+    //   Main R1:  Clock (full main width)
+    //   Main R2:  Quote (left) + EmotionSummary (right, taller — free float)
+    //   Main R3:  WeatherDay · WeatherHour · NowStreak · HighStreak      end≈800 ✓
+    // Coordinates converted from ZOEY's saved home_layout in users.json.
     {
         id:      "cozy-dashboard",
         name:    "Cozy Dashboard",
         desc:    "Warm browns — all cards on screen",
-        palette: ["#3d2212","#faf6f0","#ffffff","#2a1a0e","#4a2c1a","#d4b896"],
-        hidden:  [],
+        palette: ["#4E3629","#FAF6EE","#F8F1E7","#EFE6D7","#7A5A3A","#D7C2A4"],
+        hidden:  ["weather-week-widget"],
         widgets: [
-            { id:"diary-card-widget",      x:0,   y:0,   w:300, h:240,
-              ap:{ backgroundColor:"#3d2212", backgroundOpacity:100, showTitle:false, showBorder:false, contentColor:"#f5f3ef", titleColor:"#f5f3ef", borderColor:"#3d2212" } },
-            { id:"digital-clock-widget",   x:314, y:0,   w:686, h:240,
-              ap:{ backgroundColor:"#faf6f0", backgroundOpacity:100, showTitle:false, showBorder:false, contentColor:"#2a1a0e", titleColor:"#2a1a0e" } },
+            // ── Right sidebar ──────────────────────────────────────────────────
+            { id:"today-emotion-widget",   x:672, y:0,   w:328, h:202,
+              ap:{ backgroundColor:"#FAF6EE", backgroundOpacity:100, showTitle:true,  showBorder:true,  contentColor:"#4e3629", titleColor:"#7A5A3A", borderColor:"#4e3629", borderWidth:2, titleAlign:"center", titleScale:"2", contentScale:"3" } },
+            { id:"picture-streak-widget",  x:672, y:215, w:328, h:344,
+              ap:{ backgroundColor:"#EFE6D7", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#A67C52", titleColor:"#4E3629", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"3" } },
+            { id:"diary-card-widget",      x:672, y:573, w:328, h:227,
+              ap:{ backgroundColor:"#7A5A3A", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#FAF6EE", titleColor:"#D7C2A4", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"3" } },
 
-            { id:"today-emotion-widget",   x:0,   y:254, w:324, h:165,
-              ap:{ backgroundColor:"#ffffff", backgroundOpacity:100, showTitle:true, showBorder:true, contentColor:"#1a1a1a", titleColor:"#1a1a1a", borderColor:"#ddd8cf" } },
-            { id:"emotion-summary-widget", x:338, y:254, w:324, h:165,
-              ap:{ backgroundColor:"#ffffff", backgroundOpacity:100, showTitle:true, showBorder:true, contentColor:"#1a1a1a", titleColor:"#1a1a1a", borderColor:"#ddd8cf" } },
-            { id:"quote-widget",           x:676, y:254, w:324, h:165,
-              ap:{ backgroundColor:"#f5f3ef", backgroundOpacity:100, showTitle:false, showBorder:false, contentColor:"#1a1a1a", titleColor:"#888888" } },
+            // ── Main area ──────────────────────────────────────────────────────
+            { id:"digital-clock-widget",   x:0,   y:0,   w:668, h:230,
+              ap:{ backgroundColor:"#4E3629", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#EFE6D7", titleColor:"#A67C52", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"1" } },
 
-            { id:"weather-day-widget",     x:0,   y:433, w:160, h:195,
-              ap:{ backgroundColor:"#fffbee", backgroundOpacity:100, showTitle:true, showBorder:true, contentColor:"#1a1a1a", titleColor:"#1a1a1a", borderColor:"#e8dfc0" } },
-            { id:"weather-hour-widget",    x:174, y:433, w:366, h:195,
-              ap:{ backgroundColor:"#f5f3ef", backgroundOpacity:100, showTitle:true, showBorder:false, contentColor:"#555555", titleColor:"#888888" } },
-            { id:"weather-week-widget",    x:554, y:433, w:446, h:195,
-              ap:{ backgroundColor:"#ffffff", backgroundOpacity:100, showTitle:true, showBorder:true, contentColor:"#1a1a1a", titleColor:"#1a1a1a", borderColor:"#ddd8cf" } },
+            { id:"quote-widget",           x:0,   y:244, w:288, h:344,
+              ap:{ backgroundColor:"#FAF6EE", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#000000", titleColor:"#7A5A3A", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"3" } },
+            { id:"emotion-summary-widget", x:302, y:244, w:366, h:381,
+              ap:{ backgroundColor:"#F8F1E7", backgroundOpacity:100, showTitle:true,  showBorder:true,  contentColor:"#B08968", titleColor:"#5C4033", borderColor:"#4e3629", borderWidth:2, titleAlign:"center", titleScale:"1", contentScale:"3" } },
 
-            { id:"now-streak-widget",      x:0,   y:642, w:324, h:158,
-              ap:{ backgroundColor:"#2a1a0e", backgroundOpacity:100, showTitle:true, showBorder:false, contentColor:"#f5f3ef", titleColor:"#f5f3ef" } },
-            { id:"high-streak-widget",     x:338, y:642, w:324, h:158,
-              ap:{ backgroundColor:"#4a2c1a", backgroundOpacity:100, showTitle:true, showBorder:false, contentColor:"#f5f3ef", titleColor:"#f5f3ef" } },
-            { id:"picture-streak-widget",  x:676, y:642, w:324, h:158,
-              ap:{ backgroundColor:"#d4b896", backgroundOpacity:0, showTitle:true, showBorder:false, contentColor:"#ffffff", titleColor:"#ffffff" } },
+            { id:"weather-day-widget",     x:0,   y:599, w:128, h:198,
+              ap:{ backgroundColor:"#F8F1E7", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#7a5a3a", titleColor:"#5C4033", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"2" } },
+            { id:"weather-hour-widget",    x:141, y:599, w:152, h:202,
+              ap:{ backgroundColor:"#F8F1E7", backgroundOpacity:100, showTitle:true,  showBorder:true,  contentColor:"#B08968", titleColor:"#5C4033", borderColor:"#4e3629", borderWidth:2, titleAlign:"left",   titleScale:"3", contentScale:"3" } },
+            { id:"now-streak-widget",      x:306, y:641, w:164, h:161,
+              ap:{ backgroundColor:"#EFE6D7", backgroundOpacity:100, showTitle:true,  showBorder:true,  contentColor:"#A67C52", titleColor:"#4E3629", borderColor:"#4e3629", borderWidth:2, titleAlign:"center", titleScale:"3", contentScale:"2" } },
+            { id:"high-streak-widget",     x:478, y:641, w:182, h:160,
+              ap:{ backgroundColor:"#EFE6D7", backgroundOpacity:100, showTitle:true,  showBorder:true,  contentColor:"#A67C52", titleColor:"#4E3629", borderColor:"#4e3629", borderWidth:2, titleAlign:"center", titleScale:"3", contentScale:"3" } },
+
+            // parked hidden
+            { id:"weather-week-widget",    x:0,   y:0,   w:180, h:90,
+              ap:{ backgroundColor:"#D7C2A4", backgroundOpacity:100, showTitle:false, showBorder:true,  contentColor:"#7A5A3A", titleColor:"#FAF6EE", borderColor:"#4e3629", borderWidth:2, titleAlign:"center", titleScale:"3", contentScale:"3" } },
         ]
     },
 
@@ -234,6 +239,8 @@ export function applyTemplate(templateId) {
 
     const template = TEMPLATES.find(t => t.id === templateId);
     if (!template) return;
+
+    localStorage.setItem("active-template", templateId);
 
     template.widgets.forEach(({ id, x, y, w, h, ap }) => {
         const layout = {
