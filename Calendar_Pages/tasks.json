@@ -247,5 +247,19 @@
         "status": "active",
         "category": "study",
         "username": "moonlit_xiny"
+    },
+    {
+        "id": 1782351668887,
+        "text": "Study Maths chapter 5",
+        "date": "2026-06-25",
+        "startTime": "13:00",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "plan",
+        "description": "",
+        "status": "active",
+        "category": "study",
+        "username": "moonlit_xiny"
     }
 ]

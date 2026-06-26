@@ -641,9 +641,10 @@
 
 </div>
 
-<!-- ==================================================
-     CALENDAR 
-================================================== -->
+<!-- =====================================
+     CALENDAR
+===================================== -->
+
 <div id="calendar" class="page">
 
     <!-- Header（两个视图都显示） -->
@@ -709,19 +710,38 @@
 
 </div>
 
-    <!-- Month View -->
+    <!-- 月视图 Month View -->
     <div id="monthView">
+
         <div class="calendar">
+
+            <div class="weekday-header">
+
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+
+        </div>
+
             <div id="calendarDays" class="days"></div>
         </div>
     </div>
 
-    <!-- Year View -->
+    <!-- 年视图Year View -->
     <div id="yearView" class="year-view">
+
         <div class="year-header">
+
             <h2 id="yearTitle"></h2>
+
         </div>
+
         <div id="yearGrid"></div>
+
     </div>
 
  </div>
