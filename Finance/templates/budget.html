@@ -38,6 +38,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
     <div class="nav-links">
         <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
         <a href="/journal">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
@@ -60,6 +61,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <a href="/summary">Summary</a>
         <a href="/budget" class="active-link">Budget</a>
         <a href="/goals">Goals</a>
+        <a href="/accounts">Accounts</a>
     </div>
 
 </div>
@@ -91,14 +93,16 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <!-- ERROR -->
 
         {% if error %}
-
-        <div class="budget-error">
-
-            {{ error }}
-
-        </div>
-
+        <div class="budget-error">{{ error }}</div>
         {% endif %}
+
+        <!-- OVERSPENDING WARNINGS -->
+
+        {% for w in warnings %}
+        <div class="budget-warning-banner">
+            ⚠️ Warning: <strong>{{ w.category }}</strong> budget exceeded by <strong>RM {{ "%.2f"|format(w.overspent) }}</strong>
+        </div>
+        {% endfor %}
 
         <!-- ===== FORM ===== -->
 
@@ -107,62 +111,36 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
             <div class="summary-grid">
 
                 <!-- CATEGORY -->
-
                 <div>
-
-                    <label>
-                        Category
-                    </label>
-
-                    <select
-                    name="category"
-                    required
-                    >
-
-                        <option value="">
-                            -- Select Category --
-                        </option>
-
+                    <label>Category</label>
+                    <select name="category" required>
+                        <option value="">-- Select Category --</option>
                         {% for cat in categories|default([]) %}
-
-                        <option value="{{ cat }}">
-                            {{ cat }}
-                        </option>
-
+                        <option value="{{ cat }}">{{ cat }}</option>
                         {% endfor %}
-
                     </select>
+                </div>
 
+                <!-- PERIOD -->
+                <div>
+                    <label>Budget Period</label>
+                    <select name="period">
+                        <option value="monthly">📅 Monthly</option>
+                        <option value="weekly">📅 Weekly</option>
+                        <option value="yearly">📅 Yearly</option>
+                    </select>
                 </div>
 
                 <!-- AMOUNT -->
-
                 <div>
-
-                    <label>
-                        Budget Amount (RM)
-                    </label>
-
-                    <input
-                        type="text"
-                        id="amountInput"
-                        name="amount"
-                        value="0.00"
-                        readonly
-                    >
-
+                    <label>Budget Amount (RM)</label>
+                    <input type="text" id="amountInput" name="amount" value="0.00" readonly>
                 </div>
 
             </div>
 
             <div class="budget-button-row">
-
-                <button type="submit">
-
-                    Save Budget
-
-                </button>
-
+                <button type="submit">Save Budget</button>
             </div>
 
         </form>
@@ -189,41 +167,52 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 <div class="budget-card-top">
 
-                    <h3>
-
-                        {{ b.category }}
-
-                    </h3>
-
-                        <div class="budget-actions">
-
-                            <a
-                                href="/edit_budget/{{ b.category }}"
-                                class="edit-btn"
-                            >
-                                ✏️ Edit
-                            </a>
-
-                            <a
-                                href="/delete_budget/{{ b.category }}"
-                                class="delete-btn"
-                            >
-                                🗑 Delete
-                            </a>
-
+                    <div>
+                        <h3>{{ b.category }}</h3>
+                        <div style="display:flex;gap:6px;flex-wrap:nowrap;align-items:center;margin-top:6px;">
+                            <span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;background:#dbeafe;color:#1e40af;">
+                                📅 {{ b.period | capitalize }}
+                            </span>
+                            <span class="budget-status-pill budget-status-{{ b.status }}">
+                                {% if b.status == 'over' %}🚨 Exceeded
+                                {% elif b.status == 'full' %}🔵 At Limit
+                                {% elif b.status == 'warning' %}⚠️ Near Limit
+                                {% else %}✅ Safe{% endif %}
+                            </span>
                         </div>
+                    </div>
 
-                </div>
-
-                <div class="budget-amount-wrapper">
-
-                    <div class="budget-amount">
-
-                        RM {{ "%.2f"|format(b.amount) }}
-
+                    <div class="budget-actions">
+                        <a href="/edit_budget/{{ b.category }}" class="budget-icon-btn" title="Edit">✏️</a>
+                        <a href="/delete_budget/{{ b.category }}" class="budget-icon-btn budget-icon-del" title="Delete" onclick="return confirm('Delete {{ b.category }} budget?')">✕</a>
                     </div>
 
                 </div>
+
+                <!-- AMOUNTS -->
+                <div style="display:flex;margin:12px 0;">
+                    <div style="flex:1;padding:10px 12px;border-right:1px solid var(--border);min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Budget</div>
+                        <div style="font-weight:700;font-size:15px;white-space:nowrap;">RM {{ "%.2f"|format(b.amount) }}</div>
+                    </div>
+                    <div style="flex:1;padding:10px 12px;border-right:1px solid var(--border);min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Spent</div>
+                        <div style="font-weight:700;font-size:15px;white-space:nowrap;color:#ef4444;">RM {{ "%.2f"|format(b.spent) }}</div>
+                    </div>
+                    <div style="flex:1;padding:10px 12px;min-width:0;">
+                        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">{% if b.remaining < 0 %}Overspent{% else %}Remaining{% endif %}</div>
+                        <div class="budget-remaining {% if b.remaining < 0 %}budget-remaining-over{% else %}budget-remaining-ok{% endif %}">
+                            RM {{ "%.2f"|format(b.remaining | abs) }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROGRESS BAR -->
+                <div class="progress-container">
+                    <div class="progress-bar {{ b.status }}" style="--width: {{ b.display_percent }}%;"></div>
+                </div>
+
+                <div style="font-size:16px;color:var(--text-muted);margin-top:6px;">{{ "%.0f"|format(b.percent) }}% Used</div>
 
             </div>
 

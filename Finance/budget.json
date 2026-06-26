@@ -7,6 +7,19 @@
     {
         "username": "Ethan",
         "category": "Entertainment",
-        "amount": 3000.0
+        "amount": 3500.0,
+        "period": "monthly"
+    },
+    {
+        "username": "Ethan",
+        "category": "Travel",
+        "amount": 150.0,
+        "period": "monthly"
+    },
+    {
+        "username": "Ethan",
+        "category": "Transport",
+        "amount": 50.0,
+        "period": "monthly"
     }
 ]

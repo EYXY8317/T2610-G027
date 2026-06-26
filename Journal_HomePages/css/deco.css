@@ -1,0 +1,285 @@
+/* ── Deco Layer ──────────────────────────────────────────────────────────── */
+
+.deco-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -1;          /* below widget content in normal view */
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* In deco mode, raise above content so items can receive pointer events */
+.deco-mode .deco-layer {
+    z-index: 5;
+}
+
+/* ── Deco Item ───────────────────────────────────────────────────────────── */
+
+.deco-item {
+    position: absolute;
+    box-sizing: border-box;
+    user-select: none;
+    pointer-events: none; /* non-interactive in normal mode */
+}
+
+.deco-mode .deco-item {
+    pointer-events: auto;
+    cursor: grab;
+}
+
+.deco-mode .deco-item:active {
+    cursor: grabbing;
+}
+
+.deco-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+/* Selection outline — only in deco mode */
+.deco-mode .deco-item.selected {
+    outline: 1.5px dashed rgba(100, 80, 60, 0.45);
+    outline-offset: 3px;
+}
+
+/* ── Rotate Handle ───────────────────────────────────────────────────────── */
+
+.deco-rotate-handle {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    border: 1.5px solid #b0a89e;
+    border-radius: 50%;
+    cursor: grab;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    line-height: 1;
+    z-index: 2;
+    user-select: none;
+}
+
+.deco-mode .deco-item.selected .deco-rotate-handle {
+    display: flex;
+}
+
+.deco-rotate-handle:active {
+    cursor: grabbing;
+}
+
+/* ── Resize Handle ───────────────────────────────────────────────────────── */
+
+.deco-resize-handle {
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 1.5px solid #b0a89e;
+    border-radius: 3px;
+    cursor: nwse-resize;
+    display: none;
+    z-index: 1;
+}
+
+.deco-mode .deco-item.selected .deco-resize-handle {
+    display: block;
+}
+
+/* ── Delete Button ───────────────────────────────────────────────────────── */
+
+.deco-delete-btn {
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 20px;
+    height: 20px;
+    background: #e05555;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 9px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    z-index: 2;
+}
+
+.deco-mode .deco-item.selected .deco-delete-btn {
+    display: flex;
+}
+
+.deco-delete-btn:hover {
+    background: #c0392b;
+}
+
+/* ── Deco Mode — widget cursor ───────────────────────────────────────────── */
+
+.deco-mode .widget {
+    cursor: crosshair;
+}
+
+.deco-mode .widget .deco-item {
+    cursor: grab;
+}
+
+/* ── Deco Picker ─────────────────────────────────────────────────────────── */
+
+#deco-picker {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #F2EFE9;
+    border-radius: 18px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px 18px;
+    z-index: 10000;
+    min-width: 300px;
+    max-width: 500px;
+    display: none;
+}
+
+#deco-picker.visible {
+    display: block;
+    animation: deco-picker-in 0.18s ease;
+}
+
+@keyframes deco-picker-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+#deco-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a3228;
+    font-family: 'Inter', sans-serif;
+}
+
+#deco-picker-close {
+    background: none;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.1s;
+}
+
+#deco-picker-close:hover {
+    color: #555;
+}
+
+#deco-picker-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.deco-picker-thumb {
+    width: 64px;
+    height: 64px;
+    border: 1.5px solid #e0dbd3;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, transform 0.12s, box-shadow 0.12s;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.deco-picker-thumb:hover {
+    border-color: #b0a89e;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.deco-picker-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#deco-empty-msg {
+    font-size: 12px;
+    color: #aaa;
+    text-align: center;
+    padding: 8px 0;
+    font-family: 'Inter', sans-serif;
+}
+
+/* ── Deco Toolbar ────────────────────────────────────────────────────────── */
+
+#deco-toolbar {
+    position: fixed;
+    top: 74px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(42, 34, 26, 0.88);
+    backdrop-filter: blur(8px);
+    color: #f2efe9;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    padding: 9px 18px;
+    border-radius: 20px;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    gap: 14px;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+    pointer-events: auto;
+}
+
+#deco-toolbar.visible {
+    display: flex;
+    animation: deco-toolbar-in 0.18s ease;
+}
+
+@keyframes deco-toolbar-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+    to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+#deco-toolbar span {
+    opacity: 0.85;
+    letter-spacing: 0.01em;
+}
+
+#deco-toolbar-exit {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #f2efe9;
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    padding: 4px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#deco-toolbar-exit:hover {
+    background: rgba(255, 255, 255, 0.25);
+}

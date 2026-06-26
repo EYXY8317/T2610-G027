@@ -1,5 +1,7 @@
 const STORAGE_KEY = "today-emotion-state";
 
+const MOOD_ICON = { Happy: "😊", Sad: "😢", Angry: "😠" };
+
 const DEFAULT_EMOJIS = ["😀", "😊", "🙂", "😐", "😔"];
 
 const DEFAULT_STATE = {
@@ -65,6 +67,18 @@ function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+function archiveToHistory(state, dateISO) {
+    const hasData = state.selectedIndexes.length > 0 || state.sliderValues.some(v => v > 0);
+    if (!hasData) return state;
+    const history = { ...(state.history || {}) };
+    history[dateISO] = {
+        selectedIndexes: [...state.selectedIndexes],
+        sliderValues:    [...state.sliderValues],
+        displayedEmojis: [...state.displayedEmojis]
+    };
+    return { ...state, history };
+}
+
 /* ── Daily Reset ─────────────────────────────────────────── */
 
 function checkDailyReset(state) {
@@ -77,8 +91,13 @@ function checkDailyReset(state) {
 
         localStorage.setItem("today-emotion-last-reset", resetKey);
 
+        // Archive previous day before clearing
+        const yesterday = new Date(now);
+        yesterday.setDate(yesterday.getDate() - 1);
+        const archivedState = archiveToHistory(state, yesterday.toISOString().slice(0, 10));
+
         const resetState = {
-            ...state,
+            ...archivedState,
             selectedIndexes: [],
             sliderValues: [0, 0, 0, 0, 0]
         };
@@ -115,6 +134,8 @@ function renderSelectMode(state) {
         `;
 
     }).join("");
+
+    return `<div class="te-emoji-row">${buttons}</div>`;
 }
 
 function renderCurrentMood(state) {
@@ -230,6 +251,26 @@ function renderWidget(state) {
 
 }
 
+async function updateDiaryMoodBadge(widget) {
+    try {
+        const resp = await fetch("/diary_moods");
+        const moods = await resp.json();
+        const today = new Date().toISOString().slice(0, 10);
+        const mood = moods[today] || "";
+        const el = widget.querySelector(".te-diary-mood");
+        if (!el) return;
+        if (mood) {
+            el.textContent = `${MOOD_ICON[mood] || ""} ${mood}`;
+            el.className = `te-diary-mood mood-${mood.toLowerCase()}`;
+        } else {
+            el.textContent = "";
+            el.className = "te-diary-mood";
+        }
+    } catch {
+        // network unavailable — leave badge empty
+    }
+}
+
 // Emoji sizing that responds to widget width:
 //  - select mode: inverse scale (wider → smaller emojis)
 //  - slider mode: fixed compact emoji so bar stretches longer
@@ -273,7 +314,8 @@ function rerender(state) {
 
 function updateState(partial) {
 
-    const next = { ...getSavedState(), ...partial };
+    const cur = getSavedState();
+    const next = archiveToHistory({ ...cur, ...partial }, new Date().toISOString().slice(0, 10));
     saveState(next);
     rerender(next);
     return next;
@@ -402,7 +444,10 @@ export function initializeTodayEmotion() {
         const newValues = Array.from(
             widget.querySelectorAll(".te-pct-slider")
         ).map(s => Number(s.value));
-        const next = { ...cur, sliderValues: newValues };
+        const next = archiveToHistory(
+            { ...cur, sliderValues: newValues },
+            new Date().toISOString().slice(0, 10)
+        );
         saveState(next);
 
     });

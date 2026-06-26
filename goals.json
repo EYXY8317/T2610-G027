@@ -27,27 +27,22 @@
         "username": "Ethan",
         "name": "laptop",
         "type": "short",
-        "target": 10000.0
-    },
-    {
-        "id": 7,
-        "username": "Ethan",
-        "name": "Japan",
-        "type": "long",
-        "target": 10000.0
-    },
-    {
-        "id": 8,
-        "username": "Ethan",
-        "name": "phone",
-        "type": "short",
-        "target": 4999.0
+        "target": 1000.0,
+        "target_date": "2026-10-09",
+        "priority": "medium",
+        "notes": "testing 123...",
+        "status": "In Progress",
+        "completion_date": "2026-06-23"
     },
     {
         "id": 9,
         "username": "Ethan",
         "name": "House",
         "type": "long",
-        "target": 500000.0
+        "target": 500000.0,
+        "target_date": "2029-12-24",
+        "priority": "high",
+        "notes": "",
+        "status": "In Progress"
     }
 ]
