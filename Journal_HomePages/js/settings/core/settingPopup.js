@@ -15,7 +15,6 @@ from "../../widgets/digitalClock/renderDigitalClock.js";
 
 import {
     renderWeatherHour,
-    setWeatherFrequency,
     setShowWeatherIcon,
     setShowWeatherTemperature,
     setShowHumidity,
@@ -31,35 +30,10 @@ import {
 from "../../widgets/weatherConfig.js";
 
 import {
-    applyBackgroundOpacity
-}
-from "../appearance/backgroundOpacitySetting.js";
-
-import {
-    applyBackgroundColor
-}
-from "../appearance/backgroundColorSetting.js";
-
-import {
-    applyTitleColor
-}
-from "../appearance/titleColorSetting.js";
-
-import {
-    applyContentColor
-}
-from "../appearance/contentColorSetting.js";
-
-
-import {
     applyShowTitle
 }
 from "../appearance/showTitleSetting.js";
 
-import {
-    applyBorder
-}
-from "../appearance/borderSetting.js";
 
 import {
     enableSettingDrag
@@ -73,9 +47,21 @@ import {
 from "./settingManager.js";
 
 import {
-    getAppearanceSettings
+    getAppearanceSectionsHTML
 }
 from "../appearance/appearanceSettings.js";
+
+import {
+    saveLayout
+}
+from "../../home/saveLayout.js";
+
+import {
+    getWidgetAppearance,
+    saveWidgetAppearance,
+    applyWidgetAppearance
+}
+from "../appearance/widgetAppearance.js";
 
 import {
     getDigitalClockSettings
@@ -115,266 +101,395 @@ import {
 from "../widgets/weatherWeekSettings.js";
 
 import {
+    getNowStreakSettings
+}
+from "../widgets/nowStreakSettings.js";
+
+import {
+    updateNowStreakState
+}
+from "../../widgets/nowStreak.js";
+
+import {
+    getHighStreakSettings
+}
+from "../widgets/highStreakSettings.js";
+
+import {
+    updateHighStreakState
+}
+from "../../widgets/highStreak.js";
+
+import {
+    getPictureStreakSettings
+}
+from "../widgets/pictureStreakSettings.js";
+
+import {
+    updatePictureStreakState,
+    addPictureStreakPhoto,
+    removePictureStreakPhoto
+}
+from "../../widgets/pictureStreak.js";
+
+import {
+    getEmotionSummarySettings
+}
+from "../widgets/emotionSummarySettings.js";
+
+import {
+    updateEmotionSummaryState
+}
+from "../../widgets/emotionSummary.js";
+
+import {
+    updateQuoteState,
+    getQuoteState,
+    initializeQuote
+}
+from "../../widgets/quote.js";
+
+import {
+    autoExpandWidget
+}
+from "../../dashboard/expandWidget.js";
+
+import {
+    getTodayEmotionSettings
+}
+from "../widgets/todayEmotionSettings.js";
+
+import {
     getTodayEmotionState,
     updateTodayEmotionState
 }
 from "../../widgets/todayEmotion.js";
 
-export function createSettingPopup(
-    widgetId
-) {
+import {
+    getDiaryCardSettings
+}
+from "../widgets/diaryCardSettings.js";
 
+import {
+    updateDiaryCardState
+}
+from "../../widgets/diaryCard.js";
+
+import {
+    syncLayoutToServer
+}
+from "../../home/serverLayout.js";
+
+import {
+    pushHistory
+}
+from "../../home/historyManager.js";
+
+
+const WIDGET_NAMES = {
+    "digital-clock-widget":   "Digital Clock",
+    "weather-hour-widget":    "Weather Hours",
+    "weather-day-widget":     "Weather Day",
+    "weather-week-widget":    "Weather Week",
+    "today-emotion-widget":   "Emotion Today",
+    "now-streak-widget":      "Now Streak",
+    "high-streak-widget":     "High Streak",
+    "picture-streak-widget":  "Picture Streak",
+    "emotion-summary-widget": "Emotion Summary",
+    "quote-widget":           "Quote",
+    "diary-card-widget":      "Diary"
+};
+
+// localStorage keys that hold widget-specific settings (non-appearance)
+const WIDGET_SETTING_KEYS = {
+    "weather-hour-widget":    ["weather-config"],
+    "weather-day-widget":     ["weather-day-state", "weather-config"],
+    "weather-week-widget":    ["weather-week-state", "weather-config"],
+    "today-emotion-widget":   ["today-emotion-state"],
+    "now-streak-widget":      ["now-streak-display"],
+    "high-streak-widget":     ["high-streak-display"],
+    "emotion-summary-widget": ["emotion-summary-state"],
+    "quote-widget":           ["quote-state"],
+    "diary-card-widget":      ["diary-card-state"],
+};
+
+function snapshotWidgetSettings(widgetId) {
+    const keys = widgetId.startsWith("picture-streak-widget")
+        ? [`${widgetId}-state`]
+        : (WIDGET_SETTING_KEYS[widgetId] || []);
+    const snap = {};
+    keys.forEach(k => { snap[k] = localStorage.getItem(k); });
+    return snap;
+}
+
+function snapshotsEqual(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function restoreWidgetSettings(snap) {
+    Object.entries(snap).forEach(([k, v]) => {
+        if (v === null) localStorage.removeItem(k);
+        else localStorage.setItem(k, v);
+    });
+}
+
+// Re-render a widget from its current localStorage state after a settings restore
+function reRenderWidget(widgetId) {
+    if (widgetId === "weather-hour-widget") {
+        renderWeatherHour();
+    } else if (widgetId === "weather-day-widget") {
+        renderWeatherDay();
+    } else if (widgetId === "weather-week-widget") {
+        renderWeatherWeek();
+    } else if (widgetId === "now-streak-widget") {
+        updateNowStreakState({});
+    } else if (widgetId === "high-streak-widget") {
+        updateHighStreakState({});
+    } else if (widgetId === "emotion-summary-widget") {
+        updateEmotionSummaryState({});
+    } else if (widgetId === "quote-widget") {
+        updateQuoteState({});
+    } else if (widgetId === "today-emotion-widget") {
+        updateTodayEmotionState({});
+    } else if (widgetId === "diary-card-widget") {
+        updateDiaryCardState({});
+    } else if (widgetId.startsWith("picture-streak-widget")) {
+        updatePictureStreakState(widgetId, {});
+    }
+}
+
+// ── Auto-expand any widget when settings cause content to overflow ────────────
+
+let _contentObserver = null;
+let _lastOpenSections = []; // global: whichever sections were open carries over to next widget
+
+function attachContentObserver(widgetId) {
+    if (_contentObserver) {
+        _contentObserver.disconnect();
+        _contentObserver = null;
+    }
+    const widgetEl  = document.getElementById(widgetId);
+    const contentEl = widgetEl?.querySelector(".widget-content");
+    if (!contentEl) return;
+    let debounce = null;
+    _contentObserver = new MutationObserver(() => {
+        clearTimeout(debounce);
+        debounce = setTimeout(() => autoExpandWidget(widgetId), 120);
+    });
+    _contentObserver.observe(contentEl, { childList: true, subtree: true });
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function createSettingPopup(widgetId) {
+
+    // Save which sections are currently open so the next widget inherits them
+    const prev = document.querySelector(".setting-popup");
+    if (prev) {
+        _lastOpenSections = [];
+        prev.querySelectorAll(".setting-section.open .setting-section-toggle h3")
+            .forEach(h => _lastOpenSections.push(h.textContent.trim()));
+    }
+
+    if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
     closeCurrentPopup();
 
-    const appearanceContent =
-        getAppearanceSettings();
+    const _settingsBefore = snapshotWidgetSettings(widgetId);
 
-    let widgetContent = "";
+    const savedApp       = getWidgetAppearance(widgetId) || {};
+    const appearanceHTML = getAppearanceSectionsHTML(savedApp);
 
-    if (
-        widgetId ===
-        "digital-clock-widget"
-    ) {
+    let widgetTabs = { style: "", location: "", graph: "", display: "" };
 
-        widgetContent =
-            getDigitalClockSettings();
-
+    if (widgetId === "digital-clock-widget") {
+        widgetTabs = getDigitalClockSettings();
     }
-
-    else if (
-        widgetId ===
-        "weather-day-widget"
-    ) {
-
-        widgetContent =
-            getWeatherDaySettings();
-
+    else if (widgetId === "weather-day-widget") {
+        widgetTabs = getWeatherDaySettings();
     }
-
-    else if (
-        widgetId ===
-        "weather-hour-widget"
-    ) {
-
-        widgetContent =
-            getWeatherHourSettings();
-
+    else if (widgetId === "weather-hour-widget") {
+        widgetTabs = getWeatherHourSettings();
     }
-
-    else if (
-        widgetId ===
-        "quote-widget"
-    ) {
-
-        widgetContent =
-            getQuoteSettings();
-
+    else if (widgetId === "weather-week-widget") {
+        widgetTabs = getWeatherWeekSettings();
     }
-
-    else if (
-        widgetId ===
-        "today-emotion-widget"
-    ) {
-
-        widgetContent =
-            getTodayEmotionSettings();
-
+    else if (widgetId === "quote-widget") {
+        widgetTabs = getQuoteSettings();
     }
-
+    else if (widgetId === "today-emotion-widget") {
+        widgetTabs = getTodayEmotionSettings();
+    }
+    else if (widgetId === "now-streak-widget") {
+        widgetTabs = getNowStreakSettings();
+    }
+    else if (widgetId === "high-streak-widget") {
+        widgetTabs = getHighStreakSettings();
+    }
+    else if (widgetId.startsWith("picture-streak-widget")) {
+        widgetTabs = getPictureStreakSettings(widgetId);
+    }
+    else if (widgetId === "emotion-summary-widget") {
+        widgetTabs = getEmotionSummarySettings();
+    }
+    else if (widgetId === "diary-card-widget") {
+        widgetTabs = getDiaryCardSettings();
+    }
     else {
-
-        widgetContent =
-            `
-                <p>
-                    Coming Soon
-                </p>
-            `;
-
+        widgetTabs = { style: "", location: "", graph: "", display: "<p>Coming Soon</p>" };
     }
 
-    const popup =
-        document.createElement(
-            "div"
-        );
+    const widgetName = WIDGET_NAMES[widgetId] || widgetId;
 
-    popup.className =
-        "setting-popup";
+    const widgetExtra = [widgetTabs.style, widgetTabs.location, widgetTabs.graph, widgetTabs.display]
+        .filter(s => s && s.trim())
+        .flatMap(s => s.trim().split(/(?=<h3\b[^>]*>)/i).filter(p => p.trim()))
+        .map(s => {
+            const m = s.match(/^<h3[^>]*>(.*?)<\/h3>([\s\S]*)$/i);
+            if (m) {
+                return `
+                    <div class="setting-section">
+                        <div class="setting-section-toggle">
+                            <h3>${m[1]}</h3>
+                            <span class="setting-section-chevron">›</span>
+                        </div>
+                        <div class="setting-section-body">${m[2].trim()}</div>
+                    </div>`;
+            }
+            return `<div class="setting-section">${s}</div>`;
+        })
+        .join("");
+
+    const popup = document.createElement("div");
+    popup.className = "setting-popup";
 
     popup.innerHTML = `
-
         <div class="setting-header">
             <span>${widgetName}</span>
             <button class="setting-close">✕</button>
         </div>
-
-        <div class="setting-tabs">
-            ${tabBarHTML}
-        </div>
-
         <div class="setting-body">
-            ${panesHTML}
+            ${appearanceHTML}
+            ${widgetExtra}
         </div>
-
     `;
 
     popup.querySelector(".setting-close").addEventListener("click", () => {
         if (_contentObserver) { _contentObserver.disconnect(); _contentObserver = null; }
+
+        const _settingsAfter = snapshotWidgetSettings(widgetId);
+        if (!snapshotsEqual(_settingsBefore, _settingsAfter)) {
+            const wid    = widgetId;
+            const before = _settingsBefore;
+            const after  = _settingsAfter;
+            pushHistory({
+                revert() {
+                    restoreWidgetSettings(before);
+                    reRenderWidget(wid);
+                },
+                apply() {
+                    restoreWidgetSettings(after);
+                    reRenderWidget(wid);
+                }
+            });
+        }
+
+        syncLayoutToServer();
         closeCurrentPopup();
     });
 
-    document.body.append(
-        popup
-    );
+    document.body.append(popup);
 
-    const frequencyButtons =
-        popup.querySelectorAll(
-            ".frequency-segment .segment-option"
-        );
+    // Position popup outside the widget card
+    const widgetEl = document.getElementById(widgetId);
+    if (widgetEl) {
+        const r  = widgetEl.getBoundingClientRect();
+        const pw = popup.offsetWidth  || 420;
+        const ph = popup.offsetHeight || 600;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const GAP = 12;
 
-    const showIconButtons =
-        popup.querySelectorAll(
-            ".show-icon-segment .segment-option"
-        );
+        // Prefer right side; fall back to left; clamp within viewport
+        let left = r.right + GAP;
+        if (left + pw > vw - GAP) left = r.left - pw - GAP;
+        if (left < GAP) left = vw - pw - GAP;
 
-    const showTemperatureButtons =
-        popup.querySelectorAll(
-            ".show-temperature-segment .segment-option"
-        );
+        // Align top with widget, clamp vertically
+        let top = Math.min(r.top, vh - ph - GAP);
+        if (top < GAP) top = GAP;
 
-    const graphColorPicker =
-        popup.querySelector(
-            ".graph-color-picker"
-        );
-
-    const graphSizeSlider =
-        popup.querySelector(
-            ".graph-size-slider"
-        );
-
-    const graphSizeValue =
-        popup.querySelector(
-            ".graph-size-value"
-        );
-
-    if (
-        graphSizeSlider &&
-        graphSizeValue
-    ) {
-
-        graphSizeSlider
-            .addEventListener(
-                "input",
-                event => {
-
-                    const size =
-                        Number(
-                            event.target.value
-                        );
-
-                    graphSizeValue
-                        .textContent =
-                        size + "%";
-
-                    setGraphSize(
-                        size
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
+        popup.style.left = left + "px";
+        popup.style.top  = top  + "px";
     }
 
-    if (
-        graphColorPicker
-    ) {
+    attachContentObserver(widgetId);
 
-        graphColorPicker
-            .addEventListener(
-                "input",
-                event => {
+    /* ── Title alignment ─────────────────────────────────────── */
 
-                    setGraphColor(
-                        event.target.value
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
-    }
-
-    frequencyButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    frequencyButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    setWeatherFrequency(
-                        button.dataset.value
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    showIconButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    showIconButtons.forEach(
-                        item =>
-                            item.classList.remove(
-                                "active"
-                            )
-                    );
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    setShowWeatherIcon(
-                        button.dataset.value
-                        === "true"
-                    );
-
-                    renderWeatherHour();
-
-                }
-            );
-
-        }
-    );
-
-    frequencyButtons.forEach(button => {
-        button.addEventListener("click", () => {
-            frequencyButtons.forEach(item => item.classList.remove("active"));
-            button.classList.add("active");
-            setWeatherFrequency(button.dataset.value);
-            renderWeatherHour();
+    const titleAlignBtns = popup.querySelectorAll(".title-align-option");
+    titleAlignBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            titleAlignBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { titleAlign: btn.dataset.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     });
+
+    /* ── Title scale (1 / 2 / 3) ─────────────────────────────── */
+    const titleScaleBtns = popup.querySelectorAll(".title-scale-option");
+    titleScaleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            titleScaleBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { titleScale: btn.dataset.value });
+            const widgetEl = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (updatedApp && widgetEl) applyWidgetAppearance(widgetEl, updatedApp);
+        });
+    });
+
+    /* ── Content scale (S / M / L) — shared across all widgets ─── */
+    const contentScaleBtns = popup.querySelectorAll(".content-scale-segment .segment-option");
+    contentScaleBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            contentScaleBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            saveWidgetAppearance(widgetId, { contentScale: btn.dataset.value });
+            const updatedApp = getWidgetAppearance(widgetId);
+            const widgetEl = document.getElementById(widgetId);
+            if (updatedApp && widgetEl) {
+                applyWidgetAppearance(widgetEl, updatedApp);
+                widgetEl.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    });
+
+    /* ── Weather Hour: graph controls ─────────────────────── */
+
+    const showIconButtons = popup.querySelectorAll(".show-icon-segment .segment-option");
+    const showTemperatureButtons = popup.querySelectorAll(".show-temperature-segment .segment-option");
+    const graphColorPicker = popup.querySelector(".graph-color-picker");
+    const graphSizeSlider = popup.querySelector(".graph-size-slider");
+    const graphSizeValue = popup.querySelector(".graph-size-value");
+
+    if (graphSizeSlider && graphSizeValue) {
+        graphSizeSlider.addEventListener("input", event => {
+            const size = Number(event.target.value);
+            graphSizeValue.textContent = size + "%";
+            setGraphSize(size);
+            renderWeatherHour();
+        });
+    }
+
+    if (graphColorPicker) {
+        graphColorPicker.addEventListener("input", event => {
+            setGraphColor(event.target.value);
+            renderWeatherHour();
+        });
+    }
 
     showIconButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -465,6 +580,14 @@ export function createSettingPopup(
         });
     });
 
+    const timezoneSelect = popup.querySelector(".clock-timezone-select");
+    if (timezoneSelect) {
+        timezoneSelect.addEventListener("change", event => {
+            setTimezone(event.target.value);
+            renderDigitalClock(showSeconds, clockFormat, clockType);
+        });
+    }
+
     const showDateButtons = popup.querySelectorAll(".show-date-segment .segment-option");
     showDateButtons.forEach(button => {
         button.addEventListener("click", () => {
@@ -485,40 +608,81 @@ export function createSettingPopup(
         });
     });
 
-    const timezoneSelect = popup.querySelector(".clock-timezone-select");
-    if (timezoneSelect) {
-        timezoneSelect.addEventListener("change", event => {
-            setTimezone(event.target.value);
-            renderDigitalClock(showSeconds, clockFormat, clockType);
+
+    /* ── Universal Color Palette ─────────────────────────── */
+
+    const apPaletteBtns = popup.querySelectorAll(".ap-palette-card");
+    apPaletteBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const colors   = JSON.parse(btn.dataset.colors);
+            const isActive = btn.classList.contains("active");
+            const prevRot  = isActive ? (parseInt(btn.dataset.rotate || "0", 10)) : -1;
+            const rot      = (prevRot + 1) % 3;
+            const bg       = colors[rot];
+            const titleC   = colors[(rot + 1) % 3];
+            const contentC = colors[(rot + 2) % 3];
+            saveWidgetAppearance(widgetId, {
+                backgroundColor: bg,
+                titleColor:      titleC,
+                contentColor:    contentC
+            });
+            const widgetEl   = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widgetEl && updatedApp) applyWidgetAppearance(widgetEl, updatedApp);
+            const bgPicker      = popup.querySelector(".background-color-picker");
+            const titlePicker   = popup.querySelector(".title-color-picker");
+            const contentPicker = popup.querySelector(".content-color-picker");
+            if (bgPicker)      bgPicker.value      = bg;
+            if (titlePicker)   titlePicker.value   = titleC;
+            if (contentPicker) contentPicker.value = contentC;
+            apPaletteBtns.forEach(b => { b.classList.remove("active"); delete b.dataset.rotate; });
+            btn.classList.add("active");
+            btn.dataset.rotate = String(rot);
         });
-    }
+    });
+
+    /* ── Palette category chips ──────────────────────────── */
+
+    const catChips = popup.querySelectorAll(".palette-cat-chip");
+    catChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+            catChips.forEach(c => c.classList.remove("active"));
+            popup.querySelectorAll(".palette-cat-grid").forEach(g => g.classList.remove("active"));
+            chip.classList.add("active");
+            const grid = popup.querySelector(`.palette-cat-grid[data-cat="${chip.dataset.cat}"]`);
+            if (grid) grid.classList.add("active");
+        });
+    });
 
     /* ── Appearance controls ──────────────────────────────── */
 
     const titleColorPicker = popup.querySelector(".title-color-picker");
     if (titleColorPicker) {
         titleColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyTitleColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { titleColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
     const contentColorPicker = popup.querySelector(".content-color-picker");
     if (contentColorPicker) {
         contentColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyContentColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { contentColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
     const backgroundColorPicker = popup.querySelector(".background-color-picker");
     if (backgroundColorPicker) {
         backgroundColorPicker.addEventListener("input", event => {
-            const widget = document.getElementById(widgetId);
-            applyBackgroundColor(widget, event.target.value);
             saveWidgetAppearance(widgetId, { backgroundColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
 
@@ -528,11 +692,181 @@ export function createSettingPopup(
         backgroundOpacitySlider.addEventListener("input", event => {
             const opacity = event.target.value;
             backgroundOpacityValue.textContent = opacity + "%";
-            const widget = document.getElementById(widgetId);
-            applyBackgroundOpacity(widget, opacity);
             saveWidgetAppearance(widgetId, { backgroundOpacity: Number(opacity) });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
         });
     }
+
+    const borderColorPicker = popup.querySelector(".border-color-picker");
+    if (borderColorPicker) {
+        borderColorPicker.addEventListener("input", event => {
+            saveWidgetAppearance(widgetId, { borderColor: event.target.value });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+        });
+    }
+
+    const borderWidthSlider = popup.querySelector(".border-width-slider");
+    const borderWidthValue  = popup.querySelector(".border-width-value");
+    if (borderWidthSlider) {
+        borderWidthSlider.addEventListener("input", event => {
+            const bw = parseFloat(event.target.value);
+            if (borderWidthValue) borderWidthValue.textContent = bw + "px";
+            saveWidgetAppearance(widgetId, { borderWidth: bw });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+        });
+    }
+
+    /* ── Apply to All ────────────────────────────────────────── */
+
+    const applyToAllBtn = popup.querySelector(".apply-to-all-btn");
+    if (applyToAllBtn) {
+        applyToAllBtn.addEventListener("click", () => {
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply to All Widgets</div>
+                    <div class="confirm-modal-body">
+                        This will apply the current colors and border style to all widgets. Each widget's other settings will not be affected.
+                    </div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => {
+                overlay.remove();
+            });
+
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const shared = {
+                    backgroundColor:   sourceApp.backgroundColor,
+                    backgroundOpacity: sourceApp.backgroundOpacity,
+                    titleColor:        sourceApp.titleColor,
+                    contentColor:      sourceApp.contentColor,
+                    borderColor:       sourceApp.borderColor,
+                    borderWidth:       sourceApp.borderWidth,
+                    showBorder:        sourceApp.showBorder
+                };
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, shared);
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    }
+
+    /* ── Individual "Apply to All" buttons ──────────────────── */
+
+    const ALL_KEY_LABELS = {
+        backgroundColor:   "Background Color",
+        titleColor:        "Title Color",
+        contentColor:      "Content Color",
+        borderColor:       "Border Color",
+        backgroundOpacity: "Background Opacity",
+        titleScale:        "Title Size",
+        titleAlign:        "Title Align",
+        contentScale:      "Content Size",
+        borderWidth:       "Border Width",
+    };
+
+    /* ── Section-level "Apply All" buttons ──────────────────── */
+
+    const SECTION_ALL_KEYS = {
+        palette: ["backgroundColor", "titleColor", "contentColor"],
+        colors:  ["backgroundColor", "titleColor", "contentColor", "borderColor", "backgroundOpacity"],
+        title:   ["showTitle", "titleColor", "titleScale", "titleAlign"],
+        content: ["contentColor", "contentScale"],
+        border:  ["showBorder", "borderColor", "borderWidth"],
+    };
+    const SECTION_ALL_LABELS = {
+        palette: "Palette Colors",
+        colors:  "All Colors",
+        title:   "All Title Settings",
+        content: "All Content Settings",
+        border:  "All Border Settings",
+    };
+
+    popup.querySelectorAll(".section-all-btn[data-section-all]").forEach(btn => {
+        btn.addEventListener("click", e => {
+            e.stopPropagation();
+            const sKey  = btn.dataset.sectionAll;
+            const keys  = SECTION_ALL_KEYS[sKey] || [];
+            const label = SECTION_ALL_LABELS[sKey] || sKey;
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply ${label} to All Widgets</div>
+                    <div class="confirm-modal-body">This will apply the current ${label.toLowerCase()} to all widgets.</div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => overlay.remove());
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const patch = {};
+                keys.forEach(k => { if (sourceApp[k] !== undefined) patch[k] = sourceApp[k]; });
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, patch);
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    });
+
+    popup.querySelectorAll(".apply-all-button[data-all-key]").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const key   = btn.dataset.allKey;
+            const label = ALL_KEY_LABELS[key] || key;
+            const overlay = document.createElement("div");
+            overlay.className = "confirm-overlay";
+            overlay.innerHTML = `
+                <div class="confirm-modal">
+                    <div class="confirm-modal-title">Apply ${label} to All Widgets</div>
+                    <div class="confirm-modal-body">This will apply the current ${label.toLowerCase()} to all widgets.</div>
+                    <div class="confirm-modal-btns">
+                        <button class="confirm-cancel-btn">Cancel</button>
+                        <button class="confirm-ok-btn">Apply</button>
+                    </div>
+                </div>
+            `;
+            document.body.append(overlay);
+            overlay.querySelector(".confirm-cancel-btn").addEventListener("click", () => overlay.remove());
+            overlay.querySelector(".confirm-ok-btn").addEventListener("click", () => {
+                overlay.remove();
+                const sourceApp = getWidgetAppearance(widgetId) || {};
+                const value = sourceApp[key];
+                if (value === undefined) return;
+                Object.keys(WIDGET_NAMES).forEach(id => {
+                    saveWidgetAppearance(id, { [key]: value });
+                    const el = document.getElementById(id);
+                    const app = getWidgetAppearance(id);
+                    if (el && app) applyWidgetAppearance(el, app);
+                });
+            });
+        });
+    });
 
     const titleButtons = popup.querySelectorAll(".title-segment-option");
     titleButtons.forEach(button => {
@@ -545,6 +879,10 @@ export function createSettingPopup(
             saveWidgetAppearance(widgetId, { showTitle: visible });
             // Header lives outside .widget-content so MutationObserver won't catch this
             autoExpandWidget(widgetId);
+            ["title-color-row", "title-align-row", "title-size-row"].forEach(cls => {
+                const row = popup.querySelector("." + cls);
+                if (row) row.style.display = visible ? "" : "none";
+            });
         });
     });
 
@@ -554,11 +892,52 @@ export function createSettingPopup(
             borderButtons.forEach(item => item.classList.remove("active"));
             button.classList.add("active");
             const show = button.dataset.value === "true";
-            const widget = document.getElementById(widgetId);
-            applyBorder(widget, show);
             saveWidgetAppearance(widgetId, { showBorder: show });
+            const widget = document.getElementById(widgetId);
+            const updatedApp = getWidgetAppearance(widgetId);
+            if (widget && updatedApp) applyWidgetAppearance(widget, updatedApp);
+            popup.querySelectorAll(".border-color-row, .border-width-row, .border-width-slider-row")
+                .forEach(el => { el.style.display = show ? "" : "none"; });
         });
     });
+
+    /* ── Section accordion toggles ──────────────────────── */
+
+    popup.querySelectorAll(".setting-section-toggle").forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            toggle.closest(".setting-section").classList.toggle("open");
+        });
+    });
+
+    /* ── Width / Height size inputs ─────────────────────── */
+
+    const targetWidget = document.getElementById(widgetId);
+    const widthInput   = popup.querySelector(".widget-width-input");
+    const heightInput  = popup.querySelector(".widget-height-input");
+
+    if (widthInput && targetWidget) {
+        widthInput.value = parseInt(targetWidget.style.width) || "";
+        widthInput.addEventListener("input", () => {
+            const v = parseInt(widthInput.value);
+            if (v >= 80) {
+                targetWidget.style.width = v + "px";
+                saveLayout(targetWidget);
+                targetWidget.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    }
+
+    if (heightInput && targetWidget) {
+        heightInput.value = parseInt(targetWidget.style.height) || "";
+        heightInput.addEventListener("input", () => {
+            const v = parseInt(heightInput.value);
+            if (v >= 60) {
+                targetWidget.style.height = v + "px";
+                saveLayout(targetWidget);
+                targetWidget.dispatchEvent(new CustomEvent("widgetresize"));
+            }
+        });
+    }
 
     /* ── Weather Week ─────────────────────────────────────── */
 
@@ -579,11 +958,8 @@ export function createSettingPopup(
             });
         }
 
-        wireWwSegment(".ww-temp-display-segment", "tempDisplay");
         wireWwSegment(".ww-days-segment", "showDays");
         wireWwSegment(".ww-icon-segment", "showIcon");
-        wireWwSegment(".ww-feels-segment", "showFeelsLike");
-        wireWwSegment(".ww-humidity-segment", "showHumidity");
 
         const wwCitySelect = popup.querySelector(".weather-city-select");
         if (wwCitySelect) {
@@ -729,6 +1105,20 @@ export function createSettingPopup(
         wireQSegment(".quote-show-author-seg",     "showAuthor");
         wireQSegment(".quote-show-source-tag-seg", "showSourceTag");
 
+        const qTextColorPicker = popup.querySelector(".quote-text-color-picker");
+        if (qTextColorPicker) {
+            qTextColorPicker.addEventListener("input", event => {
+                updateQuoteState({ textColor: event.target.value });
+            });
+        }
+
+        const qAuthorColorPicker = popup.querySelector(".quote-author-color-picker");
+        if (qAuthorColorPicker) {
+            qAuthorColorPicker.addEventListener("input", event => {
+                updateQuoteState({ authorColor: event.target.value });
+            });
+        }
+
         // Add user quote
         const qAddBtn = popup.querySelector(".quote-add-btn");
         if (qAddBtn) {
@@ -795,6 +1185,14 @@ export function createSettingPopup(
         wireEsSegment(".es-range-segment", "timeRange");
         wireEsSegment(".es-combo-segment", "showCombo");
         wireEsSegment(".es-highlight-segment", "showHighlight");
+        wireEsSegment(".es-line-width-segment", "graphLineWidth");
+
+        const esGraphColor = popup.querySelector(".es-graph-color-picker");
+        if (esGraphColor) {
+            esGraphColor.addEventListener("input", event => {
+                updateEmotionSummaryState({ graphColor: event.target.value });
+            });
+        }
 
         const esStart = popup.querySelector(".es-custom-start");
         if (esStart) {
@@ -814,151 +1212,146 @@ export function createSettingPopup(
 
     /* ── Picture Streak ───────────────────────────────────── */
 
-    if (widgetId === "picture-streak-widget") {
+    if (widgetId.startsWith("picture-streak-widget")) {
 
         const psPhotoInput = popup.querySelector(".ps-photo-input");
         if (psPhotoInput) {
             psPhotoInput.addEventListener("change", event => {
                 const file = event.target.files[0];
-                if (!file) {
-                    return;
-                }
+                if (!file) return;
                 const reader = new FileReader();
                 reader.onload = () => {
-                    addPictureStreakPhoto(reader.result, file.name);
+                    addPictureStreakPhoto(widgetId, reader.result, file.name);
                     popup.remove();
                     createSettingPopup(widgetId);
                 };
                 reader.readAsDataURL(file);
             });
         }
-    );
 
-    const imageInput =
-        popup.querySelector(
-            ".today-emotion-image-input"
-        );
+        const psRemoveBtns = popup.querySelectorAll(".ps-remove-btn");
+        psRemoveBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.dataset.index);
+                removePictureStreakPhoto(widgetId, idx);
+                popup.remove();
+                createSettingPopup(widgetId);
+            });
+        });
 
-    if (
-        imageInput
-    ) {
+        const psDisplayBtns = popup.querySelectorAll(".ps-display-segment .segment-option");
+        psDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                psDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updatePictureStreakState(widgetId, { displayMode: btn.dataset.value });
+            });
+        });
 
-        imageInput
-            .addEventListener(
-                "change",
-                event => {
-                    const file =
-                        event.target.files[0];
+        const psDateLabelBtns = popup.querySelectorAll(".ps-date-label-segment .segment-option");
+        psDateLabelBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                psDateLabelBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updatePictureStreakState(widgetId, { showDateLabel: btn.dataset.value === "true" });
+            });
+        });
 
-                    if (!file) {
-                        return;
-                    }
-
-                    const reader =
-                        new FileReader();
-
-                    reader.onload = () => {
-                        updateTodayEmotionState({
-                            customImage: reader.result
-                        });
-                    };
-
-                    reader.readAsDataURL(file);
-                }
-            );
+        const psIntervalSelect = popup.querySelector(".ps-interval-select");
+        if (psIntervalSelect) {
+            psIntervalSelect.addEventListener("change", event => {
+                updatePictureStreakState(widgetId, { scrollInterval: event.target.value });
+            });
+        }
 
     }
 
-    if (
-        widgetId ===
-        "today-emotion-widget"
-    ) {
-        const todayEmotionState =
-            getTodayEmotionState();
+    /* ── Diary Card ───────────────────────────────────────── */
 
-        const selectedTypeButton =
-            popup.querySelector(
-                `.emotion-type-segment .segment-option[data-value="${todayEmotionState.emotionType}"]`
-            );
+    if (widgetId === "diary-card-widget") {
 
-        if (
-            selectedTypeButton
-        ) {
-            emotionTypeButtons.forEach(
-                item =>
-                    item.classList.remove(
-                        "active"
-                    )
-            );
+        const dcSelectBtns = popup.querySelectorAll(".dc-slot-select-btn");
+        dcSelectBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                updateDiaryCardState({ activeBook: Number(btn.dataset.index) });
+                popup.remove();
+                createSettingPopup(widgetId);
+            });
+        });
 
-            selectedTypeButton.classList.add(
-                "active"
-            );
-        }
+        const dcModeBtns = popup.querySelectorAll(".dc-mode-segment .segment-option");
+        dcModeBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                dcModeBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateDiaryCardState({ mode: btn.dataset.value });
+            });
+        });
 
-        const selectedTitleButton =
-            popup.querySelector(
-                `.today-emotion-title-segment .segment-option[data-value="${todayEmotionState.showTitle}"]`
-            );
+    }
 
-        if (
-            selectedTitleButton
-        ) {
-            todayEmotionTitleButtons.forEach(
-                item =>
-                    item.classList.remove(
-                        "active"
-                    )
-            );
+    /* ── High Streak ──────────────────────────────────────── */
 
-            selectedTitleButton.classList.add(
-                "active"
-            );
-        }
+    if (widgetId === "high-streak-widget") {
 
-        const selectedCurrentMoodButton =
-            popup.querySelector(
-                `.current-mood-segment .segment-option[data-value="${todayEmotionState.showCurrentMood}"]`
-            );
+        const hsDisplayBtns = popup.querySelectorAll(".hs-display-segment .segment-option");
+        hsDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                hsDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateHighStreakState({ displayMode: btn.dataset.value });
+            });
+        });
 
-        if (
-            selectedCurrentMoodButton
-        ) {
-            currentMoodButtons.forEach(
-                item =>
-                    item.classList.remove(
-                        "active"
-                    )
-            );
+        const hsCelebrateBtns = popup.querySelectorAll(".hs-celebrate-segment .segment-option");
+        hsCelebrateBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                hsCelebrateBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateHighStreakState({ celebrationEnabled: btn.dataset.value === "true" });
+            });
+        });
 
-            selectedCurrentMoodButton.classList.add(
-                "active"
-            );
-        }
+    }
 
-        const selectedSelectionModeButton =
-            popup.querySelector(
-                `.selection-mode-segment .segment-option[data-value="${todayEmotionState.selectionMode}"]`
-            );
+    /* ── Now Streak ───────────────────────────────────────── */
 
-        if (
-            selectedSelectionModeButton
-        ) {
-            selectionModeButtons.forEach(
-                item =>
-                    item.classList.remove(
-                        "active"
-                    )
-            );
+    if (widgetId === "now-streak-widget") {
 
-            selectedSelectionModeButton.classList.add(
-                "active"
-            );
-        }
+        const nsDisplayBtns = popup.querySelectorAll(".ns-display-segment .segment-option");
+        nsDisplayBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                nsDisplayBtns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateNowStreakState({ displayMode: btn.dataset.value });
+            });
+        });
 
-        const selectedEffectButton =
-            popup.querySelector(
-                `.selected-effect-segment .segment-option[data-value="${todayEmotionState.selectedEffect}"]`
+    }
+
+    /* ── Today Emotion ────────────────────────────────────── */
+
+    if (widgetId === "today-emotion-widget") {
+
+        const teState = getTodayEmotionState();
+
+        function wireSegment(selector, stateKey) {
+            const btns = popup.querySelectorAll(`${selector} .segment-option`);
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    btns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    updateTodayEmotionState({ [stateKey]: btn.dataset.value === "true"
+                        ? true
+                        : btn.dataset.value === "false"
+                            ? false
+                            : btn.dataset.value
+                    });
+                });
+            });
+
+            const active = popup.querySelector(
+                `${selector} .segment-option[data-value="${teState[stateKey]}"]`
             );
             if (active) {
                 btns.forEach(b => b.classList.remove("active"));
@@ -971,6 +1364,20 @@ export function createSettingPopup(
         wireSegment(".te-effect-segment", "selectedEffect");
         wireSegment(".te-show-most-segment", "showMost");
         wireSegment(".te-title-segment", "showTitle");
+
+        // Hide "Slider Mode Settings" section when in emoji-select mode
+        const sliderSection = [...popup.querySelectorAll(".setting-section h3")]
+            .find(h => h.textContent.trim() === "Slider Mode Settings")
+            ?.closest(".setting-section");
+
+        function syncSliderSection(mode) {
+            if (sliderSection) sliderSection.style.display = mode === "slider" ? "" : "none";
+        }
+        syncSliderSection(teState.displayMode || "select");
+
+        popup.querySelectorAll(".te-display-mode-segment .segment-option").forEach(btn => {
+            btn.addEventListener("click", () => syncSliderSection(btn.dataset.value));
+        });
 
         const countSlider = popup.querySelector(".te-count-slider");
         const countValue  = popup.querySelector(".te-count-value");
@@ -1008,6 +1415,13 @@ export function createSettingPopup(
         }
 
     }
+
+    /* ── Restore open sections from previous widget ─────────── */
+
+    popup.querySelectorAll(".setting-section").forEach(sec => {
+        const label = sec.querySelector(".setting-section-toggle h3")?.textContent.trim();
+        if (label && _lastOpenSections.includes(label)) sec.classList.add("open");
+    });
 
     /* ── Drag + register ──────────────────────────────────── */
 

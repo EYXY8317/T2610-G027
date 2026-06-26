@@ -1,24 +1,22 @@
 import {
     getWeatherConfig,
-    toDisplayTemp,
     getWeatherIconEmoji
 }
 from "./weatherConfig.js";
 
-import {
-    autoExpandWidget
-}
-from "../dashboard/expandWidget.js";
+import { saveLayout } from "../home/saveLayout.js";
 
 const STATE_KEY = "weather-week-state";
 
 const DEFAULT_STATE = {
-    showDays: 7,          // 3 | 5 | 7
-    showFeelsLike: false,
-    showHumidity: false,
-    showIcon: true,
-    tempDisplay: "max"    // "max" | "min" | "avg"
+    showDays: 7,
+    showIcon: true
 };
+
+function toShortTemp(celsius, unit) {
+    if (unit === "fahrenheit") return Math.round(celsius * 9 / 5 + 32) + "°";
+    return Math.round(celsius) + "°";
+}
 
 function getState() {
     const raw = localStorage.getItem(STATE_KEY);
@@ -100,56 +98,52 @@ export async function renderWeatherWeek() {
         const d = data.daily;
         const days = Math.min(state.showDays, d.time.length);
 
-        const rows = Array.from({ length: days }, (_, i) => {
+        const cols = Array.from({ length: days }, (_, i) => {
 
             const date = new Date(d.time[i]);
             const weekday = WEEKDAYS[date.getDay()];
             const isToday = i === 0;
-
             const tMax = d.temperature_2m_max[i];
             const tMin = d.temperature_2m_min[i];
-            const tAvg = (tMax + tMin) / 2;
-            const feelsMax = d.apparent_temperature_max[i];
-            const feelsMin = d.apparent_temperature_min[i];
-            const humidity = Math.round(
-                (d.relative_humidity_2m_max[i] + d.relative_humidity_2m_min[i]) / 2
-            );
             const code = d.weather_code[i];
-
-            const mainTemp =
-                state.tempDisplay === "min" ? toDisplayTemp(tMin, unit)
-                : state.tempDisplay === "avg" ? toDisplayTemp(tAvg, unit)
-                : toDisplayTemp(tMax, unit);
 
             const icon = state.showIcon
                 ? `<span class="ww-icon">${getWeatherIconEmoji(code)}</span>`
                 : "";
 
-            const feels = state.showFeelsLike
-                ? `<span class="ww-extra">↕${toDisplayTemp(feelsMax, unit)}</span>`
-                : "";
-
-            const hum = state.showHumidity
-                ? `<span class="ww-extra">💧${humidity}%</span>`
-                : "";
-
             return `
-                <div class="ww-row${isToday ? " today" : ""}">
-                    <span class="ww-day">${isToday ? "Today" : weekday}</span>
+                <div class="ww-col${isToday ? " today" : ""}">
+                    <span class="ww-day">${weekday}</span>
                     ${icon}
-                    <span class="ww-range">↑${toDisplayTemp(tMax, unit)} ↓${toDisplayTemp(tMin, unit)}</span>
-                    <span class="ww-main">${mainTemp}</span>
-                    ${feels}
-                    ${hum}
+                    <div class="ww-temps">
+                        <span class="ww-max">${toShortTemp(tMax, unit)}</span>
+                        <span class="ww-min">${toShortTemp(tMin, unit)}</span>
+                    </div>
                 </div>
             `;
 
         }).join("");
 
-        container.innerHTML = `<div class="ww-table">${rows}</div>`;
+        container.innerHTML = `<div class="ww-grid">${cols}</div>`;
 
-        // After render: expand if content overflows, warn if no space available
-        requestAnimationFrame(() => autoExpandWidget("weather-week-widget"));
+        requestAnimationFrame(() => {
+            const widget = document.getElementById("weather-week-widget");
+            if (!widget) return;
+            const header = widget.querySelector(".widget-header");
+            const grid   = widget.querySelector(".ww-grid");
+            if (!header || !grid) return;
+            const contentH = header.offsetHeight + grid.offsetHeight;
+            // Auto-fit if no saved layout OR if saved height is larger than content
+            // (means leftover space from old layout — snap it tight).
+            // Once user drags it taller than content, we respect that choice.
+            const saved = localStorage.getItem("weather-week-widget-layout");
+            const savedH = saved ? JSON.parse(saved).height : null;
+            const savedPx = savedH ? parseInt(savedH) : null;
+            if (!savedPx || savedPx > contentH) {
+                widget.style.height = contentH + "px";
+                saveLayout(widget);
+            }
+        });
 
     }
     catch (err) {

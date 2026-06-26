@@ -1,3 +1,36 @@
+/* ── Size / Position HUD ─────────────────────────────────── */
+
+#size-hud {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    background: rgba(20, 20, 20, 0.80);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 5px;
+    pointer-events: none;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+/* ── Same-size guide line (blue) ─────────────────────────── */
+
+#same-size-guide-v,
+#same-size-guide-h {
+    display: none;
+    position: absolute;
+    z-index: 9998;
+    background: rgba(59, 130, 246, 0.7);
+    pointer-events: none;
+}
+
+#same-size-guide-v { width: 1.5px; top: 0; bottom: 0; }
+#same-size-guide-h { height: 1.5px; left: 0; right: 0; }
+
 .widget {
 
     visibility: hidden;
@@ -64,14 +97,11 @@
 
     min-height: 1.8em;
 
-    font-size: calc(var(--widget-font-scale, 1) * 17px);
+    font-size: calc(var(--widget-font-scale, 1) * var(--widget-title-size-scale, 1) * 17px);
 
     font-weight: 600;
 
     color: #1a1a1a;
-
-    border-bottom:
-        1px solid #ddd8cf;
 
     white-space: nowrap;
 
@@ -95,7 +125,9 @@
 
     justify-content: center;
 
-    font-size: 24px;
+    font-size: calc(var(--widget-font-scale, 1) * 14px);
+    transform: scale(var(--widget-content-scale, 1));
+    transform-origin: center center;
 
 }
 
@@ -123,9 +155,37 @@
 
 .widget.edit-mode {
 
-    outline:
-        2px solid #3b82f6;
+    outline: 2px solid #1a1a1a !important;
+    outline-offset: 1px;
+    clip-path: none !important;
+    isolation: isolate;
 
+}
+
+.widget-delete-btn {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    z-index: 6;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(30, 30, 30, 0.72);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.1s;
+    backdrop-filter: blur(4px);
+}
+
+.widget-delete-btn:hover {
+    background: #d93025;
+    transform: scale(1.12);
 }
 
 .drag-handle {
@@ -278,7 +338,1140 @@
 
 }
 
-.today-emotion-card {
+/* ── Digital Clock ──────────────────────────────────────── */
+
+.clock-digital,
+.clock-minimal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.clock-digital-time {
+    font-size: 2.4em;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-minimal-time {
+    font-size: 2.8em;
+    font-weight: 100;
+    letter-spacing: 4px;
+    font-variant-numeric: tabular-nums;
+}
+
+.clock-date-line,
+.clock-minimal-date {
+    font-size: 0.82em;
+    opacity: 0.55;
+    letter-spacing: 1px;
+}
+
+/* ── Flip Clock ──────────────────────────────────────────── */
+
+.flip-clock-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.flip-clock-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flip-group {
+    display: flex;
+    gap: 4px;
+}
+
+/* each digit card — 4 absolute layers inside */
+.flip-digit {
+    position: relative;
+    border-radius: 7px;
+    overflow: hidden;
+    perspective: 250px;
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.65),
+        0 1px 4px  rgba(0,0,0,0.3);
+}
+
+/* hard line between top and bottom halves */
+.flip-digit::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 2px;
+    background: #080808;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.flip-back-top,
+.flip-back-bottom,
+.flip-front-top,
+.flip-front-bottom {
+    position: absolute;
+    left: 0; right: 0;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 800;
+    color: #f0ece0;
+    user-select: none;
+}
+
+/* ── Static back layers (always visible) ── */
+.flip-back-top {
+    top: 0;
+    align-items: flex-end;
+    padding-bottom: 2px;
+    background: #2e2e2e;
+    border-radius: 7px 7px 0 0;
+    z-index: 1;
+}
+
+.flip-back-bottom {
+    bottom: 0;
+    align-items: flex-start;
+    padding-top: 2px;
+    background: #1a1a1a;
+    border-radius: 0 0 7px 7px;
+    z-index: 1;
+}
+
+/* ── Animated front layers ── */
+.flip-front-top {
+    top: 0;
+    align-items: flex-end;
+    padding-bottom: 2px;
+    background: #3a3a3a;
+    border-radius: 7px 7px 0 0;
+    transform-origin: center bottom;
+    transform: rotateX(0deg);
+    z-index: 4;
+    backface-visibility: hidden;
+}
+
+.flip-front-bottom {
+    bottom: 0;
+    align-items: flex-start;
+    padding-top: 2px;
+    background: #202020;
+    border-radius: 0 0 7px 7px;
+    transform-origin: center top;
+    transform: rotateX(90deg);   /* hidden until digit changes */
+    z-index: 3;
+    backface-visibility: hidden;
+}
+
+/* digit changed → play the flip */
+.flip-front-top.is-flipping {
+    animation: fc-fold   0.3s ease-in forwards;
+}
+.flip-front-bottom.is-flipping {
+    animation: fc-unfold 0.3s ease-out 0.22s forwards;
+}
+
+@keyframes fc-fold {
+    from { transform: rotateX(0deg);   }
+    to   { transform: rotateX(-90deg); }
+}
+
+@keyframes fc-unfold {
+    from { transform: rotateX(90deg); }
+    to   { transform: rotateX(0deg);  }
+}
+
+/* two-dot colon separator */
+.flip-colon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 1px;
+    margin-bottom: 4px;
+}
+
+.flip-colon::before,
+.flip-colon::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #777;
+}
+
+.flip-ampm {
+    font-size: 0.75em;
+    font-weight: 700;
+    color: #aaa;
+    letter-spacing: 1px;
+    align-self: flex-end;
+    padding-bottom: 6px;
+}
+
+/* ── Quote ───────────────────────────────────────────────── */
+
+.quote-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0.85em 1.1em;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.quote-main {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.quote-text {
+    font-size: 1em;
+    line-height: 1.55;
+}
+
+.quote-author-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+}
+
+.quote-author {
+    font-size: 0.8em;
+    opacity: 0.55;
+}
+
+.quote-source-tag {
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #aaa;
+}
+
+.quote-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    padding-top: 4px;
+}
+
+.quote-save-btn,
+.quote-next-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.3em;
+    color: #9ca3af;
+    transition: color 0.15s;
+    padding: 2px;
+}
+
+.quote-save-btn:hover,
+.quote-next-btn:hover {
+    color: #1a1a1a;
+}
+
+.quote-save-btn.saved {
+    color: #555;
+}
+
+.quote-saved-list {
+    margin: 8px 0;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.quote-saved-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding: 4px 0;
+    border-bottom: 1px solid #ddd8cf;
+}
+
+/* ── Emotion Summary ─────────────────────────────────────── */
+
+#emotion-summary-widget {
+    left: 1050px;
+    top: 400px;
+    width: 360px;
+    height: 320px;
+}
+
+/* ── Emotion Summary body ────────────────────────────────── */
+
+/* Stretch content to fill the card height instead of centering */
+#emotion-summary-widget .widget-content {
+    align-items: stretch;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Let es-body fill the full widget-content height so calendar outer can flex */
+#emotion-summary-widget .es-body {
+    flex: 1;
+    min-height: 0;
+}
+
+.es-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4em;
+    width: 100%;
+    min-height: 0;
+    padding: 0.6em 0.7em;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.es-empty {
+    font-size: 0.85em;
+    color: #aaa;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.es-empty small { font-size: 0.88em; color: #c4bfb8; }
+
+/* ── Pie chart ───────────────────────────────────────────── */
+
+/* Outer wrapper — column by default, row when card is wide */
+.es-pie-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    gap: 10px;
+}
+
+.es-pie-outer--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* center the chart+legend unit, not stretch */
+    gap: 14px;
+}
+
+.es-pie-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* In row mode: square chart sized to the available height,
+   so legend stays glued to the chart edge, not the card edge */
+.es-pie-outer--row .es-pie-wrap {
+    flex: none;
+    width: auto;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.es-pie-wrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
+}
+
+.es-empty-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* HTML legend — side (column) */
+.es-pie-legend {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.es-pie-legend--side {
+    flex-direction: column;
+    gap: 7px;
+    justify-content: center;
+}
+
+.es-pie-legend--bottom {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    justify-content: center;
+}
+
+.es-leg-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 0.82em;
+    color: #3a3028;
+}
+
+.es-leg-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.es-leg-label {
+    line-height: 1.2;
+}
+
+.es-highlight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82em;
+    color: #3a3028;
+    font-weight: 500;
+}
+
+.es-days-badge {
+    font-size: 0.88em;
+    background: #f0ece6;
+    color: #888;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 400;
+}
+
+.es-combo {
+    font-size: 0.75em;
+    color: #aaa;
+    letter-spacing: 0.01em;
+}
+
+/* ── Line chart ──────────────────────────────────────────── */
+
+.es-line-wrap {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.es-line-wrap canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%;
+}
+
+.es-legend {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.es-legend-item {
+    font-size: 1.1em;
+    line-height: 1;
+    position: relative;
+}
+
+.es-legend-item::after {
+    content: "";
+    display: block;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--c, #999);
+    margin-top: 2px;
+}
+
+/* ── Diary mood chips ────────────────────────────────────── */
+
+.es-diary-moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    padding-top: 5px;
+    border-top: 1px solid #ede9e2;
+}
+
+.es-mood-chip {
+    font-size: 0.75em;
+    padding: 2px 7px;
+    border-radius: 10px;
+    color: #fff;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* ── Calendar nav in widget header ───────────────────────── */
+
+/* Container injected into widget-header, right side (wide card) */
+.es-hdr-cal {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Tall card: header wraps so month nav sits on its own line below title */
+#emotion-summary-widget.es-cal-hdr-col .widget-header {
+    flex-wrap: wrap;
+    row-gap: 0;
+    padding-bottom: 5px;
+}
+
+#emotion-summary-widget.es-cal-hdr-col .es-hdr-cal {
+    width: 100%;
+    margin-left: 0;
+    padding-top: 4px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.9em;
+}
+
+.es-hdr-cal-month {
+    font-size: 0.78em;
+    font-weight: 600;
+    color: #3a3028;
+    letter-spacing: 0.01em;
+    padding: 0 2px;
+}
+
+.es-cal-prev,
+.es-cal-next {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    color: #b0a89e;
+    padding: 1px 6px;
+    border-radius: 5px;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s;
+}
+
+.es-cal-prev:hover,
+.es-cal-next:hover {
+    background: #ede9e2;
+    color: #1a1a1a;
+}
+
+/* ── Mood Heatmap ────────────────────────────────────────── */
+
+/* Outer wrapper: stacks heatmap + legend; switches to row when wide */
+.es-hm-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+.es-hm-outer--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+}
+
+/* Heatmap: shrink-wraps around header + cell grid, always centered */
+.es-heatmap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+/* DOW header row: Su Mo Tu We Th Fr Sa */
+.es-hm-header {
+    display: grid;
+    grid-template-columns: repeat(7, var(--cw, 14px));
+    gap: 3px;
+}
+
+.es-hm-header span {
+    width: var(--cw, 14px);
+    text-align: center;
+    font-size: 0.6em;
+    font-weight: 700;
+    color: #c4bfb8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding-bottom: 1px;
+    display: block;
+}
+
+/* Cell grid: 7 columns (one per DOW), rows = weeks */
+.es-hm-cells {
+    display: grid;
+    grid-template-columns: repeat(7, var(--cw, 14px));
+    gap: 3px;
+}
+
+.es-hm-cell {
+    width:  var(--cw, 14px);
+    height: var(--ch, 14px);
+    border-radius: 3px;
+    background: var(--hm-empty, #ede9e3);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.12s;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.es-hm-cell:hover {
+    transform: scale(1.2);
+    z-index: 2;
+    position: relative;
+}
+
+.es-hm-cell.es-hm-empty {
+    background: transparent;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    cursor: default;
+    pointer-events: none;
+}
+
+.es-hm-cell.es-hm-today {
+    outline: 2px solid var(--hm-today, #1a1a1a);
+    outline-offset: 1px;
+}
+
+/* Legend — bottom (default) */
+.es-hm-legend {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding-top: 6px;
+    border-top: 1px solid #ede9e2;
+    width: 100%;
+}
+
+/* Legend — side (when card is wide) */
+.es-hm-legend--side {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 0;
+    padding-left: 14px;
+    border-top: none;
+    border-left: 1px solid #ede9e2;
+    width: auto;
+    align-self: stretch;
+}
+
+.es-hm-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72em;
+    color: #888;
+    white-space: nowrap;
+}
+
+.es-hm-leg-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Hover tooltip */
+.es-hm-tooltip {
+    display: none;
+    position: absolute;
+    background: #1e1e1e;
+    color: #fff;
+    padding: 7px 11px;
+    border-radius: 8px;
+    font-size: 0.78em;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    line-height: 1.5;
+}
+
+.es-hm-tt-date  { font-weight: 700; color: #fff; }
+.es-hm-tt-mood  { color: #a8d8a8; font-size: 0.95em; margin-top: 2px; }
+.es-hm-tt-topic { color: #c8c2bb; font-size: 0.9em; margin-top: 1px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+.es-hm-tt-empty { color: #888; font-size: 0.9em; margin-top: 2px; }
+
+/* ── Today Emotion diary mood badge ─────────────────────── */
+
+.te-diary-mood {
+    font-size: 0.78em;
+    margin-top: 5px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    align-self: flex-start;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.te-diary-mood:empty { display: none; }
+
+/* ── Shared mood colors ──────────────────────────────────── */
+
+.mood-happy  { background: #10b981; color: #fff; }
+.mood-sad    { background: #6366f1; color: #fff; }
+.mood-angry  { background: #ef4444; color: #fff; }
+
+
+/* ── Picture Streak ──────────────────────────────────────── */
+
+#picture-streak-widget {
+    left: 700px;
+    top: 700px;
+    width: 300px;
+    height: 240px;
+}
+
+.ps-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.ps-placeholder {
+    font-size: 0.93em;
+    color: #9ca3af;
+}
+
+.ps-photo-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.ps-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+    pointer-events: none;
+}
+
+.ps-date-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: white;
+    background: linear-gradient(transparent, rgba(0,0,0,0.55));
+    font-weight: 600;
+}
+
+.ps-nav {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+    padding: 3px 10px;
+}
+
+.ps-prev,
+.ps-next {
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+}
+
+.ps-counter {
+    font-size: 11px;
+    color: white;
+}
+
+.ps-scroll-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.ps-scroll-item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.ps-scroll-item.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ps-dots {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+}
+
+.ps-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+}
+
+.ps-dot.active {
+    background: white;
+}
+
+.ps-settings-photo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ps-photo-list {
+    margin: 8px 0;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+/* ── Streak widgets ──────────────────────────────────────── */
+
+#now-streak-widget,
+#high-streak-widget {
+    left: 100px;
+    top: 700px;
+    width: 260px;
+    height: 220px;
+}
+
+#high-streak-widget {
+    left: 400px;
+}
+
+.streak-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25em;
+    width: 100%;
+    height: 100%;
+    padding: 0.35em;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.streak-label {
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    opacity: 0.5;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.streak-number {
+    font-size: 3.2em;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.streak-unit {
+    font-size: 0.35em;
+    font-weight: 400;
+    opacity: 0.5;
+    margin-left: 4px;
+}
+
+.hs-current {
+    font-size: 0.78em;
+    opacity: 0.5;
+}
+
+.streak-checkin-btn {
+    border: 1px solid #ddd8cf;
+    padding: 6px 18px;
+    border-radius: 20px;
+    background: #1a1a1a;
+    color: #F2EFE9;
+    cursor: pointer;
+    font-size: 0.82em;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.15s;
+}
+
+.streak-checkin-btn.done {
+    background: transparent;
+    color: #888;
+    border-color: #ddd8cf;
+}
+
+.streak-checkin-btn:hover {
+    opacity: 0.88;
+}
+
+.streak-heatmap {
+    display: flex;
+    gap: 2px;
+}
+
+.streak-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.streak-cell {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background: #ebe7e0;
+}
+
+.streak-cell.active {
+    background: #1a1a1a;
+}
+
+/* celebration animation */
+
+@keyframes celebrate {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.18) rotate(-4deg); }
+    60%  { transform: scale(1.18) rotate(4deg); }
+    100% { transform: scale(1); }
+}
+
+.streak-celebrating .streak-number {
+    animation: celebrate 0.5s ease;
+}
+
+/* ── Weather Week ────────────────────────────────────────── */
+
+#weather-week-widget {
+    left: 1000px;
+    top: 100px;
+    width: 580px;
+    height: 145px;
+}
+
+#weather-week-widget .widget-header {
+    padding: 0.3em 0.75em 0;
+    min-height: 0;
+    line-height: 1;
+    justify-content: center;
+    font-weight: 700;
+}
+
+#weather-week-widget .widget-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.ww-grid {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 3px 6px 2px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 2px;
+}
+
+.ww-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    padding: 5px 4px;
+    border-radius: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.ww-col.today {
+    background: rgba(0, 0, 0, 0.07);
+}
+
+.ww-day {
+    font-size: 0.8em;
+    font-weight: 500;
+    color: #1a1a1a;
+    white-space: nowrap;
+    opacity: 0.65;
+}
+
+.ww-col.today .ww-day {
+    font-weight: 700;
+    opacity: 1;
+}
+
+.ww-icon {
+    font-size: 1.9em;
+    line-height: 1;
+}
+
+.ww-temps {
+    display: flex;
+    gap: 3px;
+    align-items: baseline;
+    white-space: nowrap;
+}
+
+.ww-max {
+    font-size: 0.78em;
+    color: #1a1a1a;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.ww-min {
+    font-size: 0.68em;
+    color: #aaa;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Weather Day ─────────────────────────────────────────── */
+
+.wd-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.22em;
+    padding: 0.35em 0.6em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.wd-icon {
+    font-size: 2.6em;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+}
+
+.wd-temp {
+    font-size: 2.8em;
+    font-weight: 300;
+    letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.wd-temp-label {
+    font-size: 0.65em;
+    opacity: 0.45;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    margin-top: -0.1em;
+}
+
+.wd-range {
+    font-size: 0.88em;
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.wd-feels,
+.wd-humidity,
+.wd-update {
+    font-size: 0.82em;
+    opacity: 0.55;
+    white-space: nowrap;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+}
+
+.wd-city {
+    font-size: 0.82em;
+    font-weight: 600;
+    opacity: 0.75;
+    letter-spacing: 0.03em;
+    margin-top: 0.25em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.wd-loading,
+.wd-error {
+    padding: 1em;
+    font-size: 1em;
+    color: #9ca3af;
+}
+
+.wd-error {
+    color: #ef4444;
+}
+
+/* ── Today Emotion ───────────────────────────────────────── */
+
+.te-card {
     width: 100%;
     height: 100%;
     display: flex;
@@ -361,60 +1554,252 @@
 .te-slider-row {
     display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.today-emotion-current-label {
-    font-size: calc(var(--today-text-size, 18px) - 2px);
-    font-weight: 600;
-    color: #374151;
-}
-
-.today-emotion-current-value {
-    font-size: var(--today-text-size, 18px);
-    color: #111827;
-}
-
-.today-emotion-rating-label {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto auto;
     gap: 8px;
-    align-items: center;
-    width: 100%;
-    justify-items: center;
-    color: #4b5563;
-    font-size: 14px;
 }
 
-.today-emotion-rating-slider {
-    width: 100%;
+.te-slider-emoji {
+    font-size: 1.5em;
+    min-width: 28px;
+    text-align: center;
 }
 
-.today-emotion-rating-value {
-    font-size: 16px;
-    font-weight: 600;
-    color: #111827;
+.te-slider-row input[type="range"] {
+    flex: 1;
 }
 
-.today-emotion-image-mode {
-    width: 100%;
-    max-width: 180px;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
+.te-pct-popup {
+    position: fixed;
+    transform: translate(-50%, calc(-100% - 8px));
+    background: #1f2937;
+    color: #f9fafb;
+    font-size: 0.78em;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 9999;
+    white-space: nowrap;
+}
+
+.te-pct-popup.visible {
+    opacity: 1;
+}
+
+.te-total {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-align: right;
+    padding-right: 8px;
+    margin-top: 2px;
+}
+
+.te-total.ok  { color: #10b981; }
+.te-total.error { color: #ef4444; }
+
+/* Settings emoji inputs */
+
+.te-emoji-inputs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.te-emoji-input {
+    width: 44px;
+    height: 36px;
+    font-size: 1.4em;
+    text-align: center;
+    border: 1px solid #ddd8cf;
+    border-radius: 8px;
+    padding: 2px;
+}
+
+/* ── Diary Card ──────────────────────────────────────────────── */
+
+#diary-card-widget .widget-content {
     overflow: hidden;
-    background: #f3f4f6;
-    display: grid;
-    place-items: center;
+    min-height: 0;
+    min-width: 0;
+    align-items: stretch;
 }
 
-.today-emotion-image {
+.dc-body {
+    display: flex;
+    flex-direction: row;
+    align-self: stretch;
+    width: 100%;
+    max-width: 680px;
+    max-height: 100%;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    min-height: 0;
+    min-width: 0;
+}
+
+.dc-cover {
+    flex: 0 0 46%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-sizing: border-box;
+    background: transparent;
+    overflow: hidden;
+}
+
+.dc-cover-img {
+    max-width: 96%;
+    max-height: 96%;
+    width: auto;
+    height: auto;
+    display: block;
+    transition: filter 0.15s;
+}
+
+.dc-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.9em 1em;
+    gap: 0.45em;
+    min-width: 0;
+}
+
+.dc-title {
+    font-size: 1.35em;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.dc-divider {
+    width: 1.8em;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.22;
+    border-radius: 1px;
+}
+
+.dc-subtitle {
+    font-size: 0.76em;
+    opacity: 0.52;
+    line-height: 1.45;
+    margin: 0;
+}
+
+.dc-btn {
+    display: inline-block;
+    margin-top: 0.2em;
+    padding: 0.42em 0.88em;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 999px;
+    font-size: 0.72em;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    align-self: flex-start;
+    transition: opacity 0.15s;
+}
+
+.dc-btn:hover {
+    opacity: 0.75;
+}
+
+.dc-cover-full {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.dc-direct {
+    cursor: pointer;
+}
+
+.dc-direct:hover .dc-cover-img {
+    filter: brightness(0.88);
+}
+
+/* Settings */
+
+.dc-book-slots {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.dc-book-slot {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 6px;
+    background: #f5f3ef;
+    border: 2px solid transparent;
+    transition: border-color 0.15s;
+}
+
+.dc-book-slot.active {
+    border-color: #1a1a1a;
+}
+
+.dc-slot-preview {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 7px;
+    overflow: hidden;
+    background: #e8e5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dc-slot-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.today-emotion-image-placeholder {
-    padding: 16px;
-    color: #6b7280;
-    font-size: 14px;
+.dc-slot-empty {
+    font-size: 1.5em;
+    opacity: 0.32;
 }
+
+.dc-slot-label {
+    font-size: 0.68em;
+    text-align: center;
+    opacity: 0.55;
+    margin-bottom: 2px;
+}
+
+.dc-slot-select-btn {
+    width: 100%;
+    font-size: 0.68em;
+    padding: 3px 4px;
+    border-radius: 6px;
+    border: 1px solid #ddd8cf;
+    background: #fff;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+}
+
+.dc-slot-select-btn.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+}
+
+

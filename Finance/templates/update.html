@@ -42,6 +42,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
     </div>
     <div class="nav-links">
         <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
         <a href="/journal">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
@@ -68,6 +69,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         <a href="/summary">Summary</a>
         <a href="/budget">Budget</a>
         <a href="/goals">Goals</a>
+        <a href="/accounts">Accounts</a>
     </div>
 
 </div>
@@ -142,6 +144,8 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
         enctype="multipart/form-data"
         >
 
+            <input type="hidden" name="source" value="{{ source }}">
+
             <!-- ROW 1 -->
 
             <div class="summary-grid">
@@ -165,6 +169,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 </div>
 
+                {% if source != 'goal' %}
                 <!-- TYPE -->
 
                 <div>
@@ -217,9 +222,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     </select>
 
                 </div>
+                {% endif %}
 
             </div>
 
+            {% if source != 'goal' %}
             <!-- ROW 2 -->
 
             <div class="summary-grid">
@@ -349,6 +356,30 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 placeholder="Example: Coffee, Netflix, Salary..."
             >
 
+            {% else %}
+            <!-- ACCOUNT (goal contribution) -->
+
+            <div>
+
+                <label>Account</label>
+
+                <select id="account" name="account">
+
+                    <option value="">-- Select Account --</option>
+
+                    {% for acc in accounts %}
+                    <option
+                        value="{{ acc.name }}"
+                        {{ "selected" if record.account == acc.name else "" }}
+                    >{{ acc.name }}</option>
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            {% endif %}
+
             <!-- AMOUNT -->
 
             <div class="amount-card">
@@ -370,6 +401,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
             </div>
 
+            {% if source != 'goal' %}
             <!-- RECEIPT -->
 
             <div class="receipt-card">
@@ -399,7 +431,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                         class="receipt-label"
                         for="receiptInput"
                     >
-                        📎 {% if record.receipt %}Replace{% else %}Attach{% endif %} Image
+                        {% if record.receipt %}Replace{% else %}Attach{% endif %} Image
                     </label>
 
                     <span
@@ -420,6 +452,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 >
 
             </div>
+            {% endif %}
 
             <!-- BUTTONS -->
 
@@ -432,7 +465,7 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                 </button>
 
                 <a
-                href="/view"
+                href="{{ '/goals' if source == 'goal' else '/view' }}"
                 class="secondary-btn"
                 >
 
@@ -490,46 +523,50 @@ document.addEventListener("DOMContentLoaded", function () {
     const categorySelect =
         document.getElementById("categorySelect");
 
-    const selectedCategory =
-        "{{ record.category or '' }}";
+    if (typeSelect && categorySelect) {
 
-    function loadCategories() {
+        const selectedCategory =
+            "{{ record.category or '' }}";
 
-        const type = typeSelect.value;
+        function loadCategories() {
 
-        categorySelect.innerHTML =
-        '<option value="">-- Select Category --</option>';
+            const type = typeSelect.value;
 
-        if (categories[type]) {
+            categorySelect.innerHTML =
+            '<option value="">-- Select Category --</option>';
 
-            categories[type].forEach(cat => {
+            if (categories[type]) {
 
-                const option =
-                    document.createElement("option");
+                categories[type].forEach(cat => {
 
-                option.value = cat;
+                    const option =
+                        document.createElement("option");
 
-                option.textContent = cat;
+                    option.value = cat;
 
-                if (cat === selectedCategory) {
+                    option.textContent = cat;
 
-                    option.selected = true;
-                }
+                    if (cat === selectedCategory) {
 
-                categorySelect.appendChild(option);
+                        option.selected = true;
+                    }
 
-            });
+                    categorySelect.appendChild(option);
+
+                });
+
+            }
 
         }
 
+        typeSelect.addEventListener(
+            "change",
+            loadCategories
+        );
+
+        loadCategories();
+
     }
-
-    typeSelect.addEventListener(
-        "change",
-        loadCategories
-    );
-
-    loadCategories();
 
     // ================= ACCOUNT =================
 
@@ -539,46 +576,55 @@ document.addEventListener("DOMContentLoaded", function () {
     const newAccountWrapper =
         document.getElementById("newAccountWrapper");
 
-    const newAccountInput =
-        document.getElementById("new_account");
+    if (accountSelect && newAccountWrapper) {
 
-    function toggleNewAccount() {
+        const newAccountInput =
+            document.getElementById("new_account");
 
-        if (accountSelect.value === "__new__") {
+        function toggleNewAccount() {
 
-            newAccountWrapper.classList.add("show");
+            if (accountSelect.value === "__new__") {
+
+                newAccountWrapper.classList.add("show");
+
+            }
+
+            else {
+
+                newAccountWrapper.classList.remove("show");
+
+                newAccountInput.value = "";
+
+            }
 
         }
 
-        else {
+        accountSelect.addEventListener(
+            "change",
+            toggleNewAccount
+        );
 
-            newAccountWrapper.classList.remove("show");
-
-            newAccountInput.value = "";
-
-        }
+        toggleNewAccount();
 
     }
 
-    accountSelect.addEventListener(
-        "change",
-        toggleNewAccount
-    );
-
-    toggleNewAccount();
-
     // ================= RECEIPT FILENAME =================
 
-    document.getElementById("receiptInput")
-        .addEventListener("change", function () {
+    const receiptInput = document.getElementById("receiptInput");
 
-        const name = this.files[0]
-            ? this.files[0].name
-            : "No file chosen";
+    if (receiptInput) {
 
-        document.getElementById("receiptFilename")
-            .textContent = name;
-    });
+        receiptInput.addEventListener("change", function () {
+
+            const name = this.files[0]
+                ? this.files[0].name
+                : "No file chosen";
+
+            document.getElementById("receiptFilename")
+                .textContent = name;
+        });
+
+    }
 
     // ================= TNG INPUT =================
 

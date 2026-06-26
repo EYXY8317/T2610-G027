@@ -4,9 +4,9 @@ import {
 }
 from "../../widgets/pictureStreak.js";
 
-export function getPictureStreakSettings() {
+export function getPictureStreakSettings(widgetId = "picture-streak-widget") {
 
-    const state = getPictureStreakState();
+    const state = getPictureStreakState(widgetId);
 
     const photoList = state.photos.length
         ? state.photos.map((p, i) => `

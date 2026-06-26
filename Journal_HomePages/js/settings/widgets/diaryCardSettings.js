@@ -1,8 +1,7 @@
 import {
     getDiaryCardState,
     BOOK_OPTIONS
-}
-from "../../widgets/diaryCard.js";
+} from "../../widgets/diaryCard.js";
 
 export function getDiaryCardSettings() {
     const state = getDiaryCardState();
