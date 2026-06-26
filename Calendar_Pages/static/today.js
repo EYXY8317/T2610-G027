@@ -1,6 +1,6 @@
 // =====================================
-// TODAY DATE
-// Display current date on Today page
+// 1. TODAY DATE
+//    Display current date on Today page
 // =====================================
 
 function loadTodayDate() {
@@ -28,8 +28,8 @@ function loadTodayDate() {
 }
 
 // =====================================
-// DAILY QUOTE SECTION
-// Display motivational quote
+// 2. DAILY QUOTE SECTION
+//    Display motivational quote
 // =====================================
 
 function loadDailyQuote() {
@@ -67,14 +67,14 @@ function loadDailyQuote() {
 }
 
 // =====================================
-// PROGRESS OVERVIEW SECTION
-// Calculate today's task completion
-// Update:
-// 1. Progress percentage
-// 2. Progress bar width
-// 3. Completed task count
-// 4. Total task count
-// 5. Motivation badge
+// 3. PROGRESS OVERVIEW SECTION
+//    Calculate today's task completion
+//    Update:
+//    1. Progress percentage
+//    2. Progress bar width
+//    3. Completed task count
+//    4. Total task count
+//    5. Motivation badge
 // =====================================
 
 function updateProgress() {
@@ -265,16 +265,16 @@ document.getElementById(
 
 
 // =====================================
-// TODAY TASKS SECTION
-// Display all active tasks
-// scheduled for today's date
+// 4. TODAY TASKS SECTION
+//    Display all active tasks
+//    scheduled for today's date
 //
-// Features:
-// 1. Show all today's tasks
-// 2. Display priority flag
-// 3. Display task category
-// 4. Display remaining time
-// 5. Show overdue status
+//    Features:
+//    1. Show all today's tasks
+//    2. Display priority flag
+//    3. Display task category
+//    4. Display remaining time
+//    5. Show overdue status
 // =====================================
 
 function renderTodayTasks() {
@@ -345,6 +345,20 @@ function renderTodayTasks() {
         );
 
     });
+
+
+    // Update Dashboard event counter
+    const eventBox =
+        document.getElementById(
+             "dashboardEventCount"
+       );
+
+    if (eventBox) {
+
+        eventBox.innerHTML =
+           `☰ ${todayTasks.length} Events Today`;
+
+    }
 
     // =====================================
     // SHOW EMPTY STATE
@@ -477,11 +491,11 @@ container.innerHTML += `
 
 
 // =====================================
-// TODAY DASHBOARD CONTROLLER
-// Refresh all Today page components
-// Components:
-// 1. Today's Tasks
-// 2. Progress Overview
+// 5. TODAY DASHBOARD CONTROLLER
+//    Refresh all Today page components
+//    Components:
+//    1. Today's Tasks
+//    2. Progress Overview
 // =====================================
 
 function updateTodayDashboard() {

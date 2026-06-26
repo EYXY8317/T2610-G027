@@ -43,6 +43,40 @@
 }
 
 
+/* =====================================
+   WEEKDAY HEADER
+   Display weekday names
+   显示星期标题
+===================================== */
+
+.weekday-header{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:14px;
+
+    margin-bottom:16px;
+
+}
+
+.weekday-header div{
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+    padding:10px 0;
+
+}
+
+
 /* ==================================================
    VIEW BUTTONS
 ================================================== */
