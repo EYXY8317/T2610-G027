@@ -165,7 +165,14 @@ def calendar_static(filename):
 # ================= CALENDAR =================
 @app.route("/calendar")
 def calendar():
-    return render_template("mypage.html")
+    current_user = get_current_user()
+    return render_template("mypage.html", user=current_user)
+
+# ================= USER THEME API =================
+@app.route('/api/user-theme')
+def api_user_theme():
+    u = get_current_user()
+    return jsonify({"theme": u.get("theme", "mocha") if u else "mocha"})
 
 # ================= DIARY STATIC =================
 @app.route('/diary_static/<path:filename>')

@@ -49,9 +49,24 @@
         href="/journal_home_static/css/deco.css"
     >
 
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
+    fetch('/api/user-theme')
+        .then(function(r){ return r.json(); })
+        .then(function(d){ setTheme(d.theme || 'mocha'); });
+    </script>
+
 </head>
 
 <body>
+
+<script>
+fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
+    var bg={mocha:'#f7f3ee',lavender:'#f7f4ff',matcha:'#f7fbf7',ash:'#f5f5f5'};
+    document.body.style.backgroundColor=bg[d.theme]||'#f7f3ee';
+}).catch(function(){});
+</script>
 
     <nav class="navbar">
 

@@ -358,7 +358,7 @@ def finance_home():
 
         user=get_current_user(),
 
-        theme=current_user.get("theme", "adaptive"),
+        theme=current_user.get("theme", "mocha"),
 
         ui_style=current_user.get("ui_style", "premium"),
     )
