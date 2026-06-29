@@ -16,10 +16,15 @@
         href="{{ url_for('profile_static', filename='profile.css') }}"
     >
 
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
+    </script>
+
 </head>
 
 <body
-class="{{ user.theme if user.theme else 'cozy' }}"
+class="{{ user.theme if user.theme else 'mocha' }}"
 >
 
 <body
@@ -199,42 +204,57 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
         <h3>🎨 Theme</h3>
 
-        <p>{{ user.theme if user.theme else "Adaptive" }}</p>
+        <p id="theme-label">
+            {% if not user.theme or user.theme == 'mocha' %}Mocha Latte
+            {% elif user.theme == 'lavender' %}Lavender Dream
+            {% elif user.theme == 'matcha' %}Matcha Green
+            {% elif user.theme == 'ash' %}Ash Gray
+            {% else %}{{ user.theme }}{% endif %}
+        </p>
 
-        <span>
-            Current interface appearance
-        </span>
+        <span id="theme-sublabel">Current interface appearance</span>
 
-        <form
-            action="/change_theme"
-            method="POST"
-        >
+        <form id="theme-form" action="/change_theme" method="POST">
 
-            <select
-                name="theme"
-                class="theme-select"
-            >
+            <input type="hidden" name="theme" id="selected-theme-input"
+                value="{{ user.theme or 'mocha' }}">
 
-                <option
-                    value="cozy"
-                    {% if user.theme == "cozy" %}selected{% endif %}
-                >
-                    Cozy Beige
-                </option>
+            <div class="theme-picker-grid">
 
-                <option
-                    value="dark"
-                    {% if user.theme == "dark" %}selected{% endif %}
-                >
-                    Dark Mode
-                </option>
+                <button type="button" data-theme="mocha"
+                    class="theme-swatch{% if not user.theme or user.theme == 'mocha' %} selected{% endif %}"
+                    style="--swatch-color:#b18a68"
+                    onclick="previewTheme(this)">
+                    Mocha Latte
+                </button>
 
-            </select>
+                <button type="button" data-theme="lavender"
+                    class="theme-swatch{% if user.theme == 'lavender' %} selected{% endif %}"
+                    style="--swatch-color:#9a83ff"
+                    onclick="previewTheme(this)">
+                    Lavender Dream
+                </button>
 
-            <button
-                type="submit"
-                class="mini-btn"
-            >
+                <button type="button" data-theme="matcha"
+                    class="theme-swatch{% if user.theme == 'matcha' %} selected{% endif %}"
+                    style="--swatch-color:#8db79a"
+                    onclick="previewTheme(this)">
+                    Matcha Green
+                </button>
+
+                <button type="button" data-theme="ash"
+                    class="theme-swatch{% if user.theme == 'ash' %} selected{% endif %}"
+                    style="--swatch-color:#8c8c8c"
+                    onclick="previewTheme(this)">
+                    Ash Gray
+                </button>
+
+            </div>
+
+            <button type="button" id="apply-theme-btn"
+                class="apply-theme-btn"
+                onclick="applyTheme()"
+                disabled>
                 Apply Theme
             </button>
 
@@ -261,22 +281,54 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
 <script>
 
-const themeSelect = document.querySelector('select[name="theme"]');
+const THEME_NAMES = {
+    mocha:    'Mocha Latte',
+    lavender: 'Lavender Dream',
+    matcha:   'Matcha Green',
+    ash:      'Ash Gray'
+};
 
-function updateBodyClasses(){
+const _savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+let _pendingTheme = _savedTheme;
 
-    const selectedTheme = themeSelect.value;
+function previewTheme(btn) {
+    const theme = btn.dataset.theme;
+    _pendingTheme = theme;
 
-    document.body.className =
-        selectedTheme;
+    // Apply CSS vars for live preview but keep localStorage pointing to saved theme
+    const lsBackup = localStorage.getItem('lifepages-theme');
+    setTheme(theme);
+    try { localStorage.setItem('lifepages-theme', lsBackup || _savedTheme); } catch(e) {}
+
+    // Swap body class so profile.css body-class variables also update
+    document.body.className = document.body.className.replace(
+        /\b(mocha|lavender|matcha|ash)\b/g, theme
+    );
+
+    // Update swatch selection
+    document.querySelectorAll('.theme-swatch').forEach(function(b) {
+        b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+
+    // Update label
+    document.getElementById('theme-label').textContent = THEME_NAMES[theme] || theme;
+
+    // Toggle apply button
+    const applyBtn = document.getElementById('apply-theme-btn');
+    if (theme !== _savedTheme) {
+        applyBtn.removeAttribute('disabled');
+        document.getElementById('theme-sublabel').textContent = 'Previewing — click Apply to save';
+    } else {
+        applyBtn.setAttribute('disabled', '');
+        document.getElementById('theme-sublabel').textContent = 'Current interface appearance';
+    }
 }
 
-if(themeSelect){
-
-    themeSelect.addEventListener(
-        "change",
-        updateBodyClasses
-    );
+function applyTheme() {
+    try { localStorage.setItem('lifepages-theme', _pendingTheme); } catch(e) {}
+    document.getElementById('selected-theme-input').value = _pendingTheme;
+    document.getElementById('theme-form').submit();
 }
 
 </script>

@@ -15,6 +15,13 @@
     href="{{ url_for('profile_static', filename='profile.css') }}"
     >
 
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    (function(){
+        setTheme({{ theme | tojson }} || 'mocha');
+    })();
+    </script>
+
 </head>
 
 <body
