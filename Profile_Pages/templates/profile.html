@@ -126,7 +126,13 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                     enctype="multipart/form-data"
                 >
 
-                    <input type="file" name="profile_picture">
+                    <div class="file-upload" style="margin-bottom:16px;">
+                        <label class="file-upload-label">
+                            <span class="file-upload-btn">📷 Choose Photo</span>
+                            <span class="file-upload-name">No file chosen</span>
+                            <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
+                        </label>
+                    </div>
 
                     <button type="submit" class="btn">
                         Upload Picture
@@ -167,7 +173,13 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                 enctype="multipart/form-data"
             >
 
-                <input type="file" name="wallpaper">
+                <div class="file-upload" style="margin-bottom:16px;">
+                    <label class="file-upload-label">
+                        <span class="file-upload-btn">🖼️ Choose Image</span>
+                        <span class="file-upload-name">No file chosen</span>
+                        <input type="file" name="wallpaper" class="file-input-hidden" accept="image/*">
+                    </label>
+                </div>
 
                 <button type="submit" class="btn">
                     Upload Wallpaper
@@ -330,6 +342,14 @@ function applyTheme() {
     document.getElementById('selected-theme-input').value = _pendingTheme;
     document.getElementById('theme-form').submit();
 }
+
+// Update file upload name labels
+document.querySelectorAll('.file-input-hidden').forEach(function(input){
+    input.addEventListener('change', function(){
+        var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
+        el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+    });
+});
 
 </script>
 
