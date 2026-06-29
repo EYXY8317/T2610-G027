@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="/calendar_static/dashboard.css">
+<script src="/calendar_static/themecolor.js"></script>
+<script>
+(function(){
+    var t = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+    setTheme(t);
+})();
+</script>
 </head>
 
-<body>
+<body class="{{ user.theme if user and user.theme else 'mocha' }}">
 
 <div class="dashboard">
 
@@ -65,7 +72,7 @@
 
         <!-- FINANCE -->
 
-        <div class="card">
+        <div class="card card-finance">
 
             <div class="card-top">
 
@@ -135,7 +142,7 @@
 
         <!-- DIARY -->
 
-        <div class="card">
+        <div class="card card-diary">
 
             <div class="card-top">
 
@@ -181,7 +188,7 @@
 
         <!-- CALENDAR -->
 
-        <div class="card">
+        <div class="card card-calendar">
 
             <div class="card-top">
 
