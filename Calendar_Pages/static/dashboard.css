@@ -769,6 +769,117 @@ body{
 
 }
 
+/* ================= FINANCE BAR CHART ================= */
+
+.fin-mini-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    align-self: flex-start;
+}
+
+.fin-badge-up      { background: #fee2e2; color: #991b1b; }
+.fin-badge-down    { background: #dcfce7; color: #15803d; }
+.fin-badge-neutral { background: #f3f4f6; color: #6b7280; }
+
+.fin-chart-area {
+    margin: 10px 0 12px;
+    padding: 10px 0 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.fin-chart-title {
+    font-size: 12px;
+    color: #888;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.fin-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 8px;
+    height: 110px;
+    margin-top: 8px;
+}
+
+.fin-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.fin-bar-amount {
+    font-size: 10px;
+    color: #888;
+    min-height: 14px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.fin-bar {
+    width: 100%;
+    max-width: 44px;
+    background: #72bf8e;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.3s ease;
+}
+
+.fin-bar-label {
+    font-size: 11px;
+    color: #888;
+    font-weight: 600;
+}
+
+/* ================= DIARY MOOD ROW ================= */
+
+.diary-mood-row {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #e87da0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ================= CALENDAR TASK DOTS ================= */
+
+.cal-empty {
+    visibility: hidden;
+}
+
+.calendar-preview .calendar-grid {
+    gap: 6px;
+}
+
+.calendar-preview .calendar-grid span {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+    position: relative;
+}
+
+.calendar-grid span.has-task:not(.active-day)::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #8b6b4f;
+}
+
 /* ================= PER-CARD COLOURS ================= */
 
 /* Finance — pastel green */

@@ -104,28 +104,45 @@
 
          <div class="preview-box finance-preview">
 
-           <!-- ROW 1: Available balance -->
+           <!-- Available Balance -->
            <div class="fin-mini-top">
              <div>
                <span class="fin-mini-label">Available Balance</span>
-               <div class="fin-mini-balance">
-                 RM {{ "{:,.2f}".format(fin_balance) }}
+               <div class="fin-mini-balance">RM {{ "{:,.2f}".format(fin_balance) }}</div>
+             </div>
+             <span class="fin-mini-badge {% if fin_change > 0 %}fin-badge-up{% elif fin_change < 0 %}fin-badge-down{% else %}fin-badge-neutral{% endif %}">
+               {% if fin_change > 0 %}↑{% elif fin_change < 0 %}↓{% endif %}{{ fin_change | abs }}%
+             </span>
+           </div>
+
+           <!-- Weekly bar chart -->
+           <div class="fin-chart-area">
+             <span class="fin-chart-title">Weekly Spending</span>
+             <div class="fin-bars">
+               {% for i in range(4) %}
+               {% set w = fin_weeks[i] %}
+               {% set h = ((w / fin_max_week * 90) | int) if fin_max_week > 0 else 0 %}
+               <div class="fin-bar-group">
+                 <span class="fin-bar-amount">{% if w > 0 %}{{ "{:,.0f}".format(w) }}{% endif %}</span>
+                 <div class="fin-bar" style="height:{{ h if h > 4 else (4 if w > 0 else 0) }}px;"></div>
+                 <span class="fin-bar-label">W{{ i + 1 }}</span>
                </div>
+               {% endfor %}
              </div>
            </div>
 
-           <!-- ROW 2: This Month Expenses | Savings Progress -->
+           <!-- Footer tiles -->
            <div class="fin-mini-tiles">
              <div class="fin-tile fin-tile-expense">
-               <span class="fin-tile-label">This Month Expenses</span>
+               <span class="fin-tile-label">This Month</span>
                <span class="fin-tile-val">RM {{ "{:,.2f}".format(fin_expense) }}</span>
                <span class="fin-tile-change {% if fin_change > 0 %}fin-change-up{% elif fin_change < 0 %}fin-change-down{% else %}fin-change-neutral{% endif %}">
-                 {% if fin_change > 0 %}↑{% elif fin_change < 0 %}↓{% endif %} {{ fin_change | abs }}%
+                 {% if fin_change > 0 %}↑{% elif fin_change < 0 %}↓{% endif %}{{ fin_change | abs }}%
                  <span class="fin-vs">vs last month</span>
                </span>
              </div>
              <div class="fin-tile fin-tile-savings">
-               <span class="fin-tile-label">Savings Progress</span>
+               <span class="fin-tile-label">Savings Goal</span>
                <span class="fin-tile-val fin-savings-pct">{{ fin_savings_pct }}%</span>
                <div class="fin-savings-bar-bg">
                  <div class="fin-savings-bar-fill" style="width:{{ fin_savings_pct }}%;"></div>
@@ -174,13 +191,33 @@
 
             <div class="preview-box diary-preview">
 
-                <span class="diary-label"> Last Entry </span>
+                {% if dash_diary_is_today %}
+                <span class="diary-label">Today's Entry</span>
+                {% elif dash_diary_date_fmt %}
+                <span class="diary-label">Last Entry</span>
+                {% else %}
+                <span class="diary-label">No entries yet</span>
+                {% endif %}
 
-                <h3> A slow and peaceful morning ☀️ </h3>
+                {% if dash_diary_mood %}
+                <div class="diary-mood-row">{{ dash_diary_mood_emoji }} <span>{{ dash_diary_mood }}</span></div>
+                {% endif %}
 
-                <p class="diary-date"> 23 Apr 2026 · 10:30 AM </p>
+                {% if dash_diary_topic %}
+                <h3>{{ dash_diary_topic }}</h3>
+                {% elif dash_diary_text %}
+                <h3>✏️ Diary Entry</h3>
+                {% else %}
+                <h3>Nothing written yet</h3>
+                {% endif %}
 
-                <p class="diary-text"> Today I woke up early, made my favorite coffee and enjoyed the warm sunlight through the window... </p> </div>
+                {% if dash_diary_date_fmt %}
+                <p class="diary-date">{{ dash_diary_date_fmt }}</p>
+                {% endif %}
+
+                <p class="diary-text">{% if dash_diary_text %}{{ dash_diary_text }}{% else %}Tap "Go to Diary" to write your first entry.{% endif %}</p>
+
+            </div>
 
             <button class="card-btn" onclick="window.location.href='/diary'">Go to Diary</button>
 
@@ -224,7 +261,7 @@
 
     <div class="calendar-top">
 
-        <span>April 2026</span>
+        <span>{{ cal_month_label }}</span>
 
     </div>
 
@@ -242,37 +279,18 @@
 
     <div class="calendar-grid">
 
-        <span>30</span>
-        <span>31</span>
-        <span>1</span>
-        <span>2</span>
-        <span>3</span>
-        <span>4</span>
-        <span>5</span>
-
-        <span>6</span>
-        <span>7</span>
-        <span>8</span>
-        <span>9</span>
-        <span>10</span>
-        <span>11</span>
-        <span>12</span>
-
-        <span>13</span>
-        <span>14</span>
-        <span>15</span>
-
-        <span class="active-day">23</span>
-
-        <span>24</span>
-        <span>25</span>
-        <span>26</span>
+        {% for _ in range(cal_first_weekday) %}
+        <span class="cal-empty"></span>
+        {% endfor %}
+        {% for day in range(1, cal_days_in_month + 1) %}
+        <span class="{{ 'active-day' if day == cal_today_day else '' }}{{ ' has-task' if day in cal_task_days else '' }}">{{ day }}</span>
+        {% endfor %}
 
     </div>
 
     <div class="event-box">
 
-        ☰ 2 Events Today
+        ☰ {{ dash_today_tasks_count }} Event{{ 's' if dash_today_tasks_count != 1 else '' }} Today
 
     </div>
 
