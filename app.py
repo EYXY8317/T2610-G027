@@ -6,6 +6,7 @@ from Calendar_Pages.calendar_routes import calendar_bp
 
 import json
 import os
+import re
 from datetime import datetime, timedelta
 from jinja2 import ChoiceLoader, FileSystemLoader
 
@@ -318,6 +319,61 @@ def today_page():
                 continue
             net_savings += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
 
+    # Diary entry for today / most recent
+    f_journal = os.path.join(BASE_DIR, "journal.json")
+    journal_entries = load_data(f_journal, [])
+    today_str_diary = now.strftime("%d/%m/%Y")
+
+    def _diary_text(content):
+        content = (content or "").strip()
+        if not content:
+            return ""
+        texts = []
+        for chunk in content.split("||ITEM||"):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            try:
+                parsed = json.loads(chunk)
+                if parsed.get("type") == "text":
+                    text = re.sub(r"<[^>]+>", "", parsed.get("html", "")).strip()
+                    if text:
+                        texts.append(text)
+            except Exception:
+                text = re.sub(r"<[^>]+>", "", chunk).strip()
+                if text:
+                    texts.append(text)
+        return " · ".join(texts)[:160]
+
+    def _parse_ddate(ds):
+        try:
+            return datetime.strptime(ds, "%d/%m/%Y")
+        except Exception:
+            return datetime.min
+
+    today_diary  = None
+    recent_diary = None
+    recent_dt    = datetime.min
+
+    for _e in journal_entries:
+        if _e.get("date") == today_str_diary:
+            today_diary = _e
+        has = bool(_diary_text(_e.get("content", ""))) or bool((_e.get("mood") or "").strip())
+        if has:
+            dt = _parse_ddate(_e.get("date", ""))
+            if dt > recent_dt:
+                recent_dt    = dt
+                recent_diary = _e
+
+    _diary_display = today_diary or recent_diary
+    _mood_emojis   = {"Happy":"😊","Sad":"😢","Angry":"😠","Excited":"🤩","Anxious":"😰","Peaceful":"😌","Tired":"😴"}
+    diary_text        = _diary_text(_diary_display.get("content","")) if _diary_display else ""
+    diary_mood        = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
+    diary_mood_emoji  = _mood_emojis.get(diary_mood, "")
+    diary_topic       = (_diary_display.get("topic") or "").strip()   if _diary_display else ""
+    diary_date        = _diary_display.get("date","")                  if _diary_display else ""
+    diary_is_today    = today_diary is not None
+
     # Today's calendar tasks: exact date match OR daily repeat, not trashed
     _priority_order = {"red": 0, "orange": 1, "blue": 2, "gray": 3}
     today_tasks = [
@@ -344,6 +400,12 @@ def today_page():
         net_savings      = net_savings,
         today_tasks      = today_tasks,
         user             = current_user,
+        diary_text       = diary_text,
+        diary_mood       = diary_mood,
+        diary_mood_emoji = diary_mood_emoji,
+        diary_topic      = diary_topic,
+        diary_date       = diary_date,
+        diary_is_today   = diary_is_today,
     )
 
 # ================= RUN =================
