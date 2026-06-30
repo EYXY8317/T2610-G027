@@ -285,7 +285,9 @@ body{
 
     width:100%;
 
-    height:290px;
+    flex:1;
+
+    min-height:220px;
 
     border:none;
 
@@ -295,13 +297,13 @@ body{
 
     background:#faf6f1;
 
+    overflow:hidden;
+
 }
 
 .finance-preview.preview-box{
 
     height:auto;
-
-    flex:1;
 
 }
 
