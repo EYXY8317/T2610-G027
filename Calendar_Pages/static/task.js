@@ -1,7 +1,50 @@
 // ===============================
-// PAGE SWITCH (Sidebar Navigation)
-// Handle page navigation and
-// refresh page-specific content
+// 1.GLOBAL STATE
+//   Store temporary values used
+//   across the application
+// ===============================
+
+// Current calendar date
+let today = new Date();
+
+// Task storage
+let taskData = {
+
+    work: [],
+    shopping: [],
+    study: [],
+    personal: [],
+    workout: []
+
+};
+
+// Tag filter
+let currentTagFilter = "all";
+
+// Completed page filters
+let selectedDateFilter = "all";
+let selectedCategoryFilter = "all";
+
+// Calendar popup selections
+let selectedDate = "";
+let selectedStart = "";
+let selectedEnd = "";
+let selectedRepeat = "";
+
+// Priority selections
+let selectedPriority = "";
+let panelSelectedPriority = "";
+
+//  Current Task
+let currentTaskListType = "";
+let currentTaskId = null;
+
+
+
+// ===============================
+// 2.PAGE SWITCH (Sidebar Navigation)
+//   Handle page navigation and
+//   refresh page-specific content
 // ===============================
 
 function showPage(pageId, element) {
@@ -70,6 +113,7 @@ function showPage(pageId, element) {
 
     }
 
+    // Refresh calendar page
     else if (pageId === "calendar") {
 
         generateCalendar();
@@ -79,87 +123,44 @@ function showPage(pageId, element) {
 }
 
 
-
-
-// ===============================
-// GLOBAL STATE
-// Store temporary values used
-// across the application
-// ===============================
-
-// Current calendar date
-let today = new Date();
-
-//Tag Filter
-let currentTagFilter = "all";
-
 // =====================================
-// COMPLETED PAGE FILTERS
+// 3.DATA MANAGEMENT
 // =====================================
 
-let selectedDateFilter =
-    "all";
-
-let selectedCategoryFilter =
-    "all";
-
-// Selected schedule information
-let selectedDate = "";
-let selectedStart = "";
-let selectedEnd = "";
-
-// Selected repeat settings
-let selectedRepeat = "";
-
-// Selected task settings
-let selectedPriority = "";
-
-
 // ===============================
-// TASK STORAGE
-// Store all task categories
+// PERSISTENCE 
+// Load task data from Flask API
 // ===============================
 
-let taskData = {
+async function loadTasks() {
 
-    work: [],
+    try {
 
-    shopping: [],
+        const response =
+            await fetch(
+                "/calendar/tasks"
+            );
 
-    study: [],
+        taskData =
+            await response.json();
 
-    personal: [],
+    }
 
-    workout: []
+    catch(error) {
 
-};
+        console.error(
+            "Failed to load tasks:",
+            error
+        );
 
-
-
-// ===============================
-// SET TAG FILTER
-// ===============================
-
-function setTagFilter(tag) {
-
-    currentTagFilter = tag;
-
-    renderTagFilters();
-
-    [
-        "work",
-        "shopping",
-        "study",
-        "personal",
-        "workout"
-    ].forEach(list => {
-
-        renderTasks(list);
-
-    });
+    }
 
 }
 
+
+// =====================================
+// 4.TASK CRUD
+// =====================================
 
 // ===============================
 // ADD NEW TASK
@@ -308,9 +309,6 @@ async function addTask(listType) {
 }
 
 
-
-
-
 // ===============================
 // MOVE TASK TO TRASH
 // Move task from active/completed
@@ -386,106 +384,502 @@ async function deleteTask(listType, id) {
 
 }
 
+// ===============================
+// RESTORE FROM COMPLETED
+// Move task back to active list
+// ===============================
 
+async function restoreTask(listType, id) {
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Restore task
+    task.status = "active";
+
+    const response =
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(task)
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert("Restore failed");
+
+    return;
+
+}
+
+    // Refresh pages
+    renderCompleted();
+
+    renderTasks(listType);
+
+    updateTodayDashboard();
+
+    renderTagFilters();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById(
+            "calendar"
+        ).classList.contains(
+            "active"
+        )
+    ) {
+
+        generateCalendar();
+
+    }
+
+}
 
 // ===============================
-// RENDER TAG FILTERS
+// DELETE CURRENT TASK
+// Move current task to Trash
 // ===============================
 
-function renderTagFilters() {
+function deleteCurrentTask() {
 
-    const pages = [
-        "work",
-        "shopping",
-        "study",
-        "personal",
-        "workout"
-    ];
+    if (
+        confirm(
+            "Delete this task?"
+        )
+    ) {
 
-    pages.forEach(listType => {
+        deleteTask(
+            currentTaskListType,
+            currentTaskId
+        );
 
-        const container =
-            document.getElementById(
-                listType + "TagFilter"
+        closeDetailPanel();
+
+    }
+
+}
+
+// ===============================
+// DELETE TASK PERMANENTLY
+// Remove task forever from storage
+// ===============================
+
+async function permanentlyDeleteTask(listType, id) {
+
+    if (
+        !confirm(
+            "Permanently delete this task?"
+        )
+    ) {
+        return;
+    }
+
+    taskData[listType] =
+        taskData[listType].filter(
+            task => task.id !== id
+        );
+
+const response =
+    await fetch(
+        "/calendar/delete_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify({
+                    id: id
+                })
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Delete failed"
+    );
+
+    return;
+
+}
+
+    renderTrash();
+
+    renderTagFilters();
+
+}
+
+// ===============================
+// EMPTY TRASH
+// Permanently delete all trashed tasks
+// ===============================
+
+async function emptyTrash() { 
+
+    if (
+        !confirm(
+            "Permanently delete all tasks in Trash?"
+        )
+    ) {
+        return;
+    }
+
+    Object.keys(taskData).forEach(listType => {
+
+        taskData[listType] =
+            taskData[listType].filter(
+                task => task.status !== "trash"
             );
 
-        if (!container) return;
+    });
 
-        container.innerHTML = "";
+const response =
+    await fetch(
+        "/calendar/empty_trash",
+        {
+            method: "POST",
 
-        // All Button
-        container.innerHTML += `
-
-            <button
-                class="
-                    tag-chip
-                    ${currentTagFilter === "all"
-                ? "active"
-                : ""
+            headers: {
+                "Content-Type":
+                    "application/json"
             }
-                "
-                onclick="setTagFilter('all')"
-            >
+        }
+    );
 
-                All
+const result =
+    await response.json();
 
-            </button>
+if (!result.success) {
 
-        `;
+    alert(
+        "Failed to empty trash"
+    );
 
-        // Collect tags from this category
-        const tags = new Set();
+    return;
 
-        taskData[listType].forEach(task => {
+}
 
-            if (
-                task.tag &&
-                task.tag.trim()
-            ) {
+    renderTrash();
 
-                tags.add(
-                    task.tag.trim()
+    renderTagFilters();
+}
+
+// =====================================
+// 5.TASK COMPLETION
+// =====================================
+
+// ===============================
+// TOGGLE COMPLETE STATUS
+// Active ↔ Completed
+// Move task between Active
+// and Completed
+// ===============================
+
+async function toggleComplete(
+    listType,
+    id,
+    checkbox
+) {
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Create next recurring task
+    if (
+        checkbox.checked &&
+        task.repeat &&
+        task.repeat !== "none" &&
+        task.date
+    ) {
+
+        let nextDate =
+            new Date(task.date);
+
+        switch (task.repeat) {
+
+            case "daily":
+
+                nextDate.setDate(
+                    nextDate.getDate() + 1
                 );
 
-            }
+                break;
+
+            case "weekly":
+
+                nextDate.setDate(
+                    nextDate.getDate() + 7
+                );
+
+                break;
+
+            case "monthly":
+
+                nextDate.setMonth(
+                    nextDate.getMonth() + 1
+                );
+
+                break;
+
+            case "yearly":
+
+                nextDate.setFullYear(
+                    nextDate.getFullYear() + 1
+                );
+
+                break;
+
+        }
+
+        taskData[listType].push({
+
+            ...task,
+
+            id: Date.now(),
+
+            status: "active",
+
+            date:
+                nextDate
+                    .toISOString()
+                    .split("T")[0]
 
         });
 
-        // Create tag chips
-        [...tags]
-            .sort()
-            .forEach(tag => {
+    }
 
-                container.innerHTML += `
+// =====================================
+// COMPLETE TASK ANIMATION
+// Play completion animation
+// before moving task into
+// Completed page
+// =====================================
 
-                <button
-                    class="
-                        tag-chip
-                        ${currentTagFilter === tag
-                        ? "active"
-                        : ""
-                    }
-                    "
-                    onclick="setTagFilter('${tag}')"
-                >
+if (checkbox.checked) {
 
-                   ${tag.charAt(0).toUpperCase()
-                    + tag.slice(1)
-                    }
+    // Get current task card
+    const taskCard =
+        checkbox.closest(
+            ".task-card"
+        );
 
-                </button>
+    // Add slide-out animation
+    if (taskCard) {
 
-            `;
+        taskCard.classList.add(
+            "task-completing"
+        );
 
-            });
+    }
 
-    });
+    // Wait for animation to finish
+    setTimeout(async () => {
+
+        // Update task status
+        task.status =
+            "completed";
+
+        // Save completion timestamp
+        task.completedDate =
+            new Date()
+            .toISOString();
+
+        // Save updated task to Flask
+        await fetch(
+            "/calendar/update_task",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(
+                    task
+                )
+            }
+        );
+
+        // Refresh active task page
+        renderTasks(
+            listType
+        );
+
+        // Refresh completed page
+        renderCompleted();
+
+        // Refresh trash page
+        renderTrash();
+
+        // Refresh Today Dashboard
+        updateTodayDashboard();
+
+        // Refresh tag filters
+        renderTagFilters();
+
+        // Show completion message
+        showToast(
+            "✨ You Did It!"
+        );
+
+        // Refresh calendar if open
+        if (
+            document.getElementById(
+                "calendar"
+            )
+            .classList.contains(
+                "active"
+            )
+        ) {
+
+            generateCalendar();
+
+        }
+
+    }, 600);
+
+    return;
+
+}
+
+// =====================================
+// UNCHECK TASK
+// Move task back to active
+// =====================================
+
+task.status =
+    "active";
+    
+await fetch(
+    "/calendar/update_task",
+    {
+        method: "POST",
+
+        headers: {
+            "Content-Type":
+                "application/json"
+        },
+
+        body: JSON.stringify(task)
+    }
+);
+
+    // Refresh pages
+    renderTasks(listType);
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    renderTagFilters();
+
+ 
+    // Refresh calendar if open
+    if (
+        document.getElementById("calendar")
+            .classList.contains("active")
+    ) {
+
+        generateCalendar();
+
+    }
+
+}
+
+// =====================================
+// COMPLETE TASK FROM CALENDAR MODAL
+// Complete task directly from calendar
+// =====================================
+
+async function completeTask(
+    listType,
+    id
+) {
+
+    const task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Update task status
+    task.status =
+        "completed";
+
+    task.completedDate =
+        new Date().toISOString();
+
+    // Save to Flask
+    await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify(task)
+        }
+    );
+
+    // Refresh all pages
+    renderTasks(listType);
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    renderTagFilters();
+
+    generateCalendar();
+
+    // Success toast
+    showToast(
+        "✨ You Did It!"
+    );
 
 }
 
 
-
-
+// =====================================
+// 6.TASK RENDERING
+// =====================================
 
 // ===============================
 // RENDER TASKS
@@ -658,9 +1052,6 @@ function renderTasks(listType) {
     });
 
 }
-
-
-
 
 // ===============================
 // RENDER COMPLETED TASKS
@@ -1135,9 +1526,6 @@ section.innerHTML = `
 
 }
 
-
-
-
 // ===============================
 // RENDER TRASH TASKS
 // Group trashed tasks by category
@@ -1350,1203 +1738,134 @@ function renderTrash() {
 }
 
 
+// =====================================
+// 7.TAG FILTER
+// =====================================
+
 // ===============================
-// DELETE TASK PERMANENTLY
-// Remove task forever from storage
+// SET TAG FILTER
 // ===============================
 
-async function permanentlyDeleteTask(listType, id) {
+function setTagFilter(tag) {
 
-    if (
-        !confirm(
-            "Permanently delete this task?"
-        )
-    ) {
-        return;
-    }
-
-    taskData[listType] =
-        taskData[listType].filter(
-            task => task.id !== id
-        );
-
-const response =
-    await fetch(
-        "/calendar/delete_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify({
-                    id: id
-                })
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert(
-        "Delete failed"
-    );
-
-    return;
-
-}
-
-    renderTrash();
+    currentTagFilter = tag;
 
     renderTagFilters();
 
-}
-
-
-// ===============================
-// ENTER KEY SUPPORT
-// Press Enter to add a task
-// ===============================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        [
-            "work",
-            "shopping",
-            "study",
-            "personal",
-            "workout"
-        ].forEach(list => {
-
-            let input =
-                document.getElementById(
-                    list + "TaskText"
-                );
-
-            if (input) {
-
-                input.addEventListener(
-                    "keypress",
-                    function (e) {
-
-                        if (e.key === "Enter") {
-
-                            addTask(list);
-
-                        }
-
-                    }
-                );
-
-            }
-
-        });
-
-    }
-);
-
-
-// ===============================
-// TOGGLE CALENDAR POPUP
-// Show or hide date popup
-// ===============================
-
-function toggleCalendar(btn, e) {
-
-    if (e) e.stopPropagation();
-
-    const popup =
-        document.getElementById(
-            "calendarPopup"
-        );
-
-    if (!popup) return;
-
-    if (
-        popup.style.display === "block"
-    ) {
-
-        popup.style.display = "none";
-
-        return;
-
-    }
-
-    popup.style.display = "block";
-
-    const rect =
-        btn.getBoundingClientRect();
-
-    const popupWidth = 420;
-
-    let left =
-        rect.right - popupWidth;
-
-    let top =
-        rect.bottom + 12;
-
-    if (left < 10) {
-
-        left = 10;
-
-    }
-
-    popup.style.left =
-        left + "px";
-
-    popup.style.top =
-        top + "px";
-
-}
-
-
-
-// ===============================
-// CLOSE CALENDAR POPUP
-// ===============================
-
-function closeCalendar() {
-
-    const popup =
-        document.getElementById(
-            "calendarPopup"
-        );
-
-    if (popup) {
-
-        popup.style.display =
-            "none";
-
-    }
-
-}
-
-
-// ===============================
-// GET PRIORITY FLAG ICON
-// Return colored Material Symbol
-// ===============================
-
-let panelSelectedPriority = "";
-
-function setPanelPriority(priority, e) {
-
-    panelSelectedPriority = priority;
-
-    document
-        .querySelectorAll(
-            "#panelPriorityBox > span"
-        )
-        .forEach(el => {
-
-            el.classList.remove(
-                "priority-selected"
-            );
-
-        });
-
-    e.currentTarget.classList.add(
-        "priority-selected"
-    );
-
-}
-
-function getPriorityDot(priority) {
-
-    if (priority === "red") {
-
-        return `
-
-        <span
-            class="
-            material-symbols-rounded
-            priority-high
-            "
-        >
-
-            flag
-
-        </span>
-
-        `;
-
-    }
-
-    if (priority === "orange") {
-
-        return `
-
-        <span
-            class="
-            material-symbols-rounded
-            priority-medium
-            "
-        >
-
-            flag
-
-        </span>
-
-        `;
-
-    }
-
-    if (priority === "blue") {
-
-        return `
-
-        <span
-            class="
-            material-symbols-rounded
-            priority-low
-            "
-        >
-
-            flag
-
-        </span>
-
-        `;
-
-    }
-
-    if (priority === "gray") {
-
-        return `
-
-        <span
-            class="
-            material-symbols-rounded
-            priority-none
-            "
-        >
-
-            outlined_flag
-
-        </span>
-
-        `;
-
-    }
-
-    return "";
-
-}
-
-
-
-// ===============================
-// SET PRIORITY
-// Highlight selected priority
-// ===============================
-
-function setPriority(priority, e) {
-
-    selectedPriority = priority;
-
-    document
-        .querySelectorAll(
-            ".priority-box > span"
-        )
-        .forEach(el => {
-
-            el.classList.remove(
-                "priority-selected"
-            );
-
-        });
-
-    if (e) {
-
-        e.currentTarget.classList.add(
-            "priority-selected"
-        );
-
-    }
-
-}
-
-
-
-// ===============================
-// APPLY DATE SETTINGS
-// Save selected task options
-// ===============================
-
-function applyDate() {
-
-    let dateInput =
-        document.getElementById(
-            "popupDate"
-        );
-
-    let startInput =
-        document.getElementById(
-            "startTime"
-        );
-
-    let endInput =
-        document.getElementById(
-            "endTime"
-        );
-
-    let repeatInput =
-        document.getElementById(
-            "repeat"
-        );
-
-    // Save date
-    selectedDate =
-        dateInput
-            ? dateInput.value
-            : "";
-
-    // Save start time
-    selectedStart =
-        startInput
-            ? startInput.value
-            : "";
-
-    // Save end time
-    selectedEnd =
-        endInput
-            ? endInput.value
-            : "";
-
-    // Save repeat option
-    selectedRepeat =
-        repeatInput
-            ? repeatInput.value
-            : "";
-
-    // Close popup
-    closeCalendar();
-
-}
-
-
-
-
-
-// ===============================
-// PERSISTENCE 
-// Load task data from Flask API
-// ===============================
-
-async function loadTasks() {
-
-    try {
-
-        const response =
-            await fetch(
-                "/calendar/tasks"
-            );
-
-        taskData =
-            await response.json();
-
-    }
-
-    catch(error) {
-
-        console.error(
-            "Failed to load tasks:",
-            error
-        );
-
-    }
-
-}
-
- 
-// ===============================
-// GET PRIORITY COLOR
-// Return color for calendar badges
-// ===============================
-
-function getPriorityColor(priority) {
-
-    if (priority === "red") {
-
-        return "#ef4444";
-
-    }
-
-    if (priority === "orange") {
-
-        return "#f59e0b";
-
-    }
-
-    if (priority === "blue") {
-
-        return "#3b82f6";
-
-    }
-
-    return "#6b7280";
-
-}
-
-// ===============================
-// LOAD SAVED TASKS
-// Restore tasks when page loads
-// ===============================
-
-document.addEventListener(
-    "DOMContentLoaded",
-
-    async () => {
-
-        // Load task data
-        await loadTasks();
-
-        // Render all task categories
-        [
-            "work",
-            "shopping",
-            "study",
-            "personal",
-            "workout"
-        ].forEach(list => {
-
-            renderTasks(list);
-
-        });
-
-        // Refresh Completed page
-        renderCompleted();
-
-        // Refresh Trash page
-        renderTrash();
-
-        // Refresh Today dashboard
-        updateTodayDashboard();
-
-        // Refresh Tag filters
-        renderTagFilters();
-
-// =====================================
-// COMPLETED PAGE FILTER EVENTS
-// =====================================
-
-const dateFilter =
-    document.getElementById(
-        "dateFilter"
-    );
-
-if (dateFilter) {
-
-    dateFilter.addEventListener(
-        "change",
-        e => {
-
-            selectedDateFilter =
-                e.target.value;
-
-            renderCompleted();
-
-        }
-    );
-
-}
-
-const categoryFilter =
-    document.getElementById(
-        "categoryFilter"
-    );
-
-if (categoryFilter) {
-
-    categoryFilter.addEventListener(
-        "change",
-        e => {
-
-            selectedCategoryFilter =
-                e.target.value;
-
-            renderCompleted();
-
-        }
-    );
-
-}
-
-        // Tag suggestion
-        const tagInput =
-            document.getElementById(
-                "panelTagInput"
-            );
-
-        if (tagInput) {
-
-            tagInput.addEventListener(
-                "input",
-
-                function () {
-
-                    renderTagSuggestions(
-                        this.value
-                    );
-
-                }
-
-            );
-
-        }
-
-    }
-
-);
-
-
-// ===============================
-// TOGGLE COMPLETE STATUS
-// Active ↔ Completed
-// Move task between Active
-// and Completed
-// ===============================
-
-async function toggleComplete(
-    listType,
-    id,
-    checkbox
-) {
-
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    if (!task) return;
-
-    // Create next recurring task
-    if (
-        checkbox.checked &&
-        task.repeat &&
-        task.repeat !== "none" &&
-        task.date
-    ) {
-
-        let nextDate =
-            new Date(task.date);
-
-        switch (task.repeat) {
-
-            case "daily":
-
-                nextDate.setDate(
-                    nextDate.getDate() + 1
-                );
-
-                break;
-
-            case "weekly":
-
-                nextDate.setDate(
-                    nextDate.getDate() + 7
-                );
-
-                break;
-
-            case "monthly":
-
-                nextDate.setMonth(
-                    nextDate.getMonth() + 1
-                );
-
-                break;
-
-            case "yearly":
-
-                nextDate.setFullYear(
-                    nextDate.getFullYear() + 1
-                );
-
-                break;
-
-        }
-
-        taskData[listType].push({
-
-            ...task,
-
-            id: Date.now(),
-
-            status: "active",
-
-            date:
-                nextDate
-                    .toISOString()
-                    .split("T")[0]
-
-        });
-
-    }
-
-// =====================================
-// COMPLETE TASK ANIMATION
-// Play completion animation
-// before moving task into
-// Completed page
-// =====================================
-
-if (checkbox.checked) {
-
-    // Get current task card
-    const taskCard =
-        checkbox.closest(
-            ".task-card"
-        );
-
-    // Add slide-out animation
-    if (taskCard) {
-
-        taskCard.classList.add(
-            "task-completing"
-        );
-
-    }
-
-    // Wait for animation to finish
-    setTimeout(async () => {
-
-        // Update task status
-        task.status =
-            "completed";
-
-        // Save completion timestamp
-        task.completedDate =
-            new Date()
-            .toISOString();
-
-        // Save updated task to Flask
-        await fetch(
-            "/calendar/update_task",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify(
-                    task
-                )
-            }
-        );
-
-        // Refresh active task page
-        renderTasks(
-            listType
-        );
-
-        // Refresh completed page
-        renderCompleted();
-
-        // Refresh trash page
-        renderTrash();
-
-        // Refresh Today Dashboard
-        updateTodayDashboard();
-
-        // Refresh tag filters
-        renderTagFilters();
-
-        // Show completion message
-        showToast(
-            "✨ You Did It!"
-        );
-
-        // Refresh calendar if open
-        if (
-            document.getElementById(
-                "calendar"
-            )
-            .classList.contains(
-                "active"
-            )
-        ) {
-
-            generateCalendar();
-
-        }
-
-    }, 600);
-
-    return;
-
-}
-
-// =====================================
-// UNCHECK TASK
-// Move task back to active
-// =====================================
-
-task.status =
-    "active";
-    
-await fetch(
-    "/calendar/update_task",
-    {
-        method: "POST",
-
-        headers: {
-            "Content-Type":
-                "application/json"
-        },
-
-        body: JSON.stringify(task)
-    }
-);
-
-    // Refresh pages
-    renderTasks(listType);
-
-    renderCompleted();
-
-    renderTrash();
-
-    updateTodayDashboard();
-
-    renderTagFilters();
-
- 
-    // Refresh calendar if open
-    if (
-        document.getElementById("calendar")
-            .classList.contains("active")
-    ) {
-
-        generateCalendar();
-
-    }
-
-}
-
-
-
-
-// ===============================
-// TASK DETAIL PANEL
-// Manage task editing panel
-// ===============================
-
-// Store currently selected task
-let currentTaskListType = "";
-
-let currentTaskId = null;
-
-// ===============================
-// SHOW TASK DETAIL PANEL
-// Display task information
-// inside editable side panel
-// ===============================
-
-function showTaskDetail(
-    listType,
-    id
-) {
-
-    currentTaskListType =
-        listType;
-
-    currentTaskId =
-        id;
-
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    if (!task) return;
-
-    // Fill editable fields
-    document.getElementById(
-        "panelTitleInput"
-    ).value =
-        task.text || "";
-
-    document.getElementById(
-        "panelDescription"
-    ).value =
-        task.description || "";
-
-    document.getElementById(
-        "panelDateInput"
-    ).value =
-        task.date || "";
-
-    document.getElementById(
-        "panelStartTime"
-    ).value =
-        task.startTime || "";
-
-    document.getElementById(
-        "panelEndTime"
-    ).value =
-        task.endTime || "";
-
-    document.getElementById(
-        "panelRepeatSelect"
-    ).value =
-        task.repeat || "none";
-
-    panelSelectedPriority =
-        task.priority || "";
-
-    document
-        .querySelectorAll(
-            "#panelPriorityBox > span"
-        )
-        .forEach(el => {
-
-            el.classList.remove(
-                "priority-selected"
-            );
-
-            if (
-                el.dataset.priority ===
-                panelSelectedPriority
-            ) {
-
-                el.classList.add(
-                    "priority-selected"
-                );
-
-            }
-
-        });
-
-    document.getElementById(
-        "panelTagInput"
-    ).value =
-        task.tag || "";
-
-    // Show panel
-    const panel =
-        document.getElementById(
-            "taskDetailPanel"
-        );
-
-    panel.style.visibility =
-        "visible";
-
-    panel.style.opacity =
-        "1";
-
-    panel.style.right =
-        "0";
-
-}
-
-
-
-
-// ===============================
-// CLOSE TASK DETAIL PANEL
-// Hide side panel smoothly
-// ===============================
-
-function closeDetailPanel() {
-
-    const panel =
-        document.getElementById(
-            "taskDetailPanel"
-        );
-
-    if (!panel) return;
-
-    panel.style.right =
-        "-450px";
-
-    setTimeout(() => {
-
-        panel.style.visibility =
-            "hidden";
-
-        panel.style.opacity =
-            "0";
-
-    }, 350);
-
-}
-
-// ===============================
-// SAVE TASK CHANGES
-// Save edited task information
-// ===============================
-
-async function saveTaskChanges() {
-
-    let task =
-        taskData[currentTaskListType]
-            .find(
-                t => t.id === currentTaskId
-            );
-
-    if (!task) return;
-
-    // Update task data
-    task.text =
-        document.getElementById(
-            "panelTitleInput"
-        ).value.trim();
-
-    task.description =
-        document.getElementById(
-            "panelDescription"
-        ).value.trim();
-
-    task.date =
-        document.getElementById(
-            "panelDateInput"
-        ).value;
-
-    task.startTime =
-        document.getElementById(
-            "panelStartTime"
-        ).value;
-
-    task.endTime =
-        document.getElementById(
-            "panelEndTime"
-        ).value;
-
-    task.repeat =
-        document.getElementById(
-            "panelRepeatSelect"
-        ).value;
-
-    task.priority =
-        panelSelectedPriority;
-
-    task.tag =
-        document.getElementById(
-            "panelTagInput"
-        )
-            .value
-            .trim()
-            .toLowerCase();
-
-    const response =
-      await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert(
-        "Failed to save task"
-    );
-
-    return;
-
-}   
-
-    // Refresh pages
-    renderTasks(
-        currentTaskListType
-    );
-
-    renderTagFilters();
-
-    renderCompleted();
-
-    renderTrash();
-
-    updateTodayDashboard();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById(
-            "calendar"
-        ).classList.contains(
-            "active"
-        )
-    ) {
-
-        generateCalendar();
-
-    }
-
-    // Close panel
-    closeDetailPanel();
-
-    alert(
-        "✅ Changes saved successfully!"
-    );
-
-}
-
-// ===============================
-// DELETE CURRENT TASK
-// Move current task to Trash
-// ===============================
-
-function deleteCurrentTask() {
-
-    if (
-        confirm(
-            "Delete this task?"
-        )
-    ) {
-
-        deleteTask(
-            currentTaskListType,
-            currentTaskId
-        );
-
-        closeDetailPanel();
-
-    }
-
-}
-
-// ===============================
-// RESTORE FROM COMPLETED
-// Move task back to active list
-// ===============================
-
-async function restoreTask(listType, id) {
-
-    let task =
-        taskData[listType].find(
-            t => t.id === id
-        );
-
-    if (!task) return;
-
-    // Restore task
-    task.status = "active";
-
-    const response =
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert("Restore failed");
-
-    return;
-
-}
-
-    // Refresh pages
-    renderCompleted();
-
-    renderTasks(listType);
-
-    updateTodayDashboard();
-
-    renderTagFilters();
-
-    // Refresh calendar if open
-    if (
-        document.getElementById(
-            "calendar"
-        ).classList.contains(
-            "active"
-        )
-    ) {
-
-        generateCalendar();
-
-    }
-
-}
-
-// ===============================
-// EMPTY TRASH
-// Permanently delete all trashed tasks
-// ===============================
-
-async function emptyTrash() { 
-
-    if (
-        !confirm(
-            "Permanently delete all tasks in Trash?"
-        )
-    ) {
-        return;
-    }
-
-    Object.keys(taskData).forEach(listType => {
-
-        taskData[listType] =
-            taskData[listType].filter(
-                task => task.status !== "trash"
-            );
+    [
+        "work",
+        "shopping",
+        "study",
+        "personal",
+        "workout"
+    ].forEach(list => {
+
+        renderTasks(list);
 
     });
 
-const response =
-    await fetch(
-        "/calendar/empty_trash",
-        {
-            method: "POST",
+}
 
-            headers: {
-                "Content-Type":
-                    "application/json"
+// ===============================
+// RENDER TAG FILTERS
+// ===============================
+
+function renderTagFilters() {
+
+    const pages = [
+        "work",
+        "shopping",
+        "study",
+        "personal",
+        "workout"
+    ];
+
+    pages.forEach(listType => {
+
+        const container =
+            document.getElementById(
+                listType + "TagFilter"
+            );
+
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        // All Button
+        container.innerHTML += `
+
+            <button
+                class="
+                    tag-chip
+                    ${currentTagFilter === "all"
+                ? "active"
+                : ""
             }
-        }
-    );
+                "
+                onclick="setTagFilter('all')"
+            >
 
-const result =
-    await response.json();
+                All
 
-if (!result.success) {
+            </button>
 
-    alert(
-        "Failed to empty trash"
-    );
+        `;
 
-    return;
+        // Collect tags from this category
+        const tags = new Set();
+
+        taskData[listType].forEach(task => {
+
+            if (
+                task.tag &&
+                task.tag.trim()
+            ) {
+
+                tags.add(
+                    task.tag.trim()
+                );
+
+            }
+
+        });
+
+        // Create tag chips
+        [...tags]
+            .sort()
+            .forEach(tag => {
+
+                container.innerHTML += `
+
+                <button
+                    class="
+                        tag-chip
+                        ${currentTagFilter === tag
+                        ? "active"
+                        : ""
+                    }
+                    "
+                    onclick="setTagFilter('${tag}')"
+                >
+
+                   ${tag.charAt(0).toUpperCase()
+                    + tag.slice(1)
+                    }
+
+                </button>
+
+            `;
+
+            });
+
+    });
 
 }
 
-    renderTrash();
 
-    renderTagFilters();
-}
+
+// =====================================
+// 8.TAG SUGGESTIONS
+// =====================================
 
 // ===============================
 // RENDER TAG SUGGESTIONS
@@ -2754,6 +2073,578 @@ function renderPopupTagSuggestions(keyword) {
 
 
 // =====================================
+// 9.CALENDAR POPUP
+// =====================================
+
+// ===============================
+// TOGGLE CALENDAR POPUP
+// Show or hide date popup
+// ===============================
+
+function toggleCalendar(btn, e) {
+
+    if (e) e.stopPropagation();
+
+    const popup =
+        document.getElementById(
+            "calendarPopup"
+        );
+
+    if (!popup) return;
+
+    if (
+        popup.style.display === "block"
+    ) {
+
+        popup.style.display = "none";
+
+        return;
+
+    }
+
+    popup.style.display = "block";
+
+    const rect =
+        btn.getBoundingClientRect();
+
+    const popupWidth = 420;
+
+    let left =
+        rect.right - popupWidth;
+
+    let top =
+        rect.bottom + 12;
+
+    if (left < 10) {
+
+        left = 10;
+
+    }
+
+    popup.style.left =
+        left + "px";
+
+    popup.style.top =
+        top + "px";
+
+}
+
+
+// ===============================
+// CLOSE CALENDAR POPUP
+// ===============================
+
+function closeCalendar() {
+
+    const popup =
+        document.getElementById(
+            "calendarPopup"
+        );
+
+    if (popup) {
+
+        popup.style.display =
+            "none";
+
+    }
+
+}
+
+// ===============================
+// APPLY DATE SETTINGS
+// Save selected task options
+// ===============================
+
+function applyDate() {
+
+    let dateInput =
+        document.getElementById(
+            "popupDate"
+        );
+
+    let startInput =
+        document.getElementById(
+            "startTime"
+        );
+
+    let endInput =
+        document.getElementById(
+            "endTime"
+        );
+
+    let repeatInput =
+        document.getElementById(
+            "repeat"
+        );
+
+    // Save date
+    selectedDate =
+        dateInput
+            ? dateInput.value
+            : "";
+
+    // Save start time
+    selectedStart =
+        startInput
+            ? startInput.value
+            : "";
+
+    // Save end time
+    selectedEnd =
+        endInput
+            ? endInput.value
+            : "";
+
+    // Save repeat option
+    selectedRepeat =
+        repeatInput
+            ? repeatInput.value
+            : "";
+
+    // Close popup
+    closeCalendar();
+
+}
+
+
+// =====================================
+// 10.PRIORITY
+// =====================================
+
+// ===============================
+// SET PRIORITY
+// Highlight selected priority
+// ===============================
+
+function setPriority(priority, e) {
+
+    selectedPriority = priority;
+
+    document
+        .querySelectorAll(
+            ".priority-box > span"
+        )
+        .forEach(el => {
+
+            el.classList.remove(
+                "priority-selected"
+            );
+
+        });
+
+    if (e) {
+
+        e.currentTarget.classList.add(
+            "priority-selected"
+        );
+
+    }
+
+}
+
+// ===============================
+// GET PRIORITY FLAG ICON
+// Return colored Material Symbol
+// ===============================
+
+function setPanelPriority(priority, e) {
+
+    panelSelectedPriority = priority;
+
+    document
+        .querySelectorAll(
+            "#panelPriorityBox > span"
+        )
+        .forEach(el => {
+
+            el.classList.remove(
+                "priority-selected"
+            );
+
+        });
+
+    e.currentTarget.classList.add(
+        "priority-selected"
+    );
+
+}
+
+function getPriorityDot(priority) {
+
+    if (priority === "red") {
+
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-high
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
+
+    }
+
+    if (priority === "orange") {
+
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-medium
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
+
+    }
+
+    if (priority === "blue") {
+
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-low
+            "
+        >
+
+            flag
+
+        </span>
+
+        `;
+
+    }
+
+    if (priority === "gray") {
+
+        return `
+
+        <span
+            class="
+            material-symbols-rounded
+            priority-none
+            "
+        >
+
+            outlined_flag
+
+        </span>
+
+        `;
+
+    }
+
+    return "";
+
+}
+
+ 
+// ===============================
+// 11.TASK DETAIL PANEL
+//    Manage task editing panel
+// ===============================
+
+// ===============================
+// SHOW TASK DETAIL PANEL
+// Display task information
+// inside editable side panel
+// ===============================
+
+function showTaskDetail(
+    listType,
+    id
+) {
+
+    currentTaskListType =
+        listType;
+
+    currentTaskId =
+        id;
+
+    let task =
+        taskData[listType].find(
+            t => t.id === id
+        );
+
+    if (!task) return;
+
+    // Fill editable fields
+    document.getElementById(
+        "panelTitleInput"
+    ).value =
+        task.text || "";
+
+    document.getElementById(
+        "panelDescription"
+    ).value =
+        task.description || "";
+
+    document.getElementById(
+        "panelDateInput"
+    ).value =
+        task.date || "";
+
+    document.getElementById(
+        "panelStartTime"
+    ).value =
+        task.startTime || "";
+
+    document.getElementById(
+        "panelEndTime"
+    ).value =
+        task.endTime || "";
+
+    document.getElementById(
+        "panelRepeatSelect"
+    ).value =
+        task.repeat || "none";
+
+    panelSelectedPriority =
+        task.priority || "";
+
+    document
+        .querySelectorAll(
+            "#panelPriorityBox > span"
+        )
+        .forEach(el => {
+
+            el.classList.remove(
+                "priority-selected"
+            );
+
+            if (
+                el.dataset.priority ===
+                panelSelectedPriority
+            ) {
+
+                el.classList.add(
+                    "priority-selected"
+                );
+
+            }
+
+        });
+
+    document.getElementById(
+        "panelTagInput"
+    ).value =
+        task.tag || "";
+
+    // Show panel
+    const panel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    panel.style.visibility =
+        "visible";
+
+    panel.style.opacity =
+        "1";
+
+    panel.style.right =
+        "0";
+
+}
+
+// ===============================
+// SAVE TASK CHANGES
+// Save edited task information
+// ===============================
+
+async function saveTaskChanges() {
+
+    let task =
+        taskData[currentTaskListType]
+            .find(
+                t => t.id === currentTaskId
+            );
+
+    if (!task) return;
+
+    // Update task data
+    task.text =
+        document.getElementById(
+            "panelTitleInput"
+        ).value.trim();
+
+    task.description =
+        document.getElementById(
+            "panelDescription"
+        ).value.trim();
+
+    task.date =
+        document.getElementById(
+            "panelDateInput"
+        ).value;
+
+    task.startTime =
+        document.getElementById(
+            "panelStartTime"
+        ).value;
+
+    task.endTime =
+        document.getElementById(
+            "panelEndTime"
+        ).value;
+
+    task.repeat =
+        document.getElementById(
+            "panelRepeatSelect"
+        ).value;
+
+    task.priority =
+        panelSelectedPriority;
+
+    task.tag =
+        document.getElementById(
+            "panelTagInput"
+        )
+            .value
+            .trim()
+            .toLowerCase();
+
+    const response =
+      await fetch(
+        "/calendar/update_task",
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body:
+                JSON.stringify(task)
+        }
+    );
+
+const result =
+    await response.json();
+
+if (!result.success) {
+
+    alert(
+        "Failed to save task"
+    );
+
+    return;
+
+}   
+
+    // Refresh pages
+    renderTasks(
+        currentTaskListType
+    );
+
+    renderTagFilters();
+
+    renderCompleted();
+
+    renderTrash();
+
+    updateTodayDashboard();
+
+    // Refresh calendar if open
+    if (
+        document.getElementById(
+            "calendar"
+        ).classList.contains(
+            "active"
+        )
+    ) {
+
+        generateCalendar();
+
+    }
+
+    // Close panel
+    closeDetailPanel();
+
+    alert(
+        "✅ Changes saved successfully!"
+    );
+
+}
+
+
+// ===============================
+// CLOSE TASK DETAIL PANEL
+// Hide side panel smoothly
+// ===============================
+
+function closeDetailPanel() {
+
+    const panel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    if (!panel) return;
+
+    panel.style.right =
+        "-450px";
+
+    setTimeout(() => {
+
+        panel.style.visibility =
+            "hidden";
+
+        panel.style.opacity =
+            "0";
+
+    }, 350);
+
+}
+
+// =====================================
+// 12.UTILITIES
+// =====================================
+
+// ===============================
+// GET PRIORITY COLOR
+// Return color for calendar badges
+// ===============================
+
+function getPriorityColor(priority) {
+
+    if (priority === "red") {
+
+        return "#ef4444";
+
+    }
+
+    if (priority === "orange") {
+
+        return "#f59e0b";
+
+    }
+
+    if (priority === "blue") {
+
+        return "#3b82f6";
+
+    }
+
+    return "#6b7280";
+
+}
+
+// =====================================
 // SHOW TOAST MESSAGE
 // Display a temporary notification
 // on the top-right corner
@@ -2793,61 +2684,189 @@ function showToast(message){
 }
 
 
+
 // =====================================
-// COMPLETE TASK FROM CALENDAR MODAL
-// Complete task directly from calendar
+// 13.INITIALIZATION
 // =====================================
 
-async function completeTask(
-    listType,
-    id
-) {
+// ===============================
+// ENTER KEY SUPPORT
+// Press Enter to add a task
+// ===============================
 
-    const task =
-        taskData[listType].find(
-            t => t.id === id
-        );
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    if (!task) return;
+        [
+            "work",
+            "shopping",
+            "study",
+            "personal",
+            "workout"
+        ].forEach(list => {
 
-    // Update task status
-    task.status =
-        "completed";
+            let input =
+                document.getElementById(
+                    list + "TaskText"
+                );
 
-    task.completedDate =
-        new Date().toISOString();
+            if (input) {
 
-    // Save to Flask
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
+                input.addEventListener(
+                    "keypress",
+                    function (e) {
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+                        if (e.key === "Enter") {
 
-            body: JSON.stringify(task)
+                            addTask(list);
+
+                        }
+
+                    }
+                );
+
+            }
+
+        });
+
+    }
+);
+
+// ===============================
+// LOAD SAVED TASKS
+// Restore tasks when page loads
+// ===============================
+
+document.addEventListener(
+    "DOMContentLoaded",
+
+    async () => {
+
+        // Load task data
+        await loadTasks();
+
+        // Render all task categories
+        [
+            "work",
+            "shopping",
+            "study",
+            "personal",
+            "workout"
+        ].forEach(list => {
+
+            renderTasks(list);
+
+        });
+
+        // Refresh Completed page
+        renderCompleted();
+
+        // Refresh Trash page
+        renderTrash();
+
+        // Refresh Today dashboard
+        updateTodayDashboard();
+
+        // Refresh Tag filters
+        renderTagFilters();
+
+// =====================================
+// COMPLETED PAGE FILTER EVENTS
+// =====================================
+
+const dateFilter =
+    document.getElementById(
+        "dateFilter"
+    );
+
+if (dateFilter) {
+
+    dateFilter.addEventListener(
+        "change",
+        e => {
+
+            selectedDateFilter =
+                e.target.value;
+
+            renderCompleted();
+
         }
     );
 
-    // Refresh all pages
-    renderTasks(listType);
+}
 
-    renderCompleted();
+const categoryFilter =
+    document.getElementById(
+        "categoryFilter"
+    );
 
-    renderTrash();
+if (categoryFilter) {
 
-    updateTodayDashboard();
+    categoryFilter.addEventListener(
+        "change",
+        e => {
 
-    renderTagFilters();
+            selectedCategoryFilter =
+                e.target.value;
 
-    generateCalendar();
+            renderCompleted();
 
-    // Success toast
-    showToast(
-        "✨ You Did It!"
+        }
     );
 
 }
+
+        // Tag suggestion
+        const tagInput =
+            document.getElementById(
+                "panelTagInput"
+            );
+
+        if (tagInput) {
+
+            tagInput.addEventListener(
+                "input",
+
+                function () {
+
+                    renderTagSuggestions(
+                        this.value
+                    );
+
+                }
+
+            );
+
+        }
+
+    }
+
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
