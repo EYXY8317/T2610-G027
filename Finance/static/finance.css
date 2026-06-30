@@ -41,21 +41,21 @@
 
 :root{
 
-    --card-bg:var(--bg-card);
+    --card-bg:var(--primary-soft);
 
-    --card-bg-2:var(--bg-card-2);
+    --card-bg-2:var(--primary-light);
 
-    --border:var(--border-color);
+    --border:var(--primary-border);
 
-    --shadow:var(--shadow);
+    --shadow:0 8px 24px rgba(0,0,0,0.08);
 
-    --text-main:var(--text-main);
+    --text-main:#111;
 
-    --text-soft:var(--text-soft);
+    --text-soft:#666;
 
-    --accent:var(--button-bg);
+    --accent:var(--primary);
 
-    --accent-hover:var(--button-hover);
+    --accent-hover:var(--primary-hover);
 
     --radius:28px;
 
@@ -68,9 +68,11 @@
 /* ================== NAV THEME ==================== */
 /* ================================================= */
 
-body      { --primary:#7b5e4a; --primary-hover:#f5ede6; }
-body.cozy { --primary:#9c6b4f; --primary-hover:#fdf0e8; }
-body.dark { --primary:#5865f2; --primary-hover:#eef0ff; }
+body          { --primary:#8b6b4f; --primary-hover:#ece0d3; }
+body.mocha    { --primary:#8b6b4f; --primary-hover:#ece0d3; }
+body.lavender { --primary:#7c5cff; --primary-hover:#ebe3ff; }
+body.matcha   { --primary:#5e8b6a; --primary-hover:#dce9df; }
+body.ash      { --primary:#5f5f5f; --primary-hover:#e2e2e2; }
 
 
 
@@ -137,7 +139,7 @@ body.dark .wallpaper-overlay{
     left:0;
     right:0;
     background:white;
-    border-bottom:1px solid #eee4da;
+    border-bottom:1px solid var(--primary-border, #eee4da);
     padding:10px 32px;
     display:grid;
     grid-template-columns:1fr auto 1fr;
@@ -155,7 +157,7 @@ body.dark .wallpaper-overlay{
 .logo-box{
     width:52px;
     height:52px;
-    background:#f2e5d8;
+    background:var(--primary-light, #f2e5d8);
     border-radius:14px;
     display:flex;
     justify-content:center;
@@ -256,7 +258,7 @@ body.dark .wallpaper-overlay{
 
     border:none !important;
 
-    border-bottom:1px solid #eee4da !important;
+    border-bottom:1px solid var(--primary-border, #eee4da) !important;
 
     box-shadow:none !important;
 
@@ -352,7 +354,7 @@ body.dark .wallpaper-overlay{
 
 .active-link{
 
-    background:#6f7cff;
+    background:var(--primary);
 
     padding:10px 18px !important;
 
@@ -689,9 +691,9 @@ label{
 
     margin-top:16px;
 
-    background:rgba(0,0,0,0.08);
+    background:var(--primary-border, rgba(0,0,0,0.08));
 
-    border:1px solid rgba(0,0,0,0.15);
+    border:1px solid var(--primary-border, rgba(0,0,0,0.15));
 }
 
 .progress-bar{
@@ -1298,8 +1300,8 @@ body.dark .contrib-row{
     width:100%;
     padding:9px 14px;
     border-radius:10px;
-    border:1px solid rgba(0,0,0,0.1);
-    background:#f5f0ea;
+    border:1px solid var(--primary-border, rgba(0,0,0,0.1));
+    background:var(--primary-soft, #f5f0ea);
     cursor:pointer;
     font-size:13px;
     font-weight:600;
@@ -1308,7 +1310,7 @@ body.dark .contrib-row{
 }
 
 .contrib-history-btn:hover{
-    background:#ede5db;
+    background:var(--primary-hover, #ede5db);
 }
 
 body.dark .contrib-history-btn{

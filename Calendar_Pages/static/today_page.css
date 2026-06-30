@@ -3,6 +3,12 @@
    Prefix: tp-   (avoids collisions with mystyle.css)
 ============================================================ */
 
+/* ---- PAGE BACKGROUND ---- */
+body {
+    background: var(--background, #f7f3ee);
+    transition: background 0.35s ease;
+}
+
 /* ---- NAVBAR ICON LINKS ---- */
 .nav-icon-link {
     display: flex;
@@ -35,7 +41,7 @@
 }
 .tp-date-icon {
     font-size: 38px;
-    color: #8b6b4f;
+    color: var(--primary, #8b6b4f);
 }
 .tp-date-text {
     font-size: 40px;
@@ -54,10 +60,10 @@
 .tp-dashboard {
     display: flex;
     align-items: stretch;
-    background: #ffffff;
+    background: var(--primary-soft, #ffffff);
     border-radius: 20px;
-    border: 1px solid #ede8e2;
-    box-shadow: 0 4px 24px rgba(139, 107, 79, 0.07);
+    border: 1px solid var(--primary-border, #ede8e2);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
     margin-bottom: 44px;
     overflow: hidden;
 }
@@ -72,7 +78,7 @@
 
 .tp-divider {
     width: 1px;
-    background: #e8ddd1;
+    background: var(--primary-border, #e8ddd1);
     flex-shrink: 0;
     margin: 24px 0;
 }
@@ -98,8 +104,8 @@
 .tp-view-all {
     font-size: 12px;
     color: #888;
-    background: #f5f5f5;
-    border: 1px solid #e8ddd1;
+    background: var(--primary-light, #f5f5f5);
+    border: 1px solid var(--primary-border, #e8ddd1);
     border-radius: 8px;
     padding: 4px 10px;
     text-decoration: none;
@@ -107,7 +113,7 @@
     cursor: pointer;
     transition: background 0.15s;
 }
-.tp-view-all:hover { background: #ece0d3; }
+.tp-view-all:hover { background: var(--primary-hover, #ece0d3); }
 
 /* ---- COLUMN BODY ---- */
 .tp-col-body {
@@ -138,10 +144,17 @@
 }
 .tp-open-btn:hover:not(:disabled) { opacity: 0.87; transform: translateY(-1px); }
 .tp-open-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.tp-btn-diary  { background: #7c5cff; color: #fff; }
-.tp-btn-finance{ background: #22c55e; color: #fff; }
-.tp-btn-events { background: #3b82f6; color: #fff; }
-.tp-btn-goals  { background: #8b6b4f; color: #fff; }
+.tp-btn-diary  { background: #fce8ef; color: #8b1a40; }
+.tp-btn-diary:hover:not(:disabled)  { background: #e87da0; color: #fff; opacity: 1; }
+
+.tp-btn-finance{ background: #e0f2e9; color: #2e7a4e; }
+.tp-btn-finance:hover:not(:disabled){ background: #72bf8e; color: #fff; opacity: 1; }
+
+.tp-btn-events { background: #f5eee7; color: #7b5a40; }
+.tp-btn-events:hover:not(:disabled) { background: #8b6b4f; color: #fff; opacity: 1; }
+
+.tp-btn-goals  { background: #e0f2e9; color: #2e7a4e; }
+.tp-btn-goals:hover:not(:disabled)  { background: #72bf8e; color: #fff; opacity: 1; }
 
 /* ---- DIARY COLUMN ---- */
 .tp-mood-row {
@@ -155,7 +168,7 @@
 .tp-mood-placeholder { font-size: 15px; color: #aaa; }
 .tp-diary-card {
     flex: 1;
-    background: #f0edff;
+    background: #fff0f5;
     border-radius: 14px;
     padding: 20px;
     display: flex;
@@ -165,7 +178,7 @@
 .tp-diary-card-label {
     font-size: 15px;
     font-weight: 700;
-    color: #7c5cff;
+    color: #e87da0;
 }
 .tp-diary-card-text {
     font-size: 15px;
@@ -177,6 +190,7 @@
     color: #aaa;
     margin-top: 4px;
 }
+.tp-diary-empty { color: #bbb; font-style: italic; }
 
 /* ---- FINANCE COLUMN ---- */
 .tp-spending-row {
@@ -214,7 +228,7 @@
     align-items: center;
     gap: 12px;
     padding: 11px 0;
-    border-bottom: 1px solid #f5f0ea;
+    border-bottom: 1px solid var(--primary-border, #f5f0ea);
 }
 .tp-txn-item:last-child { border-bottom: none; }
 .tp-txn-icon {
@@ -293,7 +307,7 @@
     text-align: center;
     font-size: 12px;
     font-weight: 600;
-    color: #3b82f6;
+    color: #8b6b4f;
     padding: 8px 0 2px;
     text-decoration: none;
 }
@@ -320,13 +334,13 @@
 .tp-goal-amounts { font-size: 14px; color: #aaa; margin-bottom: 8px; }
 .tp-goal-bar-bg {
     height: 8px;
-    background: #f0ebe4;
+    background: var(--primary-border, #f0ebe4);
     border-radius: 4px;
     overflow: hidden;
 }
 .tp-goal-bar-fill {
     height: 100%;
-    background: #22c55e;
+    background: #72bf8e;
     border-radius: 4px;
     min-width: 3px;
     transition: width 0.5s ease;
@@ -340,7 +354,7 @@
     gap: 10px;
     margin-bottom: 20px;
 }
-.tp-summary-icon  { font-size: 26px; color: #3b82f6; }
+.tp-summary-icon  { font-size: 26px; color: #8b6b4f; }
 .tp-summary-title { font-size: 19px; font-weight: 700; color: #1a1a2e; }
 .tp-summary-sub   { font-size: 14px; color: #aaa; margin-left: 2px; }
 
@@ -350,11 +364,11 @@
     gap: 16px;
 }
 .tp-sc {
-    background: #ffffff;
+    background: var(--primary-soft, #ffffff);
     border-radius: 16px;
     padding: 24px 22px;
-    border: 1px solid #ede8e2;
-    box-shadow: 0 2px 10px rgba(139, 107, 79, 0.06);
+    border: 1px solid var(--primary-border, #ede8e2);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 .tp-sc-icon  { font-size: 36px; display: block; margin-bottom: 14px; }
 .tp-sc-label { font-size: 16px; color: #888; margin-bottom: 6px; }
@@ -362,12 +376,12 @@
 .tp-sc-sub   { font-size: 14px; font-weight: 500; }
 
 /* summary sub-text colours */
-.tp-sub-finance  { color: #22c55e; }
-.tp-val-diary    { color: #7c5cff; }
-.tp-sub-diary    { color: #7c5cff; }
-.tp-sub-events   { color: #3b82f6; }
-.tp-sub-goals    { color: #f59e0b; }
-.tp-sub-saved    { color: #f59e0b; }
+.tp-sub-finance  { color: #2e7a4e; }
+.tp-val-diary    { color: #e87da0; }
+.tp-sub-diary    { color: #e87da0; }
+.tp-sub-events   { color: #8b6b4f; }
+.tp-sub-goals    { color: #2e7a4e; }
+.tp-sub-saved    { color: #2e7a4e; }
 .tp-budget-ok    { color: #22c55e; }
 .tp-budget-over  { color: #ef4444; }
 .tp-sub-budget-ok  { color: #22c55e; }

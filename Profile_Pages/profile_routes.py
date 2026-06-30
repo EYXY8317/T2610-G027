@@ -42,7 +42,8 @@ def register_profile_routes(app):
 
                     return redirect("/edit_profile")
 
-        return render_template("verify_profile.html")
+        error = request.method == "POST"
+        return render_template("verify_profile.html", error=error)
 
     @app.route("/upload_profile_picture", methods=["POST"])
     def upload_profile_picture():

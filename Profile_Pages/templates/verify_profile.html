@@ -1,10 +1,73 @@
-<h1>Verify Password</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Password — Life Pages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+    <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    (function(){
+        setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
+        fetch('/api/user-theme')
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+                var t = d.theme || 'mocha';
+                setTheme(t);
+                document.body.className = document.body.className
+                    .replace(/\b(mocha|lavender|matcha|ash)\b/g, '').trim() + ' ' + t;
+            });
+    })();
+    </script>
+</head>
+<body class="mocha">
 
-<form method="POST">
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+        </div>
+        <div class="logo-text">Life Pages</div>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
+        <a href="/finance">Finance Page</a>
+        <a href="/journal">Diary Page</a>
+        <a href="/calendar">Calendar Page</a>
+        <a href="/profile" class="active-link">Settings</a>
+    </div>
+</nav>
 
-    <label>Current Password</label><br>
-    <input type="password" name="password"><br><br>
+<div class="centered-page-wrapper">
+    <div class="card centered-card">
+        <div class="centered-icon">🔒</div>
+        <div class="section-title">Verify Your Identity</div>
+        <p class="centered-desc">Enter your current password to continue to Edit Profile.</p>
 
-    <button type="submit">Verify</button>
+        {% if error %}
+        <div class="form-error">Incorrect password. Please try again.</div>
+        {% endif %}
 
-</form>
+        <form method="POST" class="centered-form">
+            <div class="form-group">
+                <label class="form-label">Current Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-input{% if error %} form-input-error{% endif %}"
+                    placeholder="Enter your password"
+                    autofocus
+                    required
+                >
+            </div>
+            <button type="submit" class="btn form-submit-btn">Verify &amp; Continue</button>
+        </form>
+
+        <a href="/profile" class="page-back-link">← Back to Settings</a>
+    </div>
+</div>
+
+</body>
+</html>

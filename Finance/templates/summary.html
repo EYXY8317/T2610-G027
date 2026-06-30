@@ -15,6 +15,11 @@
     href="{{ url_for('profile_static', filename='profile.css') }}"
     >
 
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
+    </script>
+
 </head>
 
 <body
@@ -627,44 +632,44 @@ new Chart(document.getElementById("pieChart"), {
 
             backgroundColor:
 
-            document.body.classList.contains("dark")
+            document.body.classList.contains("mocha")
 
             ? [
-                '#60A5FA',
-                '#34D399',
-                '#FBBF24',
-                '#F87171',
-                '#A78BFA'
+                '#8b6b4f',
+                '#b18a68',
+                '#7a5c3f',
+                '#c4a882',
+                '#d9c3ad'
             ]
 
-            : document.body.classList.contains("sakura")
+            : document.body.classList.contains("lavender")
 
             ? [
-                '#F9A8D4',
-                '#F472B6',
-                '#FB7185',
-                '#C084FC',
-                '#FDA4AF'
+                '#7c5cff',
+                '#9a83ff',
+                '#5c3fd8',
+                '#b89bff',
+                '#d8cfff'
             ]
 
-            : document.body.classList.contains("cozy")
+            : document.body.classList.contains("matcha")
 
             ? [
-                '#A16207',
-                '#B45309',
-                '#92400E',
-                '#78350F',
-                '#CA8A04'
+                '#5e8b6a',
+                '#8db79a',
+                '#3d6e4e',
+                '#a8c8b0',
+                '#b8d4be'
             ]
 
-            : document.body.classList.contains("frosted")
+            : document.body.classList.contains("ash")
 
             ? [
-                '#8FAFC8',
-                '#A3B8D8',
-                '#9AA7E8',
-                '#B4A7E8',
-                '#7FA3C9'
+                '#5f5f5f',
+                '#8c8c8c',
+                '#3d3d3d',
+                '#a0a0a0',
+                '#bdbdbd'
             ]
 
             : [

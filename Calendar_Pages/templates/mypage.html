@@ -157,16 +157,6 @@
 
     </div>
 
-   <div class="menu-item"
-        onclick="openThemePopup()">
-
-    <span class="material-symbols-rounded">
-         palette
-    </span>
-
-    <span>Theme</span>
-
-</div>
 
 </div>
 
@@ -1385,72 +1375,6 @@
 </div>
 
 
-<!-- THEME POPUP -->
-
-<div id="themePopup"
-     class="theme-popup">
-
-    <div class="theme-popup-content">
-
-        <div class="theme-popup-header">
-
-            <h2>
-
-                <span class="material-symbols-rounded">
-                    palette
-                </span>
-
-                Choose Theme
-
-            </h2>
-
-           <button
-            class="theme-close-btn"
-            onclick="closeThemePopup()">
-
-             ✕
-
-            </button>
-
-    </div>
-
-        <div class="theme-grid">
-
-            <div class="theme-card"
-                 onclick="setTheme('mocha')">
-
-                 Mocha Latte
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('lavender')">
-
-                 Lavender Dream
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('matcha')">
-
-                 Matcha Green
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('ash')">
-
-                 Ash Gray
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
 <!-- =====================================
      JS FILES
 ===================================== -->
@@ -1464,6 +1388,12 @@
 <script src="/calendar_static/today.js"></script>
 
 <script src="/calendar_static/themecolor.js"></script>
+<script>
+(function(){
+    const savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+    setTheme(savedTheme);
+})();
+</script>
 
 
 
