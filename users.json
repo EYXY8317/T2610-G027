@@ -5,7 +5,7 @@
         "email": "yxin683@gmail.com",
         "security_question": "birth_city",
         "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4",
-        "theme": "cozy",
+        "theme": "mocha",
         "home_layout": {
             "digital-clock-widget-layout": {
                 "left": "16px",

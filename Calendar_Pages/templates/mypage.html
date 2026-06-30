@@ -23,17 +23,27 @@
         <div class="logo-box">
             <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
         </div>
+
         <div class="logo-text">Life Pages</div>
+
     </div>
 
     <div class="nav-links">
+
         <a href="/dashboard">Home</a>
+
         <a href="/today">Today</a>
+
         <a href="/finance">Finance Page</a>
+
         <a href="/journal">Diary Page</a>
+
         <a href="/calendar" class="active">Calendar Page</a>
+
          <a href="/profile">Settings</a>
+
     </div>
+
 </nav>
 
 
@@ -1379,15 +1389,14 @@
      JS FILES
 ===================================== -->
 
-<script src="/calendar_static/task1.js"></script>
-
-<script src="/calendar_static/task2.js"></script>
+<script src="/calendar_static/task.js"></script>
 
 <script src="/calendar_static/calendar.js"></script>
 
 <script src="/calendar_static/today.js"></script>
 
 <script src="/calendar_static/themecolor.js"></script>
+
 <script>
 (function(){
     const savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
