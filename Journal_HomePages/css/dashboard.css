@@ -21,6 +21,8 @@ body {
 
     font-family: 'Inter', sans-serif;
 
+    background: var(--background, white);
+
 }
 
 /* ── Navbar (Life Pages style, fixed overlay) ── */
@@ -135,7 +137,7 @@ body {
 
 .nav-links a.active {
 
-    background: #8b5e3c;
+    background: var(--primary, #8b5e3c);
 
     color: white;
 
@@ -145,7 +147,7 @@ body {
 
 .nav-links a:hover {
 
-    background: #c9a88a;
+    background: var(--primary-accent, #c9a88a);
 
     color: white;
 

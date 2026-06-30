@@ -1,16 +1,94 @@
-<h1>Edit Profile</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile — Life Pages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
+    <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    (function(){
+        setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
+    })();
+    </script>
+</head>
+<body class="{{ user.theme if user and user.theme else 'mocha' }}">
 
-<form method="POST" enctype="multipart/form-data">
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+        </div>
+        <div class="logo-text">Life Pages</div>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
+        <a href="/finance">Finance Page</a>
+        <a href="/journal">Diary Page</a>
+        <a href="/calendar">Calendar Page</a>
+        <a href="/profile" class="active-link">Settings</a>
+    </div>
+</nav>
 
-    <label>Profile Picture</label><br>
-    <input type="file" name="profile_picture"><br><br>
-    
-    <label>Username</label><br>
-    <input type="text" name="username" value="{{ user.username }}"><br><br>
+<div class="centered-page-wrapper">
+    <div class="card centered-card edit-card">
+        <div class="centered-icon">✏️</div>
+        <div class="section-title">Edit Profile</div>
+        <p class="centered-desc">Update your username, email, or profile picture.</p>
 
-    <label>Email</label><br>
-    <input type="email" name="email" value="{{ user.email }}"><br><br>
+        <form method="POST" enctype="multipart/form-data" class="centered-form">
 
-    <button type="submit">Save Changes</button>
+            <div class="form-group">
+                <label class="form-label">Profile Picture</label>
+                <div class="file-upload">
+                    <label class="file-upload-label">
+                        <span class="file-upload-btn">📷 Choose Photo</span>
+                        <span class="file-upload-name">No file chosen</span>
+                        <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
+                    </label>
+                </div>
+            </div>
 
-</form>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    class="form-input"
+                    value="{{ user.username }}"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-input"
+                    value="{{ user.email }}"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="btn form-submit-btn">Save Changes</button>
+
+        </form>
+
+        <a href="/profile" class="page-back-link">← Back to Settings</a>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.file-input-hidden').forEach(function(input){
+    input.addEventListener('change', function(){
+        var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
+        el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+    });
+});
+</script>
+
+</body>
+</html>

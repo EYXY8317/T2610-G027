@@ -4,6 +4,13 @@
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/diary_static/style.css">
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
+    fetch('/api/user-theme')
+        .then(function(r){ return r.json(); })
+        .then(function(d){ setTheme(d.theme || 'mocha'); });
+    </script>
     <style>
         #canvas {
             position: relative;
