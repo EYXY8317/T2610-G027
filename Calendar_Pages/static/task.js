@@ -2,12 +2,17 @@
 // 1.GLOBAL STATE
 //   Store temporary values used
 //   across the application
+// 
+// 全局状态变量
+// 用于储存整个应用程序中
+// 会重复使用的数据
 // ===============================
 
-// Current calendar date
+// 当前日期对象
 let today = new Date();
 
 // Task storage
+// 用于储存所有任务数据
 let taskData = {
 
     work: [],
@@ -19,43 +24,54 @@ let taskData = {
 };
 
 // Tag filter
+// 当前选中的标签筛选器
 let currentTagFilter = "all";
 
 // Completed page filters
+// Completed 页面筛选条件
 let selectedDateFilter = "all";
 let selectedCategoryFilter = "all";
 
 // Calendar popup selections
+// 日历弹窗中选择的日期与时间
 let selectedDate = "";
 let selectedStart = "";
 let selectedEnd = "";
 let selectedRepeat = "";
 
 // Priority selections
+// 当前选中的任务优先级
 let selectedPriority = "";
 let panelSelectedPriority = "";
 
-//  Current Task
+// Current Task
+// 当前正在操作的任务信息
 let currentTaskListType = "";
 let currentTaskId = null;
 
 
 
 // ===============================
-// 2.PAGE SWITCH (Sidebar Navigation)
-//   Handle page navigation and
-//   refresh page-specific content
+// 2. PAGE SWITCH (Sidebar Navigation)
+// Handle page navigation and
+// refresh page-specific content
+//
+// 页面切换（侧边栏导航）
+// 负责切换页面并刷新对应页面内容
 // ===============================
 
 function showPage(pageId, element) {
 
-    // Close all popups
+    // Close all calendar popups
+    // 关闭所有日历弹窗
     closeCalendar();
 
-    // Close detail panel
+    // Close task detail panel
+    // 关闭任务详情面板
     closeDetailPanel();
 
     // Hide all pages
+    // 隐藏所有页面
     document.querySelectorAll(".page")
         .forEach(page => {
 
@@ -64,10 +80,12 @@ function showPage(pageId, element) {
         });
 
     // Show selected page
+    // 显示被选中的页面
     document.getElementById(pageId)
         .classList.add("active");
 
     // Remove active state from all menu items
+    // 移除所有菜单的 active 状态
     document.querySelectorAll(".menu-item")
         .forEach(item => {
 
@@ -76,6 +94,7 @@ function showPage(pageId, element) {
         });
 
     // Highlight selected menu item
+    // 高亮当前选中的菜单
     if (element) {
 
         element.classList.add("active");
@@ -84,26 +103,38 @@ function showPage(pageId, element) {
 
     // ===============================
     // Refresh page content
+    // Refresh specific page data
+    //
+    // 刷新页面内容
+    // 根据页面类型更新对应数据
     // ===============================
 
+    // Refresh Completed page
+    // 刷新 Completed 页面
     if (pageId === "completed") {
 
         renderCompleted();
 
     }
 
+    // Refresh Trash page
+    // 刷新 Trash 页面
     else if (pageId === "trash") {
 
         renderTrash();
 
     }
 
+    // Refresh Today page
+    // 刷新 Today 页面
     else if (pageId === "today") {
 
         updateTodayDashboard();
 
     }
 
+    // Refresh task category pages
+    // 刷新各任务分类页面
     else if (
         ["work", "shopping", "study", "personal", "workout"]
             .includes(pageId)
@@ -113,7 +144,8 @@ function showPage(pageId, element) {
 
     }
 
-    // Refresh calendar page
+    // Refresh Calendar page
+    // 刷新 Calendar 页面
     else if (pageId === "calendar") {
 
         generateCalendar();
@@ -124,23 +156,30 @@ function showPage(pageId, element) {
 
 
 // =====================================
-// 3.DATA MANAGEMENT
+// 3.DATA MANAGEMENT 数据管理
 // =====================================
 
 // ===============================
-// PERSISTENCE 
+// PERSISTENCE
 // Load task data from Flask API
+//
+// 数据持久化
+// 从 Flask API 加载任务数据
 // ===============================
 
 async function loadTasks() {
 
     try {
 
+        // Send request to Flask backend
+        // 向 Flask 后端发送请求
         const response =
             await fetch(
                 "/calendar/tasks"
             );
 
+        // Convert response into JSON
+        // 将响应数据转换为 JSON 格式
         taskData =
             await response.json();
 
@@ -148,6 +187,8 @@ async function loadTasks() {
 
     catch(error) {
 
+        // Display error message in console
+        // 在控制台显示错误信息
         console.error(
             "Failed to load tasks:",
             error
@@ -159,26 +200,36 @@ async function loadTasks() {
 
 
 // =====================================
-// 4.TASK CRUD
+// 4. TASK CRUD
+// Create, Read, Update and Delete tasks
+//
+// 任务 CRUD 操作
+// 用于创建、读取、更新和删除任务
 // =====================================
 
 // ===============================
 // ADD NEW TASK
 // Create and save a new task
+//
+// 新增任务
+// 创建并保存一个新任务
 // ===============================
 
 async function addTask(listType) {
 
-    // Get task title
+    // Get task title from input field
+    // 从输入框获取任务标题
     let text =
         document.getElementById(
             listType + "TaskText"
         ).value.trim();
 
-    // Prevent empty task
+    // Prevent empty task submission
+    // 防止新增空任务
     if (!text) return;
 
-    // Date is required
+    // Ensure user selects a date
+    // 确保用户已经选择日期
     if (!selectedDate) {
 
         alert(
@@ -190,6 +241,7 @@ async function addTask(listType) {
     }
 
     // Create task object
+    // 创建任务对象
     let task = {
 
         id: Date.now(),
@@ -221,11 +273,18 @@ async function addTask(listType) {
     };
 
     // Save task into local taskData
+    // 将任务保存到本地 taskData
     taskData[listType].push(task);
 
     // ===============================
     // SAVE TASK TO FLASK
+    // Send task data to backend API
+    //
+    // 保存任务到 Flask 后端
+    // 将任务资料发送到后端 API
     // ===============================
+
+try {
 
     await fetch(
         "/calendar/add_task",
@@ -248,8 +307,36 @@ async function addTask(listType) {
         }
     );
 
+}
+
+catch(error) {
+
+    // Remove task if saving failed
+    // 如果保存失败，则移除刚刚新增的任务
+    taskData[listType] =
+        taskData[listType].filter(
+            t => t.id !== task.id
+        );
+
+    console.error(
+        "Failed to save task:",
+        error
+    );
+
+    alert(
+        "Failed to save task"
+    );
+
+    return;
+
+}
+
     // ===============================
     // CLEAR INPUTS
+    // Reset input fields after saving
+    //
+    // 清空输入栏
+    // 保存后重置输入框内容
     // ===============================
 
     document.getElementById(
@@ -262,14 +349,26 @@ async function addTask(listType) {
 
     // ===============================
     // REFRESH UI
+    // Update all related interfaces
+    //
+    // 刷新界面
+    // 更新所有相关页面显示
     // ===============================
 
+    // Refresh current task list
+    // 刷新当前任务列表
     renderTasks(listType);
 
+    // Refresh Today page dashboard
+    // 刷新 Today 页面
     updateTodayDashboard();
 
+    // Refresh tag filter buttons
+    // 刷新标签筛选器
     renderTagFilters();
 
+    // Refresh calendar if Calendar page is active
+    // 如果当前在 Calendar 页面，则刷新日历
     if (
         document.getElementById("calendar")
             .classList.contains("active")
@@ -281,6 +380,10 @@ async function addTask(listType) {
 
     // ===============================
     // RESET TEMPORARY DATA
+    // Clear temporary selections
+    //
+    // 重置临时数据
+    // 清空当前选择的数据
     // ===============================
 
     selectedDate = "";
@@ -294,6 +397,7 @@ async function addTask(listType) {
     selectedPriority = "";
 
     // Reset priority button selection
+    // 重置优先级按钮选中状态
     document
         .querySelectorAll(
             ".priority-box > span"
@@ -313,22 +417,36 @@ async function addTask(listType) {
 // MOVE TASK TO TRASH
 // Move task from active/completed
 // to Trash page
+//
+// 移动任务到垃圾桶
+// 将任务从 Active 或 Completed
+// 页面移动到 Trash 页面
 // ===============================
 
 async function deleteTask(listType, id) {
 
     // Find selected task
+    // 查找指定的任务
     let task =
         taskData[listType].find(
             t => t.id === id
         );
 
     // Stop if task doesn't exist
+    // 如果任务不存在则停止执行
     if (!task) return;
 
+    // Store current task status
+    // 保存任务当前状态
+    const oldStatus =
+    task.status;
+
     // Move task to trash
+    // 将任务状态改为 trash
     task.status = "trash";
 
+    // Send updated task data to Flask backend
+    // 将更新后的任务数据发送到 Flask 后端
     const response =
         await fetch(
             "/calendar/update_task",
@@ -344,10 +462,19 @@ async function deleteTask(listType, id) {
             }
         );
 
+    // Convert response into JSON
+    // 将响应转换成 JSON 格式
     const result =
         await response.json();
 
+    // Show error if update failed
+    // 如果更新失败则显示错误信息
     if (!result.success) {
+
+        // Restore previous task status
+        // 恢复任务原本的状态
+         task.status =
+             oldStatus;
 
         alert(
             "Failed to update task"
@@ -358,21 +485,27 @@ async function deleteTask(listType, id) {
     }
 
     // Refresh active task list
+    // 刷新当前任务列表
     renderTasks(listType);
 
     // Refresh completed page
+    // 刷新 Completed 页面
     renderCompleted();
 
     // Refresh trash page
+    // 刷新 Trash 页面
     renderTrash();
 
     // Refresh Today Dashboard
+    // 刷新 Today 页面
     updateTodayDashboard();
 
     // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 
-    // Refresh calendar if open
+    // Refresh calendar if Calendar page is open
+    // 如果当前正在 Calendar 页面，则刷新日历
     if (
         document.getElementById("calendar")
             .classList.contains("active")
@@ -384,60 +517,64 @@ async function deleteTask(listType, id) {
 
 }
 
-// ===============================
-// RESTORE FROM COMPLETED
-// Move task back to active list
-// ===============================
+// =====================================
+// RESTORE TASK
+// Restore task from Trash
+// Move task back to Active list
+//
+// 恢复任务
+// 将任务从 Trash 页面恢复到 Active 列表
+// =====================================
 
 async function restoreTask(listType, id) {
 
+    // Find the selected task
+    // 查找指定的任务
     let task =
         taskData[listType].find(
             t => t.id === id
         );
 
+    // Stop function if task does not exist
+    // 如果任务不存在，则停止执行
     if (!task) return;
 
-    // Restore task
+    // =====================================
+    // OPTIMISTIC UI UPDATE
+    // Immediately update UI before
+    // waiting for server response
+    //
+    // 乐观更新机制
+    // 在等待服务器响应前，
+    // 先立即更新界面
+    // =====================================
+
+    // Store original status
+    // Used to rollback if save fails
+    //
+    // 保存原本状态
+    // 如果保存失败可用于恢复
+    const oldStatus =
+        task.status;
+
+    // Restore task locally
+    // 在本地先恢复任务状态
     task.status = "active";
 
-    const response =
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
-
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(task)
-        }
-    );
-
-const result =
-    await response.json();
-
-if (!result.success) {
-
-    alert("Restore failed");
-
-    return;
-
-}
-
-    // Refresh pages
+    // Refresh pages immediately
+    // 立即刷新相关页面
     renderCompleted();
 
     renderTasks(listType);
+
+    renderTrash();
 
     updateTodayDashboard();
 
     renderTagFilters();
 
     // Refresh calendar if open
+    // 如果当前正在 Calendar 页面，则刷新日历
     if (
         document.getElementById(
             "calendar"
@@ -450,26 +587,122 @@ if (!result.success) {
 
     }
 
+    // =====================================
+    // SAVE CHANGES TO SERVER
+    // Send updated task data to backend
+    //
+    // 保存修改到服务器
+    // 将更新后的任务数据发送到后端
+    // =====================================
+
+    const response =
+        await fetch(
+
+            "/calendar/update_task",
+
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json"
+
+                },
+
+                body:
+                    JSON.stringify(task)
+
+            }
+
+        );
+
+    // Convert server response into JSON
+    // 将服务器响应转换为 JSON 格式
+    const result =
+        await response.json();
+
+    // =====================================
+    // ROLLBACK IF SAVE FAILED
+    // Restore previous status if
+    // server update was unsuccessful
+    //
+    // 回滚机制
+    // 如果服务器更新失败，
+    // 则恢复任务原本状态
+    // =====================================
+
+    if (!result.success) {
+
+        // Revert task status
+        // 恢复任务原本状态
+        task.status =
+            oldStatus;
+
+        // Refresh all related pages again
+        // 重新刷新所有相关页面
+        renderCompleted();
+
+        renderTasks(listType);
+
+        renderTrash();
+
+        updateTodayDashboard();
+
+        renderTagFilters();
+
+        // Refresh calendar if open
+        // 如果当前正在 Calendar 页面，则刷新日历
+        if (
+            document.getElementById(
+                "calendar"
+            ).classList.contains(
+                "active"
+            )
+        ) {
+
+            generateCalendar();
+
+        }
+
+        // Display error message
+        // 显示恢复失败提示
+        alert(
+            "Restore failed"
+        );
+
+    }
+
 }
 
 // ===============================
 // DELETE CURRENT TASK
 // Move current task to Trash
+//
+// 删除当前任务
+// 将当前任务移动到垃圾桶
 // ===============================
 
 function deleteCurrentTask() {
 
+    // Ask user for confirmation
+    // 询问用户是否确认删除
     if (
         confirm(
             "Delete this task?"
         )
     ) {
 
+        // Move current task to Trash
+        // 将当前任务移动到垃圾桶
         deleteTask(
             currentTaskListType,
             currentTaskId
         );
 
+        // Close task detail panel
+        // 关闭任务详情面板
         closeDetailPanel();
 
     }
@@ -479,10 +712,15 @@ function deleteCurrentTask() {
 // ===============================
 // DELETE TASK PERMANENTLY
 // Remove task forever from storage
+//
+// 永久删除任务
+// 从系统中彻底移除任务
 // ===============================
 
 async function permanentlyDeleteTask(listType, id) {
 
+    // Ask user for confirmation
+    // 询问用户是否确认永久删除
     if (
         !confirm(
             "Permanently delete this task?"
@@ -491,11 +729,15 @@ async function permanentlyDeleteTask(listType, id) {
         return;
     }
 
+    // Remove task from local taskData
+    // 从本地 taskData 中删除任务
     taskData[listType] =
         taskData[listType].filter(
             task => task.id !== id
         );
 
+    // Send delete request to Flask backend
+    // 向 Flask 后端发送删除请求
 const response =
     await fetch(
         "/calendar/delete_task",
@@ -514,21 +756,29 @@ const response =
         }
     );
 
-const result =
-    await response.json();
+    // Convert response into JSON
+    // 将服务器响应转换为 JSON 格式
+    const result =
+        await response.json();
 
-if (!result.success) {
+    // Display error message if deletion failed
+    // 如果删除失败，则显示错误信息
+    if (!result.success) {
 
-    alert(
-        "Delete failed"
-    );
+        alert(
+            "Delete failed"
+       );
 
     return;
 
 }
 
+    // Refresh Trash page
+    // 刷新垃圾桶页面
     renderTrash();
 
+    // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 
 }
@@ -536,10 +786,15 @@ if (!result.success) {
 // ===============================
 // EMPTY TRASH
 // Permanently delete all trashed tasks
+//
+// 清空垃圾桶
+// 永久删除所有垃圾桶中的任务
 // ===============================
 
 async function emptyTrash() { 
 
+    // Ask user for confirmation
+    // 询问用户是否确认清空垃圾桶
     if (
         !confirm(
             "Permanently delete all tasks in Trash?"
@@ -548,6 +803,8 @@ async function emptyTrash() {
         return;
     }
 
+    // Remove all tasks with status "trash"
+    // 删除所有状态为 "trash" 的任务
     Object.keys(taskData).forEach(listType => {
 
         taskData[listType] =
@@ -557,6 +814,8 @@ async function emptyTrash() {
 
     });
 
+    // Send request to Flask backend
+    // 向 Flask 后端发送清空垃圾桶请求
 const response =
     await fetch(
         "/calendar/empty_trash",
@@ -570,9 +829,13 @@ const response =
         }
     );
 
+    // Convert server response into JSON
+    // 将服务器响应转换为 JSON 格式
 const result =
     await response.json();
 
+    // Display error message if operation failed
+    // 如果操作失败，则显示错误信息
 if (!result.success) {
 
     alert(
@@ -583,13 +846,19 @@ if (!result.success) {
 
 }
 
+    // Refresh Trash page
+    // 刷新垃圾桶页面
     renderTrash();
 
+    // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 }
 
 // =====================================
-// 5.TASK COMPLETION
+// 5. TASK COMPLETION
+//
+// 任务完成功能
 // =====================================
 
 // ===============================
@@ -597,6 +866,10 @@ if (!result.success) {
 // Active ↔ Completed
 // Move task between Active
 // and Completed
+//
+// 切换任务完成状态
+// Active ↔ Completed
+// 在进行中和已完成之间切换
 // ===============================
 
 async function toggleComplete(
@@ -605,14 +878,20 @@ async function toggleComplete(
     checkbox
 ) {
 
+    // Find selected task
+    // 查找指定任务
     let task =
         taskData[listType].find(
             t => t.id === id
         );
 
+    // Stop if task does not exist
+    // 如果任务不存在，则停止执行
     if (!task) return;
 
     // Create next recurring task
+    // 如果任务为重复任务且被完成，
+    // 自动创建下一次重复任务
     if (
         checkbox.checked &&
         task.repeat &&
@@ -620,13 +899,19 @@ async function toggleComplete(
         task.date
     ) {
 
+        // Convert task date into Date object
+        // 将任务日期转换为 Date 对象
         let nextDate =
             new Date(task.date);
 
+        // Calculate next occurrence date
+        // 根据重复类型计算下一次日期
         switch (task.repeat) {
 
             case "daily":
 
+                // Add 1 day
+                // 增加 1 天
                 nextDate.setDate(
                     nextDate.getDate() + 1
                 );
@@ -635,6 +920,8 @@ async function toggleComplete(
 
             case "weekly":
 
+                // Add 7 days
+                // 增加 7 天
                 nextDate.setDate(
                     nextDate.getDate() + 7
                 );
@@ -643,6 +930,8 @@ async function toggleComplete(
 
             case "monthly":
 
+                // Add 1 month
+                // 增加 1 个月
                 nextDate.setMonth(
                     nextDate.getMonth() + 1
                 );
@@ -651,6 +940,8 @@ async function toggleComplete(
 
             case "yearly":
 
+                // Add 1 year
+                // 增加 1 年
                 nextDate.setFullYear(
                     nextDate.getFullYear() + 1
                 );
@@ -659,14 +950,22 @@ async function toggleComplete(
 
         }
 
+        // Create new recurring task
+        // 创建新的重复任务
         taskData[listType].push({
 
             ...task,
 
+            // Generate new unique ID
+            // 生成新的唯一 ID
             id: Date.now(),
 
+            // New task should remain active
+            // 新任务状态设为 active
             status: "active",
 
+            // Save next occurrence date
+            // 保存下一次执行日期
             date:
                 nextDate
                     .toISOString()
@@ -681,17 +980,23 @@ async function toggleComplete(
 // Play completion animation
 // before moving task into
 // Completed page
+//
+// 完成任务动画
+// 在任务移动到 Completed 页面前
+// 播放完成动画
 // =====================================
 
 if (checkbox.checked) {
 
     // Get current task card
+    // 获取当前任务卡片
     const taskCard =
         checkbox.closest(
             ".task-card"
         );
 
     // Add slide-out animation
+    // 添加完成动画效果
     if (taskCard) {
 
         taskCard.classList.add(
@@ -701,18 +1006,22 @@ if (checkbox.checked) {
     }
 
     // Wait for animation to finish
+    // 等待动画播放完成
     setTimeout(async () => {
 
         // Update task status
+        // 更新任务状态为 completed
         task.status =
             "completed";
 
         // Save completion timestamp
+        // 保存任务完成时间
         task.completedDate =
             new Date()
             .toISOString();
 
         // Save updated task to Flask
+        // 将更新后的任务保存到 Flask 后端
         await fetch(
             "/calendar/update_task",
             {
@@ -730,28 +1039,35 @@ if (checkbox.checked) {
         );
 
         // Refresh active task page
+        // 刷新当前任务页面
         renderTasks(
             listType
         );
 
         // Refresh completed page
+        // 刷新 Completed 页面
         renderCompleted();
 
         // Refresh trash page
+        // 刷新 Trash 页面
         renderTrash();
 
         // Refresh Today Dashboard
+        // 刷新 Today 页面 Dashboard
         updateTodayDashboard();
 
         // Refresh tag filters
+        // 刷新标签筛选器
         renderTagFilters();
 
         // Show completion message
+        // 显示完成提示讯息
         showToast(
             "✨ You Did It!"
         );
 
-        // Refresh calendar if open
+        // Refresh calendar if Calendar page is open
+        // 如果当前正在 Calendar 页面，则刷新日历
         if (
             document.getElementById(
                 "calendar"
@@ -767,6 +1083,8 @@ if (checkbox.checked) {
 
     }, 600);
 
+    // Stop executing remaining code
+    // 停止执行后续代码
     return;
 
 }
@@ -774,11 +1092,18 @@ if (checkbox.checked) {
 // =====================================
 // UNCHECK TASK
 // Move task back to active
+//
+// 取消完成任务
+// 将任务恢复到 Active 状态
 // =====================================
 
+// Change task status back to active
+// 将任务状态改回 active
 task.status =
     "active";
-    
+
+// Save updated task to Flask backend
+// 将更新后的任务保存到 Flask 后端
 await fetch(
     "/calendar/update_task",
     {
@@ -793,19 +1118,28 @@ await fetch(
     }
 );
 
-    // Refresh pages
+    // Refresh active task page
+    // 刷新当前任务页面
     renderTasks(listType);
 
+    // Refresh completed page
+    // 刷新 Completed 页面
     renderCompleted();
 
+    // Refresh trash page
+    // 刷新 Trash 页面
     renderTrash();
 
+    // Refresh Today Dashboard
+    // 刷新 Today 页面 Dashboard
     updateTodayDashboard();
 
+    // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 
- 
-    // Refresh calendar if open
+    // Refresh calendar if Calendar page is open
+    // 如果当前正在 Calendar 页面，则刷新日历
     if (
         document.getElementById("calendar")
             .classList.contains("active")
@@ -820,6 +1154,9 @@ await fetch(
 // =====================================
 // COMPLETE TASK FROM CALENDAR MODAL
 // Complete task directly from calendar
+//
+// 从 Calendar Modal 完成任务
+// 直接在日历弹窗中完成任务
 // =====================================
 
 async function completeTask(
@@ -827,21 +1164,29 @@ async function completeTask(
     id
 ) {
 
+    // Find selected task
+    // 查找指定任务
     const task =
         taskData[listType].find(
             t => t.id === id
         );
 
+    // Stop function if task does not exist
+    // 如果任务不存在，则停止执行
     if (!task) return;
 
     // Update task status
+    // 更新任务状态为 completed
     task.status =
         "completed";
 
+    // Save completion timestamp
+    // 保存任务完成时间
     task.completedDate =
         new Date().toISOString();
 
-    // Save to Flask
+    // Save updated task to Flask backend
+    // 将更新后的任务保存到 Flask 后端
     await fetch(
         "/calendar/update_task",
         {
@@ -856,20 +1201,32 @@ async function completeTask(
         }
     );
 
-    // Refresh all pages
+    // Refresh active task page
+    // 刷新当前任务页面
     renderTasks(listType);
 
+    // Refresh Completed page
+    // 刷新 Completed 页面
     renderCompleted();
 
+    // Refresh Trash page
+    // 刷新 Trash 页面
     renderTrash();
 
+    // Refresh Today Dashboard
+    // 刷新 Today 页面 Dashboard
     updateTodayDashboard();
 
+    // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 
+    // Refresh calendar page
+    // 刷新 Calendar 页面
     generateCalendar();
 
-    // Success toast
+    // Show success message
+    // 显示完成提示讯息
     showToast(
         "✨ You Did It!"
     );
@@ -878,45 +1235,61 @@ async function completeTask(
 
 
 // =====================================
-// 6.TASK RENDERING
+// 6. TASK RENDERING
+// Display tasks on the screen
+//
+// 任务渲染功能
+// 负责将任务显示在页面上
 // =====================================
 
 // ===============================
 // RENDER TASKS
 // Display all active tasks
 // for the selected category
+//
+// 渲染任务列表
+// 显示所选分类中的所有进行中任务
 // ===============================
 
 function renderTasks(listType) {
 
     // Get task container
+    // 获取任务列表容器
     let taskList =
         document.getElementById(
             listType + "TaskList"
         );
 
-    // Get empty message
+    // Get empty message element
+    // 获取空状态提示元素
     let emptyMsg =
         document.getElementById(
             listType + "EmptyMsg"
         );
 
     // Stop if elements don't exist
+    // 如果页面元素不存在则停止执行
     if (!taskList || !emptyMsg) return;
 
     // Clear existing tasks
+    // 清空目前显示的任务
     taskList.innerHTML = "";
 
     // Get active tasks only
+    // 只获取状态为 active 的任务
     let activeTasks =
         taskData[listType].filter(task => {
 
+            // Skip non-active tasks
+            // 跳过非 active 状态的任务
             if (task.status !== "active") {
 
                 return false;
 
             }
 
+            // Apply tag filter if selected
+            // 如果有选择标签筛选，则过滤任务
             if (
                 currentTagFilter !== "all" &&
                 task.tag !== currentTagFilter
@@ -926,28 +1299,40 @@ function renderTasks(listType) {
 
             }
 
+            // Keep this task
+            // 保留该任务
             return true;
 
         });
 
-    // Show / hide empty message
+    // Show or hide empty message
+    // 根据任务数量显示或隐藏空状态提示
     emptyMsg.style.display =
         activeTasks.length === 0
             ? "block"
             : "none";
 
     // Create task cards
+    // 创建任务卡片
     activeTasks.forEach(task => {
 
+        // Create task card element
+        // 创建任务卡片元素
         const card =
             document.createElement("div");
 
         card.className = "task-card";
 
+        // Store task ID
+        // 储存任务 ID
         card.dataset.id = task.id;
 
+        // Store task category
+        // 储存任务分类
         card.dataset.list = listType;
 
+        // Generate task card HTML
+        // 生成任务卡片内容
         card.innerHTML = `
 
             <input
@@ -958,6 +1343,9 @@ function renderTasks(listType) {
 
             <div class="task-info">
 
+                <!-- Task title -->
+                <!-- 任务标题 -->
+
                 <div class="task-title">
 
                     ${task.text}
@@ -965,6 +1353,9 @@ function renderTasks(listType) {
                 </div>
 
                 <div class="task-meta">
+
+                    <!-- Task date -->
+                    <!-- 任务日期 -->
 
                     <span class="task-date">
 
@@ -976,48 +1367,62 @@ function renderTasks(listType) {
 
                     </span>
 
-                    ${task.startTime || task.endTime
+                    ${
+                        task.startTime || task.endTime
                 ? `
+                        <!-- Task time -->
+                        <!-- 任务时间 -->
+
                         <span class="task-time">
 
                             <span class="material-symbols-rounded">
                                 schedule
                             </span>
 
-                              ${task.startTime && task.endTime
+                              ${
+                                  task.startTime && task.endTime
                     ? `${task.startTime} - ${task.endTime}`
                     : task.startTime
                         ? task.startTime
                         : ""
-                }
+                              }
+
                         </span>
                         `
                 : ""
-            }
+                    }
 
-                    ${task.priority
+                    ${
+                        task.priority
                 ? `
+                        <!-- Task priority -->
+                        <!-- 任务优先级 -->
+
                         <span class="task-priority">
 
                             ${getPriorityDot(task.priority)}
 
-                            ${task.priority === "red"
+                            ${
+                                task.priority === "red"
                     ? "High"
                     : task.priority === "orange"
                         ? "Medium"
                         : task.priority === "blue"
                             ? "Low"
                             : "No Priority"
-                }
+                            }
 
                         </span>
                         `
                 : ""
-            }
+                    }
 
                 </div>
 
             </div>
+
+            <!-- Task action buttons -->
+            <!-- 任务操作按钮 -->
 
             <div class="task-actions">
 
@@ -1047,6 +1452,8 @@ function renderTasks(listType) {
 
         `;
 
+        // Add task card into container
+        // 将任务卡片加入任务列表
         taskList.appendChild(card);
 
     });
@@ -1056,27 +1463,38 @@ function renderTasks(listType) {
 // ===============================
 // RENDER COMPLETED TASKS
 // Group completed tasks by category
+//
+// 渲染已完成任务
+// 根据分类显示所有已完成任务
 // ===============================
 
 function renderCompleted() {
 
     // Get completed page container
+    // 获取 Completed 页面容器
     let container =
         document.getElementById(
             "completedList"
         );
 
+    // Clear previous content
+    // 清空之前显示的内容
     container.innerHTML = "";
 
     // Track whether completed tasks exist
+    // 记录是否存在已完成任务
     let hasCompleted = false;
 
     // Loop through all categories
+    // 遍历所有任务分类
     Object.keys(taskData).forEach(listType => {
 
    // =====================================
    // CATEGORY FILTER
    // Show only selected category
+   //
+   // 分类筛选
+   // 只显示所选分类
    // =====================================
 
     if (
@@ -1091,6 +1509,8 @@ function renderCompleted() {
 
 ) {
 
+    // Skip current category
+    // 跳过当前分类
     return;
 
 }
@@ -1100,6 +1520,7 @@ let completedTasks =
         task => {
 
             // Only show completed tasks
+            // 只显示已完成任务
             if (
                 task.status !==
                 "completed"
@@ -1110,6 +1531,7 @@ let completedTasks =
             }
 
             // Skip date filter if All Dates selected
+            // 如果选择 All Dates，则不过滤日期
             if (
                 selectedDateFilter ===
                 "all"
@@ -1119,16 +1541,23 @@ let completedTasks =
 
             }
 
+            // Convert completion date into Date object
+            // 将完成日期转换为 Date 对象
             const completedDate =
                 new Date(
                     task.completedDate
                 );
 
+            // Get current date
+            // 获取当前日期
             const today =
                 new Date();
 
             // =====================================
             // TODAY
+            // Show tasks completed today
+            //
+            // 今天完成的任务
             // =====================================
 
             if (
@@ -1152,6 +1581,9 @@ let completedTasks =
 
             // =====================================
             // THIS WEEK
+            // Show tasks completed this week
+            //
+            // 本周完成的任务
             // =====================================
 
             if (
@@ -1175,6 +1607,9 @@ let completedTasks =
 
             // =====================================
             // THIS MONTH
+            // Show tasks completed this month
+            //
+            // 本月完成的任务
             // =====================================
 
             if (
@@ -1208,6 +1643,9 @@ let completedTasks =
 
             // =====================================
             // LAST WEEK
+            // Show tasks completed last week
+            //
+            // 上周完成的任务
             // =====================================
 
             if (
@@ -1245,6 +1683,9 @@ let completedTasks =
 
             // =====================================
             // LAST MONTH
+            // Show tasks completed last month
+            //
+            // 上个月完成的任务
             // =====================================
 
             if (
@@ -1286,6 +1727,9 @@ let completedTasks =
             // =====================================
             // OLDER
             // More than 30 days ago
+            //
+            // 较早的任务
+            // 超过 30 天前完成
             // =====================================
 
             if (
@@ -1313,12 +1757,15 @@ let completedTasks =
 
         }
     );
-    
+
+        // Skip category if no completed tasks
+        // 如果当前分类没有任务，则跳过
         if (completedTasks.length === 0) return;
 
         hasCompleted = true;
 
 // Create category section
+// 创建分类区域
 const section =
     document.createElement("div");
 
@@ -1386,13 +1833,15 @@ section.innerHTML = `
 
 `;
 
-
+    // Get task container inside category section
+    // 获取当前分类的任务容器
     const taskContainer =
        section.querySelector(
            ".completed-group-list"
         );
 
         // Create completed task cards
+        // 创建已完成任务卡片
         completedTasks.forEach(task => {
 
             const card =
@@ -1495,15 +1944,20 @@ section.innerHTML = `
 
             `;
 
+            // Add card into category container
+            // 将任务卡片加入分类容器
             taskContainer.appendChild(card);
 
         });
 
+        // Add category section into page
+        // 将分类区域加入页面
         container.appendChild(section);
 
     });
 
     // Show empty message
+    // 如果没有任何已完成任务，则显示提示信息
     if (!hasCompleted) {
 
         container.innerHTML = `
@@ -1529,36 +1983,47 @@ section.innerHTML = `
 // ===============================
 // RENDER TRASH TASKS
 // Group trashed tasks by category
+//
+// 渲染垃圾桶任务
+// 根据分类显示所有垃圾任务
 // ===============================
 
 function renderTrash() {
 
     // Get Trash page container
+    // 获取 Trash 页面容器
     let container =
         document.getElementById(
             "trashList"
         );
 
     // Clear existing content
+    // 清空之前显示的内容
     container.innerHTML = "";
 
     // Track whether Trash contains tasks
+    // 记录垃圾桶中是否有任务
     let hasTrash = false;
 
     // Loop through all task categories
+    // 遍历所有任务分类
     Object.keys(taskData).forEach(listType => {
 
+        // Get tasks with status "trash"
+        // 获取状态为 trash 的任务
         let trashTasks =
             taskData[listType].filter(
                 task => task.status === "trash"
             );
 
         // Skip empty categories
+        // 如果当前分类没有垃圾任务则跳过
         if (trashTasks.length === 0) return;
 
         hasTrash = true;
 
         // Create category section
+        // 创建分类区域
         const section =
             document.createElement("div");
 
@@ -1583,10 +2048,12 @@ function renderTrash() {
         `;
 
         // Task container
+        // 创建任务容器
         const taskContainer =
             document.createElement("div");
 
         // Render each trashed task
+        // 渲染每一个垃圾任务
         trashTasks.forEach(task => {
 
             const card =
@@ -1594,10 +2061,14 @@ function renderTrash() {
 
             card.className = "task-card";
 
+            // Reduce opacity for trash items
+            // 降低透明度以表示已删除状态
             card.style.opacity = "0.75";
 
             card.style.marginBottom = "8px";
 
+            // Generate task card HTML
+            // 生成任务卡片内容
             card.innerHTML = `
 
                 <div class="task-info">
@@ -1611,6 +2082,7 @@ function renderTrash() {
                     <div class="task-meta">
 
                         <!-- Date -->
+                        <!-- 日期 -->
 
                         <span class="task-date">
 
@@ -1623,6 +2095,7 @@ function renderTrash() {
                         </span>
 
                         <!-- Time -->
+                        <!-- 时间 -->
 
                         ${task.startTime || task.endTime
                     ? `
@@ -1645,6 +2118,7 @@ function renderTrash() {
                 }
 
                         <!-- Priority -->
+                        <!-- 优先级 -->
 
                         ${task.priority
                     ? `
@@ -1672,6 +2146,9 @@ function renderTrash() {
 
                 <div class="task-actions">
 
+                   <!-- Restore task button -->
+                   <!-- 恢复任务按钮 -->
+
                    <button
                        class="task-action-btn"
                        onclick="restoreTask('${listType}', ${task.id})"
@@ -1683,6 +2160,9 @@ function renderTrash() {
                     </span>
 
                     </button>
+
+                <!-- Permanently delete task button -->
+                <!-- 永久删除任务按钮 -->
 
                 <button
                      class="task-action-btn"
@@ -1700,21 +2180,26 @@ function renderTrash() {
 
             `;
 
+            // Add task card into container
+            // 将任务卡片加入容器
             taskContainer.appendChild(card);
 
         });
 
         // Insert task cards into section
+        // 将任务容器加入分类区域
         section.appendChild(
               taskContainer
 );
 
         // Add section into page
+        // 将分类区域加入页面
         container.appendChild(section);
 
     });
 
     // Show empty state
+    // 如果垃圾桶为空则显示提示信息
     if (!hasTrash) {
 
         container.innerHTML = `
@@ -1737,21 +2222,34 @@ function renderTrash() {
 
 }
 
-
 // =====================================
-// 7.TAG FILTER
+// 7. TAG FILTER
+// Handle task filtering by tags
+//
+// 标签筛选功能
+// 根据标签筛选任务
 // =====================================
 
 // ===============================
 // SET TAG FILTER
+// Change current selected tag
+//
+// 设置标签筛选器
+// 切换当前选中的标签
 // ===============================
 
 function setTagFilter(tag) {
 
+    // Save selected tag
+    // 保存当前选中的标签
     currentTagFilter = tag;
 
+    // Refresh tag buttons
+    // 刷新标签按钮状态
     renderTagFilters();
 
+    // Refresh all task pages
+    // 刷新所有任务页面
     [
         "work",
         "shopping",
@@ -1768,10 +2266,16 @@ function setTagFilter(tag) {
 
 // ===============================
 // RENDER TAG FILTERS
+// Display all available tags
+//
+// 渲染标签筛选器
+// 显示所有可用标签
 // ===============================
 
 function renderTagFilters() {
 
+    // List of task categories
+    // 所有任务分类
     const pages = [
         "work",
         "shopping",
@@ -1780,18 +2284,27 @@ function renderTagFilters() {
         "workout"
     ];
 
+    // Loop through each category
+    // 遍历每个分类
     pages.forEach(listType => {
 
+        // Get tag filter container
+        // 获取标签筛选容器
         const container =
             document.getElementById(
                 listType + "TagFilter"
             );
 
+        // Stop if container doesn't exist
+        // 如果容器不存在则停止执行
         if (!container) return;
 
+        // Clear existing tag buttons
+        // 清空现有标签按钮
         container.innerHTML = "";
 
-        // All Button
+        // Create "All" button
+        // 创建 All 按钮
         container.innerHTML += `
 
             <button
@@ -1812,10 +2325,13 @@ function renderTagFilters() {
         `;
 
         // Collect tags from this category
+        // 收集当前分类中的所有标签
         const tags = new Set();
 
         taskData[listType].forEach(task => {
 
+            // Only collect non-empty tags
+            // 只收集非空标签
             if (
                 task.tag &&
                 task.tag.trim()
@@ -1829,7 +2345,8 @@ function renderTagFilters() {
 
         });
 
-        // Create tag chips
+        // Create tag filter buttons
+        // 创建标签按钮
         [...tags]
             .sort()
             .forEach(tag => {
@@ -1862,32 +2379,44 @@ function renderTagFilters() {
 }
 
 
-
 // =====================================
 // 8.TAG SUGGESTIONS
 // =====================================
 
 // ===============================
 // RENDER TAG SUGGESTIONS
+// Display matching tag suggestions
+//
+// 渲染标签建议
+// 显示符合输入内容的标签建议
 // ===============================
 
 function renderTagSuggestions(keyword) {
 
+    // Get suggestion container
+    // 获取标签建议容器
     const container =
         document.getElementById(
             "tagSuggestions"
         );
 
+    // Stop if container doesn't exist
+    // 如果容器不存在则停止执行
     if (!container) return;
 
+    // Clear previous suggestions
+    // 清空之前显示的建议
     container.innerHTML = "";
 
+    // Remove spaces and convert to lowercase
+    // 去除空格并转换成小写
     keyword =
         keyword
             .trim()
             .toLowerCase();
 
-    // 没输入就隐藏
+    // Hide suggestions if input is empty
+    // 如果没有输入内容则隐藏建议框
     if (!keyword) {
 
         container.style.display =
@@ -1897,13 +2426,21 @@ function renderTagSuggestions(keyword) {
 
     }
 
+    // Store matched tags without duplicates
+    // 用于储存匹配到的标签（不重复）
     const tags =
         new Set();
 
+    // Loop through all task categories
+    // 遍历所有任务分类
     Object.keys(taskData).forEach(list => {
 
+        // Loop through tasks in each category
+        // 遍历当前分类中的所有任务
         taskData[list].forEach(task => {
 
+            // Find matching tags
+            // 查找符合关键字的标签
             if (
                 task.tag &&
                 task.tag.includes(keyword)
@@ -1917,7 +2454,8 @@ function renderTagSuggestions(keyword) {
 
     });
 
-    // 没匹配结果
+    // Hide suggestion box if no matches found
+    // 如果没有匹配结果则隐藏建议框
     if (tags.size === 0) {
 
         container.style.display =
@@ -1927,6 +2465,8 @@ function renderTagSuggestions(keyword) {
 
     }
 
+    // Create suggestion items
+    // 创建标签建议项目
     [...tags]
         .sort()
         .forEach(tag => {
@@ -1948,6 +2488,8 @@ function renderTagSuggestions(keyword) {
 
         });
 
+    // Show suggestion container
+    // 显示标签建议框
     container.style.display =
         "block";
 
@@ -1955,14 +2497,22 @@ function renderTagSuggestions(keyword) {
 
 // ===============================
 // SELECT POPUP TAG
+// Select a tag from popup suggestions
+//
+// 选择弹窗标签
+// 从弹窗建议中选择标签
 // ===============================
 
 function selectPopupTagSuggestion(tag) {
 
+    // Insert selected tag into input field
+    // 将选中的标签填入输入框
     document.getElementById(
         "taskTag"
     ).value = tag;
 
+    // Hide popup suggestion list
+    // 隐藏标签建议列表
     document.getElementById(
         "popupTagSuggestions"
     ).style.display = "none";
@@ -1971,14 +2521,22 @@ function selectPopupTagSuggestion(tag) {
 
 // ===============================
 // SELECT TAG SUGGESTION
+// Select a tag from panel suggestions
+//
+// 选择标签建议
+// 从详情面板建议中选择标签
 // ===============================
 
 function selectTagSuggestion(tag) {
 
+    // Insert selected tag into panel input field
+    // 将选中的标签填入面板输入框
     document.getElementById(
         "panelTagInput"
     ).value = tag;
 
+    // Hide suggestion list
+    // 隐藏标签建议列表
     document.getElementById(
         "tagSuggestions"
     ).style.display = "none";
@@ -1987,22 +2545,35 @@ function selectTagSuggestion(tag) {
 
 // ===============================
 // POPUP TAG SUGGESTIONS
+// Display matching tag suggestions
+// in Add Task popup
+//
+// 弹窗标签建议
+// 在新增任务弹窗中显示符合条件的标签建议
 // ===============================
 
 function renderPopupTagSuggestions(keyword) {
 
+    // Get popup suggestion container
+    // 获取弹窗标签建议容器
     const container =
         document.getElementById(
             "popupTagSuggestions"
         );
 
+    // Clear previous suggestions
+    // 清空之前的建议内容
     container.innerHTML = "";
 
+    // Remove spaces and convert to lowercase
+    // 去除空格并转换成小写
     keyword =
         keyword
             .trim()
             .toLowerCase();
 
+    // Hide suggestion box if input is empty
+    // 如果输入为空，则隐藏建议框
     if (!keyword) {
 
         container.style.display =
@@ -2012,13 +2583,21 @@ function renderPopupTagSuggestions(keyword) {
 
     }
 
+    // Store matching tags without duplicates
+    // 用于储存符合条件的标签（不重复）
     const tags =
         new Set();
 
+    // Loop through all task categories
+    // 遍历所有任务分类
     Object.keys(taskData).forEach(list => {
 
+        // Loop through tasks in current category
+        // 遍历当前分类中的所有任务
         taskData[list].forEach(task => {
 
+            // Find tags that start with the keyword
+            // 查找以关键字开头的标签
             if (
                 task.tag &&
                 task.tag.startsWith(keyword)
@@ -2032,6 +2611,8 @@ function renderPopupTagSuggestions(keyword) {
 
     });
 
+    // Hide suggestion box if no matching tags found
+    // 如果没有匹配结果，则隐藏建议框
     if (tags.size === 0) {
 
         container.style.display =
@@ -2041,6 +2622,8 @@ function renderPopupTagSuggestions(keyword) {
 
     }
 
+    // Create suggestion items
+    // 创建标签建议项目
     [...tags]
         .sort()
         .forEach(tag => {
@@ -2066,6 +2649,8 @@ function renderPopupTagSuggestions(keyword) {
 
         });
 
+    // Show suggestion box
+    // 显示标签建议框
     container.style.display =
         "block";
 
@@ -2079,19 +2664,30 @@ function renderPopupTagSuggestions(keyword) {
 // ===============================
 // TOGGLE CALENDAR POPUP
 // Show or hide date popup
+//
+// 切换日历弹窗
+// 显示或隐藏日期弹窗
 // ===============================
 
 function toggleCalendar(btn, e) {
 
+    // Prevent event bubbling
+    // 防止事件冒泡
     if (e) e.stopPropagation();
 
+    // Get calendar popup element
+    // 获取日历弹窗元素
     const popup =
         document.getElementById(
             "calendarPopup"
         );
 
+    // Stop if popup doesn't exist
+    // 如果弹窗不存在则停止执行
     if (!popup) return;
 
+    // Hide popup if already open
+    // 如果弹窗已经打开，则关闭它
     if (
         popup.style.display === "block"
     ) {
@@ -2102,25 +2698,41 @@ function toggleCalendar(btn, e) {
 
     }
 
+    // Show popup
+    // 显示弹窗
     popup.style.display = "block";
 
+   // Get button position
+   // 获取按钮的位置
     const rect =
-        btn.getBoundingClientRect();
+      btn.getBoundingClientRect();
 
+    // Calendar popup width
+    // 日历弹窗宽度
     const popupWidth = 420;
 
+    // Add current page scroll position
+    // 加上当前页面滚动距离
     let left =
-        rect.right - popupWidth;
+       rect.right
+       - popupWidth
+       + window.scrollX;
 
     let top =
-        rect.bottom + 12;
+        rect.bottom
+        + 12
+        + window.scrollY;
 
+    // Prevent popup from going outside screen
+    // 防止弹窗超出页面左边界
     if (left < 10) {
 
         left = 10;
 
     }
 
+    // Set popup position
+    // 设置弹窗位置
     popup.style.left =
         left + "px";
 
@@ -2132,15 +2744,23 @@ function toggleCalendar(btn, e) {
 
 // ===============================
 // CLOSE CALENDAR POPUP
+// Hide calendar popup
+//
+// 关闭日历弹窗
+// 隐藏日期弹窗
 // ===============================
 
 function closeCalendar() {
 
+    // Get calendar popup element
+    // 获取日历弹窗元素
     const popup =
         document.getElementById(
             "calendarPopup"
         );
 
+    // Hide popup if it exists
+    // 如果弹窗存在，则隐藏它
     if (popup) {
 
         popup.style.display =
@@ -2153,73 +2773,100 @@ function closeCalendar() {
 // ===============================
 // APPLY DATE SETTINGS
 // Save selected task options
+//
+// 应用日期设置
+// 保存用户选择的任务选项
 // ===============================
 
 function applyDate() {
 
+    // Get date input element
+    // 获取日期输入框
     let dateInput =
         document.getElementById(
             "popupDate"
         );
 
+    // Get start time input element
+    // 获取开始时间输入框
     let startInput =
         document.getElementById(
             "startTime"
         );
 
+    // Get end time input element
+    // 获取结束时间输入框
     let endInput =
         document.getElementById(
             "endTime"
         );
 
+    // Get repeat option input element
+    // 获取重复选项输入框
     let repeatInput =
         document.getElementById(
             "repeat"
         );
 
-    // Save date
+    // Save selected date
+    // 保存用户选择的日期
     selectedDate =
         dateInput
             ? dateInput.value
             : "";
 
-    // Save start time
+    // Save selected start time
+    // 保存用户选择的开始时间
     selectedStart =
         startInput
             ? startInput.value
             : "";
 
-    // Save end time
+    // Save selected end time
+    // 保存用户选择的结束时间
     selectedEnd =
         endInput
             ? endInput.value
             : "";
 
-    // Save repeat option
+    // Save selected repeat option
+    // 保存用户选择的重复设置
     selectedRepeat =
         repeatInput
             ? repeatInput.value
             : "";
 
-    // Close popup
+    // Close calendar popup
+    // 关闭日历弹窗
     closeCalendar();
 
 }
 
 
 // =====================================
-// 10.PRIORITY
+// 10. PRIORITY
+// Handle task priority settings
+//
+// 优先级功能
+// 用于设置和显示任务优先级
 // =====================================
 
 // ===============================
 // SET PRIORITY
 // Highlight selected priority
+//
+// 设置优先级
+// 高亮当前选中的优先级
 // ===============================
 
 function setPriority(priority, e) {
 
+    // Save selected priority
+    // 保存当前选中的优先级
     selectedPriority = priority;
 
+    // Remove highlight from all priority buttons
+    // 移除所有优先级按钮的选中状态
     document
         .querySelectorAll(
             ".priority-box > span"
@@ -2232,6 +2879,8 @@ function setPriority(priority, e) {
 
         });
 
+    // Highlight selected priority button
+    // 高亮当前点击的优先级按钮
     if (e) {
 
         e.currentTarget.classList.add(
@@ -2243,14 +2892,22 @@ function setPriority(priority, e) {
 }
 
 // ===============================
-// GET PRIORITY FLAG ICON
-// Return colored Material Symbol
+// SET PANEL PRIORITY
+// Highlight selected priority
+// in task detail panel
+//
+// 设置详情面板优先级
+// 高亮任务详情面板中的优先级
 // ===============================
 
 function setPanelPriority(priority, e) {
 
+    // Save selected priority
+    // 保存当前选中的优先级
     panelSelectedPriority = priority;
 
+    // Remove highlight from all priority buttons
+    // 移除所有优先级按钮的选中状态
     document
         .querySelectorAll(
             "#panelPriorityBox > span"
@@ -2263,14 +2920,26 @@ function setPanelPriority(priority, e) {
 
         });
 
+    // Highlight selected priority button
+    // 高亮当前点击的优先级按钮
     e.currentTarget.classList.add(
         "priority-selected"
     );
 
 }
 
+// ===============================
+// GET PRIORITY FLAG ICON
+// Return colored Material Symbol
+//
+// 获取优先级图标
+// 根据优先级返回对应颜色的旗子图标
+// ===============================
+
 function getPriorityDot(priority) {
 
+    // High priority (Red)
+    // 高优先级（红色）
     if (priority === "red") {
 
         return `
@@ -2290,6 +2959,8 @@ function getPriorityDot(priority) {
 
     }
 
+    // Medium priority (Orange)
+    // 中优先级（橙色）
     if (priority === "orange") {
 
         return `
@@ -2309,6 +2980,8 @@ function getPriorityDot(priority) {
 
     }
 
+    // Low priority (Blue)
+    // 低优先级（蓝色）
     if (priority === "blue") {
 
         return `
@@ -2328,6 +3001,8 @@ function getPriorityDot(priority) {
 
     }
 
+    // No priority (Gray)
+    // 无优先级（灰色）
     if (priority === "gray") {
 
         return `
@@ -2347,6 +3022,8 @@ function getPriorityDot(priority) {
 
     }
 
+    // Return empty if no priority exists
+    // 如果没有优先级则返回空值
     return "";
 
 }
@@ -2361,6 +3038,9 @@ function getPriorityDot(priority) {
 // SHOW TASK DETAIL PANEL
 // Display task information
 // inside editable side panel
+//
+// 显示任务详情面板
+// 在可编辑侧边栏中显示任务信息
 // ===============================
 
 function showTaskDetail(
@@ -2368,20 +3048,30 @@ function showTaskDetail(
     id
 ) {
 
+    // Save current task category
+    // 保存当前任务分类
     currentTaskListType =
         listType;
 
+    // Save current task ID
+    // 保存当前任务 ID
     currentTaskId =
         id;
 
+    // Find selected task
+    // 查找选中的任务
     let task =
         taskData[listType].find(
             t => t.id === id
         );
 
+    // Stop if task doesn't exist
+    // 如果任务不存在则停止执行
     if (!task) return;
 
     // Fill editable fields
+    // 将任务资料填入编辑栏
+
     document.getElementById(
         "panelTitleInput"
     ).value =
@@ -2412,9 +3102,13 @@ function showTaskDetail(
     ).value =
         task.repeat || "none";
 
+    // Load saved priority
+    // 加载已保存的优先级
     panelSelectedPriority =
         task.priority || "";
 
+    // Highlight selected priority button
+    // 高亮当前任务的优先级按钮
     document
         .querySelectorAll(
             "#panelPriorityBox > span"
@@ -2438,12 +3132,15 @@ function showTaskDetail(
 
         });
 
+    // Load task tag
+    // 加载任务标签
     document.getElementById(
         "panelTagInput"
     ).value =
         task.tag || "";
 
-    // Show panel
+    // Show detail panel
+    // 显示任务详情面板
     const panel =
         document.getElementById(
             "taskDetailPanel"
@@ -2463,19 +3160,27 @@ function showTaskDetail(
 // ===============================
 // SAVE TASK CHANGES
 // Save edited task information
+//
+// 保存任务修改
+// 保存用户编辑后的任务资料
 // ===============================
 
 async function saveTaskChanges() {
 
+    // Find current task
+    // 查找当前任务
     let task =
         taskData[currentTaskListType]
             .find(
                 t => t.id === currentTaskId
             );
 
+    // Stop if task doesn't exist
+    // 如果任务不存在则停止执行
     if (!task) return;
 
     // Update task data
+    // 更新任务资料
     task.text =
         document.getElementById(
             "panelTitleInput"
@@ -2517,6 +3222,8 @@ async function saveTaskChanges() {
             .trim()
             .toLowerCase();
 
+    // Save updated task to Flask backend
+    // 将更新后的任务保存到 Flask 后端
     const response =
       await fetch(
         "/calendar/update_task",
@@ -2533,9 +3240,13 @@ async function saveTaskChanges() {
         }
     );
 
+    // Convert server response to JSON
+    // 将服务器响应转换为 JSON 格式
 const result =
     await response.json();
 
+    // Display error message if save fails
+    // 如果保存失败则显示错误信息
 if (!result.success) {
 
     alert(
@@ -2544,22 +3255,32 @@ if (!result.success) {
 
     return;
 
-}   
+}
 
-    // Refresh pages
+    // Refresh active task page
+    // 刷新当前任务页面
     renderTasks(
         currentTaskListType
     );
 
+    // Refresh tag filters
+    // 刷新标签筛选器
     renderTagFilters();
 
+    // Refresh Completed page
+    // 刷新 Completed 页面
     renderCompleted();
 
+    // Refresh Trash page
+    // 刷新 Trash 页面
     renderTrash();
 
+    // Refresh Today Dashboard
+    // 刷新 Today Dashboard
     updateTodayDashboard();
 
-    // Refresh calendar if open
+    // Refresh calendar if Calendar page is open
+    // 如果当前正在 Calendar 页面，则刷新日历
     if (
         document.getElementById(
             "calendar"
@@ -2572,38 +3293,55 @@ if (!result.success) {
 
     }
 
-    // Close panel
+    // Close detail panel
+    // 关闭任务详情面板
     closeDetailPanel();
 
+    // Display success message
+    // 显示保存成功提示
     alert(
         "✅ Changes saved successfully!"
     );
 
 }
 
-
 // ===============================
 // CLOSE TASK DETAIL PANEL
 // Hide side panel smoothly
+//
+// 关闭任务详情面板
+// 平滑隐藏侧边栏面板
 // ===============================
 
 function closeDetailPanel() {
 
+    // Get task detail panel element
+    // 获取任务详情面板元素
     const panel =
         document.getElementById(
             "taskDetailPanel"
         );
 
+    // Stop if panel doesn't exist
+    // 如果面板不存在则停止执行
     if (!panel) return;
 
+    // Slide panel out to the right
+    // 将面板向右滑出画面
     panel.style.right =
         "-450px";
 
+    // Wait for animation to finish
+    // 等待动画结束后隐藏面板
     setTimeout(() => {
 
+        // Hide panel from view
+        // 隐藏面板
         panel.style.visibility =
             "hidden";
 
+        // Make panel transparent
+        // 将面板设为完全透明
         panel.style.opacity =
             "0";
 
@@ -2612,34 +3350,49 @@ function closeDetailPanel() {
 }
 
 // =====================================
-// 12.UTILITIES
+// 12. UTILITIES
+// Utility helper functions
+//
+// 工具函数
+// 提供辅助功能
 // =====================================
 
 // ===============================
 // GET PRIORITY COLOR
 // Return color for calendar badges
+//
+// 获取优先级颜色
+// 为日历徽章返回对应颜色
 // ===============================
 
 function getPriorityColor(priority) {
 
+    // High priority color (Red)
+    // 高优先级颜色（红色）
     if (priority === "red") {
 
         return "#ef4444";
 
     }
 
+    // Medium priority color (Orange)
+    // 中优先级颜色（橙色）
     if (priority === "orange") {
 
         return "#f59e0b";
 
     }
 
+    // Low priority color (Blue)
+    // 低优先级颜色（蓝色）
     if (priority === "blue") {
 
         return "#3b82f6";
 
     }
 
+    // Default color (Gray)
+    // 默认颜色（灰色）
     return "#6b7280";
 
 }
@@ -2649,30 +3402,42 @@ function getPriorityColor(priority) {
 // Display a temporary notification
 // on the top-right corner
 //
+// 显示 Toast 提示讯息
+// 在页面右上角显示临时通知
+//
 // Features:
 // 1. Show custom message
 // 2. Smooth fade-in animation
 // 3. Auto hide after 2 seconds
+//
+// 功能：
+// 1. 显示自定义讯息
+// 2. 平滑淡入动画
+// 3. 2 秒后自动隐藏
 // =====================================
 
 function showToast(message){
 
     // Get toast element
+    // 获取 Toast 元素
     const toast =
         document.getElementById(
             "toast"
         );
 
     // Update toast text
+    // 更新提示讯息内容
     toast.textContent =
         message;
 
     // Show toast animation
+    // 显示 Toast 动画
     toast.classList.add(
         "show"
     );
 
     // Auto hide after 2 seconds
+    // 2 秒后自动隐藏 Toast
     setTimeout(() => {
 
         toast.classList.remove(
@@ -2686,18 +3451,27 @@ function showToast(message){
 
 
 // =====================================
-// 13.INITIALIZATION
+// 13. INITIALIZATION
+// Initialize application when page loads
+//
+// 初始化程序
+// 页面加载时初始化所有功能
 // =====================================
 
 // ===============================
 // ENTER KEY SUPPORT
 // Press Enter to add a task
+//
+// Enter 键支持
+// 按下 Enter 键快速新增任务
 // ===============================
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+        // Loop through all task categories
+        // 遍历所有任务分类
         [
             "work",
             "shopping",
@@ -2706,17 +3480,23 @@ document.addEventListener(
             "workout"
         ].forEach(list => {
 
+            // Get task input field
+            // 获取任务输入框
             let input =
                 document.getElementById(
                     list + "TaskText"
                 );
 
+            // Add keyboard event if input exists
+            // 如果输入框存在，则绑定键盘事件
             if (input) {
 
                 input.addEventListener(
                     "keypress",
                     function (e) {
 
+                        // Add task when Enter is pressed
+                        // 按下 Enter 时新增任务
                         if (e.key === "Enter") {
 
                             addTask(list);
@@ -2736,6 +3516,9 @@ document.addEventListener(
 // ===============================
 // LOAD SAVED TASKS
 // Restore tasks when page loads
+//
+// 加载已保存任务
+// 页面加载时恢复所有任务数据
 // ===============================
 
 document.addEventListener(
@@ -2743,10 +3526,12 @@ document.addEventListener(
 
     async () => {
 
-        // Load task data
+        // Load task data from Flask backend
+        // 从 Flask 后端加载任务数据
         await loadTasks();
 
         // Render all task categories
+        // 渲染所有任务分类页面
         [
             "work",
             "shopping",
@@ -2760,19 +3545,28 @@ document.addEventListener(
         });
 
         // Refresh Completed page
+        // 刷新 Completed 页面
         renderCompleted();
 
         // Refresh Trash page
+        // 刷新 Trash 页面
         renderTrash();
 
         // Refresh Today dashboard
+        // 刷新 Today Dashboard 页面
         updateTodayDashboard();
 
         // Refresh Tag filters
+        // 刷新标签筛选器
         renderTagFilters();
+
 
 // =====================================
 // COMPLETED PAGE FILTER EVENTS
+// Listen for filter changes
+//
+// Completed 页面筛选事件
+// 监听筛选器变化
 // =====================================
 
 const dateFilter =
@@ -2780,15 +3574,21 @@ const dateFilter =
         "dateFilter"
     );
 
+// Add date filter event if element exists
+// 如果日期筛选器存在，则绑定 change 事件
 if (dateFilter) {
 
     dateFilter.addEventListener(
         "change",
         e => {
 
+            // Save selected date filter
+            // 保存用户选择的日期筛选条件
             selectedDateFilter =
                 e.target.value;
 
+            // Refresh Completed page
+            // 刷新 Completed 页面
             renderCompleted();
 
         }
@@ -2801,15 +3601,21 @@ const categoryFilter =
         "categoryFilter"
     );
 
+// Add category filter event if element exists
+// 如果分类筛选器存在，则绑定 change 事件
 if (categoryFilter) {
 
     categoryFilter.addEventListener(
         "change",
         e => {
 
+            // Save selected category filter
+            // 保存用户选择的分类筛选条件
             selectedCategoryFilter =
                 e.target.value;
 
+            // Refresh Completed page
+            // 刷新 Completed 页面
             renderCompleted();
 
         }
@@ -2817,12 +3623,15 @@ if (categoryFilter) {
 
 }
 
-        // Tag suggestion
+        // Get tag input field
+        // 获取标签输入框
         const tagInput =
             document.getElementById(
                 "panelTagInput"
             );
 
+        // Enable tag suggestions if input exists
+        // 如果输入框存在，则启用标签建议功能
         if (tagInput) {
 
             tagInput.addEventListener(
@@ -2830,6 +3639,8 @@ if (categoryFilter) {
 
                 function () {
 
+                    // Display matching tag suggestions
+                    // 显示符合条件的标签建议
                     renderTagSuggestions(
                         this.value
                     );
