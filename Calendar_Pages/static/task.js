@@ -3437,14 +3437,14 @@ function showToast(message){
     );
 
     // Auto hide after 2 seconds
-    // 2 秒后自动隐藏 Toast
+    // 3 秒后自动隐藏 Toast
     setTimeout(() => {
 
         toast.classList.remove(
             "show"
         );
 
-    }, 2000);
+    }, 3000);
 
 }
 
