@@ -3651,6 +3651,22 @@ if (categoryFilter) {
 
         }
 
+        // Open a specific page on load if requested via URL
+        // 如果 URL 中指定了页面参数，则加载后直接跳转到该页面
+        const requestedView =
+            new URLSearchParams(window.location.search).get("view");
+
+        if (requestedView === "calendar") {
+
+            const calendarMenuItem =
+                document.querySelector(
+                    ".menu-item[onclick*=\"showPage('calendar'\"]"
+                );
+
+            showPage("calendar", calendarMenuItem);
+
+        }
+
     }
 
 );
