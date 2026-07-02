@@ -391,9 +391,9 @@ body {
 
 }
 
-/* ── Delete widget confirmation modal ────────────────────── */
+/* ── Canonical reminder / confirmation popup ─────────────── */
 
-.delete-confirm-overlay {
+.reminder-overlay {
     position: fixed;
     inset: 0;
     z-index: 20000;
@@ -404,7 +404,7 @@ body {
     justify-content: center;
 }
 
-.delete-confirm-popup {
+.reminder-card {
     background: #F2EFE9;
     border-radius: 16px;
     padding: 28px 32px 24px;
@@ -415,32 +415,31 @@ body {
     text-align: center;
 }
 
-.delete-confirm-title {
+.reminder-title {
     font-size: 16px;
     font-weight: 700;
     color: #1a1a1a;
     margin-bottom: 8px;
 }
 
-.delete-confirm-msg {
+.reminder-msg {
     font-size: 13px;
     color: #555;
     line-height: 1.5;
     margin-bottom: 24px;
 }
 
-.delete-confirm-msg strong {
+.reminder-msg strong {
     color: #1a1a1a;
 }
 
-.delete-confirm-actions {
+.reminder-actions {
     display: flex;
     gap: 10px;
     justify-content: center;
 }
 
-.delete-confirm-cancel,
-.delete-confirm-ok {
+.reminder-btn {
     padding: 9px 22px;
     border-radius: 10px;
     border: none;
@@ -451,22 +450,31 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 
-.delete-confirm-cancel {
+.reminder-btn-secondary {
     background: rgba(0, 0, 0, 0.07);
     color: #555;
 }
 
-.delete-confirm-cancel:hover {
+.reminder-btn-secondary:hover {
     background: rgba(0, 0, 0, 0.12);
     color: #1a1a1a;
 }
 
-.delete-confirm-ok {
+.reminder-btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.reminder-btn-primary:hover {
+    background: #333;
+}
+
+.reminder-btn-danger {
     background: #d93025;
     color: #fff;
 }
 
-.delete-confirm-ok:hover {
+.reminder-btn-danger:hover {
     background: #b8271d;
 }
 

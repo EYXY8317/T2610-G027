@@ -797,74 +797,40 @@
     letter-spacing: 0.04em;
 }
 
-/* ── Confirmation overlay ─────────────────────────────────── */
 
-.confirm-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 20000;
+/* ── Toggle chip — single button replacing Show/Hide pairs ───────────── */
+
+.toggle-chips {
     display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 2px 0 6px;
+}
+
+.toggle-chip {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-}
-
-.confirm-modal {
-    background: #F2EFE9;
-    border: 1px solid #ddd8cf;
-    border-radius: 14px;
-    padding: 26px 28px 22px;
-    width: 320px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
-    font-family: 'Inter', sans-serif;
-}
-
-.confirm-modal-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-}
-
-.confirm-modal-body {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.55;
-    margin-bottom: 22px;
-}
-
-.confirm-modal-btns {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-}
-
-.confirm-cancel-btn {
-    padding: 7px 18px;
-    border: 1px solid #ddd8cf;
-    border-radius: 7px;
+    padding: 6px 14px;
+    border: 1.5px solid rgba(0, 0, 0, 0.18);
+    border-radius: 20px;
     background: transparent;
-    color: #555;
-    font-size: 13px;
     font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.45);
     cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
 }
 
-.confirm-cancel-btn:hover {
-    background: #ebe7e0;
+.toggle-chip:hover:not(.active) {
+    border-color: rgba(0, 0, 0, 0.35);
+    color: rgba(0, 0, 0, 0.7);
 }
 
-.confirm-ok-btn {
-    padding: 7px 18px;
-    border: none;
-    border-radius: 7px;
+.toggle-chip.active {
     background: #1a1a1a;
-    color: #fff;
-    font-size: 13px;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-}
-
-.confirm-ok-btn:hover {
-    background: #333;
+    border-color: #1a1a1a;
+    color: #F2EFE9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
 }

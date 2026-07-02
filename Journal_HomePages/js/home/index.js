@@ -26,6 +26,11 @@ import {
 from "./edit.js";
 
 import {
+    showReminderPopup
+}
+from "../shared/reminderPopup.js";
+
+import {
     hideWidget,
     getHiddenWidgets
 }
@@ -50,6 +55,12 @@ import {
 from "./serverLayout.js";
 
 import {
+    loadCurrentUser,
+    ensureUserScopeFresh
+}
+from "../currentUser.js";
+
+import {
     getWidgetAppearance,
     applyWidgetAppearance
 }
@@ -66,6 +77,11 @@ import {
     enableFontScale
 }
 from "../dashboard/fontScale.js";
+
+import {
+    applyContentConstraints
+}
+from "../dashboard/resizeConstraints.js";
 
 import {
     renderWeatherHour,
@@ -148,6 +164,15 @@ export async function initializeHomepage() {
         return;
     }
 
+    // Resolve the logged-in username first so mood/emotion widgets can
+    // namespace their localStorage keys and never read another account's data.
+    await loadCurrentUser();
+
+    // If this browser's last active account differs from the one logged in now,
+    // wipe all cached widget/layout/diary localStorage so nothing from the
+    // previous account can leak into this account's dashboard.
+    ensureUserScopeFresh();
+
     // Load this user's saved layout from the server before rendering.
     // For first-time users the server returns {}, so localStorage stays empty
     // and applyDefaultLayout() seeds it with the built-in defaults below.
@@ -194,6 +219,8 @@ export async function initializeHomepage() {
             loadLayout(
                 widget
             );
+
+            applyContentConstraints(widget);
 
             const savedApp = getWidgetAppearance(widget.id);
             if (savedApp) {
@@ -345,13 +372,20 @@ export async function initializeHomepage() {
     // Reset Layout button — re-applies default positions + styles to all widgets
     const resetLayoutButton = document.getElementById("reset-layout-btn");
     if (resetLayoutButton) {
-        resetLayoutButton.addEventListener("click", async () => {
-            if (!confirm("Reset all widgets to the default layout? This will undo your current arrangement.")) return;
-
-            resetToDefaultLayout();
-            await syncLayoutToServer();
-            menu.style.display = "none";
-            window.location.reload();
+        resetLayoutButton.addEventListener("click", () => {
+            showReminderPopup({
+                title: "Reset Layout?",
+                message: "Reset all widgets to the default layout? This will undo your current arrangement.",
+                confirmText: "Reset",
+                cancelText: "Cancel",
+                danger: true,
+                onConfirm: async () => {
+                    resetToDefaultLayout();
+                    await syncLayoutToServer();
+                    menu.style.display = "none";
+                    window.location.reload();
+                }
+            });
         });
     }
 

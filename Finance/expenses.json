@@ -195,5 +195,15 @@
         "item": "MILO",
         "amount": 5.0,
         "receipt": null
+    },
+    {
+        "username": "ZOEY",
+        "date": "2026-06-25",
+        "type": "expense",
+        "category": "Food",
+        "account": "TNG",
+        "item": "\u5976\u8336",
+        "amount": 7.77,
+        "receipt": null
     }
 ]

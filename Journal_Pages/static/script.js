@@ -1,3 +1,39 @@
+// ======================== REMINDER POPUP ========================
+// Canonical reminder/confirmation popup — mirrors Journal_HomePages'
+// js/shared/reminderPopup.js so both pages look and behave identically.
+function showReminderPopup({ title, message, confirmText = "OK", cancelText = null, danger = false, onConfirm } = {}) {
+    const overlay = document.createElement("div");
+    overlay.className = "reminder-overlay";
+    overlay.innerHTML =
+        '<div class="reminder-card">' +
+            '<div class="reminder-title">' + title + '</div>' +
+            '<div class="reminder-msg">' + message + '</div>' +
+            '<div class="reminder-actions">' +
+                (cancelText ? '<button class="reminder-btn reminder-btn-secondary" data-role="cancel">' + cancelText + '</button>' : '') +
+                '<button class="reminder-btn ' + (danger ? 'reminder-btn-danger' : 'reminder-btn-primary') + '" data-role="confirm">' + confirmText + '</button>' +
+            '</div>' +
+        '</div>';
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.remove(); });
+    var cancelBtn = overlay.querySelector('[data-role="cancel"]');
+    if (cancelBtn) cancelBtn.addEventListener("click", function() { overlay.remove(); });
+    overlay.querySelector('[data-role="confirm"]').addEventListener("click", function() {
+        overlay.remove();
+        if (onConfirm) onConfirm();
+    });
+
+    return overlay;
+}
+
+// ======================== USER-SCOPED STORAGE ========================
+// Namespaces localStorage keys by the logged-in username (injected by
+// diary.html via window.__CURRENT_USERNAME__) so cached diary data never
+// leaks to a different account sharing the same browser.
+function scopedKey(base) {
+    return base + "::" + (window.__CURRENT_USERNAME__ || "guest");
+}
+
 // ======================== ELEMENTS ========================
 let box = document.getElementById("box");
 let editBtn = document.getElementById("editBtn");
@@ -13,7 +49,7 @@ let results = [];
 let currentIndex = 0;
 
 // ======================== LOAD SAVED RESULTS ========================
-let savedResults = localStorage.getItem("searchResults");
+let savedResults = localStorage.getItem(scopedKey("searchResults"));
 if (savedResults) {
     results = JSON.parse(savedResults);
 }
@@ -61,17 +97,35 @@ editBtn.addEventListener("click", function() {
 
 // ======================== DELETE BUTTON ========================
 deleteBtn.addEventListener("click", function() {
-    let confirmDelete = confirm("Are you sure you want to delete everything?\nThis includes topic, mood, and diary.");
-    if (!confirmDelete) return;
+    showReminderPopup({
+        title: "Delete Entry?",
+        message: "Are you sure you want to delete everything? This includes topic, mood, and diary.",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm: function() {
+            let data = new FormData();
+            data.append("date", currentDate);
 
-    let data = new FormData();
-    data.append("date", currentDate);
-
-    fetch("/delete", {
-        method: "POST",
-        body: data
-    }).then(() => {
-        location.reload();
+            fetch("/delete", {
+                method: "POST",
+                body: data
+            }).then(() => {
+                localStorage.removeItem(scopedKey("diary_mood_today"));
+                try {
+                    const key = scopedKey("today-emotion-state");
+                    const raw = localStorage.getItem(key);
+                    if (raw) {
+                        const state = JSON.parse(raw);
+                        state.selectedIndexes = [];
+                        const today = new Date().toISOString().slice(0, 10);
+                        if (state.history) delete state.history[today];
+                        localStorage.setItem(key, JSON.stringify(state));
+                    }
+                } catch (_) {}
+                location.reload();
+            });
+        }
     });
 });
 
@@ -296,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 results = data.results;
                 currentIndex = 0;
-                localStorage.setItem("searchResults", JSON.stringify(results));
+                localStorage.setItem(scopedKey("searchResults"), JSON.stringify(results));
 
                 searchResults.innerHTML = "";
 
@@ -305,13 +359,43 @@ document.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
 
+                function extractPreview(raw) {
+                    if (!raw) return "";
+                    const parts = raw.split("||ITEM||");
+                    const texts = [];
+                    for (const part of parts) {
+                        try {
+                            const d = JSON.parse(part.trim());
+                            if (d.type === "text" && d.html) {
+                                const tmp = document.createElement("div");
+                                tmp.innerHTML = d.html;
+                                const t = tmp.innerText.trim();
+                                if (t) texts.push(t);
+                            }
+                        } catch(e) {
+                            if (part.trim() && !part.trim().startsWith("{")) texts.push(part.trim());
+                        }
+                    }
+                    return texts.join(" ").slice(0, 80);
+                }
+
+                const MOOD_LABELS = { happy:"happy", sad:"sad", angry:"angry", anxious:"anxious", unwell:"unwell", Happy:"happy", Sad:"sad", Angry:"angry", meh:"unwell", smile:"happy", neutral:"sad" };
+
                 results.forEach((r, i) => {
                     const item = document.createElement("div");
                     item.className = "search-result-item";
+                    const preview = extractPreview(r.content);
+                    const moodKey = r.mood ? (MOOD_LABELS[r.mood] || r.mood.toLowerCase()) : "";
+                    const moodHtml = moodKey
+                        ? `<img src="/journal_home_static/assets/emotions/${moodKey}.png" class="result-mood-img" alt="${moodKey}">`
+                        : "";
                     item.innerHTML = `
                         <div class="result-date">${r.date}</div>
-                        <div class="result-topic">${r.topic || "(No topic)"}</div>
-                        <div class="result-preview">${r.content}...</div>
+                        <div class="result-meta">
+                            ${r.topic ? `<span class="result-topic">${r.topic}</span>` : ""}
+                            ${moodHtml}
+                        </div>
+                        ${preview ? `<div class="result-preview">${preview}</div>` : ""}
                     `;
                     item.addEventListener("click", () => {
                         window.location.href = "/diary?date=" + encodeURIComponent(r.date);

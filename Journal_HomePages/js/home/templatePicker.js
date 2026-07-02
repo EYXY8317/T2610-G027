@@ -1,5 +1,6 @@
 import { TEMPLATES, applyTemplate } from "./layoutTemplates.js";
 import { syncLayoutToServer } from "./serverLayout.js";
+import { showReminderPopup } from "../shared/reminderPopup.js";
 
 export function openTemplatePicker() {
     const overlay = document.createElement("div");
@@ -48,20 +49,11 @@ export function openTemplatePicker() {
 }
 
 function showTemplateConfirm(name, onConfirm) {
-    const modal = document.createElement("div");
-    modal.className = "confirm-overlay";
-    modal.innerHTML = `
-        <div class="confirm-modal">
-            <div class="confirm-modal-title">Apply "${name}"?</div>
-            <div class="confirm-modal-body">This will replace your current widget layout and appearance settings. Your widgets won't be deleted — you can re-arrange them afterward.</div>
-            <div class="confirm-modal-btns">
-                <button class="confirm-cancel-btn">Cancel</button>
-                <button class="confirm-ok-btn">Apply</button>
-            </div>
-        </div>
-    `;
-    modal.querySelector(".confirm-cancel-btn").addEventListener("click", () => modal.remove());
-    modal.querySelector(".confirm-ok-btn").addEventListener("click", () => { modal.remove(); onConfirm(); });
-    modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
-    document.body.appendChild(modal);
+    showReminderPopup({
+        title: `Apply "${name}"?`,
+        message: "This will replace your current widget layout and appearance settings. Your widgets won't be deleted — you can re-arrange them afterward.",
+        confirmText: "Apply",
+        cancelText: "Cancel",
+        onConfirm
+    });
 }

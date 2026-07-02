@@ -1,8 +1,12 @@
+import { MOOD_LIST, getMood, saveMood, clearMood } from "../mood_sync.js";
+import { userScopedKey } from "../currentUser.js";
+import { showReminderPopup } from "../shared/reminderPopup.js";
+
 const STORAGE_KEY = "today-emotion-state";
+const RESET_KEY = "today-emotion-last-reset";
 
-const MOOD_ICON = { Happy: "😊", Sad: "😢", Angry: "😠" };
-
-const DEFAULT_EMOJIS = ["😀", "😊", "🙂", "😐", "😔"];
+const DEFAULT_EMOJIS = MOOD_LIST.map(m => m.emoji);
+const MOOD_IMAGES = MOOD_LIST.map(m => m.image);
 
 const DEFAULT_STATE = {
     displayMode: "select",          // "select" | "slider"
@@ -24,7 +28,7 @@ const DEFAULT_STATE = {
 
 function getSavedState() {
 
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(userScopedKey(STORAGE_KEY));
 
     if (!raw) {
         return { ...DEFAULT_STATE };
@@ -64,7 +68,7 @@ function getSavedState() {
 }
 
 function saveState(state) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(userScopedKey(STORAGE_KEY), JSON.stringify(state));
 }
 
 function archiveToHistory(state, dateISO) {
@@ -85,11 +89,11 @@ function checkDailyReset(state) {
 
     const now = new Date();
     const resetKey = `te-reset-${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${state.resetHour}`;
-    const lastReset = localStorage.getItem("today-emotion-last-reset");
+    const lastReset = localStorage.getItem(userScopedKey(RESET_KEY));
 
     if (lastReset !== resetKey && now.getHours() >= state.resetHour) {
 
-        localStorage.setItem("today-emotion-last-reset", resetKey);
+        localStorage.setItem(userScopedKey(RESET_KEY), resetKey);
 
         // Archive previous day before clearing
         const yesterday = new Date(now);
@@ -101,6 +105,10 @@ function checkDailyReset(state) {
             selectedIndexes: [],
             sliderValues: [0, 0, 0, 0, 0]
         };
+
+        // Clear the previous day's diary mood lock so it doesn't
+        // get mistakenly archived as today's emotion on first settings open.
+        clearMood();
 
         saveState(resetState);
         return resetState;
@@ -116,10 +124,10 @@ function checkDailyReset(state) {
 
 function renderSelectMode(state) {
 
-    const emojis = state.displayedEmojis.slice(0, state.displayedCount);
+    const count = state.displayedCount;
     const selected = new Set(state.selectedIndexes);
 
-    const buttons = emojis.map((emoji, i) => {
+    const buttons = MOOD_LIST.slice(0, count).map((mood, i) => {
 
         const isSelected = selected.has(i);
         const effectClass = isSelected ? `selected effect-${state.selectedEffect}` : "unselected";
@@ -129,13 +137,15 @@ function renderSelectMode(state) {
                 type="button"
                 class="te-emoji-btn ${effectClass}"
                 data-index="${i}"
+                data-value="${mood.value}"
                 aria-pressed="${isSelected}"
-            >${emoji}</button>
+            ><img src="${mood.image}" alt="${mood.label}" class="te-mood-img"></button>
         `;
 
     }).join("");
 
-    return `<div class="te-emoji-row">${buttons}</div>`;
+    const rowClass = _isLocked ? "te-emoji-row te-emoji-row--locked" : "te-emoji-row";
+    return `<div class="${rowClass}">${buttons}</div>`;
 }
 
 function renderCurrentMood(state) {
@@ -170,8 +180,7 @@ function renderCurrentMood(state) {
         `;
     }
 
-    const values = getEffectiveEmojis(state).slice(0, state.displayedCount);
-    const selectedIndexes = getSelectedIndexes(state).filter(index => index >= 0 && index < values.length);
+    const selectedIndexes = (state.selectedIndexes || []).filter(index => index >= 0 && index < MOOD_LIST.length);
 
     if (!selectedIndexes.length) {
         return `
@@ -183,14 +192,15 @@ function renderCurrentMood(state) {
     }
 
     const firstIndex = selectedIndexes[0];
-    const emoji = values[firstIndex] || values[0];
-    const label = getMoodLabel(emoji);
+    const mood = MOOD_LIST[firstIndex] || MOOD_LIST[0];
+    const label = mood ? mood.label : "";
+    const imgHtml = mood ? `<img src="${mood.image}" alt="${label}" class="te-mood-img te-current-img">` : "";
 
     if (state.selectionMode === "multiple" && selectedIndexes.length > 1) {
         return `
             <div class="today-emotion-current">
                 <span class="today-emotion-current-label">Current Mood</span>
-                <span class="today-emotion-current-value">${emoji} ${label} +${selectedIndexes.length - 1} more</span>
+                <span class="today-emotion-current-value">${imgHtml} ${label} +${selectedIndexes.length - 1} more</span>
             </div>
         `;
     }
@@ -198,7 +208,7 @@ function renderCurrentMood(state) {
     return `
         <div class="today-emotion-current">
             <span class="today-emotion-current-label">Current Mood</span>
-            <span class="today-emotion-current-value">${emoji} ${label}</span>
+            <span class="today-emotion-current-value">${imgHtml} ${label}</span>
         </div>
     `;
 
@@ -206,12 +216,12 @@ function renderCurrentMood(state) {
 
 function renderSliderMode(state) {
 
-    const emojis = state.displayedEmojis.slice(0, state.displayedCount);
-    const values = state.sliderValues.slice(0, state.displayedCount);
+    const count = state.displayedCount;
+    const values = state.sliderValues.slice(0, count);
 
-    const rows = emojis.map((emoji, i) => `
+    const rows = MOOD_LIST.slice(0, count).map((mood, i) => `
         <div class="te-slider-row">
-            <span class="te-slider-emoji">${emoji}</span>
+            <img src="${mood.image}" alt="${mood.label}" class="te-slider-emoji te-mood-img">
             <input
                 type="range"
                 class="te-pct-slider"
@@ -224,9 +234,9 @@ function renderSliderMode(state) {
     `).join("");
 
     const dominantIdx = values.reduce((best, v, i) => v > (values[best] || 0) ? i : best, 0);
-    const dominantEmoji = state.showMost && values[dominantIdx] > 0 ? emojis[dominantIdx] : null;
-    const dominantLine = dominantEmoji
-        ? `<div class="te-dominant">Most: ${dominantEmoji}</div>`
+    const dominantMood = state.showMost && values[dominantIdx] > 0 ? MOOD_LIST[dominantIdx] : null;
+    const dominantLine = dominantMood
+        ? `<div class="te-dominant">Most: <img src="${dominantMood.image}" alt="${dominantMood.label}" class="te-mood-img te-dominant-img"></div>`
         : "";
 
     return `
@@ -272,22 +282,32 @@ async function updateDiaryMoodBadge(widget) {
 }
 
 // Emoji sizing that responds to widget width:
-//  - select mode: inverse scale (wider → smaller emojis)
+//  - select mode: fill available width so 5 buttons never overflow
 //  - slider mode: fixed compact emoji so bar stretches longer
 function applyTodayEmotionScale(widget, state) {
     const widgetW = widget.offsetWidth;
     if (!widgetW) return;
 
     if (state.displayMode === "select") {
-        // Inverse: at 200px → ~48px emoji; at 350px → ~28px; wider → stays ~26px
-        const emojiPx = Math.max(26, Math.min(48, Math.floor(9600 / widgetW)));
+        const count    = state.displayedCount || 5;
+        const CARD_PAD = 14;   // .te-card padding (0.85em ≈ 14px) × 2 sides
+        const BTN_OH   = 16;   // each button: 6px padding × 2 + 2px border × 2
+        const GAP      = 6;    // matches CSS gap
+        const available = widgetW - CARD_PAD * 2 - BTN_OH * count - GAP * (count - 1);
+        const px = Math.max(28, Math.min(70, Math.floor(available / count)));
+        const pxAnxious = Math.round(px * (80 / 70));
+
         widget.querySelectorAll(".te-emoji-btn").forEach(btn => {
-            btn.style.fontSize = `${emojiPx}px`;
+            const img = btn.querySelector(".te-mood-img");
+            if (!img) return;
+            const sz = btn.dataset.value === "anxious" ? pxAnxious : px;
+            img.style.width  = `${sz}px`;
+            img.style.height = `${sz}px`;
         });
     } else {
-        // Slider: fix emoji at 24px so bar (flex:1) claims all the extra width
-        widget.querySelectorAll(".te-slider-emoji").forEach(el => {
-            el.style.fontSize = "24px";
+        widget.querySelectorAll(".te-slider-emoji.te-mood-img").forEach(img => {
+            img.style.width  = "24px";
+            img.style.height = "24px";
         });
     }
 }
@@ -322,6 +342,36 @@ function updateState(partial) {
 
 }
 
+/* ── Mood Lookup ─────────────────────────────────────────── */
+
+// Tries exact emoji match first; falls back to position in DEFAULT_EMOJIS
+// so encoding quirks in saved state don't silently break saveMood().
+function resolveMoodItem(emoji, fallbackIndex) {
+    if (!emoji) return null;
+    const byEmoji = MOOD_LIST.find(m => m.emoji === emoji);
+    if (byEmoji) return byEmoji;
+    // Fallback: the emoji is at `fallbackIndex` in displayedEmojis which
+    // mirrors DEFAULT_EMOJIS order — use that to index MOOD_LIST directly.
+    if (fallbackIndex >= 0 && fallbackIndex < MOOD_LIST.length) {
+        return MOOD_LIST[fallbackIndex];
+    }
+    return null;
+}
+
+/* ── Mood Lock Popup ─────────────────────────────────────── */
+
+let _isLocked = false;
+
+function showMoodLockedPopup() {
+    showReminderPopup({
+        title: "Mood Locked",
+        message: "Want to change your mood? Please update it in the Diary page under Mood.",
+        confirmText: "Go to Diary",
+        cancelText: "Close",
+        onConfirm: () => { window.location.href = "/diary"; }
+    });
+}
+
 /* ── Public API ──────────────────────────────────────────── */
 
 export function createTodayEmotionWidget() {
@@ -354,6 +404,18 @@ export function initializeTodayEmotion() {
 
     let state = getSavedState();
     state = checkDailyReset(state);
+
+    const savedMood = getMood();
+    _isLocked = savedMood !== null;
+
+    if (savedMood) {
+        const idx = MOOD_LIST.findIndex(m => m.value === savedMood);
+        if (idx >= 0 && idx < state.displayedCount) {
+            state = { ...state, selectedIndexes: [idx] };
+            saveState(state);
+        }
+    }
+
     rerender(state);
 
     widget.addEventListener("widgetresize", () => {
@@ -362,6 +424,13 @@ export function initializeTodayEmotion() {
 
     /* emoji select clicks */
     widget.addEventListener("click", event => {
+
+        if (_isLocked) {
+            if (event.target.closest(".te-emoji-row--locked")) {
+                showMoodLockedPopup();
+            }
+            return;
+        }
 
         const btn = event.target.closest(".te-emoji-btn");
 
@@ -378,9 +447,10 @@ export function initializeTodayEmotion() {
 
         if (cur.selectionMode === "single") {
 
-            updateState({
-                selectedIndexes: [index]
-            });
+            updateState({ selectedIndexes: [index] });
+
+            const moodItem = MOOD_LIST[index];
+            if (moodItem) saveMood(moodItem.value);
 
         } else {
 
@@ -393,6 +463,13 @@ export function initializeTodayEmotion() {
             }
 
             updateState({ selectedIndexes: Array.from(set) });
+
+            const arr = Array.from(set);
+            if (arr.length) {
+                const firstIdx = Math.min(...arr);
+                const moodItem = MOOD_LIST[firstIdx];
+                if (moodItem) saveMood(moodItem.value);
+            }
 
         }
 
@@ -416,15 +493,15 @@ export function initializeTodayEmotion() {
 
         // update dominant emoji without rerender
         const cur = getSavedState();
-        const emojis = cur.displayedEmojis.slice(0, cur.displayedCount);
         const liveValues = Array.from(
             widget.querySelectorAll(".te-pct-slider")
         ).map(s => Number(s.value));
         const dominantIdx = liveValues.reduce((best, v, j) => v > liveValues[best] ? j : best, 0);
         const dominantEl = widget.querySelector(".te-dominant");
         if (dominantEl) {
-            dominantEl.textContent = cur.showMost && liveValues[dominantIdx] > 0
-                ? `Most: ${emojis[dominantIdx]}`
+            const dom = cur.showMost && liveValues[dominantIdx] > 0 ? MOOD_LIST[dominantIdx] : null;
+            dominantEl.innerHTML = dom
+                ? `Most: <img src="${dom.image}" alt="${dom.label}" class="te-mood-img te-dominant-img">`
                 : "";
         }
 
