@@ -45,33 +45,17 @@ export function getDigitalClockSettings() {
         display: `
             <h3>Time</h3>
             <div class="setting-row">
-                <span>Show Seconds</span>
-                <div class="segment-button show-seconds-segment">
-                    <button class="segment-option active" data-value="true">Show</button>
-                    <button class="segment-option" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
                 <span>Clock Format</span>
                 <div class="segment-button clock-format-segment">
                     <button class="segment-option active" data-value="24h">24H</button>
                     <button class="segment-option" data-value="12h">12H</button>
                 </div>
             </div>
-            <h3>Date</h3>
-            <div class="setting-row">
-                <span>Show Date</span>
-                <div class="segment-button show-date-segment">
-                    <button class="segment-option" data-value="true">Show</button>
-                    <button class="segment-option active" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Show Weekday</span>
-                <div class="segment-button show-weekday-segment">
-                    <button class="segment-option" data-value="true">Show</button>
-                    <button class="segment-option active" data-value="false">Hide</button>
-                </div>
+            <h3>Display Elements</h3>
+            <div class="toggle-chips">
+                <button class="toggle-chip show-seconds-chip active">Seconds</button>
+                <button class="toggle-chip show-date-chip">Date</button>
+                <button class="toggle-chip show-weekday-chip">Weekday</button>
             </div>
         `
 

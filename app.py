@@ -189,6 +189,11 @@ def journal_home_static(filename):
         filename
     )
 
+# ================= CURRENT USER (for client-side localStorage namespacing) =================
+@app.route('/api/whoami', methods=['GET'])
+def whoami():
+    return jsonify({"username": session.get("user", "")})
+
 # ================= HOME LAYOUT (per-user, stored in users.json) =================
 @app.route('/api/home-layout', methods=['GET'])
 def get_home_layout():

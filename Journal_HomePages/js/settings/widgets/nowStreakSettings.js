@@ -13,7 +13,7 @@ export function getNowStreakSettings() {
         graph: "",
 
         display: `
-            <h3>Display</h3>
+            <h3>Display Elements</h3>
             <div class="setting-row">
                 <span>Mode</span>
                 <div class="segment-button ns-display-segment">
