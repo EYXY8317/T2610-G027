@@ -1,3 +1,5 @@
+import { userScopedKey } from "../currentUser.js";
+
 const STORAGE_KEY = "now-streak-display";
 
 const DEFAULT_STATE = {
@@ -5,7 +7,7 @@ const DEFAULT_STATE = {
 };
 
 function getState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(userScopedKey(STORAGE_KEY));
     if (!raw) return { ...DEFAULT_STATE };
     try { return { ...DEFAULT_STATE, ...JSON.parse(raw) }; }
     catch { return { ...DEFAULT_STATE }; }
@@ -13,7 +15,7 @@ function getState() {
 
 function saveState(partial) {
     const next = { ...getState(), ...partial };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(userScopedKey(STORAGE_KEY), JSON.stringify(next));
     return next;
 }
 

@@ -59,9 +59,10 @@ def add_entry(entry):
     #          i=1
     #          i=2
 
-        if entries[i]["date"] == entry["date"]:
-        # Check if same date exists
-        # 检查有没有相同的日期
+        if (entries[i]["date"] == entry["date"]
+                and entries[i].get("username") == entry.get("username")):
+        # Check if same date AND same user exists
+        # 检查有没有相同的日期而且是同一个用户
 
         # entries[i] = Get one item from the list using index
         # ["date"] = Get the value of "date" from the dictionary
@@ -89,10 +90,10 @@ def add_entry(entry):
     save_entries(entries)    
     # Save updated list back to file
 
-#================================ delete_entry(date) ================================
-def delete_entry(date):
+#================================ delete_entry(date, username) ================================
+def delete_entry(date, username):
     entries = load_entries()
-    entries = [e for e in entries if e["date"] != date]
+    entries = [e for e in entries if not (e["date"] == date and e.get("username") == username)]
     # List comprehension (create new filtered list)
     # List comprehension（用一行代码生成新 list）
 

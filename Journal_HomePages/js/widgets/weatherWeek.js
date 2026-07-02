@@ -4,8 +4,6 @@ import {
 }
 from "./weatherConfig.js";
 
-import { saveLayout } from "../home/saveLayout.js";
-
 const STATE_KEY = "weather-week-state";
 
 const DEFAULT_STATE = {
@@ -125,25 +123,6 @@ export async function renderWeatherWeek() {
         }).join("");
 
         container.innerHTML = `<div class="ww-grid">${cols}</div>`;
-
-        requestAnimationFrame(() => {
-            const widget = document.getElementById("weather-week-widget");
-            if (!widget) return;
-            const header = widget.querySelector(".widget-header");
-            const grid   = widget.querySelector(".ww-grid");
-            if (!header || !grid) return;
-            const contentH = header.offsetHeight + grid.offsetHeight;
-            // Auto-fit if no saved layout OR if saved height is larger than content
-            // (means leftover space from old layout — snap it tight).
-            // Once user drags it taller than content, we respect that choice.
-            const saved = localStorage.getItem("weather-week-widget-layout");
-            const savedH = saved ? JSON.parse(saved).height : null;
-            const savedPx = savedH ? parseInt(savedH) : null;
-            if (!savedPx || savedPx > contentH) {
-                widget.style.height = contentH + "px";
-                saveLayout(widget);
-            }
-        });
 
     }
     catch (err) {

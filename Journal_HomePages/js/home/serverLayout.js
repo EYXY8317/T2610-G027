@@ -1,16 +1,4 @@
-const WIDGET_IDS = [
-    "digital-clock-widget",
-    "weather-hour-widget",
-    "weather-day-widget",
-    "weather-week-widget",
-    "today-emotion-widget",
-    "now-streak-widget",
-    "high-streak-widget",
-    "picture-streak-widget",
-    "emotion-summary-widget",
-    "quote-widget",
-    "diary-card-widget",
-];
+import { JOURNAL_WIDGET_IDS as WIDGET_IDS } from "../currentUser.js";
 
 function getActiveTemplate() {
     return localStorage.getItem("active-template") || "cozy-dashboard";

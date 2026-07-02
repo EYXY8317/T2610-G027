@@ -1,18 +1,53 @@
+import { MOOD_LIST } from "../mood_sync.js";
+import { userScopedKey } from "../currentUser.js";
+
 const STORAGE_KEY = "emotion-summary-state";
 
-const MOOD_ICON  = { Happy: "😊", Sad: "😢", Angry: "😠" };
+function _moodImg(value) {
+    return `<img src="/journal_home_static/assets/emotions/${value}.png" alt="${value}" class="es-mood-icon-img">`;
+}
 
-// Emoji index → mood score (0-10), index 0 = most positive emoji
-const EMOJI_WEIGHTS = [9.5, 8.0, 6.0, 4.5, 3.0];
-// Diary mood → fixed score
-const DIARY_SCORES  = { Happy: 8.5, Sad: 3.5, Angry: 3.0 };
+const MOOD_ICON = {
+    // Current 5-mood system
+    happy:   _moodImg("happy"),
+    sad:     _moodImg("sad"),
+    angry:   _moodImg("angry"),
+    anxious: _moodImg("anxious"),
+    unwell:  _moodImg("unwell"),
+    // Legacy moods (backwards compatibility with old diary entries)
+    smile:   "😊",
+    neutral: "🙂",
+    meh:     "😐",
+    Happy:   _moodImg("happy"),
+    Sad:     _moodImg("sad"),
+    Angry:   _moodImg("angry"),
+};
+
+// Emoji index → mood score (1-5 scale), index 0 = most positive emoji
+const EMOJI_WEIGHTS = [5, 4, 3, 2, 1];
+// Diary mood → fixed score (1-5 scale): happy=5, anxious=4, sad=2, angry=1, unwell=1
+const DIARY_SCORES = {
+    // Current moods — each gets its own Y level
+    happy:   5,
+    anxious: 4,
+    sad:     3,
+    angry:   2,
+    unwell:  1,
+    // Legacy moods mapped to nearest equivalent
+    smile:   5,
+    neutral: 3,
+    meh:     2,
+    Happy:   5,
+    Sad:     3,
+    Angry:   2,
+};
 
 let diaryMoods = {};  // { date: mood }
 let diaryData  = {};  // { date: { mood, topic } }
 
 const DEFAULT_STATE = {
     displayMode:    "pie",
-    timeRange:      "week",
+    timeRange:      "month",
     customStart:    "",
     customEnd:      "",
     showCombo:      true,
@@ -24,15 +59,20 @@ const DEFAULT_STATE = {
 };
 
 function getState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(userScopedKey(STORAGE_KEY));
     if (!raw) return { ...DEFAULT_STATE };
-    try { return { ...DEFAULT_STATE, ...JSON.parse(raw) }; }
+    try {
+        const saved = JSON.parse(raw);
+        // Migrate old default "week" → "month" so charts show real diary data
+        if (saved.timeRange === "week") saved.timeRange = "month";
+        return { ...DEFAULT_STATE, ...saved };
+    }
     catch { return { ...DEFAULT_STATE }; }
 }
 
 function saveState(partial) {
     const next = { ...getState(), ...partial };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(userScopedKey(STORAGE_KEY), JSON.stringify(next));
     return next;
 }
 
@@ -46,7 +86,10 @@ async function fetchDiaryData() {
         for (const [d, info] of Object.entries(diaryData)) {
             if (info.mood) diaryMoods[d] = info.mood;
         }
-    } catch {
+        console.log("[EmotionSummary] diary entries loaded:", Object.keys(diaryData).length, "| with mood:", Object.keys(diaryMoods).length);
+        console.log("[EmotionSummary] diaryMoods:", diaryMoods);
+    } catch (e) {
+        console.error("[EmotionSummary] failed to fetch diary data:", e);
         diaryData  = {};
         diaryMoods = {};
     }
@@ -55,7 +98,7 @@ async function fetchDiaryData() {
 /* ── Emotion history ─────────────────────────────────────── */
 
 function getEmotionHistory() {
-    const raw = localStorage.getItem("today-emotion-state");
+    const raw = localStorage.getItem(userScopedKey("today-emotion-state"));
     if (!raw) return {};
     try {
         const parsed = JSON.parse(raw);
@@ -64,12 +107,7 @@ function getEmotionHistory() {
 }
 
 function getEmojis() {
-    const raw = localStorage.getItem("today-emotion-state");
-    if (!raw) return ["😀", "😊", "🙂", "😐", "😔"];
-    try {
-        const parsed = JSON.parse(raw);
-        return parsed.displayedEmojis || ["😀", "😊", "🙂", "😐", "😔"];
-    } catch { return ["😀", "😊", "🙂", "😐", "😔"]; }
+    return MOOD_LIST.map(m => m.emoji);
 }
 
 /* ── Date helpers ────────────────────────────────────────── */
@@ -89,12 +127,26 @@ function isoMonthStart() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`;
 }
 
+function isoYearStart() {
+    const d = new Date();
+    return `${d.getFullYear()}-01-01`;
+}
+
 function filterByRange(history, state) {
     let start, end;
     const today = isoToday();
-    if (state.timeRange === "today")      { start = end = today; }
-    else if (state.timeRange === "week")  { start = isoWeekStart(); end = today; }
-    else if (state.timeRange === "month") { start = isoMonthStart(); end = today; }
+    if (state.timeRange === "week") { start = isoWeekStart(); end = today; }
+    else if (state.timeRange === "month") {
+        const now = new Date();
+        const y  = state.calendarYear  ?? now.getFullYear();
+        const m  = state.calendarMonth ?? now.getMonth();
+        const mm = String(m + 1).padStart(2, "0");
+        const lastDay = new Date(y, m + 1, 0).getDate();
+        start = `${y}-${mm}-01`;
+        end   = `${y}-${mm}-${String(lastDay).padStart(2, "0")}`;
+        if (end > today) end = today;
+    }
+    else if (state.timeRange === "year")  { start = isoYearStart();  end = today; }
     else { start = state.customStart || isoMonthStart(); end = state.customEnd || today; }
 
     const filtered = {};
@@ -160,6 +212,103 @@ function buildDiaryMoodSummary(state) {
     return counts;
 }
 
+const LEGACY_NORM = { meh: "unwell", smile: "happy", neutral: "unwell", Happy: "happy", Sad: "sad", Angry: "angry" };
+function normalizeMood(mood) { return LEGACY_NORM[mood] || mood; }
+
+// Counts moods for the calendar's current month — same iteration as renderCalendar,
+// so Pie always matches what Calendar shows regardless of state.timeRange.
+function buildCurrentMonthMoodSummary(state) {
+    const now = new Date();
+    const viewYear  = state.calendarYear  ?? now.getFullYear();
+    const viewMonth = state.calendarMonth ?? now.getMonth();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const today = isoToday();
+
+    const counts = {};
+    for (let d = 1; d <= daysInMonth; d++) {
+        const mm   = String(viewMonth + 1).padStart(2, "0");
+        const dd   = String(d).padStart(2, "0");
+        const date = `${viewYear}-${mm}-${dd}`;
+        if (date > today) break;
+        const mood = diaryMoods[date];
+        if (mood) {
+            const key = normalizeMood(mood);
+            counts[key] = (counts[key] || 0) + 1;
+        }
+    }
+    return counts;
+}
+
+// Counts moods for any time range (week / year / custom).
+function buildRangedMoodSummary(state) {
+    let start, end;
+    const today = isoToday();
+    if (state.timeRange === "week")        { start = isoWeekStart();  end = today; }
+    else if (state.timeRange === "year")   { start = isoYearStart();  end = today; }
+    else { start = state.customStart || isoMonthStart(); end = state.customEnd || today; }
+
+    const counts = {};
+    for (const [date, mood] of Object.entries(diaryMoods)) {
+        if (date < start || date > end || !mood) continue;
+        const key = normalizeMood(mood);
+        counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+}
+
+// Line data for any time range: diary-mood entries sorted by date.
+function buildRangedDiaryLineData(state) {
+    if (state.timeRange === "month") return buildCurrentMonthLineData(state);
+
+    let start, end;
+    const today = isoToday();
+    if (state.timeRange === "week")       { start = isoWeekStart(); end = today; }
+    else if (state.timeRange === "year")  { start = isoYearStart(); end = today; }
+    else { start = state.customStart || isoMonthStart(); end = state.customEnd || today; }
+
+    const entries = [];
+    for (const [date, mood] of Object.entries(diaryMoods)) {
+        if (date < start || date > end) continue;
+        const score = DIARY_SCORES[mood] ?? null;
+        if (score === null) continue;
+        entries.push({ date, score });
+    }
+    entries.sort((a, b) => (a.date < b.date ? -1 : 1));
+
+    const labels = entries.map(({ date }) => {
+        const dt = new Date(date + "T00:00:00");
+        return `${dt.getMonth() + 1}/${dt.getDate()}`;
+    });
+    const scores = entries.map(e => e.score);
+    return { labels, scores };
+}
+
+// Returns only dates in the calendar's current month that have diary mood entries,
+// so Line chart X-axis matches what Calendar shows.
+function buildCurrentMonthLineData(state) {
+    const now = new Date();
+    const viewYear  = state.calendarYear  ?? now.getFullYear();
+    const viewMonth = state.calendarMonth ?? now.getMonth();
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const today = isoToday();
+
+    const labels = [];
+    const scores = [];
+    for (let d = 1; d <= daysInMonth; d++) {
+        const mm   = String(viewMonth + 1).padStart(2, "0");
+        const dd   = String(d).padStart(2, "0");
+        const date = `${viewYear}-${mm}-${dd}`;
+        if (date > today) break;
+        const mood  = diaryMoods[date];
+        const score = mood != null ? (DIARY_SCORES[mood] ?? null) : null;
+        if (score === null) continue;
+        const dt = new Date(date + "T00:00:00");
+        labels.push(`${dt.getMonth() + 1}/${dt.getDate()}`);
+        scores.push(score);
+    }
+    return { labels, scores };
+}
+
 /* ── Palette colour helpers ──────────────────────────────── */
 
 function getESPaletteColors() {
@@ -200,21 +349,61 @@ function blendHex(c1, c2, t) {
 }
 
 // 5 emoji-pie colors graduated from title → content
+// Fixed colors sampled from each emoji face image
+const MOOD_COLORS = {
+    happy:   "#E4CC6D",   // warm yellow
+    sad:     "#8AABD4",   // soft blue
+    angry:   "#C96B58",   // terracotta red
+    anxious: "#F5A455",   // warm orange
+    unwell:  "#8FAD83",   // sage green
+};
+
+// Pre-load PNG assets for the line chart Y-axis plugin
+const MOOD_IMAGES = Object.fromEntries(
+    ["happy", "anxious", "sad", "angry", "unwell"].map(m => {
+        const img = new Image();
+        img.src = `/journal_home_static/assets/emotions/${m}.png`;
+        return [m, img];
+    })
+);
+
+// Map Y-axis score values to the mood PNG(s) that should appear there
+const SCORE_MOODS = {
+    5: ["happy"],
+    4: ["anxious"],
+    3: ["sad"],
+    2: ["angry"],
+    1: ["unwell"],
+};
+
 function getEmojiPalette() {
-    const { title, content } = getESPaletteColors();
+    // Order matches MOOD_LIST: [happy, sad, angry, anxious, unwell]
     return [
-        title,
-        blendHex(title, content, 0.25),
-        blendHex(title, content, 0.5),
-        blendHex(title, content, 0.75),
-        content,
+        MOOD_COLORS.happy,
+        MOOD_COLORS.sad,
+        MOOD_COLORS.angry,
+        MOOD_COLORS.anxious,
+        MOOD_COLORS.unwell,
     ];
 }
 
-// Mood → palette color: Happy=title, Sad=midpoint, Angry=content
+// Mood → emoji face color
 function getMoodPaletteColors() {
-    const pal = getEmojiPalette();
-    return { Happy: pal[0], Sad: pal[2], Angry: pal[4] };
+    return {
+        // Current 5-mood system
+        happy:   MOOD_COLORS.happy,
+        sad:     MOOD_COLORS.sad,
+        angry:   MOOD_COLORS.angry,
+        anxious: MOOD_COLORS.anxious,
+        unwell:  MOOD_COLORS.unwell,
+        // Legacy moods
+        smile:   MOOD_COLORS.happy,
+        neutral: MOOD_COLORS.unwell,
+        meh:     MOOD_COLORS.unwell,
+        Happy:   MOOD_COLORS.happy,
+        Sad:     MOOD_COLORS.sad,
+        Angry:   MOOD_COLORS.angry,
+    };
 }
 
 /* ── Render ──────────────────────────────────────────────── */
@@ -268,6 +457,33 @@ const crosshairPlugin = {
     }
 };
 
+// Draws mood PNG images on the Y-axis in place of text tick labels
+const moodAxisPlugin = {
+    id: "moodAxis",
+    afterDraw(chart) {
+        const yScale = chart.scales.y;
+        if (!yScale) return;
+        const { ctx, chartArea } = chart;
+        const SZ_DEFAULT = 36;
+        const SZ_ANXIOUS = Math.round(SZ_DEFAULT * 1.2);
+        const RIGHT_PAD = 4;
+        ctx.save();
+        Object.entries(SCORE_MOODS).forEach(([score, moods]) => {
+            const y = yScale.getPixelForValue(Number(score));
+            const sz = Number(score) === 4 ? SZ_ANXIOUS : SZ_DEFAULT;
+            const totalW = moods.length * sz + (moods.length - 1) * 3;
+            let x = chartArea.left - RIGHT_PAD - totalW;
+            moods.forEach(mood => {
+                const img = MOOD_IMAGES[mood];
+                if (!img?.complete || !img.naturalWidth) return;
+                ctx.drawImage(img, x, y - sz / 2, sz, sz);
+                x += sz + 3;
+            });
+        });
+        ctx.restore();
+    }
+};
+
 /* ── Mood score helpers ───────────────────────────────────── */
 
 function getMoodScore(emotionData, diaryMood, emojiCount) {
@@ -293,7 +509,16 @@ function buildMoodScoreTimeline(allHistory, emojis, state) {
     const today = isoToday();
     if (state.timeRange === "today")      { start = end = today; }
     else if (state.timeRange === "week")  { start = isoWeekStart(); end = today; }
-    else if (state.timeRange === "month") { start = isoMonthStart(); end = today; }
+    else if (state.timeRange === "month") {
+        const now = new Date();
+        const y  = state.calendarYear  ?? now.getFullYear();
+        const m  = state.calendarMonth ?? now.getMonth();
+        const mm = String(m + 1).padStart(2, "0");
+        const lastDay = new Date(y, m + 1, 0).getDate();
+        start = `${y}-${mm}-01`;
+        end   = `${y}-${mm}-${String(lastDay).padStart(2, "0")}`;
+        if (end > today) end = today;
+    }
     else { start = state.customStart || isoMonthStart(); end = state.customEnd || today; }
 
     const dates = [];
@@ -331,7 +556,9 @@ function moodChipsHtml(moodCounts) {
 function buildPieData(history, emojis, state) {
     const { totals, days } = buildEmojiTotals(history, emojis);
     const total = totals.reduce((s, v) => s + v, 0);
-    const moodCounts = buildDiaryMoodSummary(state);
+    const moodCounts = state.timeRange === "month"
+        ? buildCurrentMonthMoodSummary(state)
+        : buildRangedMoodSummary(state);
     const moodEntries = Object.entries(moodCounts).sort((a, b) => b[1] - a[1]);
     const diaryTotal  = moodEntries.reduce((s, [, n]) => s + n, 0);
 
@@ -339,34 +566,45 @@ function buildPieData(history, emojis, state) {
 
     // Prefer diary mood data when it exists; fall back to emotion widget emojis
     const useDiary = diaryTotal > 0;
-    let labels, data, colors, grandTotal;
+    let labels, moodKeys, data, colors, grandTotal;
 
     if (useDiary) {
         const moodPal = getMoodPaletteColors();
-        labels     = moodEntries.map(([mood]) => `${MOOD_ICON[mood]} ${mood}`);
+        moodKeys   = moodEntries.map(([mood]) => mood);   // already normalized by buildCurrentMonthMoodSummary
+        labels     = moodKeys.map(key => {
+            const m = MOOD_LIST.find(x => x.value === key);
+            return m ? m.value : key;
+        });
         data       = moodEntries.map(([, n]) => n);
         colors     = moodEntries.map(([mood]) => moodPal[mood] || "#999");
         grandTotal = diaryTotal;
     } else {
         const pal = getEmojiPalette();
         const activeIdxs = totals.map((v, i) => v > 0 ? i : -1).filter(i => i >= 0);
-        labels     = activeIdxs.map(i => emojis[i]);
+        moodKeys   = activeIdxs.map(i => MOOD_LIST[i]?.value || "");
+        labels     = activeIdxs.map(i => MOOD_LIST[i]?.value || emojis[i]);
         data       = activeIdxs.map(i => totals[i]);
         colors     = activeIdxs.map(i => pal[i] || "#999");
         grandTotal = total;
     }
 
     const topIdx = data.indexOf(Math.max(...data));
-    return { labels, data, colors, grandTotal, topIdx, useDiary, days, diaryTotal, moodCounts };
+    return { labels, moodKeys, data, colors, grandTotal, topIdx, useDiary, days, diaryTotal, moodCounts };
 }
 
 function renderPieLegend(pd, isWide) {
-    const items = pd.labels.map((label, i) => `
-        <div class="es-leg-row">
-            <span class="es-leg-dot" style="background:${pd.colors[i]}"></span>
-            <span class="es-leg-label">${label}</span>
-        </div>
-    `).join("");
+    const items = pd.labels.map((label, i) => {
+        const key = pd.moodKeys?.[i];
+        const icon = key
+            ? `<img src="/journal_home_static/assets/emotions/${key}.png" alt="${label}" class="es-leg-emoji-img">`
+            : `<span class="es-leg-dot" style="background:${pd.colors[i]}"></span>`;
+        return `
+            <div class="es-leg-row">
+                ${icon}
+                <span class="es-leg-label">${label}</span>
+            </div>
+        `;
+    }).join("");
     return `<div class="es-pie-legend${isWide ? " es-pie-legend--side" : " es-pie-legend--bottom"}">${items}</div>`;
 }
 
@@ -386,14 +624,17 @@ function renderPie(history, emojis, state) {
     const widget    = document.getElementById("emotion-summary-widget");
     const isWide    = widget && widget.offsetWidth > widget.offsetHeight * 1.1;
     const { topIdx, grandTotal, useDiary, days, diaryTotal, moodCounts } = pd;
-    const centerEmoji = pd.labels[topIdx] ?? "";
-    const centerPct   = Math.round(pd.data[topIdx] / grandTotal * 100);
+    const topMoodKey   = pd.moodKeys?.[topIdx] ?? "";
+    const topLabel     = pd.labels[topIdx] ?? "";
+    const topIconHtml  = topMoodKey
+        ? `<img src="/journal_home_static/assets/emotions/${topMoodKey}.png" alt="${topLabel}" class="es-highlight-img">`
+        : pd.labels[topIdx] ?? "";
+    const centerPct    = Math.round(pd.data[topIdx] / grandTotal * 100);
 
     let highlightHtml = "", comboHtml = "";
     if (useDiary) {
         highlightHtml = state.showHighlight
-            ? `<div class="es-highlight">Most felt: <strong>${centerEmoji}</strong> ${centerPct}%
-               <span class="es-days-badge">${diaryTotal} entr${diaryTotal !== 1 ? "ies" : "y"}</span></div>`
+            ? `<div class="es-highlight">Most felt: ${topIconHtml} <strong>${topLabel}</strong> ${centerPct}%</div>`
             : "";
     } else {
         const comboPairs = [];
@@ -405,7 +646,7 @@ function renderPie(history, emojis, state) {
             }
         }
         highlightHtml = state.showHighlight
-            ? `<div class="es-highlight">Most felt: <strong>${centerEmoji}</strong> ${centerPct}%
+            ? `<div class="es-highlight">Most felt: <strong>${topLabel}</strong> ${centerPct}%
                <span class="es-days-badge">${days} day${days !== 1 ? "s" : ""}</span></div>`
             : "";
         comboHtml = state.showCombo && comboPairs.length
@@ -426,12 +667,11 @@ function renderPie(history, emojis, state) {
 }
 
 function renderLine(history, emojis, state) {
-    const allHistory = getEmotionHistory();
-    const { scores } = buildMoodScoreTimeline(allHistory, emojis, state);
-    const hasData = scores.some(s => s !== null);
+    const { scores } = buildRangedDiaryLineData(state);
+    const hasData = scores.length > 0;
 
     if (!hasData) {
-        return `<div class="es-empty">No data yet.<br><small>Log a diary mood or select an emoji.</small></div>`;
+        return `<div class="es-empty">No data yet.<br><small>Log a diary mood to see the chart.</small></div>`;
     }
 
     return `
@@ -443,18 +683,21 @@ function renderLine(history, emojis, state) {
 
 /* ── Heatmap color helper ────────────────────────────────── */
 
+function getDominantMood(emotionData, emojiCount) {
+    if (!emotionData) return null;
+    const vals = getDayValues(emotionData, emojiCount);
+    if (!vals.some(v => v > 0)) return null;
+    const domIdx = vals.indexOf(Math.max(...vals));
+    return MOOD_LIST[domIdx]?.value || null;
+}
+
 function getDayHeatColor(date, emotionData, emojiCount) {
     const moodPal = getMoodPaletteColors();
     const mood = diaryMoods[date];
     if (mood) return moodPal[mood] || null;
-    const score = getMoodScore(emotionData, null, emojiCount);
-    if (score === null) return null;
-    const ep = getEmojiPalette();
-    if (score >= 7.5) return ep[0];
-    if (score >= 5.5) return ep[1];
-    if (score >= 4.0) return ep[2];
-    if (score >= 2.5) return ep[3];
-    return ep[4];
+    const dominant = getDominantMood(emotionData, emojiCount);
+    if (!dominant) return null;
+    return moodPal[dominant] || null;
 }
 
 /* ── Heatmap calendar ────────────────────────────────────── */
@@ -481,15 +724,11 @@ function renderCalendar(allHistory, emojis, state) {
     //   body-pad ≈ 17, dow-header ≈ 14, body-gap ≈ 6
     const isTall  = widgetH > widgetW;
     const BASE_OH = (isTall ? 66 : 40) + 17 + 14 + 6;
-    const LEGEND_W  = 80;   // legend column width in side mode
-    const LEGEND_H  = 30;   // legend row height in bottom mode
 
-    const gridW = isWide
-        ? Math.max(60, widgetW - 20 - LEGEND_W - 16 - 6 * 3)   // reserve legend column
-        : Math.max(60, widgetW - 20 - 6 * 3);
+    const gridW = Math.max(60, widgetW - 20 - 6 * 3);
 
     const gridH = Math.max(30,
-        widgetH - BASE_OH - (isWide ? 0 : LEGEND_H) - (numWeeks - 1) * 3
+        widgetH - BASE_OH - (numWeeks - 1) * 3
     );
 
     // Wide: cells can be wider than tall (rectangular); narrow: keep square
@@ -517,30 +756,22 @@ function renderCalendar(allHistory, emojis, state) {
         const moodAttr  = mood  ? ` data-mood="${mood}"`                            : "";
         const topicAttr = topic ? ` data-topic="${topic.replace(/"/g, "&quot;")}"` : "";
         const todayCls  = date === today ? " es-hm-today" : "";
+        const moodForIcon = mood || getDominantMood(allHistory[date], emojis.length) || "";
+        const moodEmoji = moodForIcon ? (MOOD_ICON[moodForIcon] || "") : "";
 
-        cells.push(`<div class="es-hm-cell${todayCls}" style="${style}" data-date="${date}"${moodAttr}${topicAttr}></div>`);
+        cells.push(`<div class="es-hm-cell${todayCls}" style="${style}" data-date="${date}"${moodAttr}${topicAttr}>${moodEmoji ? `<span class="es-hm-emoji">${moodEmoji}</span>` : ""}</div>`);
     }
-
-    const moodPal = getMoodPaletteColors();
-    const legendHtml = [
-        [moodPal.Happy, "Happy"],
-        [moodPal.Sad,   "Sad"],
-        [moodPal.Angry, "Angry"],
-    ].map(([c, l]) =>
-        `<span class="es-hm-leg-item"><span class="es-hm-leg-dot" style="background:${c}"></span>${l}</span>`
-    ).join("");
 
     const pal    = getESPaletteColors();
     const emptyC = hexAlpha(pal.content, 0.12);  // subtle tint of content colour for empty cells
     const todayC = pal.title;                     // today outline = title (accent) colour
 
     return `
-        <div class="es-hm-outer${isWide ? " es-hm-outer--row" : ""}">
+        <div class="es-hm-outer">
             <div class="es-heatmap" style="--cw:${cellW}px; --ch:${cellH}px; --hm-empty:${emptyC}; --hm-today:${todayC}">
                 <div class="es-hm-header">${headerHtml}</div>
                 <div class="es-hm-cells">${cells.join("")}</div>
             </div>
-            <div class="es-hm-legend${isWide ? " es-hm-legend--side" : ""}">${legendHtml}</div>
         </div>
     `;
 }
@@ -621,6 +852,7 @@ function initCharts(state) {
                         padding: 8,
                         cornerRadius: 8,
                         callbacks: {
+                            title: () => "",
                             label: ctx => {
                                 const pct = grandTotal ? Math.round(ctx.parsed / grandTotal * 100) : 0;
                                 return `  ${ctx.label}  ${pct}%`;
@@ -636,24 +868,20 @@ function initCharts(state) {
         const canvas = document.getElementById("es-line-chart");
         if (!canvas) return;
 
-        const allHistory = getEmotionHistory();
-        const { scores, labels } = buildMoodScoreTimeline(allHistory, emojis, state);
-        const validScores = scores.filter(s => s !== null);
-        if (!validScores.length) return;
-
-        const minScore = Math.min(...validScores);
-        const maxScore = Math.max(...validScores);
-        const pad = Math.max(0.3, (maxScore - minScore) * 0.15);
+        const { scores, labels } = buildRangedDiaryLineData(state);
+        if (!scores.length) return;
 
         const lineColor = state.graphColor || pal.title;
         const lineWidth = Number(state.graphLineWidth) || 2.5;
+
+        const MOOD_LABELS = { 5: "happy", 4: "anxious", 3: "sad", 2: "angry", 1: "unwell" };
 
         chartInstance = new Chart(canvas, {
             type: "line",
             data: {
                 labels,
                 datasets: [{
-                    label: "Mood Score",
+                    label: "Mood",
                     data: scores,
                     borderColor: lineColor,
                     backgroundColor: hexAlpha(lineColor, 0.08),
@@ -664,13 +892,13 @@ function initCharts(state) {
                     pointHoverBackgroundColor: lineColor,
                     pointHoverBorderColor: pal.bg,
                     pointHoverBorderWidth: 2.5,
-                    fill: true,
-                    spanGaps: true
+                    fill: true
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: { padding: { top: 20, bottom: 20, left: 58, right: 58 } },
                 interaction: { mode: "index", intersect: false },
                 plugins: {
                     legend: { display: false },
@@ -683,29 +911,28 @@ function initCharts(state) {
                         titleFont: { size: 12, weight: "700", family: "Inter, sans-serif" },
                         bodyColor: ttText,
                         bodyFont: { size: 11, family: "Inter, sans-serif" },
-                        displayColors: true,
-                        boxWidth: 8,
-                        boxHeight: 8,
+                        displayColors: false,
                         cornerRadius: 8,
                         callbacks: {
                             title: items => items[0].label,
-                            label: ctx => ctx.parsed.y != null
-                                ? `  Mood Score   ${ctx.parsed.y.toFixed(1)}`
-                                : null
+                            label: ctx => {
+                                if (ctx.parsed.y == null) return null;
+                                const rounded = Math.round(ctx.parsed.y);
+                                return `  ${MOOD_LABELS[rounded] || ctx.parsed.y.toFixed(1)}`;
+                            }
                         }
                     }
                 },
                 scales: {
                     y: {
-                        min: Math.max(0, minScore - pad),
-                        max: Math.min(10, maxScore + pad),
+                        min: 1,
+                        max: 5,
                         grid:   { color: gridColor, lineWidth: 1, borderDash: [4, 4] },
                         border: { display: false, dash: [4, 4] },
+                        afterFit: scale => { scale.width = 0; },
                         ticks:  {
-                            font: { size: 9, family: "Inter, sans-serif" },
-                            color: tickColor,
-                            maxTicksLimit: 5,
-                            callback: v => v.toFixed(1)
+                            display: false,
+                            stepSize: 1,
                         }
                     },
                     x: {
@@ -719,7 +946,7 @@ function initCharts(state) {
                     }
                 }
             },
-            plugins: [crosshairPlugin]
+            plugins: [crosshairPlugin, moodAxisPlugin]
         });
     }
 }
@@ -736,7 +963,9 @@ async function rerender(state) {
     const hdrCal   = widget?.querySelector(".es-hdr-cal");
     const hdrMonth = widget?.querySelector(".es-hdr-cal-month");
     if (hdrCal) {
-        if (state.displayMode === "calendar") {
+        const showMonthNav = state.displayMode === "calendar"
+            || (state.displayMode === "pie" && state.timeRange === "month");
+        if (showMonthNav) {
             const now = new Date();
             const y   = state.calendarYear  ?? now.getFullYear();
             const m   = state.calendarMonth ?? now.getMonth();
@@ -749,7 +978,7 @@ async function rerender(state) {
             // Tall card: month wraps below title; wide card: stays on same row
             const wW = widget.offsetWidth  || 300;
             const wH = widget.offsetHeight || 260;
-            widget.classList.toggle("es-cal-hdr-col", wH > wW);
+            widget.classList.toggle("es-cal-hdr-col", wH > wW && state.displayMode === "calendar");
         } else {
             hdrCal.style.display = "none";
             widget.classList.remove("es-cal-hdr-col");

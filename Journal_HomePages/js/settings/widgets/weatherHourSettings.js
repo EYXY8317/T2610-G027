@@ -51,32 +51,14 @@ export function getWeatherHourSettings() {
             </div>
         `,
 
-        graph: `
-            <h3>Overlay</h3>
-            <div class="setting-row">
-                <span>Show Humidity</span>
-                <div class="segment-button show-humidity-segment">
-                    <button class="segment-option" data-value="true">Show</button>
-                    <button class="segment-option active" data-value="false">Hide</button>
-                </div>
-            </div>
-        `,
+        graph: "",
 
         display: `
-            <h3>Tooltip</h3>
-            <div class="setting-row">
-                <span>Show Icon</span>
-                <div class="segment-button show-icon-segment">
-                    <button class="segment-option active" data-value="true">Show</button>
-                    <button class="segment-option" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Show Temperature</span>
-                <div class="segment-button show-temperature-segment">
-                    <button class="segment-option active" data-value="true">Show</button>
-                    <button class="segment-option" data-value="false">Hide</button>
-                </div>
+            <h3>Display Elements</h3>
+            <div class="toggle-chips">
+                <button class="toggle-chip wh-humidity-chip">Humidity</button>
+                <button class="toggle-chip wh-icon-chip active">Icon</button>
+                <button class="toggle-chip wh-temp-chip active">Temperature</button>
             </div>
         `
 
