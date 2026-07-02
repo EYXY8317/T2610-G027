@@ -256,63 +256,63 @@
             "picture-streak-extra-instances": [],
             "digital-clock-widget-layout": {
                 "left": "16px",
-                "top": "89px",
-                "width": "1005px",
-                "height": "180px"
+                "top": "93px",
+                "width": "1004px",
+                "height": "176px"
             },
             "digital-clock-widget-appearance": {
                 "backgroundColor": "#4E3629",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#EFE6D7",
-                "titleColor": "#A67C52",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#EFE6D7",
+                "contentScale": "1",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "1"
+                "titleColor": "#A67C52",
+                "titleScale": "3"
             },
             "cozy-dashboard:digital-clock-widget-deco": [
                 {
-                    "id": "tpl-dcw-1",
-                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
-                    "x": 10,
-                    "y": 2,
-                    "w": 101,
                     "h": 138,
+                    "id": "tpl-dcw-1",
                     "opacity": 0.88,
-                    "rotation": -12
+                    "rotation": -12,
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "w": 101,
+                    "x": 10,
+                    "y": 2
                 },
                 {
-                    "id": "tpl-dcw-2",
-                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
-                    "x": 884,
-                    "y": 2,
-                    "w": 101,
                     "h": 138,
+                    "id": "tpl-dcw-2",
                     "opacity": 0.88,
-                    "rotation": 15
+                    "rotation": 15,
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "w": 101,
+                    "x": 884,
+                    "y": 2
                 }
             ],
             "weather-hour-widget-layout": {
-                "left": "228px",
+                "left": "214px",
                 "top": "557px",
-                "width": "229px",
-                "height": "158px"
+                "width": "235px",
+                "height": "155px"
             },
             "weather-hour-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
-                "showTitle": true,
-                "showBorder": true,
-                "contentColor": "#B08968",
-                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#B08968",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": true,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#5C4033",
+                "titleScale": "3"
             },
             "weather-day-widget-layout": {
                 "left": "16px",
@@ -323,126 +323,126 @@
             "weather-day-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#7a5a3a",
-                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#7a5a3a",
+                "contentScale": "2",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "2"
+                "titleColor": "#5C4033",
+                "titleScale": "3"
             },
             "weather-week-widget-layout": {
+                "height": "70px",
                 "left": "16px",
                 "top": "89px",
-                "width": "271px",
-                "height": "70px"
+                "width": "271px"
             },
             "weather-week-widget-appearance": {
                 "backgroundColor": "#D7C2A4",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#7A5A3A",
-                "titleColor": "#FAF6EE",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#7A5A3A",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "center",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#FAF6EE",
+                "titleScale": "3"
             },
             "today-emotion-widget-layout": {
-                "left": "1027px",
+                "left": "1029px",
                 "top": "89px",
-                "width": "493px",
+                "width": "491px",
                 "height": "158px"
             },
             "today-emotion-widget-appearance": {
                 "backgroundColor": "#FAF6EE",
                 "backgroundOpacity": 100,
-                "showTitle": true,
-                "showBorder": true,
-                "contentColor": "#4e3629",
-                "titleColor": "#7A5A3A",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#4e3629",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": true,
                 "titleAlign": "center",
-                "titleScale": "2",
-                "contentScale": "3"
+                "titleColor": "#7A5A3A",
+                "titleScale": "2"
             },
             "cozy-dashboard:today-emotion-widget-deco": [
                 {
-                    "id": "tpl-tew-1",
-                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
-                    "x": 375,
-                    "y": 2,
-                    "w": 99,
                     "h": 136,
+                    "id": "tpl-tew-1",
                     "opacity": 0.82,
-                    "rotation": 20
+                    "rotation": 20,
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "w": 99,
+                    "x": 375,
+                    "y": 2
                 }
             ],
             "now-streak-widget-layout": {
-                "left": "476px",
-                "top": "590px",
-                "width": "247px",
+                "left": "463px",
+                "top": "586px",
+                "width": "252.5px",
                 "height": "126px"
             },
             "now-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
-                "showTitle": true,
-                "showBorder": true,
-                "contentColor": "#A67C52",
-                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#A67C52",
+                "contentScale": "2",
+                "showBorder": true,
+                "showTitle": true,
                 "titleAlign": "center",
-                "titleScale": "3",
-                "contentScale": "2"
+                "titleColor": "#4E3629",
+                "titleScale": "3"
             },
             "cozy-dashboard:now-streak-widget-deco": [
                 {
-                    "id": "deco-1782349312674-1z8l",
-                    "src": "/journal_home_static/assets/deco/leaf-oval.png",
-                    "x": 166,
-                    "y": 34,
-                    "w": 100,
                     "h": 100,
+                    "id": "deco-1782349312674-1z8l",
                     "opacity": 1,
-                    "rotation": 0
+                    "rotation": 0,
+                    "src": "/journal_home_static/assets/deco/leaf-oval.png",
+                    "w": 100,
+                    "x": 166,
+                    "y": 34
                 }
             ],
             "high-streak-widget-layout": {
-                "left": "735px",
-                "top": "590px",
-                "width": "274px",
-                "height": "125px"
+                "left": "727.2px",
+                "top": "586px",
+                "width": "285.8px",
+                "height": "129px"
             },
             "high-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
-                "showTitle": true,
-                "showBorder": true,
-                "contentColor": "#A67C52",
-                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#A67C52",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": true,
                 "titleAlign": "center",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#4E3629",
+                "titleScale": "3"
             },
             "cozy-dashboard:high-streak-widget-deco": [
                 {
-                    "id": "deco-1782349319209-58ft",
-                    "src": "/journal_home_static/assets/deco/leaf-small.png",
-                    "x": 180,
-                    "y": -23,
-                    "w": 100,
                     "h": 100,
+                    "id": "deco-1782349319209-58ft",
                     "opacity": 1,
-                    "rotation": 198.23825873997845
+                    "rotation": 198.23825873997845,
+                    "src": "/journal_home_static/assets/deco/leaf-small.png",
+                    "w": 100,
+                    "x": 180,
+                    "y": -23
                 }
             ],
             "picture-streak-widget-layout": {
@@ -454,15 +454,15 @@
             "picture-streak-widget-appearance": {
                 "backgroundColor": "#EFE6D7",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#A67C52",
-                "titleColor": "#4E3629",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#A67C52",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#4E3629",
+                "titleScale": "3"
             },
             "picture-streak-widget-state": {
                 "currentIndex": 0,
@@ -478,7 +478,7 @@
                 "showDateLabel": true
             },
             "emotion-summary-widget-layout": {
-                "left": "470px",
+                "left": "463px",
                 "top": "280px",
                 "width": "550px",
                 "height": "298px"
@@ -486,26 +486,26 @@
             "emotion-summary-widget-appearance": {
                 "backgroundColor": "#F8F1E7",
                 "backgroundOpacity": 100,
-                "showTitle": true,
-                "showBorder": true,
-                "contentColor": "#B08968",
-                "titleColor": "#5C4033",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#B08968",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": true,
                 "titleAlign": "center",
-                "titleScale": "1",
-                "contentScale": "3"
+                "titleColor": "#5C4033",
+                "titleScale": "1"
             },
             "cozy-dashboard:emotion-summary-widget-deco": [
                 {
-                    "id": "deco-1782349300040-kvq4",
-                    "src": "/journal_home_static/assets/deco/flower-4bloom.png",
-                    "x": 481,
-                    "y": 231,
-                    "w": 66,
                     "h": 66,
+                    "id": "deco-1782349300040-kvq4",
                     "opacity": 1,
-                    "rotation": 0
+                    "rotation": 0,
+                    "src": "/journal_home_static/assets/deco/flower-4bloom.png",
+                    "w": 66,
+                    "x": 481,
+                    "y": 231
                 }
             ],
             "quote-widget-layout": {
@@ -517,26 +517,26 @@
             "quote-widget-appearance": {
                 "backgroundColor": "#FAF6EE",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#000000",
-                "titleColor": "#7A5A3A",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#000000",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#7A5A3A",
+                "titleScale": "3"
             },
             "cozy-dashboard:quote-widget-deco": [
                 {
-                    "id": "deco-1782349278048-rdn9",
-                    "src": "/journal_home_static/assets/deco/flower-cluster.png",
-                    "x": 280,
-                    "y": 106,
-                    "w": 172,
                     "h": 172,
+                    "id": "deco-1782349278048-rdn9",
                     "opacity": 1,
-                    "rotation": 0
+                    "rotation": 0,
+                    "src": "/journal_home_static/assets/deco/flower-cluster.png",
+                    "w": 172,
+                    "x": 280,
+                    "y": 106
                 }
             ],
             "diary-card-widget-layout": {
@@ -548,36 +548,36 @@
             "diary-card-widget-appearance": {
                 "backgroundColor": "#7A5A3A",
                 "backgroundOpacity": 100,
-                "showTitle": false,
-                "showBorder": true,
-                "contentColor": "#FAF6EE",
-                "titleColor": "#D7C2A4",
                 "borderColor": "#4e3629",
                 "borderWidth": 2,
+                "contentColor": "#FAF6EE",
+                "contentScale": "3",
+                "showBorder": true,
+                "showTitle": false,
                 "titleAlign": "left",
-                "titleScale": "3",
-                "contentScale": "3"
+                "titleColor": "#D7C2A4",
+                "titleScale": "3"
             },
             "cozy-dashboard:diary-card-widget-deco": [
                 {
-                    "id": "deco-1782349408762-3362",
-                    "src": "/journal_home_static/assets/deco/flower-bell.png",
-                    "x": 0,
-                    "y": 105,
-                    "w": 69,
                     "h": 69,
+                    "id": "deco-1782349408762-3362",
                     "opacity": 1,
-                    "rotation": 0
+                    "rotation": 0,
+                    "src": "/journal_home_static/assets/deco/flower-bell.png",
+                    "w": 69,
+                    "x": 0,
+                    "y": 105
                 },
                 {
-                    "id": "deco-1782349427338-xsvj",
-                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
-                    "x": 403,
-                    "y": -22,
-                    "w": 100,
                     "h": 100,
+                    "id": "deco-1782349427338-xsvj",
                     "opacity": 1,
-                    "rotation": 225.66368063875612
+                    "rotation": 225.66368063875612,
+                    "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+                    "w": 100,
+                    "x": 403,
+                    "y": -22
                 }
             ],
             "hidden-widgets": [
