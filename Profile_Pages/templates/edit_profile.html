@@ -42,6 +42,23 @@
 
             <div class="form-group">
                 <label class="form-label">Profile Picture</label>
+
+                {% if user.profile_picture %}
+                <img
+                    id="picture-preview"
+                    src="/profile_static/profile_pictures/{{ user.profile_picture }}"
+                    class="profile-pic"
+                    style="width:100px; height:100px; margin-bottom:14px;"
+                >
+                {% else %}
+                <img
+                    id="picture-preview"
+                    src="https://via.placeholder.com/100"
+                    class="profile-pic"
+                    style="width:100px; height:100px; margin-bottom:14px;"
+                >
+                {% endif %}
+
                 <div class="file-upload">
                     <label class="file-upload-label">
                         <span class="file-upload-btn">📷 Choose Photo</span>
@@ -74,7 +91,16 @@
 document.querySelectorAll('.file-input-hidden').forEach(function(input){
     input.addEventListener('change', function(){
         var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
-        el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+        var file = this.files[0];
+        el.textContent = file ? file.name : 'No file chosen';
+
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e){
+                document.getElementById('picture-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
     });
 });
 </script>

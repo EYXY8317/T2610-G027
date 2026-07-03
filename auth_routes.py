@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
+from datetime import datetime
 import json, os
 
 auth_bp = Blueprint('auth', __name__, url_prefix='')
@@ -35,6 +36,8 @@ def login():
         password = hash_password(request.form["password"])
         for u in users:
             if u["username"] == username and u.get("password") == password:
+                u["last_login"] = datetime.now().isoformat()
+                save_data(f_users, users)
                 session["user"] = username
                 return redirect(url_for("dashboard"))
         return render_template("login.html", error="Invalid username or password")

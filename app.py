@@ -21,7 +21,7 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, "Finance", "static")
 )
 
-app.secret_key = "my_secret_key"
+app.secret_key = os.environ.get("SECRET_KEY", "my_secret_key")
 
 register_profile_routes(app)
 

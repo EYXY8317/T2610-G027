@@ -98,36 +98,6 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
             </div>
 
-            <!-- PROFILE PICTURE -->
-
-            <div class="upload-box">
-
-                <div class="section-title">
-                    Upload Profile Picture
-                </div>
-
-                <form
-                    method="POST"
-                    action="/upload_profile_picture"
-                    enctype="multipart/form-data"
-                >
-
-                    <div class="file-upload" style="margin-bottom:16px;">
-                        <label class="file-upload-label">
-                            <span class="file-upload-btn">📷 Choose Photo</span>
-                            <span class="file-upload-name">No file chosen</span>
-                            <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn">
-                        Upload Picture
-                    </button>
-
-                </form>
-
-            </div>
-
         </div>
 
         <!-- RIGHT -->
@@ -202,13 +172,29 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
                 <hr style="margin:24px 0; border:none; border-top:1px solid var(--border-color);">
 
-                <h3>🟢 Status</h3>
+                <h3>🕒 Last Login</h3>
 
-                <p>Active</p>
+                <p>{{ last_login }}</p>
 
                 <span>
-                    System running normally
+                    When you most recently signed in
                 </span>
+
+            </div>
+
+            <div class="danger-zone">
+
+                <div class="section-title">Account Deletion</div>
+
+                <a href="/delete_account">
+                    <button class="btn danger-btn">
+                        Delete Account
+                    </button>
+                </a>
+
+                <p>
+                    Permanently delete your account and all associated data. This cannot be undone.
+                </p>
 
             </div>
 
@@ -265,14 +251,6 @@ function applyTheme() {
     document.getElementById('selected-theme-input').value = _pendingTheme;
     document.getElementById('theme-form').submit();
 }
-
-// Update file upload name labels
-document.querySelectorAll('.file-input-hidden').forEach(function(input){
-    input.addEventListener('change', function(){
-        var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
-        el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
-    });
-});
 
 </script>
 

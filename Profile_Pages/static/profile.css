@@ -689,3 +689,33 @@ body.ash{
     border-color:var(--button-bg);
     color:var(--text-primary, #2c241b);
 }
+
+/* ================================================= */
+/* ==================== DANGER ====================== */
+/* ================================================= */
+
+.danger-zone{
+    margin-top:25px;
+    padding-top:20px;
+    border-top:1px solid var(--border-color);
+}
+
+.danger-zone .section-title{
+    font-size:1.1rem;
+    color:#c0392b;
+}
+
+.danger-zone p{
+    font-size:0.9rem;
+    color:var(--text-secondary, #6b5d50);
+    margin-top:14px;
+}
+
+.danger-btn,
+.danger-btn:hover{
+    background:#c0392b;
+}
+
+.danger-btn:hover{
+    background:#a5301f;
+}
