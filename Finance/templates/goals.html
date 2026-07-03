@@ -3,6 +3,7 @@
 
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Financial Goals</title>
 
     <link
@@ -16,6 +17,10 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -25,18 +30,25 @@
 <body
 class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
-{% if wallpaper %}
-
-style="
-background-image:
-linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
-url('/profile_static/wallpapers/{{ wallpaper }}');
-"
-
-{% endif %}
 >
 
-<div class="wallpaper-overlay"></div>
+
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+        </div>
+        <div class="logo-text">Life Pages</div>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
+        <a href="/finance" class="active">Finance Page</a>
+        <a href="/journal">Diary Page</a>
+        <a href="/calendar">Calendar Page</a>
+        <a href="/profile">Settings</a>
+    </div>
+</nav>
 
 <nav class="navbar">
     <div class="logo-section">
@@ -215,7 +227,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+<<<<<<< HEAD
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
+=======
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -373,7 +389,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+<<<<<<< HEAD
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
+=======
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -506,7 +526,11 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
+<<<<<<< HEAD
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
+=======
+                        <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -536,6 +560,10 @@ url('/profile_static/wallpapers/{{ wallpaper }}');
 
                 <div style="margin-top:12px;">
                     <a href="/reopen_goal/{{ g.id }}"
+<<<<<<< HEAD
+=======
+                       data-auth-required="true"
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                        style="display:inline-block;padding:7px 14px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:13px;font-weight:600;text-decoration:none;">
                         🔄 Reopen Goal
                     </a>
@@ -590,7 +618,11 @@ function openContributions(contributions, goalName) {
                 '<div style="display:flex;align-items:center;gap:12px;">' +
                     '<span style="font-size:14px;font-weight:700;color:#16a34a;">+RM ' + Number(c.amount).toFixed(2) + '</span>' +
                     '<a href="/update/' + c.edit_idx + '?source=goal" title="Edit" style="text-decoration:none;font-size:15px;">✏️</a>' +
+<<<<<<< HEAD
                     '<a href="/delete/' + c.delete_idx + '" title="Delete" style="text-decoration:none;font-size:13px;font-weight:700;color:#dc2626;" onclick="return confirm(\'Delete this contribution?\')">✕</a>' +
+=======
+                    '<a href="/delete/' + c.delete_idx + '" title="Delete" data-auth-required="true" style="text-decoration:none;font-size:13px;font-weight:700;color:#dc2626;" onclick="return confirm(\'Delete this contribution?\')">✕</a>' +
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                 '</div>' +
             '</div>';
         }).join('');
@@ -696,104 +728,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
-
-(function () {
-
-    const body = document.body;
-
-    if (!body.classList.contains("adaptive")) {
-
-        return;
-    }
-
-    const bg = window.getComputedStyle(body)
-        .backgroundImage;
-
-    const match =
-        bg.match(/url\([\"']?(.*?)[\"']?\)/);
-
-    if (!match) {
-
-        return;
-    }
-
-    const img = new Image();
-
-    img.crossOrigin = "Anonymous";
-
-    img.src = match[1];
-
-    img.onload = function () {
-
-        const canvas =
-            document.createElement("canvas");
-
-        const ctx =
-            canvas.getContext("2d");
-
-        canvas.width = 80;
-
-        canvas.height = 80;
-
-        ctx.drawImage(img, 0, 0, 80, 80);
-
-        const data =
-            ctx.getImageData(0, 0, 80, 80).data;
-
-        let total = 0;
-
-        let darkPixels = 0;
-
-        let count = 0;
-
-        for (let i = 0; i < data.length; i += 4) {
-
-            const r = data[i];
-
-            const g = data[i + 1];
-
-            const b = data[i + 2];
-
-            const brightness =
-                (r * 0.299) +
-                (g * 0.587) +
-                (b * 0.114);
-
-            total += brightness;
-
-            if (brightness < 95) {
-
-                darkPixels++;
-            }
-
-            count++;
-        }
-
-        const average = total / count;
-
-        const darkRatio =
-            darkPixels / count;
-
-        if (
-            average < 135 ||
-            darkRatio > 0.45
-        ) {
-
-            body.classList.add(
-                "dark-wallpaper"
-            );
-        }
-
-        else {
-
-            body.classList.remove(
-                "dark-wallpaper"
-            );
-        }
-
-    };
-
-})();
 
 
 const goalAmountInput =

@@ -4,7 +4,8 @@
 
 <head>
 
-<title>Edit Budget</title>
+<meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
+    <title>Edit Budget</title>
 
 <link
     rel="stylesheet"
@@ -17,6 +18,10 @@
 >
 
 <script src="/calendar_static/themecolor.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <script>
 (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
 </script>
@@ -25,17 +30,24 @@
 
 <body
 class="{{ user.theme if user else 'adaptive' }}"
-
-{% if wallpaper %}
-style="
-background-image:
-url('/profile_static/wallpapers/{{ wallpaper }}');
-"
-{% endif %}
-
 >
 
-<div class="wallpaper-overlay"></div>
+<nav class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
+        </div>
+        <div class="logo-text">Life Pages</div>
+    </div>
+    <div class="nav-links">
+        <a href="/dashboard">Home</a>
+        <a href="/today">Today</a>
+        <a href="/finance" class="active">Finance Page</a>
+        <a href="/journal">Diary Page</a>
+        <a href="/calendar">Calendar Page</a>
+        <a href="/profile">Settings</a>
+    </div>
+</nav>
 
 <nav class="navbar">
     <div class="logo-section">

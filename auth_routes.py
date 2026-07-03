@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
+from datetime import datetime
 import json, os
 
 auth_bp = Blueprint('auth', __name__, url_prefix='')
@@ -26,7 +27,6 @@ def save_data(file, data):
 
 
 # ================= LOGIN =================
-@auth_bp.route("/", methods=["GET", "POST"])
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -35,6 +35,8 @@ def login():
         password = hash_password(request.form["password"])
         for u in users:
             if u["username"] == username and u.get("password") == password:
+                u["last_login"] = datetime.now().isoformat()
+                save_data(f_users, users)
                 session["user"] = username
                 return redirect(url_for("dashboard"))
         return render_template("login.html", error="Invalid username or password")
@@ -47,16 +49,12 @@ def register():
     if request.method == "POST":
         users    = load_data(f_users, [])
         username = request.form["username"]
-        email    = request.form["email"]
         password = request.form["password"]
         question = request.form["question"]
         answer   = request.form["answer"]
 
         if any(u["username"] == username for u in users):
             return render_template("login.html", reg_error="Username already taken",
-                                   show_register=True)
-        if any((u.get("email") or "").lower() == email.lower() for u in users):
-            return render_template("login.html", reg_error="Email already registered",
                                    show_register=True)
         if not is_valid_password(password):
             return render_template("login.html",
@@ -66,7 +64,6 @@ def register():
         users.append({
             "username": username,
             "password": hash_password(password),
-            "email":    email,
             "security_question": question,
             "security_answer":   hash_password(answer),
             "theme": "cozy",
@@ -81,20 +78,24 @@ def register():
 @auth_bp.route("/logout")
 def logout():
     session.pop("user", None)
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("dashboard"))
 
 
 # ================= FORGOT USERNAME =================
 @auth_bp.route("/forgot_username", methods=["GET", "POST"])
 def forgot_username():
     if request.method == "POST":
-        email = request.form["email"]
-        users = load_data(f_users, [])
+        question = request.form["question"]
+        answer   = request.form["answer"]
+        users    = load_data(f_users, [])
+        hashed_answer = hash_password(answer)
         for u in users:
-            if u["email"] == email:
+            if (u.get("security_question") == question and
+                    u.get("security_answer") == hashed_answer):
                 return redirect(url_for("auth.login", panel="forgot_username",
                                         result=u["username"]))
-        return redirect(url_for("auth.login", panel="forgot_username", error="Email not found"))
+        return redirect(url_for("auth.login", panel="forgot_username",
+                                error="No matching account found"))
     return redirect(url_for("auth.login", panel="forgot_username"))
 
 

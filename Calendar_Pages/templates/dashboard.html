@@ -50,7 +50,15 @@
             <a href="/profile">Settings</a>
         </div>
 
-        <div class="profile"></div>
+        <div class="profile">
+            {% if logged_in %}
+            <a href="/profile" class="profile-link">{{ user.username if user else "" }}</a>
+            <a href="/logout" class="profile-btn">Logout</a>
+            {% else %}
+            <a href="/login" class="profile-btn">Login</a>
+            <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+            {% endif %}
+        </div>
 
     </nav>
 
@@ -97,8 +105,6 @@
                     </div>
 
                 </div>
-
-                <span>⋮</span>
 
             </div>
 
@@ -185,8 +191,6 @@
 
                 </div>
 
-                <span>⋮</span>
-
             </div>
 
             <div class="preview-box diary-preview">
@@ -244,8 +248,6 @@
                     </div>
 
                 </div>
-
-                <span>⋮</span>
 
             </div>
 

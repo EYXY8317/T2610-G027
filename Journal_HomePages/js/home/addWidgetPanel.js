@@ -1,7 +1,10 @@
 import { getHiddenWidgets, showWidget } from "./widgetVisibility.js";
 import { syncLayoutToServer } from "./serverLayout.js";
 import { getConstraints } from "../dashboard/resizeConstraints.js";
+<<<<<<< HEAD
+=======
 import { showReminderPopup } from "../shared/reminderPopup.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 const WIDGET_INFO = {
     "digital-clock-widget":   { name: "Digital Clock",   icon: "🕐" },
@@ -105,11 +108,28 @@ function findEmptySpot(targetId) {
 }
 
 function showNoSpacePopup() {
+<<<<<<< HEAD
+    const modal = document.createElement("div");
+    modal.className = "confirm-overlay";
+    modal.innerHTML = `
+        <div class="confirm-modal">
+            <div class="confirm-modal-title">Not Enough Space</div>
+            <div class="confirm-modal-body">There isn't enough room to place this widget without overlapping. Try moving or resizing existing widgets first.</div>
+            <div class="confirm-modal-btns">
+                <button class="confirm-ok-btn">OK</button>
+            </div>
+        </div>
+    `;
+    modal.querySelector(".confirm-ok-btn").addEventListener("click", () => modal.remove());
+    modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+=======
     showReminderPopup({
         title: "Not Enough Space",
         message: "There isn't enough room to place this widget without overlapping. Try moving or resizing existing widgets first.",
         confirmText: "OK"
     });
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 export function openAddWidgetPanel() {

@@ -1,4 +1,3 @@
 flask
-resend
-python-dotenv
 requests
+gunicorn

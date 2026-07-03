@@ -2,7 +2,10 @@ import { saveLayout } from "./saveLayout.js";
 import { hideWidget } from "./widgetVisibility.js";
 import { openAddWidgetPanel, removeExtraPictureInstance } from "./addWidgetPanel.js";
 import { syncLayoutToServer } from "./serverLayout.js";
+<<<<<<< HEAD
+=======
 import { showReminderPopup } from "../shared/reminderPopup.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
@@ -24,6 +27,49 @@ function getWidgetName(id) {
 }
 
 function showDeleteConfirm(widgetName, onConfirm) {
+<<<<<<< HEAD
+    const overlay = document.createElement("div");
+    overlay.className = "delete-confirm-overlay";
+    overlay.innerHTML = `
+        <div class="delete-confirm-popup">
+            <div class="delete-confirm-title">Delete Widget?</div>
+            <div class="delete-confirm-msg">Remove <strong>${widgetName}</strong> from your homepage.</div>
+            <div class="delete-confirm-actions">
+                <button class="delete-confirm-cancel">Cancel</button>
+                <button class="delete-confirm-ok">Delete</button>
+            </div>
+        </div>
+    `;
+    overlay.querySelector(".delete-confirm-cancel").addEventListener("click", () => overlay.remove());
+    overlay.querySelector(".delete-confirm-ok").addEventListener("click", () => {
+        overlay.remove();
+        onConfirm();
+    });
+    overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+}
+
+export function showDeleteAllConfirm(onConfirm) {
+    const overlay = document.createElement("div");
+    overlay.className = "delete-confirm-overlay";
+    overlay.innerHTML = `
+        <div class="delete-confirm-popup">
+            <div class="delete-confirm-title">Delete All Widgets?</div>
+            <div class="delete-confirm-msg">All widgets will be removed from your homepage.</div>
+            <div class="delete-confirm-actions">
+                <button class="delete-confirm-cancel">Cancel</button>
+                <button class="delete-confirm-ok">Delete All</button>
+            </div>
+        </div>
+    `;
+    overlay.querySelector(".delete-confirm-cancel").addEventListener("click", () => overlay.remove());
+    overlay.querySelector(".delete-confirm-ok").addEventListener("click", () => {
+        overlay.remove();
+        onConfirm();
+    });
+    overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+=======
     showReminderPopup({
         title: "Delete Widget?",
         message: `Remove <strong>${widgetName}</strong> from your homepage.`,
@@ -43,6 +89,7 @@ export function showDeleteAllConfirm(onConfirm) {
         danger: true,
         onConfirm
     });
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 export function setupEditMode(settingsButton, menu, editLayoutButton, widgetList) {

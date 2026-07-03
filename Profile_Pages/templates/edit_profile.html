@@ -36,12 +36,17 @@
     <div class="card centered-card edit-card">
         <div class="centered-icon">✏️</div>
         <div class="section-title">Edit Profile</div>
+<<<<<<< HEAD
         <p class="centered-desc">Update your username, email, or profile picture.</p>
+=======
+        <p class="centered-desc">Update your username or profile picture.</p>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         <form method="POST" enctype="multipart/form-data" class="centered-form">
 
             <div class="form-group">
                 <label class="form-label">Profile Picture</label>
+<<<<<<< HEAD
                 <div class="file-upload">
                     <label class="file-upload-label">
                         <span class="file-upload-btn">📷 Choose Photo</span>
@@ -51,6 +56,34 @@
                 </div>
             </div>
 
+=======
+
+                {% if user.profile_picture %}
+                <img
+                    id="picture-preview"
+                    src="/profile_static/profile_pictures/{{ user.profile_picture }}"
+                    class="profile-pic"
+                    style="width:100px; height:100px; margin-bottom:14px;"
+                >
+                {% else %}
+                <img
+                    id="picture-preview"
+                    src="https://via.placeholder.com/100"
+                    class="profile-pic"
+                    style="width:100px; height:100px; margin-bottom:14px;"
+                >
+                {% endif %}
+
+                <div class="file-upload">
+                    <label class="file-upload-label">
+                        <span class="file-upload-btn">📷 Choose Photo</span>
+                        <span class="file-upload-name">No file chosen</span>
+                        <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
+                    </label>
+                </div>
+            </div>
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <div class="form-group">
                 <label class="form-label">Username</label>
                 <input
@@ -62,6 +95,7 @@
                 >
             </div>
 
+<<<<<<< HEAD
             <div class="form-group">
                 <label class="form-label">Email</label>
                 <input
@@ -73,6 +107,8 @@
                 >
             </div>
 
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <button type="submit" class="btn form-submit-btn">Save Changes</button>
 
         </form>
@@ -85,7 +121,20 @@
 document.querySelectorAll('.file-input-hidden').forEach(function(input){
     input.addEventListener('change', function(){
         var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
+<<<<<<< HEAD
         el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
+=======
+        var file = this.files[0];
+        el.textContent = file ? file.name : 'No file chosen';
+
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e){
+                document.getElementById('picture-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     });
 });
 </script>

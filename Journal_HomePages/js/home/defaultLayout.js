@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+import { applyTemplate } from "./layoutTemplates.js";
+=======
 import { ZOEY_DEFAULT_LAYOUT } from "./zoeyDefaultLayout.js";
 import { DEFAULT_PICTURE_STREAK_PHOTO } from "./defaultPictureStreakPhoto.js";
 import { getCurrentUsername } from "../currentUser.js";
@@ -30,15 +33,24 @@ function applyZoeyLayout(seedPhoto) {
         localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
     });
 }
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 // Seed defaults only if no saved data exists (first-time user)
 export function applyDefaultLayout() {
     if (!localStorage.getItem("digital-clock-widget-layout")) {
+<<<<<<< HEAD
+        applyTemplate("cozy-dashboard");
+=======
         applyZoeyLayout(true);
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     }
 }
 
 // Force-overwrite all layout + appearance back to defaults (reset button)
 export function resetToDefaultLayout() {
+<<<<<<< HEAD
+    applyTemplate("cozy-dashboard");
+=======
     applyZoeyLayout(false);
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }

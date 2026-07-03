@@ -51,7 +51,20 @@ export function getWeatherHourSettings() {
             </div>
         `,
 
+<<<<<<< HEAD
+        graph: `
+            <h3>Overlay</h3>
+            <div class="setting-row">
+                <span>Show Humidity</span>
+                <div class="segment-button show-humidity-segment">
+                    <button class="segment-option" data-value="true">Show</button>
+                    <button class="segment-option active" data-value="false">Hide</button>
+                </div>
+            </div>
+        `,
+=======
         graph: "",
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         display: `
             <h3>Display Elements</h3>

@@ -2,7 +2,10 @@ import {
     getWidgetAppearance,
     applyWidgetAppearance
 } from "../settings/appearance/widgetAppearance.js";
+<<<<<<< HEAD
+=======
 import { userScopedKey } from "../currentUser.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 export const BOOK_OPTIONS = [
     { label: "Black Classic",   src: "/journal_home_static/assets/books/book1.png", scale: 0.88 },

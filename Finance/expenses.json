@@ -195,6 +195,8 @@
         "item": "MILO",
         "amount": 5.0,
         "receipt": null
+<<<<<<< HEAD
+=======
     },
     {
         "username": "ZOEY",
@@ -205,5 +207,6 @@
         "item": "\u5976\u8336",
         "amount": 7.77,
         "receipt": null
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     }
 ]

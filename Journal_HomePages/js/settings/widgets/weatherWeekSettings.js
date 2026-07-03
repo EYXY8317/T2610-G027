@@ -56,9 +56,19 @@ export function getWeatherWeekSettings() {
                     <button class="segment-option${state.showDays === 7 ? " active" : ""}" data-value="7">7</button>
                 </div>
             </div>
+<<<<<<< HEAD
+            <h3>Show / Hide</h3>
+            <div class="setting-row">
+                <span>Weather Icon</span>
+                <div class="segment-button ww-icon-segment">
+                    <button class="segment-option${state.showIcon ? " active" : ""}" data-value="true">Show</button>
+                    <button class="segment-option${!state.showIcon ? " active" : ""}" data-value="false">Hide</button>
+                </div>
+=======
             <h3>Display Elements</h3>
             <div class="toggle-chips">
                 <button class="toggle-chip${state.showIcon ? " active" : ""}" data-statekey="showIcon">Weather Icon</button>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             </div>
         `
 
