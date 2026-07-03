@@ -12,6 +12,7 @@
 <div class="container
   {% if request.args.get('panel') == 'forgot' %}show-forgot
   {% elif request.args.get('panel') == 'forgot_username' %}show-forgot-username
+  {% elif request.args.get('panel') == 'register' %}show-register
   {% elif show_register is defined and show_register %}show-register
   {% endif %}">
 

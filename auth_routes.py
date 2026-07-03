@@ -27,7 +27,6 @@ def save_data(file, data):
 
 
 # ================= LOGIN =================
-@auth_bp.route("/", methods=["GET", "POST"])
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -79,7 +78,7 @@ def register():
 @auth_bp.route("/logout")
 def logout():
     session.pop("user", None)
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("dashboard"))
 
 
 # ================= FORGOT USERNAME =================

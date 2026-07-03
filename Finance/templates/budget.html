@@ -2,6 +2,7 @@
 <html>
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Budget Tracking</title>
 
     <link rel="stylesheet"
@@ -12,6 +13,7 @@
     href="{{ url_for('profile_static', filename='profile.css') }}"
 >
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -178,7 +180,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                     <div class="budget-actions">
                         <a href="/edit_budget/{{ b.category }}" class="budget-icon-btn" title="Edit">✏️</a>
-                        <a href="/delete_budget/{{ b.category }}" class="budget-icon-btn budget-icon-del" title="Delete" onclick="return confirm('Delete {{ b.category }} budget?')">✕</a>
+                        <a href="/delete_budget/{{ b.category }}" class="budget-icon-btn budget-icon-del" title="Delete" data-auth-required="true" onclick="return confirm('Delete {{ b.category }} budget?')">✕</a>
                     </div>
 
                 </div>

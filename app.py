@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory, jsonify
+from flask import Flask, render_template, request, session, send_from_directory, jsonify
 from Journal_Pages.diary_system.routes import diary_bp
 from auth_routes import auth_bp
 from Finance.finance_routes import finance_bp
@@ -89,15 +89,13 @@ def _parse_ddate(ds):
     except Exception:
         return datetime.min
 
-# ================= DASHBOARD =================
+# ================= HOME / DASHBOARD =================
+@app.route("/")
 @app.route("/dashboard")
 def dashboard():
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user = session["user"]
+    user = session.get("user")
     users = load_data(f_users, [])
-    current_user = next((u for u in users if u["username"] == user), None)
+    current_user = next((u for u in users if u["username"] == user), None) if user else None
 
     # Finance data for home card
     records   = load_data(os.path.join(BASE_DIR, "Finance", "expenses.json"), [])
@@ -164,7 +162,7 @@ def dashboard():
 
     # Diary data for dashboard card
     f_journal = os.path.join(BASE_DIR, "journal.json")
-    journal_entries = load_data(f_journal, [])
+    journal_entries = [e for e in load_data(f_journal, []) if user and e.get("username") == user]
     today_str_diary = now.strftime("%d/%m/%Y")
 
     today_diary  = None
@@ -219,6 +217,7 @@ def dashboard():
     return render_template(
         "dashboard.html",
         user                  = current_user,
+        logged_in             = bool(user),
         fin_expense           = cur_expense,
         fin_change            = expense_change,
         fin_weeks             = week_expenses,
@@ -253,7 +252,7 @@ def calendar_static(filename):
 @app.route("/calendar")
 def calendar():
     current_user = get_current_user()
-    return render_template("mypage.html", user=current_user)
+    return render_template("mypage.html", user=current_user, logged_in="user" in session)
 
 # ================= USER THEME API =================
 @app.route('/api/user-theme')
@@ -316,10 +315,7 @@ def save_home_layout():
 # ================= TODAY PAGE =================
 @app.route("/today")
 def today_page():
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user = session["user"]
+    user = session.get("user")
     current_user = get_current_user()
 
     f_expense  = os.path.join(BASE_DIR, "Finance", "expenses.json")
@@ -412,7 +408,7 @@ def today_page():
 
     # Diary entry for today / most recent
     f_journal = os.path.join(BASE_DIR, "journal.json")
-    journal_entries = load_data(f_journal, [])
+    journal_entries = [e for e in load_data(f_journal, []) if e.get("username") == user]
     today_str_diary = now.strftime("%d/%m/%Y")
 
     today_diary  = None
@@ -470,6 +466,7 @@ def today_page():
         diary_topic      = diary_topic,
         diary_date       = diary_date,
         diary_is_today   = diary_is_today,
+        logged_in        = bool(user),
     )
 
 # ================= RUN =================

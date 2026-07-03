@@ -87,7 +87,11 @@ if (mode === "add") {
 }
 
 // ======================== EDIT BUTTON ========================
-editBtn.addEventListener("click", function() {
+editBtn.addEventListener("click", function(e) {
+    if (window.requireLogin && window.requireLogin()) {
+        e.stopImmediatePropagation();
+        return;
+    }
     editing = true;
     box.setAttribute("contenteditable", "true");
     mood.style.pointerEvents = "auto";
@@ -97,6 +101,7 @@ editBtn.addEventListener("click", function() {
 
 // ======================== DELETE BUTTON ========================
 deleteBtn.addEventListener("click", function() {
+    if (window.requireLogin && window.requireLogin()) return;
     showReminderPopup({
         title: "Delete Entry?",
         message: "Are you sure you want to delete everything? This includes topic, mood, and diary.",
@@ -133,6 +138,7 @@ deleteBtn.addEventListener("click", function() {
 box.addEventListener("input", function(event) {
     if (!editing) return;
     if (event.target.tagName === "IMG") return;
+    if (window.requireLogin && window.requireLogin()) return;
 
     clearTimeout(timer);
     saveStatus.innerText = "";
@@ -163,6 +169,7 @@ box.addEventListener("input", function(event) {
 // ======================== AUTOSAVE MOOD ========================
 mood.addEventListener("change", function() {
     if (!editing) return;
+    if (window.requireLogin && window.requireLogin()) return;
 
     saveStatus.innerText = "";
 
@@ -190,6 +197,7 @@ topic.addEventListener("input", function() {
         topic.value = topic.value.slice(0, 20);
     }
     topic.value = topic.value.trimStart();
+    if (window.requireLogin && window.requireLogin()) return;
 
     clearTimeout(timer);
     saveStatus.innerText = "";

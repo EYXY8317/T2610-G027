@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Accounts</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -96,6 +98,7 @@ class="{{ user.theme if user and user.theme else 'adaptive' }} {{ user.ui_style 
                     <div class="budget-actions">
                         <a href="/edit_account/{{ acc.name }}" class="budget-icon-btn" title="Edit">✏️</a>
                         <a href="/delete_account/{{ acc.name }}" class="budget-icon-btn budget-icon-del" title="Delete"
+                           data-auth-required="true"
                            onclick="return confirm('Delete account {{ acc.name }}? This will not delete its transactions.')">✕</a>
                     </div>
                 </div>

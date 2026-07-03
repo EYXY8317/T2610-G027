@@ -60,19 +60,21 @@ def journal_entries_list():
 @diary_bp.route("/diary")
 def diary():
 
-    if "user" not in session:
-        return redirect(url_for("login"))
+    user = session.get("user")
 
     date = request.args.get("date")
 
     if not date:
         date = datetime.now().strftime("%d/%m/%Y")
 
-    from Journal_Pages.diary_system.logic import get_entry_by_date
+    entry = None
+    if user:
+        from Journal_Pages.diary_system.logic import get_entry_by_date
+        entry = get_entry_by_date(date, user)
 
-    entry = get_entry_by_date(date, session["user"])
-
-    if entry and entry["content"].strip() != "":
+    if not user:
+        mode = "view"
+    elif entry and entry["content"].strip() != "":
         mode = "view"
     else:
         mode = "add"
@@ -81,7 +83,8 @@ def diary():
         "diary.html",
         entry=entry,
         mode=mode,
-        today=date
+        today=date,
+        logged_in=bool(user),
     )
 
 

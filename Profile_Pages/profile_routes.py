@@ -23,6 +23,9 @@ def register_profile_routes(app):
     @app.route("/profile")
     def profile():
 
+        if "user" not in session:
+            return redirect("/")
+
         with open("users.json", "r") as f:
             users = json.load(f)
 
@@ -49,6 +52,9 @@ def register_profile_routes(app):
     @app.route("/verify_profile", methods=["GET", "POST"])
     def verify_profile():
 
+        if "user" not in session:
+            return redirect("/")
+
         if request.method == "POST":
 
             password = hash_password(request.form.get("password", ""))
@@ -72,7 +78,7 @@ def register_profile_routes(app):
     def delete_account():
 
         if "user" not in session:
-            return redirect("/login")
+            return redirect("/")
 
         if request.method == "POST":
 
@@ -110,12 +116,15 @@ def register_profile_routes(app):
 
             session.pop("user", None)
 
-            return redirect("/login")
+            return redirect("/")
 
         return render_template("confirm_delete_account.html", error=False)
 
     @app.route("/edit_profile", methods=["GET", "POST"])
     def edit_profile():
+
+        if "user" not in session:
+            return redirect("/")
 
         with open("users.json", "r") as f:
             users = json.load(f)
@@ -175,7 +184,7 @@ def register_profile_routes(app):
 
         if "user" not in session:
 
-            return redirect("/login")
+            return redirect("/")
 
         current_user = session["user"]
 

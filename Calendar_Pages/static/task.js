@@ -217,6 +217,8 @@ async function loadTasks() {
 
 async function addTask(listType) {
 
+    if (window.requireLogin && window.requireLogin()) return;
+
     // Get task title from input field
     // 从输入框获取任务标题
     let text =
@@ -425,6 +427,8 @@ catch(error) {
 
 async function deleteTask(listType, id) {
 
+    if (window.requireLogin && window.requireLogin()) return;
+
     // Find selected task
     // 查找指定的任务
     let task =
@@ -527,6 +531,8 @@ async function deleteTask(listType, id) {
 // =====================================
 
 async function restoreTask(listType, id) {
+
+    if (window.requireLogin && window.requireLogin()) return;
 
     // Find the selected task
     // 查找指定的任务
@@ -686,6 +692,8 @@ async function restoreTask(listType, id) {
 
 function deleteCurrentTask() {
 
+    if (window.requireLogin && window.requireLogin()) return;
+
     // Ask user for confirmation
     // 询问用户是否确认删除
     if (
@@ -718,6 +726,8 @@ function deleteCurrentTask() {
 // ===============================
 
 async function permanentlyDeleteTask(listType, id) {
+
+    if (window.requireLogin && window.requireLogin()) return;
 
     // Ask user for confirmation
     // 询问用户是否确认永久删除
@@ -791,7 +801,9 @@ const response =
 // 永久删除所有垃圾桶中的任务
 // ===============================
 
-async function emptyTrash() { 
+async function emptyTrash() {
+
+    if (window.requireLogin && window.requireLogin()) return;
 
     // Ask user for confirmation
     // 询问用户是否确认清空垃圾桶
@@ -877,6 +889,11 @@ async function toggleComplete(
     id,
     checkbox
 ) {
+
+    if (window.requireLogin && window.requireLogin()) {
+        checkbox.checked = !checkbox.checked;
+        return;
+    }
 
     // Find selected task
     // 查找指定任务
@@ -1163,6 +1180,8 @@ async function completeTask(
     listType,
     id
 ) {
+
+    if (window.requireLogin && window.requireLogin()) return;
 
     // Find selected task
     // 查找指定任务
@@ -3166,6 +3185,8 @@ function showTaskDetail(
 // ===============================
 
 async function saveTaskChanges() {
+
+    if (window.requireLogin && window.requireLogin()) return;
 
     // Find current task
     // 查找当前任务

@@ -3,6 +3,7 @@
 
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Add Record</title>
 
     <link
@@ -16,6 +17,7 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>

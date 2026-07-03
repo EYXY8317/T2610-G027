@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="/diary_static/style.css?v=3">
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
     fetch('/api/user-theme')
@@ -472,7 +474,7 @@
             <input type="text" id="searchBox" placeholder="Search diary...">
             <button id="searchBtn">Search</button>
         </div>
-        <button id="editBtn">Edit</button>
+        <button id="editBtn" data-auth-required="true">Edit</button>
         <button id="deleteBtn">Delete</button>
         <div id="autoSaveIndicator" class="save-saved">
             <span class="save-icon">✓</span>
@@ -1024,6 +1026,7 @@
     ════════════════════════════════ */
     uploadImg.addEventListener("change", function(e){
         if (!canEdit) return;
+        if (window.requireLogin && window.requireLogin()) return;
         const file = e.target.files[0];
         if (!file) return;
 
@@ -1261,6 +1264,7 @@
     }
 
     function schedSave(){
+        if (window.requireLogin && window.requireLogin()) return;
         clearTimeout(saveTimer);
         setAutoSave("saving");
         saveTimer = setTimeout(doSave, 1000);

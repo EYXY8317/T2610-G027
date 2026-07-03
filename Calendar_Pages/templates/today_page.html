@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Today — Life Pages</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
     <link rel="stylesheet" href="/calendar_static/mystyle.css">
     <link rel="stylesheet" href="/calendar_static/today_page.css">
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){
         var t = {{ (user.theme if user and user.theme else 'mocha') | tojson }};

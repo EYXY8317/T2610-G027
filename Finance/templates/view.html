@@ -3,6 +3,7 @@
 
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Financial Records</title>
 
     <link
@@ -16,6 +17,7 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -374,6 +376,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                             <a
                             href="/delete/{{ r._global_idx }}"
                             class="delete-btn"
+                            data-auth-required="true"
                             >
 
                                 Delete

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Edit Account</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
     <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>

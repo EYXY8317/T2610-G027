@@ -2,6 +2,8 @@
 <html>
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
+
     <title>Life Pages</title>
 
     <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded"/>
@@ -453,7 +455,7 @@
         </button>
 
         <button
-            class="add-task-btn"
+            class="add-task-btn" data-auth-required="true"
             onclick="addTask('work')"
         >
 
@@ -504,7 +506,7 @@
         </button>
 
         <button
-            class="add-task-btn"
+            class="add-task-btn" data-auth-required="true"
             onclick="addTask('shopping')"
         >
             <span class="material-symbols-rounded">add</span>
@@ -550,7 +552,7 @@
         </button>
 
         <button
-            class="add-task-btn"
+            class="add-task-btn" data-auth-required="true"
             onclick="addTask('study')"
         >
             <span class="material-symbols-rounded">add</span>
@@ -596,7 +598,7 @@
         </button>
 
         <button
-            class="add-task-btn"
+            class="add-task-btn" data-auth-required="true"
             onclick="addTask('personal')"
         >
             <span class="material-symbols-rounded">add</span>
@@ -642,7 +644,7 @@
         </button>
 
         <button
-            class="add-task-btn"
+            class="add-task-btn" data-auth-required="true"
             onclick="addTask('workout')"
         >
             <span class="material-symbols-rounded">add</span>
@@ -1388,6 +1390,8 @@
 <!-- =====================================
      JS FILES
 ===================================== -->
+
+<script src="{{ url_for('static', filename='login-gate.js') }}"></script>
 
 <script src="/calendar_static/task.js"></script>
 
