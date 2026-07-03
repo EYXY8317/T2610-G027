@@ -2,6 +2,10 @@ import { saveLayout } from "./saveLayout.js";
 import { hideWidget } from "./widgetVisibility.js";
 import { openAddWidgetPanel, removeExtraPictureInstance } from "./addWidgetPanel.js";
 import { syncLayoutToServer } from "./serverLayout.js";
+<<<<<<< HEAD
+=======
+import { showReminderPopup } from "../shared/reminderPopup.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 const WIDGET_NAMES = {
     "digital-clock-widget":   "Digital Clock",
@@ -23,6 +27,7 @@ function getWidgetName(id) {
 }
 
 function showDeleteConfirm(widgetName, onConfirm) {
+<<<<<<< HEAD
     const overlay = document.createElement("div");
     overlay.className = "delete-confirm-overlay";
     overlay.innerHTML = `
@@ -64,6 +69,27 @@ export function showDeleteAllConfirm(onConfirm) {
     });
     overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
     document.body.appendChild(overlay);
+=======
+    showReminderPopup({
+        title: "Delete Widget?",
+        message: `Remove <strong>${widgetName}</strong> from your homepage.`,
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm
+    });
+}
+
+export function showDeleteAllConfirm(onConfirm) {
+    showReminderPopup({
+        title: "Delete All Widgets?",
+        message: "All widgets will be removed from your homepage.",
+        confirmText: "Delete All",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm
+    });
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 export function setupEditMode(settingsButton, menu, editLayoutButton, widgetList) {

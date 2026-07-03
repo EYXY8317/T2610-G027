@@ -145,6 +145,43 @@ body{
 
 .profile{
     justify-self:end;
+<<<<<<< HEAD
+=======
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.profile-link{
+    text-decoration:none;
+    color:#3b2f2a;
+    font-weight:600;
+    font-size:14px;
+}
+
+.profile-btn{
+    text-decoration:none;
+    color:var(--primary, #8b5e3c);
+    border:1.5px solid var(--primary, #8b5e3c);
+    border-radius:10px;
+    padding:8px 16px;
+    font-size:14px;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.profile-btn:hover{
+    background:var(--primary-light, #f2e5d8);
+}
+
+.profile-btn-solid{
+    background:var(--primary, #8b5e3c);
+    color:white;
+}
+
+.profile-btn-solid:hover{
+    background:var(--primary-accent, #c9a88a);
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 /* ================= HERO字体 ================= */

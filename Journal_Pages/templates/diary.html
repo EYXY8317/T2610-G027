@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="/diary_static/style.css">
     <script src="/calendar_static/themecolor.js"></script>
+=======
+    <link rel="stylesheet" href="/diary_static/style.css?v=3">
+    <script src="/calendar_static/themecolor.js"></script>
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
     fetch('/api/user-theme')
@@ -16,11 +23,39 @@
             position: relative;
             min-height: 520px;
             width: 100%;
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            overflow: visible;
+            background-color: var(--diary-canvas-bg);
+            background-image:
+                linear-gradient(var(--diary-grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--diary-grid-line) 1px, transparent 1px);
+            background-size: 30px 30px;
+            border: 1px solid var(--diary-canvas-border);
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+            overflow: hidden;
             cursor: crosshair;
+        }
+
+        /* Paper types */
+        #canvas.paper-blank  { background-image: none; }
+        #canvas.paper-grid   {
+            background-image:
+                linear-gradient(var(--diary-grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--diary-grid-line) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        #canvas.paper-dot    {
+            background-image: radial-gradient(circle, var(--diary-grid-line) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+        }
+        #canvas.paper-lined  {
+            background-image: linear-gradient(var(--diary-grid-line) 1px, transparent 1px);
+            background-size: 100% 30px;
+        }
+
+        .fbar-btn.active {
+            background: var(--diary-btn-hover-bg);
+            color: var(--diary-btn-hover-text);
+            border-color: var(--diary-btn-hover-bg);
         }
 
         #box { display: none; }
@@ -124,6 +159,14 @@
             pointer-events: none;
         }
 
+        .tb-content b, .tb-content strong {
+            font-weight: 900;
+        }
+
+        .tb-content i, .tb-content em {
+            font-style: oblique 80deg;
+        }
+
         /* ── Image ── */
         .img-wrap {
             position: absolute;
@@ -162,7 +205,7 @@
             z-index: 20;
         }
 
-        .img-wrap:hover .img-toolbar {
+        .img-wrap.active .img-toolbar {
             display: flex;
         }
 
@@ -194,7 +237,7 @@
             display: none;
         }
 
-        .img-wrap:hover .img-resize {
+        .img-wrap.active .img-resize {
             display: block;
         }
 
@@ -202,11 +245,53 @@
         #formatBar {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 10px 0;
-            margin-bottom: 12px;
+            padding: 12px 0;
+            margin-bottom: 0;
             border-bottom: 1px solid #ddd8cf;
             flex-wrap: wrap;
+        }
+
+        /* ── Auto Save Indicator ── */
+        #autoSaveIndicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            border: 1px solid transparent;
+            transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+            white-space: nowrap;
+            pointer-events: none;
+            user-select: none;
+        }
+        #autoSaveIndicator.save-saving {
+            background: #ebe7e0;
+            color: #999;
+            border-color: #ddd8cf;
+        }
+        #autoSaveIndicator.save-saved {
+            background: #edf2ed;
+            color: #4a7a4a;
+            border-color: #c0d4c0;
+        }
+        #autoSaveIndicator.save-failed {
+            background: #fdf0ee;
+            color: #b03a2e;
+            border-color: #e8b4ae;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+        #autoSaveIndicator.save-saving .save-icon {
+            display: inline-block;
+            animation: spin 1s linear infinite;
         }
 
         #uploadLabel {
@@ -280,6 +365,7 @@
             border-color: #1a1a1a;
         }
 
+<<<<<<< HEAD
         /* ── Finance Highlight ── */
         .finance-highlight {
             background-color: #b5763a;
@@ -372,6 +458,96 @@
             max-width: 280px;
         }
         #aiToast.show { opacity: 1; }
+=======
+        /* ── Canvas stretch handle ── */
+        #canvasStretchHandle {
+            width: 100%;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: s-resize;
+            user-select: none;
+            pointer-events: all;
+            color: #ccc;
+            border: 1px solid #ddd8cf;
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            background: #f5f2ec;
+            transition: background 0.15s, color 0.15s;
+        }
+        #canvasStretchHandle:hover { background: #ebe7e0; color: #aaa; }
+        .stretch-dots { font-size: 11px; letter-spacing: 3px; line-height: 1; }
+
+        /* ── Edit hint toast ── */
+        #editHintToast {
+            position: fixed;
+            bottom: 36px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: #1a1a1a;
+            color: #F2EFE9;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            padding: 10px 20px;
+            border-radius: 999px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            pointer-events: none;
+            user-select: none;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        #editHintToast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Edit active state ── */
+        #editBtn.edit-active {
+            background: #edf2ed;
+            color: #4a7a4a;
+            border-color: #c0d4c0;
+        }
+
+        /* ── Done / Cancel popup ── */
+        #editActionPopup {
+            position: fixed;
+            top: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border: 1px solid #ddd8cf;
+            border-radius: 999px;
+            padding: 8px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            z-index: 500;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            color: #555;
+            white-space: nowrap;
+        }
+        #editActionPopup.show { display: flex; }
+        #editDoneBtn, #editCancelBtn {
+            border: none;
+            border-radius: 999px;
+            padding: 6px 18px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            font-weight: 500;
+            transition: opacity 0.15s;
+        }
+        #editDoneBtn { background: #edf2ed; color: #4a7a4a; border: 1px solid #c0d4c0; }
+        #editDoneBtn:hover { opacity: 0.85; }
+        #editCancelBtn { background: #f0ede8; color: #555; }
+        #editCancelBtn:hover { background: #e5e0d8; }
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     </style>
 </head>
 <body>
@@ -398,6 +574,12 @@
             <input type="text" id="searchBox" placeholder="Search diary...">
             <button id="searchBtn">Search</button>
         </div>
+        <button id="editBtn" data-auth-required="true">Edit</button>
+        <button id="deleteBtn">Delete</button>
+        <div id="autoSaveIndicator" class="save-saved">
+            <span class="save-icon">✓</span>
+            <span class="save-label">Saved</span>
+        </div>
     </div>
 </nav>
 
@@ -412,8 +594,13 @@
         <div id="monthYear"></div>
     </div>
 
+    <!-- Sticky toolbar wrapper -->
+    <div id="stickyBars">
+
     <!-- Format Bar -->
     <div id="formatBar">
+        <button class="fbar-btn" id="undoBtn" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
+        <button class="fbar-btn" id="redoBtn" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
         <label id="uploadLabel" for="uploadImg">📷 Photo</label>
         <input type="file" id="uploadImg" accept="image/*" style="display:none;">
         <div class="fbar-divider"></div>
@@ -436,17 +623,28 @@
         <input type="color" id="fontColor" value="#2a2a2a" title="Text color">
         <button class="fbar-btn" id="boldBtn"><b>B</b></button>
         <button class="fbar-btn" id="italicBtn"><i>I</i></button>
+        <button class="fbar-btn" id="underlineBtn"><u>U</u></button>
+        <div class="fbar-divider"></div>
+        <select id="paperType" title="Paper style">
+            <option value="grid">Grid</option>
+            <option value="blank">Blank</option>
+            <option value="dot">Dots</option>
+            <option value="lined">Lined</option>
+        </select>
+        <select id="diaryTheme" title="Theme">
+            <option value="classic">Classic</option>
+            <option value="dark">Dark</option>
+            <option value="ocean">Ocean</option>
+            <option value="blush">Blush</option>
+        </select>
     </div>
 
     <!-- Toolbar: mood + topic -->
     <div id="toolbar">
-        <label for="mood">Mood</label>
-        <select id="mood" name="mood" {{ "disabled" if mode == "view" else "" }}>
-            <option value="">— select —</option>
-            <option value="Happy"  {{ "selected" if entry and entry.mood == "Happy"  else "" }}>😊 Happy</option>
-            <option value="Sad"    {{ "selected" if entry and entry.mood == "Sad"    else "" }}>😢 Sad</option>
-            <option value="Angry"  {{ "selected" if entry and entry.mood == "Angry"  else "" }}>😡 Angry</option>
-        </select>
+        <label>Mood</label>
+        <input type="hidden" id="mood" name="mood"
+               data-entry-mood="{{ entry.mood if entry else '' }}">
+        <div id="mood-picker" class="{{ 'mood-picker-disabled' if mode == 'view' else '' }}"></div>
         <label for="topic">Topic</label>
         <input type="text" id="topic" maxlength="20"
             value="{{ entry.topic if entry else '' }}"
@@ -454,18 +652,14 @@
             {{ "readonly" if mode == "view" else "" }}>
     </div>
 
+    </div><!-- end #stickyBars -->
+
     <!-- Canvas -->
     <div id="canvas">
         <div id="box" contenteditable="false"></div>
     </div>
-
-    <!-- Action bar -->
-    <div id="actionBar">
-        <div id="leftActions">
-            <button id="editBtn">Edit</button>
-            <button id="deleteBtn">Delete</button>
-        </div>
-        <p id="saveStatus"></p>
+    <div id="canvasStretchHandle" title="Drag to extend paper">
+        <span class="stretch-dots">• • •</span>
     </div>
 
     <div id="dateNav">
@@ -479,6 +673,7 @@
 
 </div>
 
+<<<<<<< HEAD
 <!-- Finance Tooltip -->
 <div id="financeTooltip">
     <div class="tt-item"   id="ttItem"></div>
@@ -501,7 +696,29 @@
 <!-- AI Toast -->
 <div id="aiToast"></div>
 
+=======
+<div id="editHintToast">Click <strong>Edit</strong> to make changes</div>
+<div id="editActionPopup">
+    Editing&nbsp;·&nbsp;
+    <button id="editDoneBtn">Done</button>
+    <button id="editCancelBtn">Cancel</button>
+</div>
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <script>let mode = "{{ mode }}";</script>
+<script>
+    window.__CURRENT_USERNAME__ = "{{ session.get('user', '') | e }}";
+
+    // Purge any leftover unscoped diary preferences from before per-account
+    // namespacing existed, so a stale value from a previous account on this
+    // browser can never be read again.
+    localStorage.removeItem("diaryPaperType");
+    Object.keys(localStorage).forEach(function(key) {
+        if (key.indexOf("diary-canvas-height-") === 0 && key.indexOf("::") === -1) {
+            localStorage.removeItem(key);
+        }
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="/diary_static/script.js"></script>
 
@@ -529,10 +746,15 @@
     const fFamily   = document.getElementById("fontFamily");
     const fSize     = document.getElementById("fontSize");
     const fColor    = document.getElementById("fontColor");
-    const boldBtn   = document.getElementById("boldBtn");
-    const italicBtn = document.getElementById("italicBtn");
+    const boldBtn      = document.getElementById("boldBtn");
+    const italicBtn    = document.getElementById("italicBtn");
+    const underlineBtn = document.getElementById("underlineBtn");
+    const paperSel  = document.getElementById("paperType");
+    const themeSel  = document.getElementById("diaryTheme");
     const uploadImg = document.getElementById("uploadImg");
-    const saveStatus= document.getElementById("saveStatus");
+    const autoSaveEl  = document.getElementById("autoSaveIndicator");
+    const saveIconEl  = autoSaveEl ? autoSaveEl.querySelector(".save-icon")  : null;
+    const saveLabelEl = autoSaveEl ? autoSaveEl.querySelector(".save-label") : null;
     const moodSel   = document.getElementById("mood");
     const topicInp  = document.getElementById("topic");
 
@@ -551,14 +773,225 @@
         return d;
     }
 
-    document.getElementById("editBtn").addEventListener("click", function(){
+    const editBtn      = document.getElementById("editBtn");
+    const editPopup    = document.getElementById("editActionPopup");
+    const editDoneBtn  = document.getElementById("editDoneBtn");
+    const editCancelBtn= document.getElementById("editCancelBtn");
+    let _snapshot = null;
+
+    function takeSnapshot() {
+        const chunks = [];
+        chunks.push(JSON.stringify({ type: "meta", paper: paperSel ? paperSel.value : "grid" }));
+        canvas.querySelectorAll(".tb-wrap").forEach(wrap => {
+            const tb = wrap.querySelector(".tb-content");
+            if (!tb || tb.innerText.trim() === "") return;
+            chunks.push(JSON.stringify({
+                type: "text",
+                x:  parseFloat(wrap.style.left)     || 0,
+                y:  parseFloat(wrap.style.top)      || 0,
+                ff: tb.style.fontFamily || "Inter",
+                fs: tb.style.fontSize   || "16px",
+                fc: tb.style.color      || "#2a2a2a",
+                fw: tb.style.fontWeight || "",
+                fst: tb.style.fontStyle || "",
+                td: tb.style.textDecoration || "",
+                r:  parseFloat(wrap.dataset.rotate) || 0,
+                html: tb.innerHTML
+            }));
+        });
+        canvas.querySelectorAll(".img-wrap").forEach(wrap => {
+            const imgEl = wrap.querySelector("img");
+            const inner = wrap.querySelector(".img-inner");
+            chunks.push(JSON.stringify({
+                type: "img",
+                x:  parseFloat(wrap.style.left)       || 0,
+                y:  parseFloat(wrap.style.top)        || 0,
+                w:  parseFloat(wrap.style.width)      || 160,
+                h:  parseFloat(wrap.style.height)     || 120,
+                r:  parseFloat(inner.dataset.rotate)  || 0,
+                src: imgEl.src
+            }));
+        });
+        return {
+            content: chunks.join("||ITEM||"),
+            mood:  moodSel  ? moodSel.value  : "",
+            topic: topicInp ? topicInp.value : "",
+            paper: paperSel ? paperSel.value : "grid"
+        };
+    }
+
+    function restoreSnapshot(snap) {
+        canvas.querySelectorAll(".tb-wrap, .img-wrap").forEach(el => el.remove());
+        const items = snap.content.split("||ITEM||");
+        items.forEach(item => {
+            item = item.trim();
+            if (!item) return;
+            try {
+                const d = JSON.parse(item);
+                if (d.type === "meta") {
+                    applyPaper(d.paper || "grid");
+                    if (paperSel) paperSel.value = d.paper || "grid";
+                } else if (d.type === "text") {
+                    const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                    tb.style.fontFamily = d.ff || "Inter";
+                    tb.style.fontSize   = d.fs || "16px";
+                    tb.style.color      = d.fc || "#2a2a2a";
+                    if (d.fw)  tb.style.fontWeight     = d.fw;
+                    if (d.fst) tb.style.fontStyle      = d.fst;
+                    if (d.td)  tb.style.textDecoration = d.td;
+                } else if (d.type === "img") {
+                    makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
+                }
+            } catch(e) {}
+        });
+        if (moodSel) {
+            moodSel.value = snap.mood;
+            const moodPicker = document.getElementById("mood-picker");
+            if (moodPicker) {
+                moodPicker.querySelectorAll(".mood-img-btn").forEach(b => {
+                    b.classList.toggle("mood-img-btn--selected", b.dataset.value === snap.mood);
+                });
+            }
+        }
+        if (topicInp) topicInp.value = snap.topic;
+    }
+
+    function enterViewMode() {
+        canEdit = false;
+        canvas.classList.add("view-mode");
+        canvas.style.cursor = "";
+        canvas.querySelectorAll(".tb-content").forEach(tb => { tb.contentEditable = "false"; });
+        const moodPicker = document.getElementById("mood-picker");
+        if (moodPicker) {
+            moodPicker.classList.add("mood-picker-disabled");
+            moodPicker.querySelectorAll(".mood-img-btn").forEach(b => { b.disabled = true; });
+        }
+        if (topicInp) topicInp.setAttribute("readonly", "");
+        editBtn.classList.remove("edit-active");
+        editPopup.classList.remove("show");
+    }
+
+    editBtn.addEventListener("click", function() {
+        _snapshot = takeSnapshot();
         canEdit = true;
         canvas.classList.remove("view-mode");
         canvas.style.cursor = "crosshair";
-        canvas.querySelectorAll(".tb-content").forEach(tb => {
-            tb.contentEditable = "true";
-        });
+        canvas.querySelectorAll(".tb-content").forEach(tb => { tb.contentEditable = "true"; });
+        const moodPicker = document.getElementById("mood-picker");
+        if (moodPicker) {
+            moodPicker.classList.remove("mood-picker-disabled");
+            moodPicker.querySelectorAll(".mood-img-btn").forEach(b => { b.disabled = false; });
+        }
+        if (topicInp) topicInp.removeAttribute("readonly");
+        editBtn.classList.add("edit-active");
+        editPopup.classList.add("show");
     });
+
+    editDoneBtn.addEventListener("click", function() {
+        doSave();
+        enterViewMode();
+    });
+
+    editCancelBtn.addEventListener("click", function() {
+        if (_snapshot) restoreSnapshot(_snapshot);
+        enterViewMode();
+    });
+
+    /* ════════════════════════════════
+       UNDO / REDO
+    ════════════════════════════════ */
+    const _undoStack = [];
+    const _redoStack = [];
+    const _MAX_UNDO  = 30;
+    const undoBtnEl  = document.getElementById("undoBtn");
+    const redoBtnEl  = document.getElementById("redoBtn");
+
+    function _syncUndoRedoBtns() {
+        if (undoBtnEl) undoBtnEl.disabled = _undoStack.length === 0;
+        if (redoBtnEl) redoBtnEl.disabled = _redoStack.length === 0;
+    }
+
+    function pushHistory() {
+        if (!canEdit) return;
+        _undoStack.push(takeSnapshot());
+        if (_undoStack.length > _MAX_UNDO) _undoStack.shift();
+        _redoStack.length = 0;
+        _syncUndoRedoBtns();
+    }
+
+    if (undoBtnEl) {
+        undoBtnEl.addEventListener("click", function() {
+            if (!_undoStack.length) return;
+            _redoStack.push(takeSnapshot());
+            restoreSnapshot(_undoStack.pop());
+            _syncUndoRedoBtns();
+            schedSave();
+        });
+    }
+
+    if (redoBtnEl) {
+        redoBtnEl.addEventListener("click", function() {
+            if (!_redoStack.length) return;
+            _undoStack.push(takeSnapshot());
+            restoreSnapshot(_redoStack.pop());
+            _syncUndoRedoBtns();
+            schedSave();
+        });
+    }
+
+    document.addEventListener("keydown", function(e) {
+        if (!canEdit) return;
+        if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === "z") {
+            e.preventDefault();
+            if (undoBtnEl) undoBtnEl.click();
+        }
+        if ((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.shiftKey && e.key === "z"))) {
+            e.preventDefault();
+            if (redoBtnEl) redoBtnEl.click();
+        }
+    });
+
+    /* Shared edit-hint toast */
+    const editHintToast = document.getElementById("editHintToast");
+    let toastTimer = null;
+    window.showEditHint = function() {
+        clearTimeout(toastTimer);
+        editHintToast.classList.add("show");
+        toastTimer = setTimeout(function(){ editHintToast.classList.remove("show"); }, 2200);
+    };
+
+    /* Toast: clicking paper canvas in view mode */
+    canvas.addEventListener("click", function(){
+        if (canEdit) return;
+        window.showEditHint();
+    });
+
+    /* Toast: clicking paper-type select in view mode */
+    if (paperSel) {
+        paperSel.addEventListener("mousedown", function(e){
+            if (canEdit) return;
+            e.preventDefault();
+            window.showEditHint();
+        });
+    }
+
+    /* Toast: clicking topic input in view mode */
+    if (topicInp) {
+        topicInp.addEventListener("click", function(){
+            if (canEdit) return;
+            window.showEditHint();
+        });
+    }
+
+    /* Toast: clicking photo upload label in view mode */
+    const uploadLabel = document.getElementById("uploadLabel");
+    if (uploadLabel) {
+        uploadLabel.addEventListener("click", function(e){
+            if (canEdit) return;
+            e.preventDefault();
+            window.showEditHint();
+        });
+    }
 
     /* ════════════════════════════════
        DRAG HELPER
@@ -570,6 +1003,7 @@
             if (e.button !== 0) return;
             e.preventDefault();
             e.stopPropagation();
+            pushHistory();
 
             const startX   = e.clientX;
             const startY   = e.clientY;
@@ -588,6 +1022,7 @@
             function onUp(){
                 document.removeEventListener("mousemove", onMove);
                 document.removeEventListener("mouseup", onUp);
+                schedSave();
             }
             document.addEventListener("mousemove", onMove);
             document.addEventListener("mouseup", onUp);
@@ -602,6 +1037,7 @@
             if (!canEdit) return;
             e.preventDefault();
             e.stopPropagation();
+            pushHistory();
 
             function onMove(e){
                 const rect = target.getBoundingClientRect();
@@ -626,8 +1062,12 @@
     ════════════════════════════════ */
     canvas.addEventListener("mousedown", function(e){
         if (!canEdit) return;
+        if (!e.target.closest(".img-wrap")) {
+            document.querySelectorAll(".img-wrap.active").forEach(el => el.classList.remove("active"));
+        }
         if (e.target !== canvas) return;
         e.preventDefault();
+        pushHistory();
         const rect = canvas.getBoundingClientRect();
         makeTb(e.clientX - rect.left, e.clientY - rect.top, "", 0, true);
     });
@@ -674,6 +1114,7 @@
         tb.addEventListener("focus", ()=>{
             activeTb = tb;
             wrap.classList.add("active");
+            applyStickyFormats(tb);
         });
         tb.addEventListener("blur", ()=>{
             wrap.classList.remove("active");
@@ -689,6 +1130,7 @@
         delBtn.addEventListener("mousedown", function(e){
             if (!canEdit) return;
             e.preventDefault();
+            pushHistory();
             wrap.remove();
             schedSave();
         });
@@ -709,6 +1151,7 @@
     ════════════════════════════════ */
     uploadImg.addEventListener("change", function(e){
         if (!canEdit) return;
+        if (window.requireLogin && window.requireLogin()) return;
         const file = e.target.files[0];
         if (!file) return;
 
@@ -719,6 +1162,7 @@
             .then(r => r.json())
             .then(res => {
                 if (res.url) {
+                    pushHistory();
                     makeImg(res.url, 40, 40, 180, 135, 0, null);
                     schedSave();
                 }
@@ -771,12 +1215,22 @@
         wrap.appendChild(resizeHandle);
         canvas.appendChild(wrap);
 
+<<<<<<< HEAD
+=======
+        wrap.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
+            document.querySelectorAll(".img-wrap.active").forEach(el => el.classList.remove("active"));
+            wrap.classList.add("active");
+        });
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         makeDraggable(wrap, wrap);
         makeRotatable(rotBtn, inner);
 
         delBtn.addEventListener("mousedown", function(e){
             if (!canEdit) return;
             e.preventDefault();
+            pushHistory();
             wrap.remove();
             schedSave();
         });
@@ -785,6 +1239,7 @@
             if (!canEdit) return;
             e.preventDefault();
             e.stopPropagation();
+            pushHistory();
             const startX = e.clientX;
             const startW = wrap.offsetWidth;
             const startH = wrap.offsetHeight;
@@ -804,6 +1259,7 @@
             function onUp(){
                 document.removeEventListener("mousemove", onMove);
                 document.removeEventListener("mouseup", onUp);
+                schedSave();
             }
             document.addEventListener("mousemove", onMove);
             document.addEventListener("mouseup", onUp);
@@ -830,23 +1286,121 @@
             activeTb.style.color = this.value;
         }
     });
-    boldBtn.addEventListener("mousedown", function(e){
-        e.preventDefault(); document.execCommand("bold");
+    // Sticky mode: toggled on when the button is pressed with no text highlighted.
+    // While on, focusing (clicking into) any text box formats that box's entire
+    // content, instead of only formatting a highlighted selection.
+    let boldSticky      = false;
+    let italicSticky    = false;
+    let underlineSticky = false;
+
+    document.addEventListener("selectionchange", function(){
+        try {
+            boldBtn.classList.toggle("active", boldSticky || document.queryCommandState("bold"));
+            italicBtn.classList.toggle("active", italicSticky || document.queryCommandState("italic"));
+            underlineBtn.classList.toggle("active", underlineSticky || document.queryCommandState("underline"));
+        } catch(e) {}
     });
+
+    function hasHighlightIn(tb) {
+        const sel = window.getSelection();
+        return !!(sel && sel.rangeCount > 0 && !sel.isCollapsed && tb && tb.contains(sel.anchorNode));
+    }
+
+    function applyCmd(cmd) {
+        // e.preventDefault() on mousedown keeps focus+selection in the contenteditable,
+        // so execCommand operates on the intact selection directly.
+        document.execCommand(cmd, false, null);
+        schedSave();
+    }
+
+    function applyStickyFormats(tb) {
+        // Set the format directly on the box itself (like fColor does when nothing
+        // is highlighted) rather than via execCommand, so it reliably covers both
+        // existing text and text typed later into an empty/new box.
+        if (!boldSticky && !italicSticky && !underlineSticky) return;
+        if (boldSticky)      tb.style.fontWeight = "900";
+        if (italicSticky)    tb.style.fontStyle   = "oblique 45deg";
+        if (underlineSticky) tb.style.textDecoration = "underline";
+        schedSave();
+    }
+
+    boldBtn.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        if (activeTb && hasHighlightIn(activeTb)) {
+            applyCmd("bold");
+        } else {
+            boldSticky = !boldSticky;
+            boldBtn.classList.toggle("active", boldSticky);
+        }
+    });
+
     italicBtn.addEventListener("mousedown", function(e){
-        e.preventDefault(); document.execCommand("italic");
+        e.preventDefault();
+        if (activeTb && hasHighlightIn(activeTb)) {
+            applyCmd("italic");
+        } else {
+            italicSticky = !italicSticky;
+            italicBtn.classList.toggle("active", italicSticky);
+        }
+    });
+
+    underlineBtn.addEventListener("mousedown", function(e){
+        e.preventDefault();
+        if (activeTb && hasHighlightIn(activeTb)) {
+            applyCmd("underline");
+        } else {
+            underlineSticky = !underlineSticky;
+            underlineBtn.classList.toggle("active", underlineSticky);
+        }
+    });
+
+    function applyPaper(type) {
+        ["blank","grid","dot","lined"].forEach(t => canvas.classList.remove("paper-"+t));
+        canvas.classList.add("paper-" + (type || "grid"));
+    }
+    const defaultPaper = localStorage.getItem(scopedKey("diaryPaperType")) || "grid";
+    applyPaper(defaultPaper);
+    if (paperSel) paperSel.value = defaultPaper;
+    if (paperSel) paperSel.addEventListener("change", function(){
+        applyPaper(this.value);
+        localStorage.setItem(scopedKey("diaryPaperType"), this.value);
+        schedSave();
+    });
+
+    function applyTheme(theme) {
+        ["dark","ocean","blush"].forEach(t => document.body.classList.remove("theme-"+t));
+        if (theme && theme !== "classic") document.body.classList.add("theme-"+theme);
+    }
+    const defaultTheme = localStorage.getItem(scopedKey("diaryTheme")) || "classic";
+    applyTheme(defaultTheme);
+    if (themeSel) themeSel.value = defaultTheme;
+    if (themeSel) themeSel.addEventListener("change", function(){
+        applyTheme(this.value);
+        localStorage.setItem(scopedKey("diaryTheme"), this.value);
     });
 
     /* ════════════════════════════════
        SAVE
     ════════════════════════════════ */
+    function setAutoSave(state) {
+        if (!autoSaveEl) return;
+        autoSaveEl.className = "save-" + state;
+        const icons  = { saving: "⟳", saved: "✓", failed: "⚠" };
+        const labels = { saving: "Saving...", saved: "Saved", failed: "Save Failed" };
+        if (saveIconEl)  saveIconEl.textContent  = icons[state]  || "";
+        if (saveLabelEl) saveLabelEl.textContent = labels[state] || "";
+    }
+
     function schedSave(){
+        if (window.requireLogin && window.requireLogin()) return;
         clearTimeout(saveTimer);
+        setAutoSave("saving");
         saveTimer = setTimeout(doSave, 1000);
     }
 
     function doSave(){
         const chunks = [];
+        chunks.push(JSON.stringify({ type: "meta", paper: paperSel ? paperSel.value : "grid" }));
 
         canvas.querySelectorAll(".tb-wrap").forEach(wrap => {
             const tb  = wrap.querySelector(".tb-content");
@@ -862,6 +1416,9 @@
                 ff: tb.style.fontFamily  || "Inter",
                 fs: tb.style.fontSize    || "16px",
                 fc: tb.style.color       || "#2a2a2a",
+                fw: tb.style.fontWeight  || "",
+                fst: tb.style.fontStyle  || "",
+                td: tb.style.textDecoration || "",
                 r:  parseFloat(wrap.dataset.rotate)  || 0,
                 html: tmp.innerHTML
             }));
@@ -895,13 +1452,12 @@
         fetch("/autosave", { method:"POST", body:data })
             .then(r => r.json())
             .then(res => {
-                saveStatus.innerText   = "Saved ✅";
-                saveStatus.style.color = "green";
+                setAutoSave("saved");
                 const msg = document.getElementById("msg");
                 if (msg && res.message) msg.innerText = res.message;
                 analyzeDiary(box.innerHTML, getDate());
             })
-            .catch(()=>{});
+            .catch(()=>{ setAutoSave("failed"); });
     }
 
     /* ════════════════════════════════
@@ -1101,11 +1657,17 @@
             if (!item) return;
             try {
                 const d = JSON.parse(item);
-                if (d.type === "text") {
+                if (d.type === "meta") {
+                    applyPaper(d.paper || "grid");
+                    if (paperSel) paperSel.value = d.paper || "grid";
+                } else if (d.type === "text") {
                     const tb = makeTb(d.x, d.y, d.html, d.r, false);
                     tb.style.fontFamily = d.ff || "Inter";
                     tb.style.fontSize   = d.fs || "16px";
                     tb.style.color      = d.fc || "#2a2a2a";
+                    if (d.fw)  tb.style.fontWeight     = d.fw;
+                    if (d.fst) tb.style.fontStyle      = d.fst;
+                    if (d.td)  tb.style.textDecoration = d.td;
                 } else if (d.type === "img") {
                     makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
                 }
@@ -1117,7 +1679,125 @@
         analyzeDiary(savedRaw, getDate());
     }
 
+    /* ════════════════════════════════
+       CANVAS STRETCH (height only, no shrink)
+    ════════════════════════════════ */
+    const stretchHandle = document.getElementById("canvasStretchHandle");
+    const _canvasHeightKey = scopedKey("diary-canvas-height-" + getDate());
+    const _savedCanvasH = localStorage.getItem(_canvasHeightKey);
+    if (_savedCanvasH) {
+        canvas.style.height    = _savedCanvasH + "px";
+        canvas.style.minHeight = _savedCanvasH + "px";
+    }
+
+    if (stretchHandle) {
+        stretchHandle.addEventListener("mousedown", function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const startY = e.clientY;
+            // Ensure canvas has an explicit height before dragging
+            const currentH = canvas.offsetHeight || 520;
+            canvas.style.height    = currentH + "px";
+            canvas.style.minHeight = currentH + "px";
+
+            function onMove(e) {
+                const delta = e.clientY - startY;
+                if (delta > 0) {
+                    canvas.style.height    = (currentH + delta) + "px";
+                    canvas.style.minHeight = (currentH + delta) + "px";
+                }
+            }
+            function onUp() {
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+                localStorage.setItem(_canvasHeightKey, canvas.offsetHeight);
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+    }
+
 })();
+</script>
+
+<!-- Mood ↔ Homepage sync (MOOD_LIST shared source of truth) -->
+<script type="module">
+import { MOOD_LIST, getMood, saveMood } from '/journal_home_static/js/mood_sync.js';
+
+const moodInput  = document.getElementById("mood");
+const moodPicker = document.getElementById("mood-picker");
+const isDisabled = moodPicker && moodPicker.classList.contains("mood-picker-disabled");
+
+if (moodInput && moodPicker) {
+    MOOD_LIST.forEach(({ value, image, label }) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mood-img-btn";
+        btn.dataset.value = value;
+        btn.disabled = isDisabled;
+        const img = document.createElement("img");
+        img.src = image;
+        img.alt = label;
+        btn.appendChild(img);
+        moodPicker.appendChild(btn);
+    });
+
+    // applyMoodUI: update UI only, no change event (no autosave side-effect)
+    function applyMoodUI(value) {
+        moodInput.value = value;
+        moodPicker.querySelectorAll(".mood-img-btn").forEach(b => {
+            b.classList.toggle("mood-img-btn--selected", b.dataset.value === value);
+        });
+    }
+
+    // setMood: update UI + fire change event (triggers saveMood + autosave)
+    function setMood(value) {
+        applyMoodUI(value);
+        moodInput.dispatchEvent(new Event("change"));
+    }
+
+    const backendMood = (moodInput.dataset.entryMood || "").toLowerCase().trim();
+    const backendItem = MOOD_LIST.find(m => m.value === backendMood || m.emoji === backendMood);
+
+    if (backendItem) {
+        // Server mood takes priority: fire change event so saveMood + autosave run
+        setMood(backendItem.value);
+    } else {
+        // No server mood — check if viewing today's diary and home page has a mood selected
+        const today = new Date();
+        const todayStr = String(today.getDate()).padStart(2, '0') + "/" +
+                         String(today.getMonth() + 1).padStart(2, '0') + "/" +
+                         today.getFullYear();
+        const urlDate = new URLSearchParams(window.location.search).get("date");
+        const displayDate = document.getElementById("dateDisplay")?.innerText?.trim() || "";
+        const isToday = (urlDate || displayDate) === todayStr;
+
+        if (isToday) {
+            const localMood = getMood();
+            const localItem = localMood ? MOOD_LIST.find(m => m.value === localMood) : null;
+            if (localItem) {
+                // Just show the mood — no change event, no autosave
+                applyMoodUI(localItem.value);
+            }
+        }
+    }
+
+    moodPicker.addEventListener("click", e => {
+        if (moodPicker.classList.contains("mood-picker-disabled")) {
+            if (typeof window.showEditHint === "function") window.showEditHint();
+            return;
+        }
+        const btn = e.target.closest(".mood-img-btn");
+        if (!btn) return;
+        setMood(btn.dataset.value);
+        saveMood(btn.dataset.value);
+    });
+
+    moodInput.addEventListener("change", () => {
+        if (moodInput.value) saveMood(moodInput.value);
+    });
+
+}
 </script>
 
 </body>

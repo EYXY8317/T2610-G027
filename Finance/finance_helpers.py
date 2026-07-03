@@ -48,17 +48,6 @@ def save_data(file, data):
     with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
-def get_user_wallpaper():
-    """Get current user's wallpaper preference"""
-    if "user" not in session:
-        return None
-
-    users = load_data(f_users, [])
-    for u in users:
-        if u["username"] == session["user"]:
-            return u.get("wallpaper")
-    return None
-
 def get_current_user():
     """Get current user object from session"""
     if "user" not in session:

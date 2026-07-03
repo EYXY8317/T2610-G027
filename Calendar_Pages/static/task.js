@@ -217,6 +217,11 @@ async function loadTasks() {
 
 async function addTask(listType) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Get task title from input field
     // 从输入框获取任务标题
     let text =
@@ -425,6 +430,11 @@ catch(error) {
 
 async function deleteTask(listType, id) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Find selected task
     // 查找指定的任务
     let task =
@@ -528,6 +538,11 @@ async function deleteTask(listType, id) {
 
 async function restoreTask(listType, id) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Find the selected task
     // 查找指定的任务
     let task =
@@ -686,6 +701,11 @@ async function restoreTask(listType, id) {
 
 function deleteCurrentTask() {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Ask user for confirmation
     // 询问用户是否确认删除
     if (
@@ -719,6 +739,11 @@ function deleteCurrentTask() {
 
 async function permanentlyDeleteTask(listType, id) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Ask user for confirmation
     // 询问用户是否确认永久删除
     if (
@@ -791,7 +816,13 @@ const response =
 // 永久删除所有垃圾桶中的任务
 // ===============================
 
+<<<<<<< HEAD
 async function emptyTrash() { 
+=======
+async function emptyTrash() {
+
+    if (window.requireLogin && window.requireLogin()) return;
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     // Ask user for confirmation
     // 询问用户是否确认清空垃圾桶
@@ -878,6 +909,14 @@ async function toggleComplete(
     checkbox
 ) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) {
+        checkbox.checked = !checkbox.checked;
+        return;
+    }
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Find selected task
     // 查找指定任务
     let task =
@@ -1164,6 +1203,11 @@ async function completeTask(
     id
 ) {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Find selected task
     // 查找指定任务
     const task =
@@ -3167,6 +3211,11 @@ function showTaskDetail(
 
 async function saveTaskChanges() {
 
+<<<<<<< HEAD
+=======
+    if (window.requireLogin && window.requireLogin()) return;
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     // Find current task
     // 查找当前任务
     let task =
@@ -3651,6 +3700,25 @@ if (categoryFilter) {
 
         }
 
+<<<<<<< HEAD
+=======
+        // Open a specific page on load if requested via URL
+        // 如果 URL 中指定了页面参数，则加载后直接跳转到该页面
+        const requestedView =
+            new URLSearchParams(window.location.search).get("view");
+
+        if (requestedView === "calendar") {
+
+            const calendarMenuItem =
+                document.querySelector(
+                    ".menu-item[onclick*=\"showPage('calendar'\"]"
+                );
+
+            showPage("calendar", calendarMenuItem);
+
+        }
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     }
 
 );

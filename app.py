@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory, jsonify
+=======
+from flask import Flask, render_template, request, session, send_from_directory, jsonify
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 from Journal_Pages.diary_system.routes import diary_bp
 from auth_routes import auth_bp
 from Finance.finance_routes import finance_bp
@@ -21,7 +25,7 @@ app = Flask(
     static_folder=os.path.join(BASE_DIR, "Finance", "static")
 )
 
-app.secret_key = "my_secret_key"
+app.secret_key = os.environ.get("SECRET_KEY", "my_secret_key")
 
 register_profile_routes(app)
 
@@ -51,15 +55,6 @@ def load_data(file, default):
             return json.load(f)
     except:
         return default
-
-def get_user_wallpaper():
-    if "user" not in session:
-        return None
-    users = load_data(f_users, [])
-    for u in users:
-        if u["username"] == session["user"]:
-            return u.get("wallpaper")
-    return None
 
 def get_current_user():
     if "user" not in session:
@@ -98,6 +93,7 @@ def _parse_ddate(ds):
     except Exception:
         return datetime.min
 
+<<<<<<< HEAD
 # ================= DASHBOARD =================
 @app.route("/dashboard")
 def dashboard():
@@ -107,6 +103,15 @@ def dashboard():
     user = session["user"]
     users = load_data(f_users, [])
     current_user = next((u for u in users if u["username"] == user), None)
+=======
+# ================= HOME / DASHBOARD =================
+@app.route("/")
+@app.route("/dashboard")
+def dashboard():
+    user = session.get("user")
+    users = load_data(f_users, [])
+    current_user = next((u for u in users if u["username"] == user), None) if user else None
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     # Finance data for home card
     records   = load_data(os.path.join(BASE_DIR, "Finance", "expenses.json"), [])
@@ -173,7 +178,11 @@ def dashboard():
 
     # Diary data for dashboard card
     f_journal = os.path.join(BASE_DIR, "journal.json")
+<<<<<<< HEAD
     journal_entries = load_data(f_journal, [])
+=======
+    journal_entries = [e for e in load_data(f_journal, []) if user and e.get("username") == user]
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     today_str_diary = now.strftime("%d/%m/%Y")
 
     today_diary  = None
@@ -228,7 +237,11 @@ def dashboard():
     return render_template(
         "dashboard.html",
         user                  = current_user,
+<<<<<<< HEAD
         wallpaper             = get_user_wallpaper(),
+=======
+        logged_in             = bool(user),
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         fin_expense           = cur_expense,
         fin_change            = expense_change,
         fin_weeks             = week_expenses,
@@ -263,7 +276,11 @@ def calendar_static(filename):
 @app.route("/calendar")
 def calendar():
     current_user = get_current_user()
+<<<<<<< HEAD
     return render_template("mypage.html", user=current_user)
+=======
+    return render_template("mypage.html", user=current_user, logged_in="user" in session)
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 # ================= USER THEME API =================
 @app.route('/api/user-theme')
@@ -293,6 +310,14 @@ def journal_home_static(filename):
         filename
     )
 
+<<<<<<< HEAD
+=======
+# ================= CURRENT USER (for client-side localStorage namespacing) =================
+@app.route('/api/whoami', methods=['GET'])
+def whoami():
+    return jsonify({"username": session.get("user", "")})
+
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 # ================= HOME LAYOUT (per-user, stored in users.json) =================
 @app.route('/api/home-layout', methods=['GET'])
 def get_home_layout():
@@ -321,10 +346,14 @@ def save_home_layout():
 # ================= TODAY PAGE =================
 @app.route("/today")
 def today_page():
+<<<<<<< HEAD
     if "user" not in session:
         return redirect(url_for("login"))
 
     user = session["user"]
+=======
+    user = session.get("user")
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     current_user = get_current_user()
 
     f_expense  = os.path.join(BASE_DIR, "Finance", "expenses.json")
@@ -417,7 +446,11 @@ def today_page():
 
     # Diary entry for today / most recent
     f_journal = os.path.join(BASE_DIR, "journal.json")
+<<<<<<< HEAD
     journal_entries = load_data(f_journal, [])
+=======
+    journal_entries = [e for e in load_data(f_journal, []) if e.get("username") == user]
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     today_str_diary = now.strftime("%d/%m/%Y")
 
     today_diary  = None
@@ -475,6 +508,10 @@ def today_page():
         diary_topic      = diary_topic,
         diary_date       = diary_date,
         diary_is_today   = diary_is_today,
+<<<<<<< HEAD
+=======
+        logged_in        = bool(user),
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     )
 
 # ================= RUN =================

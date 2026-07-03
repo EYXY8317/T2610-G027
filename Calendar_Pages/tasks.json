@@ -337,6 +337,65 @@
         "username": "Ethan"
     },
     {
+<<<<<<< HEAD
+=======
+        "id": 1782365424284,
+        "text": "\u725b\u5976",
+        "date": "2026-06-26",
+        "startTime": "",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "",
+        "description": "Added from diary",
+        "status": "active",
+        "category": "shopping",
+        "username": "ZOEY"
+    },
+    {
+        "id": 1782365418368,
+        "text": "Milo",
+        "date": "2026-06-26",
+        "startTime": "",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "",
+        "description": "Added from diary",
+        "status": "active",
+        "category": "shopping",
+        "username": "ZOEY"
+    },
+    {
+        "id": 1782365417709,
+        "text": "\u5f88\u597d\u559d",
+        "date": "2026-06-26",
+        "startTime": "",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "",
+        "description": "Added from diary",
+        "status": "trash",
+        "category": "shopping",
+        "username": "ZOEY"
+    },
+    {
+        "id": 1782365417663,
+        "text": "ahhhhhh",
+        "date": "2026-06-26",
+        "startTime": "",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "blue",
+        "tag": "",
+        "description": "Added from diary",
+        "status": "trash",
+        "category": "shopping",
+        "username": "ZOEY"
+    },
+    {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         "id": 1782824440673,
         "text": "FFF",
         "date": "2026-06-30",

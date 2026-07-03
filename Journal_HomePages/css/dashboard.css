@@ -393,9 +393,15 @@ body {
 
 }
 
+<<<<<<< HEAD
 /* ── Delete widget confirmation modal ────────────────────── */
 
 .delete-confirm-overlay {
+=======
+/* ── Canonical reminder / confirmation popup ─────────────── */
+
+.reminder-overlay {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     position: fixed;
     inset: 0;
     z-index: 20000;
@@ -406,7 +412,11 @@ body {
     justify-content: center;
 }
 
+<<<<<<< HEAD
 .delete-confirm-popup {
+=======
+.reminder-card {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     background: #F2EFE9;
     border-radius: 16px;
     padding: 28px 32px 24px;
@@ -417,32 +427,52 @@ body {
     text-align: center;
 }
 
+<<<<<<< HEAD
 .delete-confirm-title {
+=======
+.reminder-title {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     font-size: 16px;
     font-weight: 700;
     color: #1a1a1a;
     margin-bottom: 8px;
 }
 
+<<<<<<< HEAD
 .delete-confirm-msg {
+=======
+.reminder-msg {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     font-size: 13px;
     color: #555;
     line-height: 1.5;
     margin-bottom: 24px;
 }
 
+<<<<<<< HEAD
 .delete-confirm-msg strong {
     color: #1a1a1a;
 }
 
 .delete-confirm-actions {
+=======
+.reminder-msg strong {
+    color: #1a1a1a;
+}
+
+.reminder-actions {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     display: flex;
     gap: 10px;
     justify-content: center;
 }
 
+<<<<<<< HEAD
 .delete-confirm-cancel,
 .delete-confirm-ok {
+=======
+.reminder-btn {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     padding: 9px 22px;
     border-radius: 10px;
     border: none;
@@ -453,22 +483,47 @@ body {
     transition: background 0.15s, color 0.15s;
 }
 
+<<<<<<< HEAD
 .delete-confirm-cancel {
+=======
+.reminder-btn-secondary {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     background: rgba(0, 0, 0, 0.07);
     color: #555;
 }
 
+<<<<<<< HEAD
 .delete-confirm-cancel:hover {
+=======
+.reminder-btn-secondary:hover {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     background: rgba(0, 0, 0, 0.12);
     color: #1a1a1a;
 }
 
+<<<<<<< HEAD
 .delete-confirm-ok {
+=======
+.reminder-btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.reminder-btn-primary:hover {
+    background: #333;
+}
+
+.reminder-btn-danger {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     background: #d93025;
     color: #fff;
 }
 
+<<<<<<< HEAD
 .delete-confirm-ok:hover {
+=======
+.reminder-btn-danger:hover {
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     background: #b8271d;
 }
 

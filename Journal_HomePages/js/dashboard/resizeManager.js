@@ -80,9 +80,12 @@ function attachEdgeHandle(widget, dir) {
         widget.style.left   = newL + "px";
         widget.style.top    = newT + "px";
 
-        // Block resize if content would overflow — revert entire frame to last valid state.
-        // Width is reverted too: narrowing width can make text wrap and overflow the height.
-        if (contentOverflow(widget) > 1) {
+        // Block resize only when shrinking — growing a card can never push content
+        // outside its own boundary, so there is nothing to guard against.
+        // Width is always reverted together with height: narrowing width can make
+        // text wrap and push content below the bottom edge.
+        const shrinking = newW < prevW || newH < prevH;
+        if (shrinking && contentOverflow(widget) > 1) {
             widget.style.width  = prevW + "px";
             widget.style.height = prevH + "px";
             widget.style.left   = prevL + "px";
@@ -215,6 +218,8 @@ export function contentOverflow(widget) {
     const wRect    = widget.getBoundingClientRect();
     let   maxBelow = 0;
     let   maxAbove = 0;
+    let   maxRight = 0;
+    let   maxLeft  = 0;
 
     (function scan(el) {
         if (el.children.length === 0) {
@@ -222,17 +227,20 @@ export function contentOverflow(widget) {
             if (r.width > 0 || r.height > 0) {
                 const below = r.bottom - wRect.bottom;
                 const above = wRect.top  - r.top;
+                const right = r.right   - wRect.right;
+                const left  = wRect.left - r.left;
                 if (below > maxBelow) maxBelow = below;
                 if (above > maxAbove) maxAbove = above;
+                if (right > maxRight) maxRight = right;
+                if (left  > maxLeft)  maxLeft  = left;
             }
         } else {
             for (const child of el.children) scan(child);
         }
     })(content);
 
-    // centered layout: clipping is symmetric so total needed = above + below
-    // top/bottom-aligned layout: one side is 0, total = the overflowing side
-    const total = maxAbove + maxBelow;
+    // centered layout: symmetric overflow on both axes, sum all sides
+    const total = maxAbove + maxBelow + maxLeft + maxRight;
     return total > 1 ? Math.ceil(total) : 0;
 }
 
@@ -320,9 +328,11 @@ export function enableResize(
             widget.style.width  = snapped.width  + "px";
             widget.style.height = snapped.height + "px";
 
-            // Block resize if content would overflow — revert entire frame (both axes).
-            // Narrowing width can make text wrap and overflow the height, so revert width too.
-            if (contentOverflow(widget) > 1) {
+            // Block resize only when shrinking — growing cannot push content outside
+            // the card's own boundary.  Width is reverted together with height because
+            // narrowing width can make text wrap and overflow the bottom edge.
+            const shrinking = snapped.width < prevW || snapped.height < prevH;
+            if (shrinking && contentOverflow(widget) > 1) {
                 widget.style.width  = prevW + "px";
                 widget.style.height = prevH + "px";
             }

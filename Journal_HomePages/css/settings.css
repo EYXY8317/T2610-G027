@@ -797,6 +797,7 @@
     letter-spacing: 0.04em;
 }
 
+<<<<<<< HEAD
 /* ── Confirmation overlay ─────────────────────────────────── */
 
 .confirm-overlay {
@@ -867,4 +868,42 @@
 
 .confirm-ok-btn:hover {
     background: #333;
+=======
+
+/* ── Toggle chip — single button replacing Show/Hide pairs ───────────── */
+
+.toggle-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 2px 0 6px;
+}
+
+.toggle-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1.5px solid rgba(0, 0, 0, 0.18);
+    border-radius: 20px;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.toggle-chip:hover:not(.active) {
+    border-color: rgba(0, 0, 0, 0.35);
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.toggle-chip.active {
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #F2EFE9;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }

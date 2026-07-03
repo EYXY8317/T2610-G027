@@ -56,48 +56,14 @@ export function getWeatherDaySettings() {
                     <button class="segment-option${state.tempDisplay === "avg" ? " active" : ""}" data-value="avg">Avg</button>
                 </div>
             </div>
-            <h3>Show / Hide</h3>
-            <div class="setting-row">
-                <span>Secondary Temp</span>
-                <div class="segment-button wd-range-segment">
-                    <button class="segment-option${state.showRange ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showRange ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>City</span>
-                <div class="segment-button wd-city-segment">
-                    <button class="segment-option${state.showCity ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showCity ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Feels Like</span>
-                <div class="segment-button wd-feels-segment">
-                    <button class="segment-option${state.showFeelsLike ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showFeelsLike ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Humidity</span>
-                <div class="segment-button wd-humidity-segment">
-                    <button class="segment-option${state.showHumidity ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showHumidity ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Weather Icon</span>
-                <div class="segment-button wd-icon-segment">
-                    <button class="segment-option${state.showIcon ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showIcon ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Update Time</span>
-                <div class="segment-button wd-update-time-segment">
-                    <button class="segment-option${state.showUpdateTime ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showUpdateTime ? " active" : ""}" data-value="false">Hide</button>
-                </div>
+            <h3>Display Elements</h3>
+            <div class="toggle-chips">
+                <button class="toggle-chip${state.showRange ? " active" : ""}" data-statekey="showRange">Sec. Temp</button>
+                <button class="toggle-chip${state.showCity ? " active" : ""}" data-statekey="showCity">City</button>
+                <button class="toggle-chip${state.showFeelsLike ? " active" : ""}" data-statekey="showFeelsLike">Feels Like</button>
+                <button class="toggle-chip${state.showHumidity ? " active" : ""}" data-statekey="showHumidity">Humidity</button>
+                <button class="toggle-chip${state.showIcon ? " active" : ""}" data-statekey="showIcon">Icon</button>
+                <button class="toggle-chip${state.showUpdateTime ? " active" : ""}" data-statekey="showUpdateTime">Update Time</button>
             </div>
         `
 

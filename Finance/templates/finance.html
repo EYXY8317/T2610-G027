@@ -3,6 +3,7 @@
 
 <head>
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
     <title>Finance Dashboard</title>
 
     <link
@@ -16,6 +17,10 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     (function(){
         setTheme({{ theme | tojson }} || 'mocha');
@@ -26,20 +31,13 @@
 
 <body
 class="{{ theme }} {{ ui_style }}"
-
-{% if wallpaper %}
-
-style="
-background-image:
-linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
-url('/profile_static/wallpapers/{{ wallpaper }}');
-"
-
-{% endif %}
 >
 
+<<<<<<< HEAD
 <div class="wallpaper-overlay"></div>
 
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">

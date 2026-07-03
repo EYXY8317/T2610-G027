@@ -1,5 +1,9 @@
 import { TEMPLATES, applyTemplate } from "./layoutTemplates.js";
 import { syncLayoutToServer } from "./serverLayout.js";
+<<<<<<< HEAD
+=======
+import { showReminderPopup } from "../shared/reminderPopup.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 export function openTemplatePicker() {
     const overlay = document.createElement("div");
@@ -48,6 +52,7 @@ export function openTemplatePicker() {
 }
 
 function showTemplateConfirm(name, onConfirm) {
+<<<<<<< HEAD
     const modal = document.createElement("div");
     modal.className = "confirm-overlay";
     modal.innerHTML = `
@@ -64,4 +69,13 @@ function showTemplateConfirm(name, onConfirm) {
     modal.querySelector(".confirm-ok-btn").addEventListener("click", () => { modal.remove(); onConfirm(); });
     modal.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
     document.body.appendChild(modal);
+=======
+    showReminderPopup({
+        title: `Apply "${name}"?`,
+        message: "This will replace your current widget layout and appearance settings. Your widgets won't be deleted — you can re-arrange them afterward.",
+        confirmText: "Apply",
+        cancelText: "Cancel",
+        onConfirm
+    });
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }

@@ -27,6 +27,7 @@
 class="{{ user.theme if user.theme else 'mocha' }}"
 >
 
+<<<<<<< HEAD
 <body
 
 {% if user.wallpaper %}
@@ -39,6 +40,8 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
 >
 
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">
@@ -84,8 +87,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
                     <h1>{{ user.username }}</h1>
 
-                    <p>{{ user.email }}</p>
-
                     <p>Personal Finance Dashboard User</p>
 
                     <div class="quick-actions">
@@ -112,6 +113,7 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
             </div>
 
+<<<<<<< HEAD
             <!-- PROFILE PICTURE -->
 
             <div class="upload-box">
@@ -142,12 +144,15 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
             </div>
 
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </div>
 
         <!-- RIGHT -->
 
         <div class="card">
 
+<<<<<<< HEAD
             <div class="section-title">
                 Customize Wallpaper
             </div>
@@ -202,20 +207,29 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
             </form>
             
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <!-- STATS -->
 
-            <div class="section-title dashboard-title">
+            <div class="section-title">
                 Dashboard
             </div>
 
-            <div class="stat-grid">
+            <div class="stat-block">
 
-    <!-- THEME -->
+                <h3>🎨 Theme</h3>
 
-    <div class="stat-card">
+                <p id="theme-label">
+                    {% if not user.theme or user.theme == 'mocha' %}Mocha Latte
+                    {% elif user.theme == 'lavender' %}Lavender Dream
+                    {% elif user.theme == 'matcha' %}Matcha Green
+                    {% elif user.theme == 'ash' %}Ash Gray
+                    {% else %}{{ user.theme }}{% endif %}
+                </p>
 
-        <h3>🎨 Theme</h3>
+                <span id="theme-sublabel">Current interface appearance</span>
 
+<<<<<<< HEAD
         <p id="theme-label">
             {% if not user.theme or user.theme == 'mocha' %}Mocha Latte
             {% elif user.theme == 'lavender' %}Lavender Dream
@@ -269,27 +283,83 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                 disabled>
                 Apply Theme
             </button>
+=======
+                <form id="theme-form" action="/change_theme" method="POST">
 
-        </form>
+                    <input type="hidden" name="theme" id="selected-theme-input"
+                        value="{{ user.theme or 'mocha' }}">
 
-    </div>
+                    <div class="theme-picker-grid">
 
-    <!-- STATUS -->
+                        <button type="button" data-theme="mocha"
+                            class="theme-swatch{% if not user.theme or user.theme == 'mocha' %} selected{% endif %}"
+                            style="--swatch-color:#b18a68"
+                            onclick="previewTheme(this)">
+                            Mocha Latte
+                        </button>
 
-    <div class="stat-card">
+                        <button type="button" data-theme="lavender"
+                            class="theme-swatch{% if user.theme == 'lavender' %} selected{% endif %}"
+                            style="--swatch-color:#9a83ff"
+                            onclick="previewTheme(this)">
+                            Lavender Dream
+                        </button>
 
-        <h3>🟢 Status</h3>
+                        <button type="button" data-theme="matcha"
+                            class="theme-swatch{% if user.theme == 'matcha' %} selected{% endif %}"
+                            style="--swatch-color:#8db79a"
+                            onclick="previewTheme(this)">
+                            Matcha Green
+                        </button>
 
-        <p>Active</p>
+                        <button type="button" data-theme="ash"
+                            class="theme-swatch{% if user.theme == 'ash' %} selected{% endif %}"
+                            style="--swatch-color:#8c8c8c"
+                            onclick="previewTheme(this)">
+                            Ash Gray
+                        </button>
 
-        <span>
-            System running normally
-        </span>
+                    </div>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
-    </div>
+                    <button type="button" id="apply-theme-btn"
+                        class="apply-theme-btn"
+                        onclick="applyTheme()"
+                        disabled>
+                        Apply Theme
+                    </button>
 
-</div>
-</div>
+                </form>
+
+                <hr style="margin:24px 0; border:none; border-top:1px solid var(--border-color);">
+
+                <h3>🕒 Last Login</h3>
+
+                <p>{{ last_login }}</p>
+
+                <span>
+                    When you most recently signed in
+                </span>
+
+            </div>
+
+            <div class="danger-zone">
+
+                <div class="section-title">Account Deletion</div>
+
+                <a href="/delete_account">
+                    <button class="btn danger-btn">
+                        Delete Account
+                    </button>
+                </a>
+
+                <p>
+                    Permanently delete your account and all associated data. This cannot be undone.
+                </p>
+
+            </div>
+
+        </div>
 
 <script>
 
@@ -311,6 +381,7 @@ function previewTheme(btn) {
     const lsBackup = localStorage.getItem('lifepages-theme');
     setTheme(theme);
     try { localStorage.setItem('lifepages-theme', lsBackup || _savedTheme); } catch(e) {}
+<<<<<<< HEAD
 
     // Swap body class so profile.css body-class variables also update
     document.body.className = document.body.className.replace(
@@ -335,6 +406,38 @@ function previewTheme(btn) {
         applyBtn.setAttribute('disabled', '');
         document.getElementById('theme-sublabel').textContent = 'Current interface appearance';
     }
+=======
+
+    // Swap body class so profile.css body-class variables also update
+    document.body.className = document.body.className.replace(
+        /\b(mocha|lavender|matcha|ash)\b/g, theme
+    );
+
+    // Update swatch selection
+    document.querySelectorAll('.theme-swatch').forEach(function(b) {
+        b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+
+    // Update label
+    document.getElementById('theme-label').textContent = THEME_NAMES[theme] || theme;
+
+    // Toggle apply button
+    const applyBtn = document.getElementById('apply-theme-btn');
+    if (theme !== _savedTheme) {
+        applyBtn.removeAttribute('disabled');
+        document.getElementById('theme-sublabel').textContent = 'Previewing — click Apply to save';
+    } else {
+        applyBtn.setAttribute('disabled', '');
+        document.getElementById('theme-sublabel').textContent = 'Current interface appearance';
+    }
+}
+
+function applyTheme() {
+    try { localStorage.setItem('lifepages-theme', _pendingTheme); } catch(e) {}
+    document.getElementById('selected-theme-input').value = _pendingTheme;
+    document.getElementById('theme-form').submit();
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 function applyTheme() {

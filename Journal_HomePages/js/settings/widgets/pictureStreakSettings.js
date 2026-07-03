@@ -42,14 +42,11 @@ export function getPictureStreakSettings(widgetId = "picture-streak-widget") {
                     <button class="segment-option${state.displayMode === "scroll" ? " active" : ""}" data-value="scroll">Auto Scroll</button>
                 </div>
             </div>
-            <h3>Options</h3>
-            <div class="setting-row">
-                <span>Show Date Label</span>
-                <div class="segment-button ps-date-label-segment">
-                    <button class="segment-option${state.showDateLabel ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${!state.showDateLabel ? " active" : ""}" data-value="false">Hide</button>
-                </div>
+            <h3>Display Elements</h3>
+            <div class="toggle-chips">
+                <button class="toggle-chip${state.showDateLabel ? " active" : ""}" data-statekey="showDateLabel">Date Label</button>
             </div>
+            <h3>Options</h3>
             <div class="setting-row">
                 <span>Scroll Interval</span>
                 <select class="ps-interval-select">

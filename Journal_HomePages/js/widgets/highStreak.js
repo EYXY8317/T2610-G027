@@ -1,13 +1,13 @@
+import { userScopedKey } from "../currentUser.js";
+
 const STORAGE_KEY = "high-streak-display";
 
 const DEFAULT_STATE = {
-    displayMode:        "number",
-    celebrationEnabled: true,
-    lastKnownHigh:      0        // persisted so we can detect new records across sessions
+    displayMode: "number",
 };
 
 function getState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(userScopedKey(STORAGE_KEY));
     if (!raw) return { ...DEFAULT_STATE };
     try { return { ...DEFAULT_STATE, ...JSON.parse(raw) }; }
     catch { return { ...DEFAULT_STATE }; }
@@ -15,7 +15,7 @@ function getState() {
 
 function saveState(partial) {
     const next = { ...getState(), ...partial };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(userScopedKey(STORAGE_KEY), JSON.stringify(next));
     return next;
 }
 
@@ -102,13 +102,6 @@ async function fetchJournalDates() {
     }
 }
 
-function triggerCelebration() {
-    const widget = document.getElementById("high-streak-widget");
-    if (!widget) return;
-    widget.classList.add("streak-celebrating");
-    setTimeout(() => widget.classList.remove("streak-celebrating"), 600);
-}
-
 function rerender(dates, state) {
     const content = document.querySelector("#high-streak-widget .widget-content");
     if (!content) return;
@@ -140,14 +133,6 @@ export async function initializeHighStreak() {
     if (!widget) return;
 
     const dates = await fetchJournalDates();
-    const state = getState();
-    const high  = calculateHighStreak(dates);
-
-    // Celebrate if we've hit a new record since last session
-    if (state.celebrationEnabled && high > state.lastKnownHigh) {
-        saveState({ lastKnownHigh: high });
-        triggerCelebration();
-    }
 
     rerender(dates, getState());
 }

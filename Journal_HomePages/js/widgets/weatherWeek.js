@@ -4,8 +4,11 @@ import {
 }
 from "./weatherConfig.js";
 
+<<<<<<< HEAD
 import { saveLayout } from "../home/saveLayout.js";
 
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 const STATE_KEY = "weather-week-state";
 
 const DEFAULT_STATE = {
@@ -125,6 +128,7 @@ export async function renderWeatherWeek() {
         }).join("");
 
         container.innerHTML = `<div class="ww-grid">${cols}</div>`;
+<<<<<<< HEAD
 
         requestAnimationFrame(() => {
             const widget = document.getElementById("weather-week-widget");
@@ -144,6 +148,8 @@ export async function renderWeatherWeek() {
                 saveLayout(widget);
             }
         });
+=======
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     }
     catch (err) {

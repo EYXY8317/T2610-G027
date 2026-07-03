@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from flask import Blueprint, render_template, request, jsonify, session
+=======
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 from Journal_Pages.diary_system.crud import add_entry, delete_entry
 from Journal_Pages.diary_system.logic import get_today_entry, get_mode
 from datetime import date, datetime, timedelta
@@ -32,8 +36,10 @@ def journal_index():
 
 @diary_bp.route("/journal_entries_list")
 def journal_entries_list():
+    if "user" not in session:
+        return jsonify({"entries": []})
     from Journal_Pages.diary_system.crud import load_entries
-    entries = load_entries()
+    entries = [e for e in load_entries() if e.get("username") == session["user"]]
     result = []
     for e in reversed(entries):
         content = (e.get("content") or "").strip()
@@ -61,16 +67,21 @@ def journal_entries_list():
 @diary_bp.route("/diary")
 def diary():
 
+    user = session.get("user")
+
     date = request.args.get("date")
 
     if not date:
         date = datetime.now().strftime("%d/%m/%Y")
 
-    from Journal_Pages.diary_system.logic import get_entry_by_date
+    entry = None
+    if user:
+        from Journal_Pages.diary_system.logic import get_entry_by_date
+        entry = get_entry_by_date(date, user)
 
-    entry = get_entry_by_date(date)
-
-    if entry and entry["content"].strip() != "":
+    if not user:
+        mode = "view"
+    elif entry and entry["content"].strip() != "":
         mode = "view"
     else:
         mode = "add"
@@ -79,7 +90,8 @@ def diary():
         "diary.html",
         entry=entry,
         mode=mode,
-        today=date
+        today=date,
+        logged_in=bool(user),
     )
 
 
@@ -88,6 +100,9 @@ def diary():
 @diary_bp.route("/autosave", methods=["POST"])
 def autosave():
 
+    if "user" not in session:
+        return {"message": ""}, 401
+
     content = request.form.get("content")
     mood = request.form.get("mood")
     date = request.form.get("date")
@@ -95,7 +110,7 @@ def autosave():
 
     from Journal_Pages.diary_system.logic import get_entry_by_date
 
-    existing = get_entry_by_date(date)
+    existing = get_entry_by_date(date, session["user"])
 
     # ================= MOOD CHANGE =================
 
@@ -120,6 +135,7 @@ def autosave():
 
     new_data = {
         "date": date,
+        "username": session["user"],
         "content": content,
         "mood": (
             mood if mood
@@ -312,8 +328,10 @@ def diary_analyze():
 
 @diary_bp.route("/journal_dates", methods=["GET"])
 def journal_dates():
+    if "user" not in session:
+        return jsonify({"dates": []})
     from Journal_Pages.diary_system.crud import load_entries
-    entries = load_entries()
+    entries = [e for e in load_entries() if e.get("username") == session["user"]]
     dates = []
     for e in entries:
         raw     = e.get("date", "")
@@ -335,8 +353,11 @@ def journal_dates():
 @diary_bp.route("/delete", methods=["POST"])
 def delete():
 
+    if "user" not in session:
+        return "unauthorized", 401
+
     date = request.form.get("date")
-    delete_entry(date)
+    delete_entry(date, session["user"])
     return "deleted"
 
 
@@ -344,6 +365,9 @@ def delete():
 
 @diary_bp.route("/search", methods=["POST"])
 def search():
+
+    if "user" not in session:
+        return {"results": []}
 
     from Journal_Pages.diary_system.crud import load_entries
 
@@ -353,7 +377,7 @@ def search():
         return {"results": []}
 
     keyword = keyword.lower().replace(" ", "")
-    entries = load_entries()
+    entries = [e for e in load_entries() if e.get("username") == session["user"]]
     results = []
 
     for e in entries:
@@ -372,9 +396,10 @@ def search():
 
         if keyword in content or keyword in topic:
             results.append({
-                "date": e["date"],
-                "topic": e.get("topic", ""),
-                "content": (e.get("content") or "")[:50]
+                "date":    e["date"],
+                "topic":   e.get("topic", ""),
+                "mood":    e.get("mood", ""),
+                "content": e.get("content") or ""
             })
 
     return {"results": results}
@@ -385,10 +410,13 @@ def search():
 @diary_bp.route("/get_entry", methods=["POST"])
 def get_entry():
 
+    if "user" not in session:
+        return {}
+
     from Journal_Pages.diary_system.logic import get_entry_by_date
 
     date = request.form.get("date")
-    entry = get_entry_by_date(date)
+    entry = get_entry_by_date(date, session["user"])
     return entry or {}
 
 
@@ -396,8 +424,15 @@ def get_entry():
 
 @diary_bp.route("/diary_moods", methods=["GET"])
 def diary_moods():
+<<<<<<< HEAD
     from Journal_Pages.diary_system.crud import load_entries
     entries = load_entries()
+=======
+    if "user" not in session:
+        return jsonify({})
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = [e for e in load_entries() if e.get("username") == session["user"]]
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     moods = {}
     for e in entries:
         raw = e.get("date", "")
@@ -418,8 +453,15 @@ def diary_moods():
 
 @diary_bp.route("/diary_data", methods=["GET"])
 def diary_data():
+<<<<<<< HEAD
     from Journal_Pages.diary_system.crud import load_entries
     entries = load_entries()
+=======
+    if "user" not in session:
+        return jsonify({})
+    from Journal_Pages.diary_system.crud import load_entries
+    entries = [e for e in load_entries() if e.get("username") == session["user"]]
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     result = {}
     for e in entries:
         raw   = e.get("date", "")

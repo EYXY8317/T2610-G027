@@ -1,3 +1,5 @@
+import { userScopedKey } from "../currentUser.js";
+
 const STORAGE_KEY = "quote-state";
 
 const SYSTEM_QUOTES = {
@@ -57,7 +59,7 @@ const DEFAULT_STATE = {
 };
 
 function getState() {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(userScopedKey(STORAGE_KEY));
     if (!raw) {
         return { ...DEFAULT_STATE };
     }
@@ -85,7 +87,7 @@ function getState() {
 
 function saveState(partial) {
     const next = { ...getState(), ...partial };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(userScopedKey(STORAGE_KEY), JSON.stringify(next));
     return next;
 }
 
@@ -181,6 +183,7 @@ function renderWidget(state) {
                 <div class="quote-text" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}${textColorStyle}">${quote.text}</div>
                 <div class="quote-author-row">
                     ${authorText}
+<<<<<<< HEAD
                     <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
                         ${saved ? "★" : "☆"}
                     </button>
@@ -192,6 +195,15 @@ function renderWidget(state) {
                     <button class="quote-next-btn" title="Next quote">↻</button>
                 </div>
             ` : ""}
+=======
+                </div>
+                ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
+            </div>
+            <div class="quote-corner-actions">
+                <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">${saved ? "★" : "☆"}</button>
+                ${!state.autoRotate ? `<button class="quote-next-btn" title="Next quote">↻</button>` : ""}
+            </div>
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </div>
     `;
 

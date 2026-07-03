@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const WIDGET_IDS = [
     "digital-clock-widget",
     "weather-hour-widget",
@@ -11,6 +12,9 @@ const WIDGET_IDS = [
     "quote-widget",
     "diary-card-widget",
 ];
+=======
+import { JOURNAL_WIDGET_IDS as WIDGET_IDS } from "../currentUser.js";
+>>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 function getActiveTemplate() {
     return localStorage.getItem("active-template") || "cozy-dashboard";

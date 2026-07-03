@@ -58,20 +58,10 @@ export function getQuoteSettings() {
         graph: "",
 
         display: `
-            <h3>Show</h3>
-            <div class="setting-row">
-                <span>Author</span>
-                <div class="segment-button quote-show-author-seg">
-                    <button class="segment-option${state.showAuthor !== false ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${state.showAuthor === false ? " active" : ""}" data-value="false">Hide</button>
-                </div>
-            </div>
-            <div class="setting-row">
-                <span>Source Tag</span>
-                <div class="segment-button quote-show-source-tag-seg">
-                    <button class="segment-option${state.showSourceTag !== false ? " active" : ""}" data-value="true">Show</button>
-                    <button class="segment-option${state.showSourceTag === false ? " active" : ""}" data-value="false">Hide</button>
-                </div>
+            <h3>Display Elements</h3>
+            <div class="toggle-chips">
+                <button class="toggle-chip${state.showAuthor !== false ? " active" : ""}" data-statekey="showAuthor">Author</button>
+                <button class="toggle-chip${state.showSourceTag !== false ? " active" : ""}" data-statekey="showSourceTag">Source Tag</button>
             </div>
 
             <h3>Categories</h3>
@@ -89,9 +79,9 @@ export function getQuoteSettings() {
                     <button class="segment-option${!state.autoRotate ? " active" : ""}" data-value="false">Manual</button>
                 </div>
             </div>
-            <div class="setting-row">
+            <div class="setting-row" style="${!state.autoRotate ? "display:none;" : ""}">
                 <span>Rotate Interval</span>
-                <div class="segment-button quote-rotate-daily-segment" style="${!state.autoRotate ? "opacity:0.4;pointer-events:none;" : ""}">
+                <div class="segment-button quote-rotate-daily-segment">
                     <button class="segment-option${state.rotateDaily  ? " active" : ""}" data-value="true">Daily</button>
                     <button class="segment-option${!state.rotateDaily ? " active" : ""}" data-value="false">Each Visit</button>
                 </div>
