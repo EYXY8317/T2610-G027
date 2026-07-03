@@ -1,12 +1,12 @@
 """
 Run this once to pick your 3 book cover images.
-They'll be copied to Journal_HomePages/assets/books/ automatically.
+They'll be copied to DiaryHomepage/assets/books/ automatically.
 """
 import shutil, os, sys
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-DEST = os.path.join(os.path.dirname(__file__), "Journal_HomePages", "assets", "books")
+DEST = os.path.join(os.path.dirname(__file__), "DiaryHomepage", "assets", "books")
 os.makedirs(DEST, exist_ok=True)
 
 BOOKS = [

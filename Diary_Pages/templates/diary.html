@@ -297,8 +297,8 @@
             align-items: center;
             gap: 5px;
             background: transparent;
-            border: 1px solid #ddd8cf;
-            color: #555;
+            border: 1px solid var(--diary-canvas-border, #ddd8cf);
+            color: var(--diary-text, #555);
             border-radius: 8px;
             padding: 5px 14px;
             font-size: 12px;
@@ -321,23 +321,28 @@
         }
 
         #formatBar select {
-            border: 1px solid #ddd8cf;
+            border: 1px solid var(--diary-canvas-border, #ddd8cf);
             background: transparent;
             font-family: 'Inter', sans-serif;
             font-size: 12px;
-            color: #555;
+            color: var(--diary-text, #555);
             border-radius: 8px;
             padding: 4px 8px;
             outline: none;
             cursor: pointer;
         }
 
-        #formatBar select:hover { border-color: #888; }
+        #formatBar select option {
+            color: #2a2a2a;
+            background: #fff;
+        }
+
+        #formatBar select:hover { border-color: var(--diary-accent, #888); }
 
         #fontColor {
             width: 32px;
             height: 28px;
-            border: 1px solid #ddd8cf;
+            border: 1px solid var(--diary-canvas-border, #ddd8cf);
             border-radius: 8px;
             padding: 2px;
             cursor: pointer;
@@ -347,8 +352,8 @@
 
         .fbar-btn {
             background: transparent;
-            border: 1px solid #ddd8cf;
-            color: #555;
+            border: 1px solid var(--diary-canvas-border, #ddd8cf);
+            color: var(--diary-text, #555);
             border-radius: 8px;
             padding: 4px 12px;
             font-size: 13px;
@@ -451,6 +456,13 @@
         #editDoneBtn:hover { opacity: 0.85; }
         #editCancelBtn { background: #f0ede8; color: #555; }
         #editCancelBtn:hover { background: #e5e0d8; }
+
+        .profile{ display:flex; align-items:center; gap:10px; flex-shrink:0; margin-left:auto; }
+        .profile-link{ text-decoration:none; color:#3b2f2a; font-weight:600; font-size:14px; }
+        .profile-btn{ text-decoration:none; color:var(--primary, #8b5e3c); border:1.5px solid var(--primary, #8b5e3c); border-radius:10px; padding:8px 16px; font-size:14px; font-weight:600; transition:0.2s; white-space:nowrap; }
+        .profile-btn:hover{ background:var(--primary-light, #f2e5d8); }
+        .profile-btn-solid{ background:var(--primary, #8b5e3c); color:white; }
+        .profile-btn-solid:hover{ background:var(--primary-accent, #c9a88a); }
     </style>
 </head>
 <body>
@@ -467,7 +479,7 @@
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance">Finance Page</a>
-        <a href="/journal" class="active">Diary Page</a>
+        <a href="/diary_homepage" class="active">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
     </div>
@@ -484,6 +496,12 @@
             <span class="save-label">Saved</span>
         </div>
     </div>
+    {% if not logged_in %}
+    <div class="profile">
+        <a href="/login" class="profile-btn">Login</a>
+        <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+    </div>
+    {% endif %}
 </nav>
 
 <div id="searchResults"></div>
@@ -505,12 +523,12 @@
         <label>Mood</label>
         <input type="hidden" id="mood" name="mood"
                data-entry-mood="{{ entry.mood if entry else '' }}">
-        <div id="mood-picker" class="{{ 'mood-picker-disabled' if mode == 'view' else '' }}"></div>
+        <div id="mood-picker" class="{{ 'mood-picker-disabled' if (mode == 'view' or not logged_in) else '' }}"></div>
         <label for="topic">Topic</label>
         <input type="text" id="topic" maxlength="20"
             value="{{ entry.topic if entry else '' }}"
             placeholder="Enter topic (max 20)"
-            {{ "readonly" if mode == "view" else "" }}>
+            {{ "readonly" if (mode == "view" or not logged_in) else "" }}>
     </div>
 
     <!-- Format Bar -->
@@ -599,8 +617,10 @@
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Shared confirm/cancel popup (also used by Journal_HomePages); exposes window.showReminderPopup -->
-<script type="module" src="/journal_home_static/js/shared/reminderPopup.js"></script>
+<!-- Shared confirm/cancel popup (also used by DiaryHomepage); exposes window.showReminderPopup -->
+<script type="module" src="/diary_home_static/js/shared/reminderPopup.js"></script>
+<!-- Shared "Login Required" popup (also used by DiaryHomepage); exposes window.showLoginRequiredPopup -->
+<script type="module" src="/diary_home_static/js/shared/loginRequiredPopup.js?v=2"></script>
 <script src="/diary_static/script.js"></script>
 
 <!-- Day name + month/year -->
@@ -639,8 +659,10 @@
     const moodSel   = document.getElementById("mood");
     const topicInp  = document.getElementById("topic");
 
+    const isGuest = window.__CURRENT_USERNAME__ === "";
+
     let activeTb  = null;
-    let canEdit   = (mode === "add" || mode === "edit");
+    let canEdit   = (mode === "add" || mode === "edit") && !isGuest;
     let saveTimer = null;
 
     /* Quote reveal: the quote for the current content is fetched on every
@@ -652,6 +674,23 @@
     let latestQuote   = msgEl ? msgEl.innerText : "";
 
     if (!canEdit) canvas.classList.add("view-mode");
+
+    // Guests: intercept every format-bar control (undo/redo, photo upload,
+    // font family/size/color, bold/italic/underline, paper/theme pickers) at
+    // the container level, before each control's own handler runs, so any
+    // of them pops the login modal instead of silently no-op'ing.
+    if (isGuest) {
+        const formatBar = document.getElementById("formatBar");
+        if (formatBar) {
+            const gate = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+            };
+            formatBar.addEventListener("mousedown", gate, true);
+            formatBar.addEventListener("click", gate, true);
+        }
+    }
 
     function getDate() {
         const p = new URLSearchParams(window.location.search);
@@ -761,6 +800,10 @@
     }
 
     editBtn.addEventListener("click", function() {
+        if (isGuest) {
+            window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+            return;
+        }
         _snapshot = takeSnapshot();
         canEdit = true;
         canvas.classList.remove("view-mode");
@@ -840,10 +883,16 @@
         }
     });
 
-    /* Shared edit-hint toast */
+    /* Shared edit-hint toast — for guests, the reason they can't edit is
+       being logged out, not that they're viewing a read-only past entry,
+       so show the login popup instead of the "Click Edit" hint. */
     const editHintToast = document.getElementById("editHintToast");
     let toastTimer = null;
     window.showEditHint = function() {
+        if (isGuest) {
+            window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+            return;
+        }
         clearTimeout(toastTimer);
         editHintToast.classList.add("show");
         toastTimer = setTimeout(function(){ editHintToast.classList.remove("show"); }, 2200);
@@ -1248,7 +1297,13 @@
         ["settings","dark","ocean","blush"].forEach(t => document.body.classList.remove("theme-"+t));
         if (theme && theme !== "classic") document.body.classList.add("theme-"+theme);
     }
-    const defaultTheme = localStorage.getItem(scopedKey("diaryTheme")) || "classic";
+    // Guests always see Classic — any saved "guest" theme predates the
+    // format-bar login gate (guests can no longer change it), so it's
+    // stale and gets cleared rather than applied.
+    if (isGuest) {
+        localStorage.removeItem(scopedKey("diaryTheme"));
+    }
+    const defaultTheme = isGuest ? "classic" : (localStorage.getItem(scopedKey("diaryTheme")) || "classic");
     applyTheme(defaultTheme);
     if (themeSel) themeSel.value = defaultTheme;
     if (themeSel) themeSel.addEventListener("change", function(){
@@ -1437,7 +1492,7 @@
 
 <!-- Mood ↔ Homepage sync (MOOD_LIST shared source of truth) -->
 <script type="module">
-import { MOOD_LIST, getMood, saveMood } from '/journal_home_static/js/mood_sync.js';
+import { MOOD_LIST, getMood, saveMood } from '/diary_home_static/js/mood_sync.js';
 
 const moodInput  = document.getElementById("mood");
 const moodPicker = document.getElementById("mood-picker");

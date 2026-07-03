@@ -147,8 +147,6 @@ body{
 
 .profile{
     justify-self:end;
-<<<<<<< HEAD
-=======
     display:flex;
     align-items:center;
     gap:10px;
@@ -183,7 +181,6 @@ body{
 
 .profile-btn-solid:hover{
     background:var(--primary-accent, #c9a88a);
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 /* ================= HERO字体 ================= */

@@ -17,10 +17,7 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
-<<<<<<< HEAD
-=======
     <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -44,7 +41,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
     </div>
@@ -61,7 +58,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
     </div>
@@ -227,11 +224,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
-<<<<<<< HEAD
-                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
-=======
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -389,11 +382,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
-<<<<<<< HEAD
-                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
-=======
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -526,11 +515,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     </div>
                     <div class="action-buttons">
                         <a href="/edit_goal/{{ g.id }}" class="edit-btn">✏️ Edit</a>
-<<<<<<< HEAD
-                        <a href="/delete_goal/{{ g.id }}" class="delete-btn">Delete</a>
-=======
                         <a href="/delete_goal/{{ g.id }}" class="delete-btn" data-auth-required="true">Delete</a>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                     </div>
                 </div>
 
@@ -560,10 +545,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                 <div style="margin-top:12px;">
                     <a href="/reopen_goal/{{ g.id }}"
-<<<<<<< HEAD
-=======
                        data-auth-required="true"
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                        style="display:inline-block;padding:7px 14px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:13px;font-weight:600;text-decoration:none;">
                         🔄 Reopen Goal
                     </a>
@@ -618,11 +600,7 @@ function openContributions(contributions, goalName) {
                 '<div style="display:flex;align-items:center;gap:12px;">' +
                     '<span style="font-size:14px;font-weight:700;color:#16a34a;">+RM ' + Number(c.amount).toFixed(2) + '</span>' +
                     '<a href="/update/' + c.edit_idx + '?source=goal" title="Edit" style="text-decoration:none;font-size:15px;">✏️</a>' +
-<<<<<<< HEAD
-                    '<a href="/delete/' + c.delete_idx + '" title="Delete" style="text-decoration:none;font-size:13px;font-weight:700;color:#dc2626;" onclick="return confirm(\'Delete this contribution?\')">✕</a>' +
-=======
                     '<a href="/delete/' + c.delete_idx + '" title="Delete" data-auth-required="true" style="text-decoration:none;font-size:13px;font-weight:700;color:#dc2626;" onclick="return confirm(\'Delete this contribution?\')">✕</a>' +
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
                 '</div>' +
             '</div>';
         }).join('');

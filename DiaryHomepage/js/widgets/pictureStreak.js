@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 import { userScopedKey } from "../currentUser.js";
 
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 const SCROLL_INTERVALS = [
     { value: "1h",  label: "Every 1 hour",  ms: 3_600_000 },
     { value: "1d",  label: "Every 1 day",   ms: 86_400_000 },
@@ -21,15 +18,6 @@ const DEFAULT_STATE = {
 function getStorageKey(id) {
     // Backward compat: first instance may still have data under the old key
     if (id === "picture-streak-widget") {
-<<<<<<< HEAD
-        const legacy = localStorage.getItem("picture-streak-state");
-        const current = localStorage.getItem("picture-streak-widget-state");
-        if (legacy && !current) {
-            localStorage.setItem("picture-streak-widget-state", legacy);
-        }
-    }
-    return `${id}-state`;
-=======
         const legacy = localStorage.getItem(userScopedKey("picture-streak-state"));
         const current = localStorage.getItem(userScopedKey("picture-streak-widget-state"));
         if (legacy && !current) {
@@ -37,7 +25,6 @@ function getStorageKey(id) {
         }
     }
     return userScopedKey(`${id}-state`);
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 function getState(id) {

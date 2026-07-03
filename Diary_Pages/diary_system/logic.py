@@ -1,5 +1,5 @@
 from datetime import datetime
-from Journal_Pages.diary_system.crud import load_entries
+from Diary_Pages.diary_system.crud import load_entries
 from flask import request
 
 #================================ get_today_entry(username) ================================

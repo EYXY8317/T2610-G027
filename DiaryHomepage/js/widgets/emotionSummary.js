@@ -4,7 +4,7 @@ import { userScopedKey } from "../currentUser.js";
 const STORAGE_KEY = "emotion-summary-state";
 
 function _moodImg(value) {
-    return `<img src="/journal_home_static/assets/emotions/${value}.png" alt="${value}" class="es-mood-icon-img">`;
+    return `<img src="/diary_home_static/assets/emotions/${value}.png" alt="${value}" class="es-mood-icon-img">`;
 }
 
 const MOOD_ICON = {
@@ -360,7 +360,7 @@ const MOOD_COLORS = {
 const MOOD_IMAGES = Object.fromEntries(
     ["happy", "anxious", "sad", "angry", "unwell"].map(m => {
         const img = new Image();
-        img.src = `/journal_home_static/assets/emotions/${m}.png`;
+        img.src = `/diary_home_static/assets/emotions/${m}.png`;
         return [m, img];
     })
 );
@@ -594,7 +594,7 @@ function renderPieLegend(pd, isWide) {
     const items = pd.labels.map((label, i) => {
         const key = pd.moodKeys?.[i];
         const icon = key
-            ? `<img src="/journal_home_static/assets/emotions/${key}.png" alt="${label}" class="es-leg-emoji-img">`
+            ? `<img src="/diary_home_static/assets/emotions/${key}.png" alt="${label}" class="es-leg-emoji-img">`
             : `<span class="es-leg-dot" style="background:${pd.colors[i]}"></span>`;
         return `
             <div class="es-leg-row">

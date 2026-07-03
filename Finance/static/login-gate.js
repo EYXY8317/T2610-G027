@@ -29,7 +29,8 @@
             "color:#7a4e33;background:white;font-family:inherit;}" +
             "#login-required-modal .login-required-btn-solid{background:#7a4e33;color:white;}" +
             "#login-required-modal .login-required-close{border:none;background:none;color:#999;" +
-            "text-decoration:underline;font-size:13px;cursor:pointer;padding:4px 0 0;}";
+            "text-decoration:underline;font-size:13px;cursor:pointer;padding:4px 0 0;" +
+            "border-radius:0;box-shadow:none;font-weight:400;}";
         document.head.appendChild(style);
 
         var overlay = document.createElement("div");

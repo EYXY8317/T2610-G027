@@ -586,11 +586,7 @@
     right: 6px;
     display: flex;
     align-items: center;
-<<<<<<< HEAD
-    padding-top: 4px;
-=======
     gap: 4px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .quote-save-btn,
@@ -647,15 +643,12 @@
     min-height: 0;
 }
 
-<<<<<<< HEAD
-=======
 #emotion-summary-widget .widget-header {
     padding-left: calc(0.7em + 58px);
     padding-right: calc(0.7em + 58px);
     justify-content: center;
 }
 
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 /* Let es-body fill the full widget-content height so calendar outer can flex */
 #emotion-summary-widget .es-body {
     flex: 1;
@@ -693,22 +686,14 @@
     width: 100%;
     flex: 1;
     min-height: 0;
-<<<<<<< HEAD
-    gap: 10px;
-=======
     gap: 16px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .es-pie-outer--row {
     flex-direction: row;
     align-items: center;
     justify-content: center; /* center the chart+legend unit, not stretch */
-<<<<<<< HEAD
-    gap: 14px;
-=======
     gap: 22px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .es-pie-wrap {
@@ -750,39 +735,20 @@
 
 .es-pie-legend--side {
     flex-direction: column;
-<<<<<<< HEAD
-    gap: 7px;
-=======
     gap: 11px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     justify-content: center;
 }
 
 .es-pie-legend--bottom {
     flex-direction: row;
     flex-wrap: wrap;
-<<<<<<< HEAD
-    gap: 4px 14px;
-=======
     gap: 6px 22px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     justify-content: center;
 }
 
 .es-leg-row {
     display: flex;
     align-items: center;
-<<<<<<< HEAD
-    gap: 6px;
-    white-space: nowrap;
-    font-size: 0.82em;
-    color: #3a3028;
-}
-
-.es-leg-dot {
-    width: 9px;
-    height: 9px;
-=======
     gap: 10px;
     white-space: nowrap;
     font-size: 0.92em;
@@ -792,7 +758,6 @@
 .es-leg-dot {
     width: 14px;
     height: 14px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     border-radius: 50%;
     flex-shrink: 0;
     display: inline-block;
@@ -800,8 +765,6 @@
 
 .es-leg-label {
     line-height: 1.2;
-<<<<<<< HEAD
-=======
 }
 
 .es-leg-emoji-img {
@@ -818,7 +781,6 @@
     object-fit: contain;
     vertical-align: middle;
     display: inline-block;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .es-highlight {
@@ -826,10 +788,6 @@
     align-items: center;
     gap: 6px;
     font-size: 0.82em;
-<<<<<<< HEAD
-    color: #3a3028;
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     font-weight: 500;
 }
 
@@ -994,39 +952,6 @@
     display: grid;
     grid-template-columns: repeat(7, var(--cw, 14px));
     gap: 3px;
-<<<<<<< HEAD
-}
-
-.es-hm-header span {
-    width: var(--cw, 14px);
-    text-align: center;
-    font-size: 0.6em;
-    font-weight: 700;
-    color: #c4bfb8;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding-bottom: 1px;
-    display: block;
-}
-
-/* Cell grid: 7 columns (one per DOW), rows = weeks */
-.es-hm-cells {
-    display: grid;
-    grid-template-columns: repeat(7, var(--cw, 14px));
-    gap: 3px;
-}
-
-.es-hm-cell {
-    width:  var(--cw, 14px);
-    height: var(--ch, 14px);
-    border-radius: 3px;
-    background: var(--hm-empty, #ede9e3);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.12s;
-    flex-shrink: 0;
-    box-sizing: border-box;
-=======
 }
 
 .es-hm-header span {
@@ -1097,7 +1022,6 @@
     width: 1.4em;
     height: 1.4em;
     vertical-align: middle;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .es-hm-cell:hover {
@@ -1118,53 +1042,6 @@
     outline-offset: 1px;
 }
 
-<<<<<<< HEAD
-/* Legend — bottom (default) */
-.es-hm-legend {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    padding-top: 6px;
-    border-top: 1px solid #ede9e2;
-    width: 100%;
-}
-
-/* Legend — side (when card is wide) */
-.es-hm-legend--side {
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 10px;
-    padding-top: 0;
-    padding-left: 14px;
-    border-top: none;
-    border-left: 1px solid #ede9e2;
-    width: auto;
-    align-self: stretch;
-}
-
-.es-hm-leg-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.72em;
-    color: #888;
-    white-space: nowrap;
-}
-
-.es-hm-leg-dot {
-    width: 11px;
-    height: 11px;
-    border-radius: 3px;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    box-sizing: border-box;
-    flex-shrink: 0;
-}
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 /* Hover tooltip */
 .es-hm-tooltip {
@@ -1451,11 +1328,8 @@
     top: 100px;
     width: 580px;
     height: 145px;
-<<<<<<< HEAD
-=======
     min-width: 200px;
     min-height: 90px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 #weather-week-widget .widget-header {
@@ -1471,9 +1345,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-<<<<<<< HEAD
-    padding: 0;
-=======
     padding: 2px 4px;
     overflow: hidden;
 }
@@ -1491,19 +1362,13 @@
     max-width: 700px;
     max-height: 280px;
     box-sizing: border-box;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 .ww-grid {
     display: flex;
     flex-direction: row;
-<<<<<<< HEAD
-    align-items: flex-start;
-    padding: 3px 6px 2px;
-=======
     align-items: stretch;
     padding: 1px 2px;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     width: 100%;
     box-sizing: border-box;
     gap: 2px;
@@ -1513,11 +1378,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-<<<<<<< HEAD
-    justify-content: flex-start;
-=======
     justify-content: center;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     gap: 3px;
     padding: 5px 4px;
     border-radius: 10px;
@@ -1653,15 +1514,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-<<<<<<< HEAD
-    justify-content: center;
-    gap: 0.7em;
-    padding: 0.85em;
-=======
     justify-content: flex-start;
     gap: 0.7em;
     padding: 0.3em 0.85em 0.85em;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     box-sizing: border-box;
     text-align: center;
 }

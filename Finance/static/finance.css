@@ -43,22 +43,6 @@
 
 :root{
 
-<<<<<<< HEAD
-    --card-bg:var(--primary-soft);
-
-    --card-bg-2:var(--primary-light);
-
-    --border:var(--primary-border);
-
-    --shadow:0 8px 24px rgba(0,0,0,0.08);
-
-    --text-main:#111;
-
-    --text-soft:#666;
-
-    --accent:var(--primary);
-
-=======
     --background:#f7f3ee;
 
     --card-bg:var(--primary-soft);
@@ -75,7 +59,6 @@
 
     --accent:var(--primary);
 
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     --accent-hover:var(--primary-hover);
 
     --radius:28px;

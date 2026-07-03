@@ -183,19 +183,6 @@ function renderWidget(state) {
                 <div class="quote-text" style="font-family:${fontFamily};${isItalic ? "font-style:italic;" : ""}${textColorStyle}">${quote.text}</div>
                 <div class="quote-author-row">
                     ${authorText}
-<<<<<<< HEAD
-                    <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">
-                        ${saved ? "★" : "☆"}
-                    </button>
-                </div>
-                ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
-            </div>
-            ${!state.autoRotate ? `
-                <div class="quote-actions">
-                    <button class="quote-next-btn" title="Next quote">↻</button>
-                </div>
-            ` : ""}
-=======
                 </div>
                 ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
             </div>
@@ -203,7 +190,6 @@ function renderWidget(state) {
                 <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">${saved ? "★" : "☆"}</button>
                 ${!state.autoRotate ? `<button class="quote-next-btn" title="Next quote">↻</button>` : ""}
             </div>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </div>
     `;
 

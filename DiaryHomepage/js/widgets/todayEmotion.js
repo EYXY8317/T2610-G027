@@ -1,18 +1,13 @@
 import { MOOD_LIST, getMood, saveMood, clearMood } from "../mood_sync.js";
-import { userScopedKey } from "../currentUser.js";
+import { userScopedKey, getCurrentUsername } from "../currentUser.js";
 import { showReminderPopup } from "../shared/reminderPopup.js";
+import { showLoginRequiredPopup } from "../shared/loginRequiredPopup.js";
 
-<<<<<<< HEAD
-const MOOD_ICON = { Happy: "😊", Sad: "😢", Angry: "😠" };
-
-const DEFAULT_EMOJIS = ["😀", "😊", "🙂", "😐", "😔"];
-=======
 const STORAGE_KEY = "today-emotion-state";
 const RESET_KEY = "today-emotion-last-reset";
 
 const DEFAULT_EMOJIS = MOOD_LIST.map(m => m.emoji);
 const MOOD_IMAGES = MOOD_LIST.map(m => m.image);
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 const DEFAULT_STATE = {
     displayMode: "select",          // "select" | "slider"
@@ -89,18 +84,6 @@ function archiveToHistory(state, dateISO) {
     return { ...state, history };
 }
 
-function archiveToHistory(state, dateISO) {
-    const hasData = state.selectedIndexes.length > 0 || state.sliderValues.some(v => v > 0);
-    if (!hasData) return state;
-    const history = { ...(state.history || {}) };
-    history[dateISO] = {
-        selectedIndexes: [...state.selectedIndexes],
-        sliderValues:    [...state.sliderValues],
-        displayedEmojis: [...state.displayedEmojis]
-    };
-    return { ...state, history };
-}
-
 /* ── Daily Reset ─────────────────────────────────────────── */
 
 function checkDailyReset(state) {
@@ -112,11 +95,6 @@ function checkDailyReset(state) {
     if (lastReset !== resetKey && now.getHours() >= state.resetHour) {
 
         localStorage.setItem(userScopedKey(RESET_KEY), resetKey);
-
-        // Archive previous day before clearing
-        const yesterday = new Date(now);
-        yesterday.setDate(yesterday.getDate() - 1);
-        const archivedState = archiveToHistory(state, yesterday.toISOString().slice(0, 10));
 
         // Archive previous day before clearing
         const yesterday = new Date(now);
@@ -167,12 +145,8 @@ function renderSelectMode(state) {
 
     }).join("");
 
-<<<<<<< HEAD
-    return `<div class="te-emoji-row">${buttons}</div>`;
-=======
     const rowClass = _isLocked ? "te-emoji-row te-emoji-row--locked" : "te-emoji-row";
     return `<div class="${rowClass}">${buttons}</div>`;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 function renderCurrentMood(state) {
@@ -207,12 +181,7 @@ function renderCurrentMood(state) {
         `;
     }
 
-<<<<<<< HEAD
-    const values = getEffectiveEmojis(state).slice(0, state.displayedCount);
-    const selectedIndexes = getSelectedIndexes(state).filter(index => index >= 0 && index < values.length);
-=======
     const selectedIndexes = (state.selectedIndexes || []).filter(index => index >= 0 && index < MOOD_LIST.length);
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     if (!selectedIndexes.length) {
         return `
@@ -224,24 +193,15 @@ function renderCurrentMood(state) {
     }
 
     const firstIndex = selectedIndexes[0];
-<<<<<<< HEAD
-    const emoji = values[firstIndex] || values[0];
-    const label = getMoodLabel(emoji);
-=======
     const mood = MOOD_LIST[firstIndex] || MOOD_LIST[0];
     const label = mood ? mood.label : "";
     const imgHtml = mood ? `<img src="${mood.image}" alt="${label}" class="te-mood-img te-current-img">` : "";
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     if (state.selectionMode === "multiple" && selectedIndexes.length > 1) {
         return `
             <div class="today-emotion-current">
                 <span class="today-emotion-current-label">Current Mood</span>
-<<<<<<< HEAD
-                <span class="today-emotion-current-value">${emoji} ${label} +${selectedIndexes.length - 1} more</span>
-=======
                 <span class="today-emotion-current-value">${imgHtml} ${label} +${selectedIndexes.length - 1} more</span>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             </div>
         `;
     }
@@ -249,11 +209,7 @@ function renderCurrentMood(state) {
     return `
         <div class="today-emotion-current">
             <span class="today-emotion-current-label">Current Mood</span>
-<<<<<<< HEAD
-            <span class="today-emotion-current-value">${emoji} ${label}</span>
-=======
             <span class="today-emotion-current-value">${imgHtml} ${label}</span>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </div>
     `;
 
@@ -450,6 +406,28 @@ export function initializeTodayEmotion() {
     let state = getSavedState();
     state = checkDailyReset(state);
 
+    // Guests can no longer set today's mood, so any mood/selection saved
+    // under the "guest" scope predates that restriction (e.g. from before
+    // this gate existed) and is stale — clear it so anonymous visits
+    // always start unlocked and unselected.
+    if (getCurrentUsername() === "guest") {
+        if (getMood() !== null) {
+            clearMood();
+        }
+        const hasStaleData = state.selectedIndexes.length
+            || state.sliderValues.some(v => v > 0)
+            || Object.keys(state.history || {}).length > 0;
+        if (hasStaleData) {
+            state = {
+                ...state,
+                selectedIndexes: [],
+                sliderValues: state.sliderValues.map(() => 0),
+                history: {}
+            };
+            saveState(state);
+        }
+    }
+
     const savedMood = getMood();
     _isLocked = savedMood !== null;
 
@@ -480,6 +458,11 @@ export function initializeTodayEmotion() {
         const btn = event.target.closest(".te-emoji-btn");
 
         if (!btn) {
+            return;
+        }
+
+        if (getCurrentUsername() === "guest") {
+            showLoginRequiredPopup();
             return;
         }
 

@@ -27,7 +27,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "tpl-dcw-1",
             "opacity": 0.88,
             "rotation": -12,
-            "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+            "src": "/diary_home_static/assets/deco/flower-babysbreath.png",
             "w": 101,
             "x": 4,
             "y": 46
@@ -37,7 +37,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "tpl-dcw-2",
             "opacity": 0.88,
             "rotation": 15,
-            "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+            "src": "/diary_home_static/assets/deco/flower-babysbreath.png",
             "w": 101,
             "x": 884,
             "y": 2
@@ -106,7 +106,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782670676233-q789",
             "opacity": 1,
             "rotation": 104.55265578821702,
-            "src": "/journal_home_static/assets/deco/leaf-small.png",
+            "src": "/diary_home_static/assets/deco/leaf-small.png",
             "w": 52,
             "x": 0,
             "y": -9
@@ -116,7 +116,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782670698538-2wlh",
             "opacity": 1,
             "rotation": 67.09612063027669,
-            "src": "/journal_home_static/assets/deco/leaf-small.png",
+            "src": "/diary_home_static/assets/deco/leaf-small.png",
             "w": 43,
             "x": -16,
             "y": 27
@@ -126,7 +126,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782670713504-mywm",
             "opacity": 1,
             "rotation": -38.533121311489424,
-            "src": "/journal_home_static/assets/deco/leaf-small.png",
+            "src": "/diary_home_static/assets/deco/leaf-small.png",
             "w": 40,
             "x": 390,
             "y": 45
@@ -157,7 +157,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782822386707-vnzd",
             "opacity": 1,
             "rotation": 210.50008656463928,
-            "src": "/journal_home_static/assets/deco/flower-cluster.png",
+            "src": "/diary_home_static/assets/deco/flower-cluster.png",
             "w": 100,
             "x": 346,
             "y": -35
@@ -167,7 +167,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782822390061-v573",
             "opacity": 1,
             "rotation": 211.69714939314187,
-            "src": "/journal_home_static/assets/deco/flower-cluster.png",
+            "src": "/diary_home_static/assets/deco/flower-cluster.png",
             "w": 100,
             "x": 383,
             "y": -21
@@ -198,7 +198,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349312674-1z8l",
             "opacity": 1,
             "rotation": 0,
-            "src": "/journal_home_static/assets/deco/leaf-oval.png",
+            "src": "/diary_home_static/assets/deco/leaf-oval.png",
             "w": 100,
             "x": 166,
             "y": 34
@@ -229,7 +229,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349319209-58ft",
             "opacity": 1,
             "rotation": 198.23825873997845,
-            "src": "/journal_home_static/assets/deco/leaf-small.png",
+            "src": "/diary_home_static/assets/deco/leaf-small.png",
             "w": 100,
             "x": 180,
             "y": -23
@@ -292,7 +292,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349300040-kvq4",
             "opacity": 1,
             "rotation": 0,
-            "src": "/journal_home_static/assets/deco/flower-4bloom.png",
+            "src": "/diary_home_static/assets/deco/flower-4bloom.png",
             "w": 66,
             "x": 468,
             "y": 254
@@ -323,7 +323,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349278048-rdn9",
             "opacity": 1,
             "rotation": 18.277190977816467,
-            "src": "/journal_home_static/assets/deco/flower-cluster.png",
+            "src": "/diary_home_static/assets/deco/flower-cluster.png",
             "w": 123,
             "x": 302,
             "y": 81
@@ -354,7 +354,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349408762-3362",
             "opacity": 1,
             "rotation": 0,
-            "src": "/journal_home_static/assets/deco/flower-bell.png",
+            "src": "/diary_home_static/assets/deco/flower-bell.png",
             "w": 69,
             "x": 0,
             "y": 105
@@ -364,7 +364,7 @@ export const ZOEY_DEFAULT_LAYOUT = {
             "id": "deco-1782349427338-xsvj",
             "opacity": 1,
             "rotation": 225.66368063875612,
-            "src": "/journal_home_static/assets/deco/flower-babysbreath.png",
+            "src": "/diary_home_static/assets/deco/flower-babysbreath.png",
             "w": 100,
             "x": 403,
             "y": -22

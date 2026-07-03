@@ -674,10 +674,6 @@ body.ash{
     color:var(--button-bg);
 }
 
-<<<<<<< HEAD
-/* secondary button (used for Remove Wallpaper) */
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 .secondary-btn{
     border:1.5px solid var(--primary-border, #e8ddd1);
     background:transparent;
@@ -694,8 +690,6 @@ body.ash{
     background:var(--primary-hover, #ece0d3);
     border-color:var(--button-bg);
     color:var(--text-primary, #2c241b);
-<<<<<<< HEAD
-=======
 }
 
 /* ================================================= */
@@ -726,5 +720,4 @@ body.ash{
 
 .danger-btn:hover{
     background:#a5301f;
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }

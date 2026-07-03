@@ -26,7 +26,7 @@
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile" class="active-link">Settings</a>
     </div>
@@ -36,27 +36,12 @@
     <div class="card centered-card edit-card">
         <div class="centered-icon">✏️</div>
         <div class="section-title">Edit Profile</div>
-<<<<<<< HEAD
-        <p class="centered-desc">Update your username, email, or profile picture.</p>
-=======
         <p class="centered-desc">Update your username or profile picture.</p>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         <form method="POST" enctype="multipart/form-data" class="centered-form">
 
             <div class="form-group">
                 <label class="form-label">Profile Picture</label>
-<<<<<<< HEAD
-                <div class="file-upload">
-                    <label class="file-upload-label">
-                        <span class="file-upload-btn">📷 Choose Photo</span>
-                        <span class="file-upload-name">No file chosen</span>
-                        <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
-                    </label>
-                </div>
-            </div>
-
-=======
 
                 {% if user.profile_picture %}
                 <img
@@ -83,7 +68,6 @@
                 </div>
             </div>
 
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <div class="form-group">
                 <label class="form-label">Username</label>
                 <input
@@ -95,20 +79,6 @@
                 >
             </div>
 
-<<<<<<< HEAD
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    class="form-input"
-                    value="{{ user.email }}"
-                    required
-                >
-            </div>
-
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <button type="submit" class="btn form-submit-btn">Save Changes</button>
 
         </form>
@@ -121,9 +91,6 @@
 document.querySelectorAll('.file-input-hidden').forEach(function(input){
     input.addEventListener('change', function(){
         var el = this.closest('.file-upload-label').querySelector('.file-upload-name');
-<<<<<<< HEAD
-        el.textContent = this.files[0] ? this.files[0].name : 'No file chosen';
-=======
         var file = this.files[0];
         el.textContent = file ? file.name : 'No file chosen';
 
@@ -134,7 +101,6 @@ document.querySelectorAll('.file-input-hidden').forEach(function(input){
             };
             reader.readAsDataURL(file);
         }
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     });
 });
 </script>

@@ -1,5 +1,5 @@
 // ======================== REMINDER POPUP ========================
-// showReminderPopup is defined globally by Journal_HomePages' js/shared/reminderPopup.js
+// showReminderPopup is defined globally by DiaryHomepage' js/shared/reminderPopup.js
 // (loaded as a <script type="module"> above this file in diary.html) so both pages
 // share one implementation instead of maintaining two copies in sync by hand.
 
@@ -65,6 +65,10 @@ if (mode === "add") {
 
 // ======================== EDIT BUTTON ========================
 editBtn.addEventListener("click", function() {
+    if (!window.__CURRENT_USERNAME__) {
+        window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+        return;
+    }
     editing = true;
     box.setAttribute("contenteditable", "true");
     mood.style.pointerEvents = "auto";
@@ -74,6 +78,10 @@ editBtn.addEventListener("click", function() {
 
 // ======================== DELETE BUTTON ========================
 deleteBtn.addEventListener("click", function() {
+    if (!window.__CURRENT_USERNAME__) {
+        window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+        return;
+    }
     showReminderPopup({
         title: "Delete Entry?",
         message: "Are you sure you want to delete everything? This includes topic, mood, and diary.",
@@ -294,6 +302,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     searchIconBtn.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (!window.__CURRENT_USERNAME__) {
+            window.showLoginRequiredPopup && window.showLoginRequiredPopup();
+            return;
+        }
         searchWidget.classList.toggle("open");
         if (searchWidget.classList.contains("open")) {
             searchBox.focus();
@@ -364,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     const preview = extractPreview(r.content);
                     const moodKey = r.mood ? (MOOD_LABELS[r.mood] || r.mood.toLowerCase()) : "";
                     const moodHtml = moodKey
-                        ? `<img src="/journal_home_static/assets/emotions/${moodKey}.png" class="result-mood-img" alt="${moodKey}">`
+                        ? `<img src="/diary_home_static/assets/emotions/${moodKey}.png" class="result-mood-img" alt="${moodKey}">`
                         : "";
                     item.innerHTML = `
                         <div class="result-date">${r.date}</div>

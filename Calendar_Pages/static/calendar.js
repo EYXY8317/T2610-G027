@@ -16,13 +16,13 @@ let currentView = "month";
 // Map: 日历用的 ISO 日期 (YYYY-MM-DD) -> 完整搜索结果对象 { date, topic, mood, content }
 let diaryMatchDates = new Map();
 
-// Mood value -> picture/label, mirrors Journal_HomePages/js/mood_sync.js MOOD_LIST
+// Mood value -> picture/label, mirrors DiaryHomepage/js/mood_sync.js MOOD_LIST
 const DIARY_MOODS = {
-    happy:   { label: "Happy",   image: "/journal_home_static/assets/emotions/happy.png" },
-    sad:     { label: "Sad",     image: "/journal_home_static/assets/emotions/sad.png" },
-    angry:   { label: "Angry",   image: "/journal_home_static/assets/emotions/angry.png" },
-    anxious: { label: "Anxious", image: "/journal_home_static/assets/emotions/anxious.png" },
-    unwell:  { label: "Unwell",  image: "/journal_home_static/assets/emotions/unwell.png" },
+    happy:   { label: "Happy",   image: "/diary_home_static/assets/emotions/happy.png" },
+    sad:     { label: "Sad",     image: "/diary_home_static/assets/emotions/sad.png" },
+    angry:   { label: "Angry",   image: "/diary_home_static/assets/emotions/angry.png" },
+    anxious: { label: "Anxious", image: "/diary_home_static/assets/emotions/anxious.png" },
+    unwell:  { label: "Unwell",  image: "/diary_home_static/assets/emotions/unwell.png" },
 };
 
 // Strip the diary's ||ITEM|| block format down to a short plain-text preview
@@ -1054,6 +1054,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const searchResults = document.getElementById("diarySearchResults");
 
     if (!searchInput || !searchResults) return;
+
+    // Guests: the backend always returns empty results when logged out, so
+    // typing here silently does nothing. Gate it up front with the shared
+    // login popup instead, matching every other guest-restricted feature.
+    // (login-gate.js already does this for plain <input> fields, but this
+    // one still needs a manual mousedown gate since it's a search box that
+    // should stay focusable/typeable once actually logged in.)
+    const loggedIn = window.isLoggedIn ? window.isLoggedIn() : (function () {
+        const meta = document.querySelector('meta[name="logged-in"]');
+        return !!meta && meta.content === "true";
+    })();
+    if (!loggedIn) {
+        searchInput.addEventListener("mousedown", function (e) {
+            e.preventDefault();
+            searchInput.blur();
+            window.showLoginRequiredModal && window.showLoginRequiredModal();
+        });
+        searchInput.addEventListener("focus", function () {
+            searchInput.blur();
+        });
+        return;
+    }
 
     let debounceTimer = null;
 

@@ -6,6 +6,8 @@
 
     <meta charset="UTF-8">
 
+    <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Profile</title>
@@ -16,10 +18,20 @@
         href="{{ url_for('profile_static', filename='profile.css') }}"
     >
 
+    <script src="/static/login-gate.js?v=2"></script>
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
     </script>
+
+    <style>
+        .profile{ display:flex; align-items:center; gap:10px; justify-self:end; }
+        .profile-link{ text-decoration:none; color:#3b2f2a; font-weight:600; font-size:14px; }
+        .profile-btn{ text-decoration:none; color:var(--primary, #8b5e3c); border:1.5px solid var(--primary, #8b5e3c); border-radius:10px; padding:8px 16px; font-size:14px; font-weight:600; transition:0.2s; }
+        .profile-btn:hover{ background:var(--primary-light, #f2e5d8); }
+        .profile-btn-solid{ background:var(--primary, #8b5e3c); color:white; }
+        .profile-btn-solid:hover{ background:var(--primary-accent, #c9a88a); }
+    </style>
 
 </head>
 
@@ -27,21 +39,6 @@
 class="{{ user.theme if user.theme else 'mocha' }}"
 >
 
-<<<<<<< HEAD
-<body
-
-{% if user.wallpaper %}
-style="
-background-image:
-linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.18)),
-url('/profile_static/wallpapers/{{ user.wallpaper }}');
-"
-{% endif %}
-
->
-
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">
@@ -53,9 +50,15 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile" class="active">Settings</a>
+    </div>
+    <div class="profile">
+        {% if not logged_in %}
+        <a href="/login" class="profile-btn">Login</a>
+        <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+        {% endif %}
     </div>
 </nav>
 
@@ -87,11 +90,9 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
                     <h1>{{ user.username }}</h1>
 
-                    <p>Personal Finance Dashboard User</p>
-
                     <div class="quick-actions">
 
-                        <a href="/verify_profile">
+                        <a href="/verify_profile" data-auth-required="true">
 
                             <button class="btn">
                                 Edit Profile
@@ -113,102 +114,12 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
             </div>
 
-<<<<<<< HEAD
-            <!-- PROFILE PICTURE -->
-
-            <div class="upload-box">
-
-                <div class="section-title">
-                    Upload Profile Picture
-                </div>
-
-                <form
-                    method="POST"
-                    action="/upload_profile_picture"
-                    enctype="multipart/form-data"
-                >
-
-                    <div class="file-upload" style="margin-bottom:16px;">
-                        <label class="file-upload-label">
-                            <span class="file-upload-btn">📷 Choose Photo</span>
-                            <span class="file-upload-name">No file chosen</span>
-                            <input type="file" name="profile_picture" class="file-input-hidden" accept="image/*">
-                        </label>
-                    </div>
-
-                    <button type="submit" class="btn">
-                        Upload Picture
-                    </button>
-
-                </form>
-
-            </div>
-
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </div>
 
         <!-- RIGHT -->
 
         <div class="card">
 
-<<<<<<< HEAD
-            <div class="section-title">
-                Customize Wallpaper
-            </div>
-
-            {% if user.wallpaper %}
-
-            <img
-                src="/profile_static/wallpapers/{{ user.wallpaper }}"
-                class="wallpaper-preview"
-            >
-
-            {% else %}
-
-            <p style="margin-bottom:20px;">
-                No wallpaper uploaded
-            </p>
-
-            {% endif %}
-
-            <form
-                method="POST"
-                action="/upload_wallpaper"
-                enctype="multipart/form-data"
-            >
-
-                <div class="file-upload" style="margin-bottom:16px;">
-                    <label class="file-upload-label">
-                        <span class="file-upload-btn">🖼️ Choose Image</span>
-                        <span class="file-upload-name">No file chosen</span>
-                        <input type="file" name="wallpaper" class="file-input-hidden" accept="image/*">
-                    </label>
-                </div>
-
-                <button type="submit" class="btn">
-                    Upload Wallpaper
-                </button>
-
-            </form>
-
-            <form
-                method="POST"
-                action="/remove_wallpaper"
-                style="margin-top:10px;"
-            >
-
-                <button
-                    type="submit"
-                    class="secondary-btn"
-                >
-                    Remove Wallpaper
-                </button>
-
-            </form>
-            
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             <!-- STATS -->
 
             <div class="section-title">
@@ -229,61 +140,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
                 <span id="theme-sublabel">Current interface appearance</span>
 
-<<<<<<< HEAD
-        <p id="theme-label">
-            {% if not user.theme or user.theme == 'mocha' %}Mocha Latte
-            {% elif user.theme == 'lavender' %}Lavender Dream
-            {% elif user.theme == 'matcha' %}Matcha Green
-            {% elif user.theme == 'ash' %}Ash Gray
-            {% else %}{{ user.theme }}{% endif %}
-        </p>
-
-        <span id="theme-sublabel">Current interface appearance</span>
-
-        <form id="theme-form" action="/change_theme" method="POST">
-
-            <input type="hidden" name="theme" id="selected-theme-input"
-                value="{{ user.theme or 'mocha' }}">
-
-            <div class="theme-picker-grid">
-
-                <button type="button" data-theme="mocha"
-                    class="theme-swatch{% if not user.theme or user.theme == 'mocha' %} selected{% endif %}"
-                    style="--swatch-color:#b18a68"
-                    onclick="previewTheme(this)">
-                    Mocha Latte
-                </button>
-
-                <button type="button" data-theme="lavender"
-                    class="theme-swatch{% if user.theme == 'lavender' %} selected{% endif %}"
-                    style="--swatch-color:#9a83ff"
-                    onclick="previewTheme(this)">
-                    Lavender Dream
-                </button>
-
-                <button type="button" data-theme="matcha"
-                    class="theme-swatch{% if user.theme == 'matcha' %} selected{% endif %}"
-                    style="--swatch-color:#8db79a"
-                    onclick="previewTheme(this)">
-                    Matcha Green
-                </button>
-
-                <button type="button" data-theme="ash"
-                    class="theme-swatch{% if user.theme == 'ash' %} selected{% endif %}"
-                    style="--swatch-color:#8c8c8c"
-                    onclick="previewTheme(this)">
-                    Ash Gray
-                </button>
-
-            </div>
-
-            <button type="button" id="apply-theme-btn"
-                class="apply-theme-btn"
-                onclick="applyTheme()"
-                disabled>
-                Apply Theme
-            </button>
-=======
                 <form id="theme-form" action="/change_theme" method="POST">
 
                     <input type="hidden" name="theme" id="selected-theme-input"
@@ -320,7 +176,6 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
                         </button>
 
                     </div>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
                     <button type="button" id="apply-theme-btn"
                         class="apply-theme-btn"
@@ -347,7 +202,7 @@ url('/profile_static/wallpapers/{{ user.wallpaper }}');
 
                 <div class="section-title">Account Deletion</div>
 
-                <a href="/delete_account">
+                <a href="/delete_account" data-auth-required="true">
                     <button class="btn danger-btn">
                         Delete Account
                     </button>
@@ -374,6 +229,7 @@ const _savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson
 let _pendingTheme = _savedTheme;
 
 function previewTheme(btn) {
+    if (window.requireLogin && window.requireLogin()) return;
     const theme = btn.dataset.theme;
     _pendingTheme = theme;
 
@@ -381,32 +237,6 @@ function previewTheme(btn) {
     const lsBackup = localStorage.getItem('lifepages-theme');
     setTheme(theme);
     try { localStorage.setItem('lifepages-theme', lsBackup || _savedTheme); } catch(e) {}
-<<<<<<< HEAD
-
-    // Swap body class so profile.css body-class variables also update
-    document.body.className = document.body.className.replace(
-        /\b(mocha|lavender|matcha|ash)\b/g, theme
-    );
-
-    // Update swatch selection
-    document.querySelectorAll('.theme-swatch').forEach(function(b) {
-        b.classList.remove('selected');
-    });
-    btn.classList.add('selected');
-
-    // Update label
-    document.getElementById('theme-label').textContent = THEME_NAMES[theme] || theme;
-
-    // Toggle apply button
-    const applyBtn = document.getElementById('apply-theme-btn');
-    if (theme !== _savedTheme) {
-        applyBtn.removeAttribute('disabled');
-        document.getElementById('theme-sublabel').textContent = 'Previewing — click Apply to save';
-    } else {
-        applyBtn.setAttribute('disabled', '');
-        document.getElementById('theme-sublabel').textContent = 'Current interface appearance';
-    }
-=======
 
     // Swap body class so profile.css body-class variables also update
     document.body.className = document.body.className.replace(
@@ -434,13 +264,14 @@ function previewTheme(btn) {
 }
 
 function applyTheme() {
+    if (window.requireLogin && window.requireLogin()) return;
     try { localStorage.setItem('lifepages-theme', _pendingTheme); } catch(e) {}
     document.getElementById('selected-theme-input').value = _pendingTheme;
     document.getElementById('theme-form').submit();
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 }
 
 function applyTheme() {
+    if (window.requireLogin && window.requireLogin()) return;
     try { localStorage.setItem('lifepages-theme', _pendingTheme); } catch(e) {}
     document.getElementById('selected-theme-input').value = _pendingTheme;
     document.getElementById('theme-form').submit();

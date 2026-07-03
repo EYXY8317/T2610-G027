@@ -2,15 +2,12 @@ import {
     getWidgetAppearance,
     applyWidgetAppearance
 } from "../settings/appearance/widgetAppearance.js";
-<<<<<<< HEAD
-=======
 import { userScopedKey } from "../currentUser.js";
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
 export const BOOK_OPTIONS = [
-    { label: "Black Classic",   src: "/journal_home_static/assets/books/book1.png", scale: 0.88 },
-    { label: "Pink Strawberry", src: "/journal_home_static/assets/books/book2.png", scale: 0.78 },
-    { label: "Brown Leather",   src: "/journal_home_static/assets/books/book3.png", scale: 0.88 },
+    { label: "Black Classic",   src: "/diary_home_static/assets/books/book1.png", scale: 0.88 },
+    { label: "Pink Strawberry", src: "/diary_home_static/assets/books/book2.png", scale: 0.78 },
+    { label: "Brown Leather",   src: "/diary_home_static/assets/books/book3.png", scale: 0.88 },
 ];
 
 const STORAGE_KEY = "diary-card-state";

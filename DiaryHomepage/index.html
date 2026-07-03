@@ -12,7 +12,7 @@
     >
 
     <title>
-        Journal Homepage
+        Diary Homepage
     </title>
 
     <link
@@ -31,22 +31,31 @@
 
     <link
         rel="stylesheet"
-        href="/journal_home_static/css/dashboard.css"
+        href="/diary_home_static/css/dashboard.css?v=2"
     >
 
     <link
         rel="stylesheet"
-        href="/journal_home_static/css/widget.css?v=2"
+        href="/diary_home_static/css/widget.css?v=2"
     >
 
     <link
         rel="stylesheet"
-        href="/journal_home_static/css/settings.css"
+        href="/diary_home_static/css/settings.css"
     >
+
+    <style>
+        .profile{ display:flex; align-items:center; gap:10px; }
+        .profile-link{ text-decoration:none; color:#3b2f2a; font-weight:600; font-size:14px; }
+        .profile-btn{ text-decoration:none; color:var(--primary, #8b5e3c); border:1.5px solid var(--primary, #8b5e3c); border-radius:10px; padding:8px 16px; font-size:14px; font-weight:600; transition:0.2s; }
+        .profile-btn:hover{ background:var(--primary-light, #f2e5d8); }
+        .profile-btn-solid{ background:var(--primary, #8b5e3c); color:white; }
+        .profile-btn-solid:hover{ background:var(--primary-accent, #c9a88a); }
+    </style>
 
     <link
         rel="stylesheet"
-        href="/journal_home_static/css/deco.css"
+        href="/diary_home_static/css/deco.css"
     >
 
     <script src="/calendar_static/themecolor.js"></script>
@@ -70,6 +79,8 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
 
     <nav class="navbar">
 
+        <div class="navbar-inner">
+
         <div class="logo-section">
             <div class="logo-box">
                 <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
@@ -81,7 +92,7 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
             <a href="/dashboard">Home</a>
             <a href="/today">Today</a>
             <a href="/finance">Finance Page</a>
-            <a href="/journal" class="active">Diary Page</a>
+            <a href="/diary_homepage" class="active">Diary Page</a>
             <a href="/calendar">Calendar Page</a>
             <a href="/profile">Settings</a>
         </div>
@@ -92,7 +103,27 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
             <button id="homepage-settings">⚙ Customize</button>
         </div>
 
+        <div class="profile" id="navProfile"></div>
+
+        </div>
+
     </nav>
+
+    <script>
+    fetch('/api/whoami').then(function(r){ return r.json(); }).then(function(d){
+        var el = document.getElementById('navProfile');
+        var inner = document.querySelector('.navbar-inner');
+        if (d.username) {
+            el.innerHTML = '';
+            el.style.display = 'none';
+            if (inner) inner.classList.add('profile-empty');
+        } else {
+            el.innerHTML =
+                '<a href="/login" class="profile-btn">Login</a>' +
+                '<a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>';
+        }
+    }).catch(function(){});
+    </script>
 
     <div id="homepage-menu">
 
@@ -102,17 +133,6 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
 
         <button id="deco-btn">
             <span class="menu-icon">🌸</span> Deco
-<<<<<<< HEAD
-        </button>
-
-        <button>
-            <span class="menu-icon">🖼️</span> Wallpaper
-        </button>
-
-        <button>
-            <span class="menu-icon">🎨</span> Theme
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         </button>
 
         <div id="homepage-menu-divider"></div>
@@ -147,7 +167,7 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
 
     <script
         type="module"
-        src="/journal_home_static/js/main.js"
+        src="/diary_home_static/js/main.js?v=2"
     ></script>
 
 </body>

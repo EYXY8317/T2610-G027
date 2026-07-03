@@ -23,18 +23,17 @@ def register_profile_routes(app):
     @app.route("/profile")
     def profile():
 
-        if "user" not in session:
-            return redirect("/")
-
-        with open("users.json", "r") as f:
-            users = json.load(f)
-
+        logged_in_user = session.get("user")
         current_user = None
 
-        for user in users:
-            if user["username"] == session["user"]:
-                current_user = user
-                break
+        if logged_in_user:
+            with open("users.json", "r") as f:
+                users = json.load(f)
+
+            for user in users:
+                if user["username"] == logged_in_user:
+                    current_user = user
+                    break
 
         last_login_display = "First login"
 
@@ -46,7 +45,8 @@ def register_profile_routes(app):
         return render_template(
             "profile.html",
             user=current_user,
-            last_login=last_login_display
+            last_login=last_login_display,
+            logged_in=bool(logged_in_user)
         )
 
     @app.route("/verify_profile", methods=["GET", "POST"])

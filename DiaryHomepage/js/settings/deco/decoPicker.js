@@ -1,14 +1,14 @@
 // Add PNG/WebP/SVG images here to populate the decoration picker.
-// To add your own: { label: "Name", src: "/journal_home_static/assets/deco/filename.png" }
+// To add your own: { label: "Name", src: "/diary_home_static/assets/deco/filename.png" }
 export const DECO_ASSETS = [
-    { label: "Leaf Small",    src: "/journal_home_static/assets/deco/leaf-small.png"        },
-    { label: "Leaf Tall",     src: "/journal_home_static/assets/deco/leaf-tall.png"         },
-    { label: "Leaf Oval",     src: "/journal_home_static/assets/deco/leaf-oval.png"         },
-    { label: "Flower Cluster",src: "/journal_home_static/assets/deco/flower-cluster.png"    },
-    { label: "Flower 3",      src: "/journal_home_static/assets/deco/flower-3bloom.png"     },
-    { label: "Bell Flower",   src: "/journal_home_static/assets/deco/flower-bell.png"       },
-    { label: "Flower 4",      src: "/journal_home_static/assets/deco/flower-4bloom.png"     },
-    { label: "Baby's Breath", src: "/journal_home_static/assets/deco/flower-babysbreath.png"},
+    { label: "Leaf Small",    src: "/diary_home_static/assets/deco/leaf-small.png"        },
+    { label: "Leaf Tall",     src: "/diary_home_static/assets/deco/leaf-tall.png"         },
+    { label: "Leaf Oval",     src: "/diary_home_static/assets/deco/leaf-oval.png"         },
+    { label: "Flower Cluster",src: "/diary_home_static/assets/deco/flower-cluster.png"    },
+    { label: "Flower 3",      src: "/diary_home_static/assets/deco/flower-3bloom.png"     },
+    { label: "Bell Flower",   src: "/diary_home_static/assets/deco/flower-bell.png"       },
+    { label: "Flower 4",      src: "/diary_home_static/assets/deco/flower-4bloom.png"     },
+    { label: "Baby's Breath", src: "/diary_home_static/assets/deco/flower-babysbreath.png"},
 ];
 
 let _onSelect = null;

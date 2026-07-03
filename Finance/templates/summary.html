@@ -17,10 +17,7 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
-<<<<<<< HEAD
-=======
     <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
@@ -44,7 +41,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
     </div>
@@ -61,7 +58,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
     </div>

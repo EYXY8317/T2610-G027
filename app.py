@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory, jsonify
-from Journal_Pages.diary_system.routes import diary_bp
+from flask import Flask, render_template, request, session, send_from_directory, jsonify
+from Diary_Pages.diary_system.routes import diary_bp
 from auth_routes import auth_bp
 from Finance.finance_routes import finance_bp
 from Calendar_Pages.calendar_routes import calendar_bp
@@ -29,7 +29,7 @@ register_profile_routes(app)
 app.jinja_loader = ChoiceLoader([
     FileSystemLoader(os.path.join(BASE_DIR, "Finance", "templates")),
     FileSystemLoader(os.path.join(BASE_DIR, "Calendar_Pages", "templates")),
-    FileSystemLoader(os.path.join(BASE_DIR, "Journal_Pages", "templates")),
+    FileSystemLoader(os.path.join(BASE_DIR, "Diary_Pages", "templates")),
     FileSystemLoader(os.path.join(BASE_DIR, "Profile_Pages", "templates")),
 ])
 
@@ -96,15 +96,13 @@ def _parse_ddate(ds):
     except Exception:
         return datetime.min
 
-# ================= DASHBOARD =================
+# ================= HOME / DASHBOARD =================
+@app.route("/")
 @app.route("/dashboard")
 def dashboard():
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user = session["user"]
+    user = session.get("user")
     users = load_data(f_users, [])
-    current_user = next((u for u in users if u["username"] == user), None)
+    current_user = next((u for u in users if u["username"] == user), None) if user else None
 
     # Finance data for home card
     records   = load_data(os.path.join(BASE_DIR, "Finance", "expenses.json"), [])
@@ -195,6 +193,7 @@ def dashboard():
     return render_template(
         "dashboard.html",
         user                  = current_user,
+        logged_in             = bool(user),
         wallpaper             = get_user_wallpaper(),
         fin_expense           = cur_expense,
         fin_change            = expense_change,
@@ -224,7 +223,7 @@ def calendar_static(filename):
 @app.route("/calendar")
 def calendar():
     current_user = get_current_user()
-    return render_template("mypage.html", user=current_user)
+    return render_template("mypage.html", user=current_user, logged_in="user" in session)
 
 # ================= USER THEME API =================
 @app.route('/api/user-theme')
@@ -236,7 +235,7 @@ def api_user_theme():
 @app.route('/diary_static/<path:filename>')
 def diary_static(filename):
     return send_from_directory(
-        os.path.join('Journal_Pages', 'static'),
+        os.path.join('Diary_Pages', 'static'),
         filename
     )
 
@@ -247,10 +246,19 @@ def profile_static(filename):
         filename
     )
 
-@app.route('/journal_home_static/<path:filename>')
-def journal_home_static(filename):
+@app.route('/diary_home_static/<path:filename>')
+def diary_home_static(filename):
     return send_from_directory(
-        os.path.join('Journal_HomePages'),
+        os.path.join('DiaryHomepage'),
+        filename
+    )
+
+# Backward-compat: old widget decorations/layouts saved in localStorage
+# before the Journal->Diary rename still point at this old path.
+@app.route('/journal_home_static/<path:filename>')
+def journal_home_static_legacy(filename):
+    return send_from_directory(
+        os.path.join('DiaryHomepage'),
         filename
     )
 
@@ -287,10 +295,7 @@ def save_home_layout():
 # ================= TODAY PAGE =================
 @app.route("/today")
 def today_page():
-    if "user" not in session:
-        return redirect(url_for("login"))
-
-    user = session["user"]
+    user = session.get("user")
     current_user = get_current_user()
 
     f_expense  = os.path.join(BASE_DIR, "Finance", "expenses.json")
@@ -402,11 +407,11 @@ def today_page():
 
     _diary_display = today_diary or recent_diary
     _mood_images   = {
-        "happy":   "/journal_home_static/assets/emotions/happy.png",
-        "sad":     "/journal_home_static/assets/emotions/sad.png",
-        "angry":   "/journal_home_static/assets/emotions/angry.png",
-        "anxious": "/journal_home_static/assets/emotions/anxious.png",
-        "unwell":  "/journal_home_static/assets/emotions/unwell.png",
+        "happy":   "/diary_home_static/assets/emotions/happy.png",
+        "sad":     "/diary_home_static/assets/emotions/sad.png",
+        "angry":   "/diary_home_static/assets/emotions/angry.png",
+        "anxious": "/diary_home_static/assets/emotions/anxious.png",
+        "unwell":  "/diary_home_static/assets/emotions/unwell.png",
     }
     diary_text        = _diary_text(_diary_display.get("content","")) if _diary_display else ""
     diary_mood        = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
@@ -467,6 +472,7 @@ def today_page():
         diary_date       = diary_date,
         diary_is_today   = diary_is_today,
         diary_streak     = diary_streak,
+        logged_in        = bool(user),
     )
 
 # ================= RUN =================

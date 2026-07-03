@@ -43,7 +43,7 @@
 
             <a href="/finance">Finance Page</a>
 
-            <a href="/journal">Diary Page</a>
+            <a href="/diary_homepage">Diary Page</a>
 
             <a href="/calendar">Calendar Page</a>
 
@@ -51,10 +51,7 @@
         </div>
 
         <div class="profile">
-            {% if logged_in %}
-            <a href="/profile" class="profile-link">{{ user.username if user else "" }}</a>
-            <a href="/logout" class="profile-btn">Logout</a>
-            {% else %}
+            {% if not logged_in %}
             <a href="/login" class="profile-btn">Login</a>
             <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
             {% endif %}
@@ -310,7 +307,7 @@
     };
     const LEGACY_NORM = { meh: "unwell", smile: "happy", neutral: "unwell", Happy: "happy", Sad: "sad", Angry: "angry" };
     function normalizeMood(mood) { return LEGACY_NORM[mood] || mood; }
-    function moodIconUrl(mood) { return `/journal_home_static/assets/emotions/${mood}.png`; }
+    function moodIconUrl(mood) { return `/diary_home_static/assets/emotions/${mood}.png`; }
 
     let diaryData     = {};
     let chartInstance = null;

@@ -17,15 +17,21 @@
     >
 
     <script src="/calendar_static/themecolor.js"></script>
-<<<<<<< HEAD
-=======
     <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     <script>
     (function(){
         setTheme({{ theme | tojson }} || 'mocha');
     })();
     </script>
+
+    <style>
+        .profile{ display:flex; align-items:center; gap:10px; justify-self:end; }
+        .profile-link{ text-decoration:none; color:#3b2f2a; font-weight:600; font-size:14px; }
+        .profile-btn{ text-decoration:none; color:var(--primary, #8b5e3c); border:1.5px solid var(--primary, #8b5e3c); border-radius:10px; padding:8px 16px; font-size:14px; font-weight:600; transition:0.2s; }
+        .profile-btn:hover{ background:var(--primary-light, #f2e5d8); }
+        .profile-btn-solid{ background:var(--primary, #8b5e3c); color:white; }
+        .profile-btn-solid:hover{ background:var(--primary-accent, #c9a88a); }
+    </style>
 
 </head>
 
@@ -33,11 +39,6 @@
 class="{{ theme }} {{ ui_style }}"
 >
 
-<<<<<<< HEAD
-<div class="wallpaper-overlay"></div>
-
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">
@@ -49,9 +50,15 @@ class="{{ theme }} {{ ui_style }}"
         <a href="/dashboard">Home</a>
         <a href="/today">Today</a>
         <a href="/finance" class="active">Finance Page</a>
-        <a href="/journal">Diary Page</a>
+        <a href="/diary_homepage">Diary Page</a>
         <a href="/calendar">Calendar Page</a>
         <a href="/profile">Settings</a>
+    </div>
+    <div class="profile">
+        {% if not logged_in %}
+        <a href="/login" class="profile-btn">Login</a>
+        <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+        {% endif %}
     </div>
 </nav>
 
