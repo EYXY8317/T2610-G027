@@ -60,7 +60,10 @@
                 <div class="tp-mood-row">
                     <span class="tp-mood-label">Today's Mood</span>
                     {% if diary_mood %}
-                    <span class="tp-mood-val">{{ diary_mood_emoji }} {{ diary_mood }}</span>
+                    <span class="tp-mood-val">
+                        {% if diary_mood_emoji %}<img src="{{ diary_mood_emoji }}" alt="{{ diary_mood }}" class="tp-mood-emoji-img">{% endif %}
+                        {{ diary_mood|capitalize }}
+                    </span>
                     {% else %}
                     <span class="tp-mood-val tp-mood-placeholder">— Not recorded</span>
                     {% endif %}
@@ -242,10 +245,10 @@
             </div>
 
             <div class="tp-sc">
-                <span class="tp-sc-icon">📖</span>
-                <div class="tp-sc-label">Mood Today</div>
-                <div class="tp-sc-val tp-val-diary">—</div>
-                <div class="tp-sc-sub tp-sub-diary">No diary entry</div>
+                <span class="tp-sc-icon">🔥</span>
+                <div class="tp-sc-label">Diary Streak</div>
+                <div class="tp-sc-val tp-val-diary">{{ diary_streak }} day{{ 's' if diary_streak != 1 else '' }}</div>
+                <div class="tp-sc-sub tp-sub-diary">{{ "Keep it going!" if diary_streak > 0 else "No diary entry yet" }}</div>
             </div>
 
             <div class="tp-sc">

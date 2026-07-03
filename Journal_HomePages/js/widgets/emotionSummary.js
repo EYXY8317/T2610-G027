@@ -50,8 +50,6 @@ const DEFAULT_STATE = {
     timeRange:      "month",
     customStart:    "",
     customEnd:      "",
-    showCombo:      true,
-    showHighlight:  true,
     calendarYear:   null,
     calendarMonth:  null,
     graphColor:     "",
@@ -614,8 +612,8 @@ function renderPie(history, emojis, state) {
     if (!pd) {
         return `
             <div class="es-pie-outer">
-                <div class="es-pie-wrap es-empty-wrap">
-                    <div class="es-empty">No data yet.<br><small>Log a diary mood or select an emoji.</small></div>
+                <div class="es-pie-wrap">
+                    <canvas id="es-pie-chart"></canvas>
                 </div>
             </div>
         `;
@@ -623,36 +621,6 @@ function renderPie(history, emojis, state) {
 
     const widget    = document.getElementById("emotion-summary-widget");
     const isWide    = widget && widget.offsetWidth > widget.offsetHeight * 1.1;
-    const { topIdx, grandTotal, useDiary, days, diaryTotal, moodCounts } = pd;
-    const topMoodKey   = pd.moodKeys?.[topIdx] ?? "";
-    const topLabel     = pd.labels[topIdx] ?? "";
-    const topIconHtml  = topMoodKey
-        ? `<img src="/journal_home_static/assets/emotions/${topMoodKey}.png" alt="${topLabel}" class="es-highlight-img">`
-        : pd.labels[topIdx] ?? "";
-    const centerPct    = Math.round(pd.data[topIdx] / grandTotal * 100);
-
-    let highlightHtml = "", comboHtml = "";
-    if (useDiary) {
-        highlightHtml = state.showHighlight
-            ? `<div class="es-highlight">Most felt: ${topIconHtml} <strong>${topLabel}</strong> ${centerPct}%</div>`
-            : "";
-    } else {
-        const comboPairs = [];
-        if (state.showCombo) {
-            for (let i = 0; i < emojis.length; i++) {
-                for (let j = i + 1; j < emojis.length; j++) {
-                    if (pd.data[i] > 0 && pd.data[j] > 0) comboPairs.push(`${emojis[i]}+${emojis[j]}`);
-                }
-            }
-        }
-        highlightHtml = state.showHighlight
-            ? `<div class="es-highlight">Most felt: <strong>${topLabel}</strong> ${centerPct}%
-               <span class="es-days-badge">${days} day${days !== 1 ? "s" : ""}</span></div>`
-            : "";
-        comboHtml = state.showCombo && comboPairs.length
-            ? `<div class="es-combo">Combo: ${comboPairs.slice(0, 3).join(" · ")}</div>`
-            : "";
-    }
 
     return `
         <div class="es-pie-outer${isWide ? " es-pie-outer--row" : ""}">
@@ -661,19 +629,10 @@ function renderPie(history, emojis, state) {
             </div>
             ${renderPieLegend(pd, isWide)}
         </div>
-        ${highlightHtml}
-        ${comboHtml}
     `;
 }
 
 function renderLine(history, emojis, state) {
-    const { scores } = buildRangedDiaryLineData(state);
-    const hasData = scores.length > 0;
-
-    if (!hasData) {
-        return `<div class="es-empty">No data yet.<br><small>Log a diary mood to see the chart.</small></div>`;
-    }
-
     return `
         <div class="es-line-wrap">
             <canvas id="es-line-chart"></canvas>
@@ -815,7 +774,31 @@ function initCharts(state) {
         if (!canvas) return;
 
         const pd = buildPieData(history, emojis, state);
-        if (!pd) return;
+
+        if (!pd) {
+            chartInstance = new Chart(canvas, {
+                type: "doughnut",
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [1],
+                        backgroundColor: [hexAlpha(pal.content, 0.1)],
+                        borderWidth: 4,
+                        borderColor: pal.bg,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "62%",
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+            return;
+        }
 
         const { labels, data, colors, grandTotal, topIdx } = pd;
         const centerLabel = {
@@ -869,7 +852,6 @@ function initCharts(state) {
         if (!canvas) return;
 
         const { scores, labels } = buildRangedDiaryLineData(state);
-        if (!scores.length) return;
 
         const lineColor = state.graphColor || pal.title;
         const lineWidth = Number(state.graphLineWidth) || 2.5;

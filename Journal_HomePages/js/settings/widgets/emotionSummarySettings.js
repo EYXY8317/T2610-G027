@@ -67,11 +67,6 @@ export function getEmotionSummarySettings() {
                 <span>To</span>
                 <input type="date" class="es-custom-end" value="${state.customEnd || ""}">
             </div>
-            <h3>Display Elements</h3>
-            <div class="toggle-chips">
-                <button class="toggle-chip${state.showCombo ? " active" : ""}" data-statekey="showCombo">Combo Analysis</button>
-                <button class="toggle-chip${state.showHighlight ? " active" : ""}" data-statekey="showHighlight">Most Common</button>
-            </div>
         `
 
     };

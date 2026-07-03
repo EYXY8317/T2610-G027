@@ -387,7 +387,12 @@ function renderTodayTasks() {
 
                 task.status === "active" &&
 
-                task.date === today
+                task.date === today &&
+
+                (
+                    !currentSearchKeyword ||
+                    task.text.toLowerCase().includes(currentSearchKeyword)
+                )
 
             ) {
 

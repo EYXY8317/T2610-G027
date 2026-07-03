@@ -191,31 +191,25 @@
 
             <div class="preview-box diary-preview">
 
-                {% if dash_diary_is_today %}
-                <span class="diary-label">Today's Entry</span>
-                {% elif dash_diary_date_fmt %}
-                <span class="diary-label">Last Entry</span>
-                {% else %}
-                <span class="diary-label">No entries yet</span>
-                {% endif %}
+                <div class="dash-es-header">
+                    <span class="diary-label">Emotion Summary</span>
+                    <span class="dash-es-nav">
+                        <button type="button" class="dash-es-nav-btn" id="dash-es-prev" aria-label="Previous month">&lsaquo;</button>
+                        <span class="dash-es-month" id="dash-es-month"></span>
+                        <button type="button" class="dash-es-nav-btn" id="dash-es-next" aria-label="Next month">&rsaquo;</button>
+                    </span>
+                </div>
 
-                {% if dash_diary_mood %}
-                <div class="diary-mood-row">{{ dash_diary_mood_emoji }} <span>{{ dash_diary_mood }}</span></div>
-                {% endif %}
+                <div class="dash-es-content" id="dash-es-content">
+                    <div class="dash-es-body" id="dash-es-body">
+                        <div class="dash-emotion-chart-wrap">
+                            <canvas id="dash-emotion-chart"></canvas>
+                        </div>
+                        <div class="dash-es-legend" id="dash-es-legend"></div>
+                    </div>
 
-                {% if dash_diary_topic %}
-                <h3>{{ dash_diary_topic }}</h3>
-                {% elif dash_diary_text %}
-                <h3>✏️ Diary Entry</h3>
-                {% else %}
-                <h3>Nothing written yet</h3>
-                {% endif %}
-
-                {% if dash_diary_date_fmt %}
-                <p class="diary-date">{{ dash_diary_date_fmt }}</p>
-                {% endif %}
-
-                <p class="diary-text">{% if dash_diary_text %}{{ dash_diary_text }}{% else %}Tap "Go to Diary" to write your first entry.{% endif %}</p>
+                    <div class="dash-es-highlight" id="dash-es-highlight"></div>
+                </div>
 
             </div>
 
@@ -302,5 +296,168 @@
 
     </section>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function(){
+    const MOOD_COLORS = {
+        happy:   "#E4CC6D",
+        sad:     "#8AABD4",
+        angry:   "#C96B58",
+        anxious: "#F5A455",
+        unwell:  "#8FAD83",
+    };
+    const LEGACY_NORM = { meh: "unwell", smile: "happy", neutral: "unwell", Happy: "happy", Sad: "sad", Angry: "angry" };
+    function normalizeMood(mood) { return LEGACY_NORM[mood] || mood; }
+    function moodIconUrl(mood) { return `/journal_home_static/assets/emotions/${mood}.png`; }
+
+    let diaryData     = {};
+    let chartInstance = null;
+    const today       = new Date();
+    let viewYear       = today.getFullYear();
+    let viewMonth      = today.getMonth();
+
+    function monthCounts(year, month) {
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const todayStr = today.toISOString().slice(0, 10);
+        const mm = String(month + 1).padStart(2, "0");
+        const counts = {};
+        for (let d = 1; d <= daysInMonth; d++) {
+            const date = `${year}-${mm}-${String(d).padStart(2, "0")}`;
+            if (date > todayStr) break;
+            const mood = diaryData[date] && diaryData[date].mood;
+            if (mood) {
+                const key = normalizeMood(mood);
+                counts[key] = (counts[key] || 0) + 1;
+            }
+        }
+        return counts;
+    }
+
+    function destroyChart() {
+        if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+    }
+
+    function renderMonth() {
+        const monthEl = document.getElementById("dash-es-month");
+        if (monthEl) {
+            monthEl.textContent = new Date(viewYear, viewMonth, 1)
+                .toLocaleDateString("en-US", { month: "long", year: "numeric" });
+        }
+
+        const canvas      = document.getElementById("dash-emotion-chart");
+        const legendEl     = document.getElementById("dash-es-legend");
+        const highlightEl  = document.getElementById("dash-es-highlight");
+        const bodyEl       = document.getElementById("dash-es-body");
+        if (!canvas) return;
+
+        destroyChart();
+
+        const counts  = monthCounts(viewYear, viewMonth);
+        const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+        if (!entries.length) {
+            bodyEl.style.display      = "flex";
+            highlightEl.style.display = "none";
+            legendEl.innerHTML         = "";
+
+            chartInstance = new Chart(canvas, {
+                type: "doughnut",
+                data: {
+                    labels: [],
+                    datasets: [{
+                        data: [1],
+                        backgroundColor: ["#eceef1"],
+                        borderWidth: 3,
+                        borderColor: "#ffffff",
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "62%",
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+            return;
+        }
+        bodyEl.style.display      = "flex";
+        highlightEl.style.display = "block";
+
+        const labels = entries.map(([mood]) => mood);
+        const data   = entries.map(([, n]) => n);
+        const colors = entries.map(([mood]) => MOOD_COLORS[mood] || "#999");
+        const total  = data.reduce((s, v) => s + v, 0);
+        const topIdx = data.indexOf(Math.max(...data));
+
+        legendEl.innerHTML = entries.map(([mood]) => `
+            <div class="dash-es-leg-row">
+                <img class="dash-es-leg-icon" src="${moodIconUrl(mood)}" alt="${mood}">
+                <span>${mood}</span>
+            </div>
+        `).join("");
+
+        const topPct = Math.round(data[topIdx] / total * 100);
+        highlightEl.innerHTML = `Most felt:
+            <img src="${moodIconUrl(labels[topIdx])}" alt="${labels[topIdx]}">
+            <strong>${labels[topIdx]}</strong> ${topPct}%`;
+
+        chartInstance = new Chart(canvas, {
+            type: "doughnut",
+            data: {
+                labels,
+                datasets: [{
+                    data,
+                    backgroundColor: colors,
+                    borderWidth: 3,
+                    borderColor: "#ffffff",
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "62%",
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `  ${ctx.label}  ${Math.round(ctx.parsed / total * 100)}%`
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    async function initDashboardEmotionChart() {
+        const canvas = document.getElementById("dash-emotion-chart");
+        if (!canvas) return;
+
+        try {
+            const resp = await fetch("/diary_data");
+            diaryData = await resp.json();
+        } catch (e) { diaryData = {}; }
+
+        renderMonth();
+
+        const prevBtn = document.getElementById("dash-es-prev");
+        const nextBtn = document.getElementById("dash-es-next");
+        if (prevBtn) prevBtn.addEventListener("click", () => {
+            viewMonth--;
+            if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+            renderMonth();
+        });
+        if (nextBtn) nextBtn.addEventListener("click", () => {
+            viewMonth++;
+            if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+            renderMonth();
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", initDashboardEmotionChart);
+})();
+</script>
 </body>
 </html>

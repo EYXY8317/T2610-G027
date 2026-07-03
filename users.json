@@ -535,7 +535,7 @@
         "email": "zoeychu0709@gmail.com",
         "security_question": "nickname",
         "security_answer": "b26a669abf061b7fa7aae5ac9a630a36d174f692708a2a8e4ae38a79d3a22d54",
-        "theme": "cozy",
+        "theme": "matcha",
         "home_layout": {
             "picture-streak-extra-instances": [],
             "digital-clock-widget-layout": {
@@ -2265,5 +2265,93 @@
             "hidden-widgets": [],
             "active-template": "cozy-dashboard"
         }
+    },
+    {
+        "username": "fmt_test_user_1783087343",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_test_user_1783087343@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg_1783087381",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg_1783087381@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg2_1783087411",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg2_1783087411@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_test_user_1783087487",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_test_user_1783087487@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg3_1783087541",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg3_1783087541@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg4_1783087575",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg4_1783087575@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg5_1783087637",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg5_1783087637@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_test_user_1783087718",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_test_user_1783087718@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_dbg6_1783087754",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_dbg6_1783087754@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_persist_1783087786",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_persist_1783087786@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
+    },
+    {
+        "username": "fmt_shot_1783087835",
+        "password": "c1b8b58c3e7ac442b525e87709d5c1aef49a5d5acb70551be645887a978e238a",
+        "email": "fmt_shot_1783087835@example.com",
+        "security_question": "birth_city",
+        "security_answer": "3abbe524659300abbdee01a4296632075111714fdc02500ece109a0152a02455",
+        "theme": "cozy"
     }
 ]

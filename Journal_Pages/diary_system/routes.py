@@ -5,12 +5,65 @@ from datetime import date, datetime
 from Journal_Pages.diary_system.encouragement_data import (
     happy_list,
     sad_list,
-    angry_list
+    angry_list,
+    anxious_list,
+    unwell_list,
+    TOPIC_KEYWORDS,
+    TOPIC_QUOTES
 )
 import os
+import re
+import json
 import time
 import random
 from werkzeug.utils import secure_filename
+
+
+#================================ quote helpers ================================
+
+def extract_diary_text(content):
+    """Pulls the plain text the user actually typed out of the canvas'
+    ||ITEM||-joined JSON chunks (ignores images/meta), for keyword matching."""
+    if not content:
+        return ""
+    texts = []
+    for chunk in content.split("||ITEM||"):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            item = json.loads(chunk)
+        except ValueError:
+            continue
+        if item.get("type") == "text":
+            texts.append(re.sub(r"<[^>]+>", " ", item.get("html", "")))
+    return " ".join(texts)
+
+
+def pick_quote(mood, diary_text):
+    """Picks an encouragement quote for the given mood. If the diary text
+    mentions keywords tied to a known topic (school/work, relationship,
+    health), prefers a quote written for that topic; otherwise falls back
+    to a random quote from the mood's general list."""
+    base_lists = {
+        "happy":   happy_list,
+        "sad":     sad_list,
+        "angry":   angry_list,
+        "anxious": anxious_list,
+        "unwell":  unwell_list,
+    }
+    mood_key = (mood or "").lower()
+    base = base_lists.get(mood_key)
+    if not base:
+        return ""
+
+    text_lower = (diary_text or "").lower()
+    topic_quotes = TOPIC_QUOTES.get(mood_key, {})
+    for topic, keywords in TOPIC_KEYWORDS.items():
+        if topic in topic_quotes and any(kw in text_lower for kw in keywords):
+            return random.choice(topic_quotes[topic])
+
+    return random.choice(base)
 
 
 #================================ blueprint ================================
@@ -102,18 +155,14 @@ def autosave():
 
     existing = get_entry_by_date(date, session["user"])
 
-    # ================= MOOD CHANGE =================
+    # ================= MOOD CHANGE (or missing quote) =================
+    # Picks a quote for the (new) mood, preferring one tailored to whatever
+    # topic the diary text itself mentions (school/work, relationship, health).
+    # Also backfills entries saved before quote generation existed/worked.
 
-    if existing and mood and mood != existing.get("mood"):
-
-        if mood == "Happy":
-            message = random.choice(happy_list)
-        elif mood == "Sad":
-            message = random.choice(sad_list)
-        elif mood == "Angry":
-            message = random.choice(angry_list)
-        else:
-            message = ""
+    if mood and (not existing or mood != existing.get("mood") or not existing.get("quote")):
+        diary_text = extract_diary_text(content)
+        message = pick_quote(mood, diary_text)
 
     # ================= KEEP OLD QUOTE =================
 

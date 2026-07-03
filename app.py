@@ -69,8 +69,6 @@ def get_current_user():
         if u["username"] == session["user"]:
             return u
 
-_MOOD_EMOJIS = {"Happy":"😊","Sad":"😢","Angry":"😠","Excited":"🤩","Anxious":"😰","Peaceful":"😌","Tired":"😴"}
-
 def _diary_text(content):
     content = (content or "").strip()
     if not content:
@@ -171,37 +169,6 @@ def dashboard():
         total_target += g.get("target", 0)
     savings_pct = round((total_saved / total_target) * 100) if total_target else 0
 
-    # Diary data for dashboard card
-    f_journal = os.path.join(BASE_DIR, "journal.json")
-    journal_entries = load_data(f_journal, [])
-    today_str_diary = now.strftime("%d/%m/%Y")
-
-    today_diary  = None
-    recent_diary = None
-    recent_dt    = datetime.min
-
-    for _e in journal_entries:
-        if _e.get("date") == today_str_diary:
-            today_diary = _e
-        has = bool(_diary_text(_e.get("content", ""))) or bool((_e.get("mood") or "").strip())
-        if has:
-            dt = _parse_ddate(_e.get("date", ""))
-            if dt > recent_dt:
-                recent_dt    = dt
-                recent_diary = _e
-
-    _diary_display        = today_diary or recent_diary
-    dash_diary_text       = _diary_text(_diary_display.get("content","")) if _diary_display else ""
-    dash_diary_mood       = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
-    dash_diary_mood_emoji = _MOOD_EMOJIS.get(dash_diary_mood, "")
-    dash_diary_topic      = (_diary_display.get("topic") or "").strip()   if _diary_display else ""
-    dash_diary_date       = _diary_display.get("date","")                  if _diary_display else ""
-    dash_diary_is_today   = today_diary is not None
-    try:
-        dash_diary_date_fmt = datetime.strptime(dash_diary_date, "%d/%m/%Y").strftime("%d %b %Y")
-    except Exception:
-        dash_diary_date_fmt = dash_diary_date
-
     # Calendar data for dashboard card
     f_tasks_dash = os.path.join(BASE_DIR, "Calendar_Pages", "tasks.json")
     all_tasks_dash = load_data(f_tasks_dash, [])
@@ -237,12 +204,6 @@ def dashboard():
         fin_saved             = total_saved,
         fin_target            = total_target,
         fin_savings_pct       = savings_pct,
-        dash_diary_text       = dash_diary_text,
-        dash_diary_mood       = dash_diary_mood,
-        dash_diary_mood_emoji = dash_diary_mood_emoji,
-        dash_diary_topic      = dash_diary_topic,
-        dash_diary_date_fmt   = dash_diary_date_fmt,
-        dash_diary_is_today   = dash_diary_is_today,
         cal_month_label       = cal_month_label,
         cal_first_weekday     = cal_first_weekday,
         cal_days_in_month     = cal_days_in_month,
@@ -440,13 +401,38 @@ def today_page():
                 recent_diary = _e
 
     _diary_display = today_diary or recent_diary
-    _mood_emojis   = {"Happy":"😊","Sad":"😢","Angry":"😠","Excited":"🤩","Anxious":"😰","Peaceful":"😌","Tired":"😴"}
+    _mood_images   = {
+        "happy":   "/journal_home_static/assets/emotions/happy.png",
+        "sad":     "/journal_home_static/assets/emotions/sad.png",
+        "angry":   "/journal_home_static/assets/emotions/angry.png",
+        "anxious": "/journal_home_static/assets/emotions/anxious.png",
+        "unwell":  "/journal_home_static/assets/emotions/unwell.png",
+    }
     diary_text        = _diary_text(_diary_display.get("content","")) if _diary_display else ""
     diary_mood        = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
-    diary_mood_emoji  = _mood_emojis.get(diary_mood, "")
+    diary_mood_emoji  = _mood_images.get(diary_mood.lower(), "")
     diary_topic       = (_diary_display.get("topic") or "").strip()   if _diary_display else ""
     diary_date        = _diary_display.get("date","")                  if _diary_display else ""
     diary_is_today    = today_diary is not None
+
+    # Diary streak: consecutive days (ending today, or yesterday if today has no entry yet)
+    diary_dates = set()
+    for _e in journal_entries:
+        if _e.get("username") != user:
+            continue
+        if not _diary_text(_e.get("content", "")):
+            continue
+        _dt = _parse_ddate(_e.get("date", ""))
+        if _dt != datetime.min:
+            diary_dates.add(_dt.strftime("%Y-%m-%d"))
+
+    _streak_day = now
+    if _streak_day.strftime("%Y-%m-%d") not in diary_dates:
+        _streak_day -= timedelta(days=1)
+    diary_streak = 0
+    while _streak_day.strftime("%Y-%m-%d") in diary_dates:
+        diary_streak += 1
+        _streak_day -= timedelta(days=1)
 
     # Today's calendar tasks: exact date match OR daily repeat, not trashed
     _priority_order = {"red": 0, "orange": 1, "blue": 2, "gray": 3}
@@ -480,6 +466,7 @@ def today_page():
         diary_topic      = diary_topic,
         diary_date       = diary_date,
         diary_is_today   = diary_is_today,
+        diary_streak     = diary_streak,
     )
 
 # ================= RUN =================

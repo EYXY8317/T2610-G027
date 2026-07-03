@@ -177,7 +177,7 @@
 
         <div class="topbar">
 
-    <div class="search-box">
+    <div class="search-box" id="diarySearchBox">
 
         <span class="material-symbols-rounded">
             search
@@ -185,13 +185,17 @@
 
         <input
           type="text"
-          placeholder="Search"
+          placeholder="Search today's tasks..."
           class="search-input"
+          id="diarySearchInput"
+          autocomplete="off"
         >
-       
+
+        <div id="diarySearchResults"></div>
+
     </div>
 
-</div>   
+</div>
 
 
 <!-- =====================================

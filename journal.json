@@ -10,18 +10,18 @@
     {
         "date": "02/07/2026",
         "username": "ZOEY",
-        "content": "{\"type\":\"meta\",\"paper\":\"lined\"}||ITEM||{\"type\":\"text\",\"x\":412.6,\"y\":159.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"qqwee\"}||ITEM||{\"type\":\"text\",\"x\":581.6,\"y\":82.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"qqqqq\"}||ITEM||{\"type\":\"text\",\"x\":337.6,\"y\":98.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"aghhhh\"}||ITEM||{\"type\":\"text\",\"x\":670.6,\"y\":180.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"ASDASDD\"}||ITEM||{\"type\":\"text\",\"x\":824.6,\"y\":142.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"adad\"}",
+        "content": "{\"type\":\"meta\",\"paper\":\"lined\"}||ITEM||{\"type\":\"text\",\"x\":412.6,\"y\":159.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"qqwee\"}||ITEM||{\"type\":\"text\",\"x\":581.6,\"y\":82.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"qqqqq\"}||ITEM||{\"type\":\"text\",\"x\":337.6,\"y\":98.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"aghhhh\"}||ITEM||{\"type\":\"text\",\"x\":670.6,\"y\":180.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"ASDASDD\"}||ITEM||{\"type\":\"text\",\"x\":824.6,\"y\":142.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"adad\"}",
         "mood": "unwell",
         "topic": "",
-        "quote": ""
+        "quote": "The people who matter will understand you need rest."
     },
     {
         "date": "01/07/2026",
         "username": "ZOEY",
-        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":325.6,\"y\":54.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"r\":0,\"html\":\"try'y'y'y\"}",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":325.6,\"y\":54.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"try'y'y'y\"}",
         "mood": "angry",
         "topic": "",
-        "quote": ""
+        "quote": "You don\u2019t need to escalate."
     },
     {
         "date": "03/07/2026",
@@ -30,5 +30,53 @@
         "mood": "",
         "topic": "",
         "quote": ""
+    },
+    {
+        "date": "04/07/2026",
+        "username": "ZOEY",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":600.6,\"y\":107.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"ZOEYYYY\"}",
+        "mood": "",
+        "topic": "WRA",
+        "quote": ""
+    },
+    {
+        "date": "05/07/2026",
+        "username": "ZOEY",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":607.6,\"y\":79.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"zoeyyyy\"}",
+        "mood": "",
+        "topic": "",
+        "quote": ""
+    },
+    {
+        "date": "06/07/2026",
+        "username": "ZOEY",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":601.6,\"y\":74.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"ZOeyyy\"}",
+        "mood": "",
+        "topic": "",
+        "quote": ""
+    },
+    {
+        "date": "07/07/2026",
+        "username": "ZOEY",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":577.6,\"y\":77.8,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"Asoaszoey\"}",
+        "mood": "",
+        "topic": "",
+        "quote": ""
+    },
+    {
+        "date": "03/07/2026",
+        "username": "fmt_persist_1783087786",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":100,\"y\":99.8125,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"<u>Underlined</u> plain\"}",
+        "mood": "",
+        "topic": "",
+        "quote": ""
+    },
+    {
+        "date": "03/07/2026",
+        "username": "ZOEY",
+        "content": "{\"type\":\"meta\",\"paper\":\"grid\"}||ITEM||{\"type\":\"text\",\"x\":575.6,\"y\":194,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"<u><b>a</b>d</u>\"}||ITEM||{\"type\":\"text\",\"x\":640.6,\"y\":261,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"<u>asdad</u>\"}||ITEM||{\"type\":\"text\",\"x\":681.6,\"y\":400.6,\"ff\":\"Inter\",\"fs\":\"16px\",\"fc\":\"rgb(42, 42, 42)\",\"fw\":\"\",\"fst\":\"\",\"td\":\"\",\"r\":0,\"html\":\"adadasdada\"}",
+        "mood": "angry",
+        "topic": "sffsf",
+        "quote": "Conflict with someone close hurts more, breathe through it."
     }
 ]

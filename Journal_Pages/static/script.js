@@ -1,30 +1,7 @@
 // ======================== REMINDER POPUP ========================
-// Canonical reminder/confirmation popup — mirrors Journal_HomePages'
-// js/shared/reminderPopup.js so both pages look and behave identically.
-function showReminderPopup({ title, message, confirmText = "OK", cancelText = null, danger = false, onConfirm } = {}) {
-    const overlay = document.createElement("div");
-    overlay.className = "reminder-overlay";
-    overlay.innerHTML =
-        '<div class="reminder-card">' +
-            '<div class="reminder-title">' + title + '</div>' +
-            '<div class="reminder-msg">' + message + '</div>' +
-            '<div class="reminder-actions">' +
-                (cancelText ? '<button class="reminder-btn reminder-btn-secondary" data-role="cancel">' + cancelText + '</button>' : '') +
-                '<button class="reminder-btn ' + (danger ? 'reminder-btn-danger' : 'reminder-btn-primary') + '" data-role="confirm">' + confirmText + '</button>' +
-            '</div>' +
-        '</div>';
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener("click", function(e) { if (e.target === overlay) overlay.remove(); });
-    var cancelBtn = overlay.querySelector('[data-role="cancel"]');
-    if (cancelBtn) cancelBtn.addEventListener("click", function() { overlay.remove(); });
-    overlay.querySelector('[data-role="confirm"]').addEventListener("click", function() {
-        overlay.remove();
-        if (onConfirm) onConfirm();
-    });
-
-    return overlay;
-}
+// showReminderPopup is defined globally by Journal_HomePages' js/shared/reminderPopup.js
+// (loaded as a <script type="module"> above this file in diary.html) so both pages
+// share one implementation instead of maintaining two copies in sync by hand.
 
 // ======================== USER-SCOPED STORAGE ========================
 // Namespaces localStorage keys by the logged-in username (injected by
@@ -405,76 +382,4 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     });
 
-});
-
-// ======================== FORMAT BAR ========================
-document.addEventListener("DOMContentLoaded", function () {
-
-    const fontFamily = document.getElementById("fontFamily");
-    const fontSize   = document.getElementById("fontSize");
-    const fontColor  = document.getElementById("fontColor");
-    const boldBtn    = document.getElementById("boldBtn");
-    const italicBtn  = document.getElementById("italicBtn");
-    const box        = document.getElementById("box");
-
-    let savedRange = null;
-
-    box.addEventListener("mouseup", saveRange);
-    box.addEventListener("keyup",   saveRange);
-
-    function saveRange() {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) {
-            savedRange = sel.getRangeAt(0).cloneRange();
-        }
-    }
-
-    function restoreRange() {
-        if (!savedRange) return;
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(savedRange);
-    }
-
-    fontFamily.addEventListener("change", function () {
-        restoreRange();
-        document.execCommand("fontName", false, this.value);
-        box.focus();
-    });
-
-    fontSize.addEventListener("change", function () {
-        restoreRange();
-        const size = this.value + "px";
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-            const range = sel.getRangeAt(0);
-            const span  = document.createElement("span");
-            span.style.fontSize = size;
-            range.surroundContents(span);
-        } else {
-            document.execCommand("fontSize", false, "7");
-            const fontEls = box.querySelectorAll("font[size='7']");
-            fontEls.forEach(el => {
-                el.removeAttribute("size");
-                el.style.fontSize = size;
-            });
-        }
-        box.focus();
-    });
-
-    fontColor.addEventListener("input", function () {
-        restoreRange();
-        document.execCommand("foreColor", false, this.value);
-        box.focus();
-    });
-
-    boldBtn.addEventListener("mousedown", function (e) {
-        e.preventDefault();
-        document.execCommand("bold");
-    });
-
-    italicBtn.addEventListener("mousedown", function (e) {
-        e.preventDefault();
-        document.execCommand("italic");
-    });
 });

@@ -1,5 +1,7 @@
-// Canonical reminder/confirmation popup used across journal_page.
-// See css/dashboard.css for the .reminder-* styles.
+// Canonical reminder/confirmation popup used across journal_page and the
+// (classic-script) diary page. Also exposed on window since diary.html loads
+// this module for side effects only — its own script.js is a classic script
+// and can't `import` it directly.
 export function showReminderPopup({ title, message, confirmText = "OK", cancelText = null, danger = false, onConfirm } = {}) {
     const overlay = document.createElement("div");
     overlay.className = "reminder-overlay";
@@ -23,4 +25,8 @@ export function showReminderPopup({ title, message, confirmText = "OK", cancelTe
     });
 
     return overlay;
+}
+
+if (typeof window !== "undefined") {
+    window.showReminderPopup = showReminderPopup;
 }

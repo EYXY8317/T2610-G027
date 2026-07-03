@@ -27,6 +27,27 @@
     --diary-btn-hover-text: #F2EFE9;
 }
 
+/* "Setting Theme" — fully follows whatever theme is chosen on the
+   Settings page (mocha/lavender/matcha/ash), unlike Classic above
+   which only tints the outer background and keeps everything else
+   fixed. themecolor.js writes --background/--primary/... onto
+   :root, so this block just routes the diary vars through those. */
+body.theme-settings {
+    --diary-bg: var(--background, #F2EFE9);
+    --diary-canvas-bg: var(--sidebar-top, #faf6ee);
+    --diary-canvas-border: var(--primary-border, #ddd8cf);
+    --diary-grid-line: var(--primary-border, rgba(180,170,155,0.25));
+    --diary-text: #2a2a2a;
+    --diary-caret: var(--primary, #888);
+    --diary-accent: var(--primary, #8b5e3c);
+    --diary-accent-hover: var(--primary-accent, #c9a88a);
+    --diary-quote-bg: var(--primary-light, #ebe7e0);
+    --diary-quote-text: #555;
+    --diary-date-color: #1a1a1a;
+    --diary-btn-hover-bg: var(--primary, #1a1a1a);
+    --diary-btn-hover-text: #F2EFE9;
+}
+
 body.theme-dark {
     --diary-bg: #1e1c1a;
     --diary-canvas-bg: #2a2724;
@@ -106,7 +127,7 @@ body {
     column-gap: 10px;
     align-items: center;
     z-index: 200;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
 .logo-section {
@@ -841,4 +862,58 @@ button {
     word-break: break-word;
     z-index: 1;
     cursor: text;
+}
+
+/* ===== ENTRANCE ANIMATIONS ===== */
+@keyframes diaryFadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+#dateSection  { animation: diaryFadeUp 0.5s ease both; }
+#stickyBars   { animation: diaryFadeUp 0.5s ease 0.08s both; }
+#canvas       { animation: diaryFadeUp 0.5s ease 0.16s both; }
+#dateNav      { animation: diaryFadeUp 0.5s ease 0.22s both; }
+#quoteSection { animation: diaryFadeUp 0.5s ease 0.28s both; }
+
+/* ===== TEXTBOX / IMAGE POP-IN (played once, on creation) ===== */
+@keyframes diaryPopIn {
+    from { opacity: 0; transform: scale(0.85); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.tb-wrap.pop-in, .img-wrap.pop-in {
+    animation: diaryPopIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ===== AUTOSAVE "SAVED" CHECK PULSE ===== */
+@keyframes savedPop {
+    0%   { transform: scale(0.6); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+#autoSaveIndicator.save-saved .save-icon {
+    animation: savedPop 0.35s ease;
+}
+
+/* ===== MOOD SELECTION BOUNCE ===== */
+@keyframes moodBounce {
+    0%, 100% { transform: scale(1); }
+    40%      { transform: scale(1.22); }
+    60%      { transform: scale(0.95); }
+}
+
+.mood-img-btn--selected {
+    animation: moodBounce 0.4s ease;
+}
+
+/* ===== QUOTE REVEAL FADE ===== */
+@keyframes quoteFadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+#msg.quote-reveal {
+    animation: quoteFadeIn 0.5s ease;
 }

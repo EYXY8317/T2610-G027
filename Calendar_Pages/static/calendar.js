@@ -5,6 +5,48 @@ let currentMonth = today.getMonth();
 let currentYear = today.getFullYear();
 let currentView = "month";
 
+// Diary entries matching the active search, shown directly on the
+// calendar grid (mood + topic + content preview) instead of a
+// separate results list.
+// Maps ISO date (YYYY-MM-DD, used by the calendar grid) -> the full
+// search result { date, topic, mood, content }, where result.date is
+// the raw DD/MM/YYYY string stored in the diary entry (required by
+// the /diary?date= route, which differs from the calendar's ISO keys).
+// 当前日记搜索匹配到的日期，直接在日历格子上显示心情、标题和内容预览，而不是另外列出结果列表
+// Map: 日历用的 ISO 日期 (YYYY-MM-DD) -> 完整搜索结果对象 { date, topic, mood, content }
+let diaryMatchDates = new Map();
+
+// Mood value -> picture/label, mirrors Journal_HomePages/js/mood_sync.js MOOD_LIST
+const DIARY_MOODS = {
+    happy:   { label: "Happy",   image: "/journal_home_static/assets/emotions/happy.png" },
+    sad:     { label: "Sad",     image: "/journal_home_static/assets/emotions/sad.png" },
+    angry:   { label: "Angry",   image: "/journal_home_static/assets/emotions/angry.png" },
+    anxious: { label: "Anxious", image: "/journal_home_static/assets/emotions/anxious.png" },
+    unwell:  { label: "Unwell",  image: "/journal_home_static/assets/emotions/unwell.png" },
+};
+
+// Strip the diary's ||ITEM|| block format down to a short plain-text preview
+// 将日记的 ||ITEM|| 分段格式转换为简短的纯文本预览
+function extractDiaryPreview(raw) {
+    if (!raw) return "";
+    const parts = raw.split("||ITEM||");
+    const texts = [];
+    for (const part of parts) {
+        try {
+            const d = JSON.parse(part.trim());
+            if (d.type === "text" && d.html) {
+                const tmp = document.createElement("div");
+                tmp.innerHTML = d.html;
+                const t = tmp.innerText.trim();
+                if (t) texts.push(t);
+            }
+        } catch (e) {
+            if (part.trim() && !part.trim().startsWith("{")) texts.push(part.trim());
+        }
+    }
+    return texts.join(" ").slice(0, 70);
+}
+
 // ==================================================
 // GENERATE MONTH VIEW WITH TASK BADGES
 // 生成月历视图并显示任务数量
@@ -71,6 +113,7 @@ function generateCalendar() {
         // Create date string (YYYY-MM-DD)
         // 创建日期字符串
         const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        dayEl.dataset.date = dateStr;
 
         // Highlight today
         const now = new Date();
@@ -135,6 +178,73 @@ if (taskCount > 0) {
 }
 
 // =====================================
+// DIARY SEARCH MATCH PREVIEW
+// Show this day's matching diary entry
+// (mood + topic + content) directly on
+// the calendar, no separate list shown
+// 日记搜索匹配预览
+// 当该日期的日记匹配当前搜索时，
+// 直接在日历格子上显示心情、标题和内容，
+// 不再另外列出结果
+// =====================================
+
+if (diaryMatchDates.has(dateStr)) {
+
+    const match = diaryMatchDates.get(dateStr);
+
+    dayEl.classList.add("diary-match");
+
+    const card = document.createElement("div");
+    card.className = "diary-match-card";
+    card.title = "Click to open this diary entry";
+
+    const moodInfo = DIARY_MOODS[match.mood];
+    if (moodInfo) {
+        const moodEl = document.createElement("div");
+        moodEl.className = "diary-match-mood";
+
+        const moodImg = document.createElement("img");
+        moodImg.className = "diary-match-mood-icon";
+        moodImg.src = moodInfo.image;
+        moodImg.alt = moodInfo.label;
+        moodEl.appendChild(moodImg);
+
+        const moodLabelEl = document.createElement("span");
+        moodLabelEl.className = "diary-match-mood-label";
+        moodLabelEl.textContent = moodInfo.label;
+        moodEl.appendChild(moodLabelEl);
+
+        card.appendChild(moodEl);
+    }
+
+    if (match.topic) {
+        const topicEl = document.createElement("div");
+        topicEl.className = "diary-match-topic";
+        topicEl.textContent = match.topic;
+        card.appendChild(topicEl);
+    }
+
+    const preview = extractDiaryPreview(match.content);
+    if (preview) {
+        const previewEl = document.createElement("div");
+        previewEl.className = "diary-match-preview";
+        previewEl.textContent = preview;
+        card.appendChild(previewEl);
+    }
+
+    // Clicking the card opens that day's diary entry
+    // without triggering the day cell's task modal
+    // 点击卡片直接打开当天日记，不触发任务弹窗
+    card.addEventListener("click", (e) => {
+        e.stopPropagation();
+        window.location.href = "/diary?date=" + encodeURIComponent(match.date);
+    });
+
+    dayEl.appendChild(card);
+
+}
+
+// =====================================
 // DAY CELL CLICK EVENT
 // Open task modal for selected day
 //
@@ -183,6 +293,11 @@ function showDayTasks(dateStr) {
         date.getFullYear()
     }`;
 
+    // Diary route expects DD/MM/YYYY, not the ISO dateStr
+    // 日记路由需要 DD/MM/YYYY 格式，而不是 ISO 日期字符串
+    const [modalYear, modalMonth, modalDay] = dateStr.split("-");
+    const diaryDate = `${modalDay}/${modalMonth}/${modalYear}`;
+
     // Modal HTML start
     // 开始建立弹窗 HTML 内容
     let html = `
@@ -192,6 +307,22 @@ function showDayTasks(dateStr) {
         <h2>
 
             ${displayDate}
+
+            <a
+                class="modal-shortcut-icon"
+                href="/view?start=${dateStr}&end=${dateStr}"
+                title="Open Finance"
+            >
+                <img src="/calendar_static/images/finance.png" alt="Finance">
+            </a>
+
+            <a
+                class="modal-shortcut-icon"
+                href="/diary?date=${encodeURIComponent(diaryDate)}"
+                title="Open Diary"
+            >
+                <img src="/calendar_static/images/Diary.png" alt="Diary">
+            </a>
 
         </h2>
 
@@ -903,3 +1034,166 @@ function nextYear() {
     generateYearView();
 
 }
+
+// ==================================================
+// TOPBAR SEARCH (shared search-box)
+// Behavior depends on which sidebar page is active:
+//   - Calendar page  -> searches diary entries (/search)
+//   - Today page     -> filters today's task list
+//   - Work/Shopping/Study/Personal/Workout -> filters that list's tasks
+// 顶部共享搜索框，根据当前所在页面执行不同的搜索：
+//   - Calendar 页面 -> 搜索日记内容
+//   - Today 页面    -> 筛选今日任务
+//   - 其余任务分类页面 -> 筛选该分类下的任务
+// ==================================================
+const TASK_LIST_PAGES = ["work", "shopping", "study", "personal", "workout"];
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput   = document.getElementById("diarySearchInput");
+    const searchResults = document.getElementById("diarySearchResults");
+
+    if (!searchInput || !searchResults) return;
+
+    let debounceTimer = null;
+
+    function getActivePageId() {
+        const activePage = document.querySelector(".page.active");
+        return activePage ? activePage.id : "";
+    }
+
+    // Diary entries store dates as DD/MM/YYYY; the calendar grid keys
+    // its day cells by ISO YYYY-MM-DD. Convert for matching.
+    // 日记条目的日期是 DD/MM/YYYY 格式，而日历格子用 ISO YYYY-MM-DD 作为键，需要转换才能匹配
+    function toIsoDate(raw) {
+        const parts = (raw || "").split("/");
+        if (parts.length !== 3) return null;
+        const [d, m, y] = parts;
+        if (!d || !m || !y) return null;
+        return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    }
+
+    // Pick which month to jump to when none of the matching
+    // dates are visible in the currently displayed month:
+    // the match closest to today (past or future).
+    // 当前月份没有任何匹配结果时，跳转到与今天最接近的匹配日期所在月份
+    function pickClosestDate(dates) {
+        const todayTime = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+        let best = dates[0];
+        let bestDiff = Infinity;
+        dates.forEach(d => {
+            const [y, m, day] = d.split("-").map(Number);
+            const diff = Math.abs(new Date(y, m - 1, day).getTime() - todayTime);
+            if (diff < bestDiff) {
+                bestDiff = diff;
+                best = d;
+            }
+        });
+        return best;
+    }
+
+    // Show diary search matches directly on the calendar grid
+    // instead of a dropdown list of results.
+    // 直接在日历格子上显示日记搜索结果，而不是显示下拉列表
+    function showDiaryMatchesOnCalendar(results) {
+        searchResults.classList.remove("open");
+        searchResults.innerHTML = "";
+
+        diaryMatchDates = new Map();
+        results.forEach(r => {
+            const iso = toIsoDate(r.date);
+            if (iso) diaryMatchDates.set(iso, r);
+        });
+        const dates = [...diaryMatchDates.keys()];
+
+        if (currentView !== "month") {
+            setView("month");
+        }
+
+        if (dates.length > 0) {
+            const hasMatchInView = dates.some(d => {
+                const [y, m] = d.split("-").map(Number);
+                return y === currentYear && (m - 1) === currentMonth;
+            });
+
+            if (!hasMatchInView) {
+                const [y, m] = pickClosestDate(dates).split("-").map(Number);
+                currentYear = y;
+                currentMonth = m - 1;
+            }
+        }
+
+        generateCalendar();
+
+        if (dates.length === 0) {
+            searchResults.innerHTML = '<div class="diary-result-empty">No results found.</div>';
+            searchResults.classList.add("open");
+        }
+    }
+
+    function runSearch() {
+        const keyword = searchInput.value.trim();
+        const activePageId = getActivePageId();
+
+        // Calendar page: search diary entries, highlight matches on the calendar
+        // Calendar 页面：搜索日记，直接在日历上高亮匹配结果
+        if (activePageId === "calendar") {
+            if (!keyword) {
+                diaryMatchDates.clear();
+                searchResults.classList.remove("open");
+                searchResults.innerHTML = "";
+                if (currentView === "month") generateCalendar();
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("keyword", keyword);
+
+            fetch("/search", { method: "POST", body: formData })
+                .then(res => res.json())
+                .then(data => showDiaryMatchesOnCalendar(data.results || []));
+            return;
+        }
+
+        // Any other page: filter that page's own task list instead
+        // 其他页面：筛选该页面自己的任务列表
+        searchResults.classList.remove("open");
+        searchResults.innerHTML = "";
+        currentSearchKeyword = keyword.toLowerCase();
+
+        if (activePageId === "today") {
+            renderTodayTasks();
+        } else if (activePageId === "completed") {
+            renderCompleted();
+        } else if (activePageId === "trash") {
+            renderTrash();
+        } else if (TASK_LIST_PAGES.includes(activePageId)) {
+            renderTasks(activePageId);
+        }
+    }
+
+    searchInput.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(runSearch, 250);
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            clearTimeout(debounceTimer);
+            runSearch();
+        }
+    });
+
+    searchInput.addEventListener("focus", () => {
+        if (searchInput.value.trim() && searchResults.innerHTML) {
+            searchResults.classList.add("open");
+        }
+    });
+
+    document.addEventListener("click", (e) => {
+        const box = document.getElementById("diarySearchBox");
+        if (box && !box.contains(e.target)) {
+            searchResults.classList.remove("open");
+        }
+    });
+});

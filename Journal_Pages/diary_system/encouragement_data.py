@@ -156,3 +156,134 @@ angry_list = [
 "You’ll think clearer soon.",
 "Let it go, strategically."
 ]
+
+anxious_list = [
+"Your mind is racing, but you're safe right now.",
+"Not every worry needs an answer tonight.",
+"This feeling is temporary, even if it doesn't feel like it.",
+"You've gotten through anxious days before.",
+"Breathe—your body is trying to protect you.",
+"Uncertainty is uncomfortable, not dangerous.",
+"You don't have to solve everything at once.",
+"One step is enough for now.",
+"You are not your thoughts.",
+"This spike will pass.",
+"You're allowed to slow down and just breathe.",
+"Worry is not the same as danger.",
+"You've handled hard moments before.",
+"Ground yourself in what's true right now.",
+"You are safe in this moment."
+]
+
+unwell_list = [
+"Your body is asking for rest—listen to it.",
+"It's okay to do less today.",
+"Healing takes time, not effort.",
+"You don't have to push through everything.",
+"Rest is productive too.",
+"Being unwell isn't a failure.",
+"Take care of yourself first.",
+"Your energy will return, be patient.",
+"It's okay to cancel plans for your health.",
+"Small comforts matter today.",
+"You're allowed to slow all the way down.",
+"Recovery isn't wasted time.",
+"Your body deserves gentleness right now.",
+"This won't last forever.",
+"Taking care of yourself is enough today."
+]
+
+# ================= keyword-based topic matching =================
+# Maps a topic category to the keywords (searched in the diary text,
+# lowercase) that indicate the entry is about that topic.
+TOPIC_KEYWORDS = {
+    "school_work": [
+        "exam", "test", "study", "studying", "assignment", "homework",
+        "deadline", "work", "job", "boss", "meeting", "school", "class",
+        "university", "college", "project", "presentation"
+    ],
+    "relationship": [
+        "boyfriend", "girlfriend", "partner", "breakup", "broke up",
+        "relationship", "crush", "dating", "friend", "friends", "family",
+        "mom", "dad", "mother", "father", "parents", "argument", "fight"
+    ],
+    "health": [
+        "tired", "exhausted", "sick", "sleep", "insomnia", "headache",
+        "pain", "unwell", "sore", "sleepy", "no energy"
+    ],
+}
+
+# Per-mood, per-topic quotes: used instead of the general mood list when
+# the diary text mentions a matching topic's keywords.
+TOPIC_QUOTES = {
+    "happy": {
+        "school_work": [
+            "That deadline didn’t stand a chance against you.",
+            "This is what showing up looks like.",
+        ],
+        "relationship": [
+            "The people around you feel this too.",
+            "Connection like this is worth holding onto.",
+        ],
+        "health": [
+            "Feeling good in your body matters just as much.",
+            "Rest earned, energy earned.",
+        ],
+    },
+    "sad": {
+        "school_work": [
+            "One hard exam doesn’t define your worth.",
+            "Work stress fades, you don’t.",
+        ],
+        "relationship": [
+            "Hurt from people you love cuts deepest, and that’s okay.",
+            "This ache means you cared.",
+        ],
+        "health": [
+            "Your body is asking for rest, listen to it.",
+            "Feeling unwell makes everything heavier—be gentle with yourself.",
+        ],
+    },
+    "angry": {
+        "school_work": [
+            "A bad grade or rough day at work isn’t a verdict on you.",
+            "Let the deadline pass, don’t let it take your peace.",
+        ],
+        "relationship": [
+            "Conflict with someone close hurts more, breathe through it.",
+            "You can be upset without burning the bridge.",
+        ],
+        "health": [
+            "Frustration hits harder when you’re exhausted.",
+            "Rest first, react later.",
+        ],
+    },
+    "anxious": {
+        "school_work": [
+            "One test doesn’t decide your future.",
+            "You’ve prepared more than you think.",
+        ],
+        "relationship": [
+            "Worrying about them doesn’t mean you have to fix it tonight.",
+            "Uncertainty with people is uncomfortable, not dangerous.",
+        ],
+        "health": [
+            "Your body’s tiredness is not a warning sign—it’s just tired.",
+            "Anxious and exhausted often travel together; rest first.",
+        ],
+    },
+    "unwell": {
+        "school_work": [
+            "Push work aside until you feel human again.",
+            "Deadlines can wait for your health.",
+        ],
+        "relationship": [
+            "It’s okay to cancel plans when your body needs rest.",
+            "The people who matter will understand you need rest.",
+        ],
+        "health": [
+            "Listen to what your body is telling you.",
+            "Recovery isn’t wasted time.",
+        ],
+    },
+}

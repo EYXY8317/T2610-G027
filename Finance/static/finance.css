@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 /* ================================================= */
 /* ================================================= */
 /* =============== GLOBAL FOUNDATION ============== */
@@ -82,7 +84,7 @@ body.ash      { --primary:#5f5f5f; --primary-hover:#e2e2e2; }
 
 body{
 
-    font-family:Arial,sans-serif;
+    font-family:'Inter', sans-serif;
 
     padding:0 0 20px !important;
 
@@ -145,7 +147,7 @@ body.dark .wallpaper-overlay{
     grid-template-columns:1fr auto 1fr;
     align-items:center;
     z-index:100;
-    font-family:Arial, sans-serif;
+    font-family:'Inter', sans-serif;
 }
 
 .logo-section{

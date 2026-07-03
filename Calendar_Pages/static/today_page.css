@@ -166,6 +166,8 @@ body {
 }
 .tp-mood-label { color: #888; font-size: 15px; }
 .tp-mood-placeholder { font-size: 15px; color: #aaa; }
+.tp-mood-val { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.tp-mood-emoji-img { width: 38px; height: 38px; object-fit: contain; }
 .tp-diary-card {
     flex: 1;
     background: #fff0f5;

@@ -27,6 +27,10 @@ let taskData = {
 // 当前选中的标签筛选器
 let currentTagFilter = "all";
 
+// Topbar search keyword (task pages only — Calendar page searches diary instead)
+// 顶部搜索关键字（仅用于任务分类页面，Calendar 页面另外搜索日记）
+let currentSearchKeyword = "";
+
 // Completed page filters
 // Completed 页面筛选条件
 let selectedDateFilter = "all";
@@ -61,6 +65,34 @@ let currentTaskId = null;
 // ===============================
 
 function showPage(pageId, element) {
+
+    // Reset topbar search when switching pages
+    // (Calendar page searches diary; task pages filter their own list)
+    // 切换页面时重置顶部搜索框
+    // （Calendar 页面搜索日记，任务页面则筛选各自的任务列表）
+    currentSearchKeyword = "";
+    if (typeof diaryMatchDates !== "undefined") diaryMatchDates.clear();
+    const topbarSearchInput = document.getElementById("diarySearchInput");
+    const topbarSearchResults = document.getElementById("diarySearchResults");
+    if (topbarSearchInput) {
+        topbarSearchInput.value = "";
+        const placeholders = {
+            calendar: "Search diary...",
+            today:    "Search today's tasks...",
+            work:     "Search Work Tasks...",
+            shopping: "Search Shopping List...",
+            study:    "Search Study Plan...",
+            personal: "Search Personal Memos...",
+            workout:  "Search Workout Plan...",
+            completed:"Search completed tasks...",
+            trash:    "Search trash..."
+        };
+        topbarSearchInput.placeholder = placeholders[pageId] || "Search";
+    }
+    if (topbarSearchResults) {
+        topbarSearchResults.innerHTML = "";
+        topbarSearchResults.classList.remove("open");
+    }
 
     // Close all calendar popups
     // 关闭所有日历弹窗
@@ -1299,6 +1331,17 @@ function renderTasks(listType) {
 
             }
 
+            // Apply topbar search keyword if any
+            // 如果顶部搜索框有关键字，则过滤任务
+            if (
+                currentSearchKeyword &&
+                !task.text.toLowerCase().includes(currentSearchKeyword)
+            ) {
+
+                return false;
+
+            }
+
             // Keep this task
             // 保留该任务
             return true;
@@ -1524,6 +1567,17 @@ let completedTasks =
             if (
                 task.status !==
                 "completed"
+            ) {
+
+                return false;
+
+            }
+
+            // Apply topbar search keyword if any
+            // 如果顶部搜索框有关键字，则过滤任务
+            if (
+                currentSearchKeyword &&
+                !task.text.toLowerCase().includes(currentSearchKeyword)
             ) {
 
                 return false;
@@ -2013,7 +2067,12 @@ function renderTrash() {
         // 获取状态为 trash 的任务
         let trashTasks =
             taskData[listType].filter(
-                task => task.status === "trash"
+                task =>
+                    task.status === "trash" &&
+                    (
+                        !currentSearchKeyword ||
+                        task.text.toLowerCase().includes(currentSearchKeyword)
+                    )
             );
 
         // Skip empty categories

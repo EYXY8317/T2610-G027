@@ -3,7 +3,7 @@
 <head>
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="/diary_static/style.css?v=3">
+    <link rel="stylesheet" href="/diary_static/style.css?v=4">
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
@@ -157,7 +157,12 @@
         }
 
         .tb-content i, .tb-content em {
-            font-style: oblique 80deg;
+            /* Must stay the literal "italic" keyword, not a custom oblique
+               angle — the browser's native bold/italic/underline toggle
+               (execCommand/queryCommandState) checks computed font-style
+               against "italic" exactly, and a different value breaks the
+               toggle (clicking Italic again would fail to un-italicize). */
+            font-style: italic;
         }
 
         /* ── Image ── */
@@ -495,6 +500,19 @@
     <!-- Sticky toolbar wrapper -->
     <div id="stickyBars">
 
+    <!-- Toolbar: mood + topic -->
+    <div id="toolbar">
+        <label>Mood</label>
+        <input type="hidden" id="mood" name="mood"
+               data-entry-mood="{{ entry.mood if entry else '' }}">
+        <div id="mood-picker" class="{{ 'mood-picker-disabled' if mode == 'view' else '' }}"></div>
+        <label for="topic">Topic</label>
+        <input type="text" id="topic" maxlength="20"
+            value="{{ entry.topic if entry else '' }}"
+            placeholder="Enter topic (max 20)"
+            {{ "readonly" if mode == "view" else "" }}>
+    </div>
+
     <!-- Format Bar -->
     <div id="formatBar">
         <button class="fbar-btn" id="undoBtn" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
@@ -519,9 +537,9 @@
             <option value="32px">32</option>
         </select>
         <input type="color" id="fontColor" value="#2a2a2a" title="Text color">
-        <button class="fbar-btn" id="boldBtn"><b>B</b></button>
-        <button class="fbar-btn" id="italicBtn"><i>I</i></button>
-        <button class="fbar-btn" id="underlineBtn"><u>U</u></button>
+        <button class="fbar-btn" id="boldBtn" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button class="fbar-btn" id="italicBtn" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button class="fbar-btn" id="underlineBtn" title="Underline (Ctrl+U)"><u>U</u></button>
         <div class="fbar-divider"></div>
         <select id="paperType" title="Paper style">
             <option value="grid">Grid</option>
@@ -531,23 +549,11 @@
         </select>
         <select id="diaryTheme" title="Theme">
             <option value="classic">Classic</option>
+            <option value="settings">Setting Theme</option>
             <option value="dark">Dark</option>
             <option value="ocean">Ocean</option>
             <option value="blush">Blush</option>
         </select>
-    </div>
-
-    <!-- Toolbar: mood + topic -->
-    <div id="toolbar">
-        <label>Mood</label>
-        <input type="hidden" id="mood" name="mood"
-               data-entry-mood="{{ entry.mood if entry else '' }}">
-        <div id="mood-picker" class="{{ 'mood-picker-disabled' if mode == 'view' else '' }}"></div>
-        <label for="topic">Topic</label>
-        <input type="text" id="topic" maxlength="20"
-            value="{{ entry.topic if entry else '' }}"
-            placeholder="Enter topic (max 20)"
-            {{ "readonly" if mode == "view" else "" }}>
     </div>
 
     </div><!-- end #stickyBars -->
@@ -593,6 +599,8 @@
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- Shared confirm/cancel popup (also used by Journal_HomePages); exposes window.showReminderPopup -->
+<script type="module" src="/journal_home_static/js/shared/reminderPopup.js"></script>
 <script src="/diary_static/script.js"></script>
 
 <!-- Day name + month/year -->
@@ -620,7 +628,7 @@
     const fSize     = document.getElementById("fontSize");
     const fColor    = document.getElementById("fontColor");
     const boldBtn      = document.getElementById("boldBtn");
-    const italicBtn    = document.getElementById("italicBtn");
+    const italicBtn     = document.getElementById("italicBtn");
     const underlineBtn = document.getElementById("underlineBtn");
     const paperSel  = document.getElementById("paperType");
     const themeSel  = document.getElementById("diaryTheme");
@@ -634,6 +642,14 @@
     let activeTb  = null;
     let canEdit   = (mode === "add" || mode === "edit");
     let saveTimer = null;
+
+    /* Quote reveal: the quote for the current content is fetched on every
+       autosave, but only shown 15s after the user stops editing (rather
+       than the moment autosave completes), so it reads as a reward for
+       finishing rather than a running commentary while still writing. */
+    const msgEl      = document.getElementById("msg");
+    let quoteTimer    = null;
+    let latestQuote   = msgEl ? msgEl.innerText : "";
 
     if (!canEdit) canvas.classList.add("view-mode");
 
@@ -761,7 +777,7 @@
     });
 
     editDoneBtn.addEventListener("click", function() {
-        doSave();
+        doSave(true);
         enterViewMode();
     });
 
@@ -947,7 +963,7 @@
 
     function makeTb(x, y, html, rotateDeg, doFocus) {
         const wrap = document.createElement("div");
-        wrap.className  = "tb-wrap";
+        wrap.className  = "tb-wrap pop-in";
         wrap.style.left = x + "px";
         wrap.style.top  = y + "px";
 
@@ -987,11 +1003,14 @@
         tb.addEventListener("focus", ()=>{
             activeTb = tb;
             wrap.classList.add("active");
-            applyStickyFormats(tb);
+            updateFormatButtons();
         });
         tb.addEventListener("blur", ()=>{
             wrap.classList.remove("active");
             setTimeout(()=>{
+                if (!canvas.contains(document.activeElement) || !document.activeElement.classList.contains("tb-content")) {
+                    updateFormatButtons();
+                }
                 if (tb.innerText.trim() === "" && !wrap.matches(":hover")) {
                     wrap.remove();
                     schedSave();
@@ -1046,7 +1065,7 @@
 
     function makeImg(src, x, y, w, h, rotateDeg, imgId) {
         const wrap = document.createElement("div");
-        wrap.className   = "img-wrap";
+        wrap.className   = "img-wrap pop-in";
         wrap.style.left  = x + "px";
         wrap.style.top   = y + "px";
         wrap.style.width = w + "px";
@@ -1155,72 +1174,61 @@
             activeTb.style.color = this.value;
         }
     });
-    // Sticky mode: toggled on when the button is pressed with no text highlighted.
-    // While on, focusing (clicking into) any text box formats that box's entire
-    // content, instead of only formatting a highlighted selection.
-    let boldSticky      = false;
-    let italicSticky    = false;
-    let underlineSticky = false;
 
-    document.addEventListener("selectionchange", function(){
-        try {
-            boldBtn.classList.toggle("active", boldSticky || document.queryCommandState("bold"));
-            italicBtn.classList.toggle("active", italicSticky || document.queryCommandState("italic"));
-            underlineBtn.classList.toggle("active", underlineSticky || document.queryCommandState("underline"));
-        } catch(e) {}
-    });
+    /* ════════════════════════════════
+       BOLD / ITALIC / UNDERLINE
+       Mirrors Word's toggle rules by driving the browser's native
+       execCommand/queryCommandState state machine:
+         - collapsed cursor  -> toggles the "typing state" for future input
+         - uniform selection -> removes the formatting
+         - mixed/none        -> applies the formatting to the whole selection
+    ════════════════════════════════ */
+    function closestTb(node) {
+        if (!node) return null;
+        const el = node.nodeType === 1 ? node : node.parentElement;
+        return el ? el.closest(".tb-content") : null;
+    }
 
-    function hasHighlightIn(tb) {
+    function updateFormatButtons() {
         const sel = window.getSelection();
-        return !!(sel && sel.rangeCount > 0 && !sel.isCollapsed && tb && tb.contains(sel.anchorNode));
+        const tb = sel && sel.rangeCount > 0 ? closestTb(sel.anchorNode) : null;
+        if (!tb) {
+            boldBtn.classList.remove("active");
+            italicBtn.classList.remove("active");
+            underlineBtn.classList.remove("active");
+            return;
+        }
+        try {
+            boldBtn.classList.toggle("active", document.queryCommandState("bold"));
+            italicBtn.classList.toggle("active", document.queryCommandState("italic"));
+            underlineBtn.classList.toggle("active", document.queryCommandState("underline"));
+        } catch (e) {}
     }
 
-    function applyCmd(cmd) {
-        // e.preventDefault() on mousedown keeps focus+selection in the contenteditable,
-        // so execCommand operates on the intact selection directly.
+    document.addEventListener("selectionchange", updateFormatButtons);
+
+    function toggleFormat(cmd) {
+        if (!canEdit) return;
+        if (!activeTb || document.activeElement !== activeTb) return;
         document.execCommand(cmd, false, null);
+        updateFormatButtons();
         schedSave();
     }
 
-    function applyStickyFormats(tb) {
-        // Set the format directly on the box itself (like fColor does when nothing
-        // is highlighted) rather than via execCommand, so it reliably covers both
-        // existing text and text typed later into an empty/new box.
-        if (!boldSticky && !italicSticky && !underlineSticky) return;
-        if (boldSticky)      tb.style.fontWeight = "900";
-        if (italicSticky)    tb.style.fontStyle   = "oblique 45deg";
-        if (underlineSticky) tb.style.textDecoration = "underline";
-        schedSave();
-    }
-
-    boldBtn.addEventListener("mousedown", function(e){
+    // mousedown + preventDefault (rather than click) keeps focus and the
+    // live selection inside the textbox, so execCommand acts on it directly
+    // instead of on whatever the button click would otherwise have blurred to.
+    boldBtn.addEventListener("mousedown", function (e) {
         e.preventDefault();
-        if (activeTb && hasHighlightIn(activeTb)) {
-            applyCmd("bold");
-        } else {
-            boldSticky = !boldSticky;
-            boldBtn.classList.toggle("active", boldSticky);
-        }
+        toggleFormat("bold");
     });
-
-    italicBtn.addEventListener("mousedown", function(e){
+    italicBtn.addEventListener("mousedown", function (e) {
         e.preventDefault();
-        if (activeTb && hasHighlightIn(activeTb)) {
-            applyCmd("italic");
-        } else {
-            italicSticky = !italicSticky;
-            italicBtn.classList.toggle("active", italicSticky);
-        }
+        toggleFormat("italic");
     });
-
-    underlineBtn.addEventListener("mousedown", function(e){
+    underlineBtn.addEventListener("mousedown", function (e) {
         e.preventDefault();
-        if (activeTb && hasHighlightIn(activeTb)) {
-            applyCmd("underline");
-        } else {
-            underlineSticky = !underlineSticky;
-            underlineBtn.classList.toggle("active", underlineSticky);
-        }
+        toggleFormat("underline");
     });
 
     function applyPaper(type) {
@@ -1237,7 +1245,7 @@
     });
 
     function applyTheme(theme) {
-        ["dark","ocean","blush"].forEach(t => document.body.classList.remove("theme-"+t));
+        ["settings","dark","ocean","blush"].forEach(t => document.body.classList.remove("theme-"+t));
         if (theme && theme !== "classic") document.body.classList.add("theme-"+theme);
     }
     const defaultTheme = localStorage.getItem(scopedKey("diaryTheme")) || "classic";
@@ -1260,13 +1268,39 @@
         if (saveLabelEl) saveLabelEl.textContent = labels[state] || "";
     }
 
+    // Shows the picked quote, or (if no mood is set, so the backend never
+    // picked one) a nudge to select a mood, instead of leaving the box
+    // sitting on the generic empty-state placeholder forever.
+    function revealQuote(){
+        if (!msgEl) return;
+        if (latestQuote) {
+            msgEl.innerText = latestQuote;
+        } else if (moodSel && !moodSel.value) {
+            msgEl.innerText = "Pick a mood above so we can leave you a quote here.";
+        } else {
+            msgEl.innerText = "";
+        }
+        msgEl.classList.remove("quote-reveal");
+        void msgEl.offsetWidth;
+        msgEl.classList.add("quote-reveal");
+    }
+
     function schedSave(){
         clearTimeout(saveTimer);
         setAutoSave("saving");
         saveTimer = setTimeout(doSave, 1000);
+
+        // Leave whatever quote is currently on screen alone (don't blank
+        // it) while more edits come in — reload and re-entering Edit both
+        // route through here (via the mood-sync dispatch / tb input), and
+        // an already-shown quote shouldn't vanish just because of that.
+        // Just requeue the reveal so it settles on the freshly-picked
+        // quote once the user goes idle again.
+        clearTimeout(quoteTimer);
+        quoteTimer = setTimeout(revealQuote, 10000);
     }
 
-    function doSave(){
+    function doSave(revealImmediately){
         const chunks = [];
         chunks.push(JSON.stringify({ type: "meta", paper: paperSel ? paperSel.value : "grid" }));
 
@@ -1303,10 +1337,10 @@
         });
 
         box.innerHTML = chunks.join("||ITEM||");
-        sendSave();
+        sendSave(revealImmediately);
     }
 
-    function sendSave(){
+    function sendSave(revealImmediately){
         const data = new FormData();
         data.append("content", box.innerHTML);
         data.append("mood",    moodSel  ? moodSel.value  : "");
@@ -1317,8 +1351,11 @@
             .then(r => r.json())
             .then(res => {
                 setAutoSave("saved");
-                const msg = document.getElementById("msg");
-                if (msg && res.message) msg.innerText = res.message;
+                if (res.message) latestQuote = res.message;
+                if (revealImmediately) {
+                    clearTimeout(quoteTimer);
+                    revealQuote();
+                }
             })
             .catch(()=>{ setAutoSave("failed"); });
     }

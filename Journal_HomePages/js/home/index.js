@@ -31,6 +31,11 @@ import {
 from "../shared/reminderPopup.js";
 
 import {
+    initOnboardingGuide
+}
+from "../shared/onboardingGuide.js";
+
+import {
     hideWidget,
     getHiddenWidgets
 }
@@ -172,6 +177,8 @@ export async function initializeHomepage() {
     // wipe all cached widget/layout/diary localStorage so nothing from the
     // previous account can leak into this account's dashboard.
     ensureUserScopeFresh();
+
+    initOnboardingGuide();
 
     // Load this user's saved layout from the server before rendering.
     // For first-time users the server returns {}, so localStorage stays empty

@@ -38,7 +38,7 @@ export function getPictureStreakSettings(widgetId = "picture-streak-widget") {
             <div class="setting-row">
                 <span>Display Mode</span>
                 <div class="segment-button ps-display-segment">
-                    <button class="segment-option${state.displayMode === "single" ? " active" : ""}" data-value="single">Single</button>
+                    <button class="segment-option${state.displayMode === "single" ? " active" : ""}" data-value="single">Manual</button>
                     <button class="segment-option${state.displayMode === "scroll" ? " active" : ""}" data-value="scroll">Auto Scroll</button>
                 </div>
             </div>

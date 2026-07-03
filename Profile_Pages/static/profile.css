@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial,sans-serif;
+    font-family:'Inter', sans-serif;
 }
 
 body{
@@ -450,7 +452,7 @@ body.ash{
     font-weight:600;
     cursor:pointer;
     transition:0.2s;
-    font-family:Arial,sans-serif;
+    font-family:'Inter', sans-serif;
 }
 
 .theme-swatch::before{
@@ -676,7 +678,7 @@ body.ash{
     font-size:1rem;
     color:var(--text-primary, #2c241b);
     transition:0.2s;
-    font-family:Arial,sans-serif;
+    font-family:'Inter', sans-serif;
     outline:none;
 }
 

@@ -360,6 +360,108 @@
 
 
 /* ==================================================
+   DIARY SEARCH MATCH PREVIEW
+   Days whose diary entry matches the active topbar
+   search show their mood, topic and a content preview
+   directly inside the calendar cell
+================================================== */
+
+.day.diary-match{
+
+    border:1px solid var(--primary-accent);
+
+    min-height:196px;
+
+}
+
+.diary-match-card{
+
+    margin-top:6px;
+
+    padding:8px 9px;
+
+    border-radius:12px;
+
+    background:var(--primary-light);
+
+    cursor:pointer;
+
+    transition:background 0.2s ease;
+
+}
+
+.diary-match-card:hover{
+
+    background:var(--primary-hover);
+
+}
+
+.diary-match-mood{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+    margin-bottom:4px;
+
+}
+
+.diary-match-mood-icon{
+
+    width:20px;
+
+    height:20px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+}
+
+.diary-match-mood-label{
+
+    font-size:11px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+.diary-match-topic{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+}
+
+.diary-match-preview{
+
+    margin-top:4px;
+
+    font-size:11px;
+
+    line-height:1.4;
+
+    color:#8a8aa3;
+
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+
+    overflow:hidden;
+
+}
+
+
+/* ==================================================
    YEAR VIEW
 ================================================== */
 
@@ -577,6 +679,57 @@
     font-weight:700;
 
     color:#2f3367;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+
+/* ==================================================
+   MODAL SHORTCUT ICONS (Finance / Diary quick links)
+================================================== */
+
+.modal-shortcut-icon{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:28px;
+
+    height:28px;
+
+    border-radius:9px;
+
+    background:var(--primary-light);
+
+    box-shadow:0 2px 6px var(--shadow-light);
+
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+
+}
+
+.modal-shortcut-icon img{
+
+    width:18px;
+
+    height:18px;
+
+    object-fit:contain;
+
+}
+
+.modal-shortcut-icon:hover{
+
+    transform:translateY(-2px) scale(1.08);
+
+    box-shadow:0 6px 14px var(--shadow-medium);
 
 }
 

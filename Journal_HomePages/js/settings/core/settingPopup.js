@@ -1348,14 +1348,25 @@ export function createSettingPopup(widgetId) {
             });
         });
 
+        const _psOptionsSec = () => [...popup.querySelectorAll(".setting-section h3")]
+            .find(h => h.textContent.trim() === "Options")
+            ?.closest(".setting-section");
+
         const psDisplayBtns = popup.querySelectorAll(".ps-display-segment .segment-option");
         psDisplayBtns.forEach(btn => {
             btn.addEventListener("click", () => {
                 psDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
                 updatePictureStreakState(widgetId, { displayMode: btn.dataset.value });
+
+                const optionsSec = _psOptionsSec();
+                if (optionsSec) optionsSec.style.display = btn.dataset.value === "scroll" ? "" : "none";
             });
         });
+
+        const _psInitMode = popup.querySelector(".ps-display-segment .segment-option.active")?.dataset.value || "single";
+        const _psOptionsSecInit = _psOptionsSec();
+        if (_psOptionsSecInit) _psOptionsSecInit.style.display = _psInitMode === "scroll" ? "" : "none";
 
         const psDateLabelBtns = popup.querySelectorAll(".ps-date-label-segment .segment-option");
         psDateLabelBtns.forEach(btn => {
