@@ -232,10 +232,6 @@ def delete_financial(idx):
 def update_financial(idx):
     user = session.get("user")
     records = load_data(f_expense, [])
-<<<<<<< HEAD
-    user = session["user"]
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     if idx < 0 or idx >= len(records) or records[idx].get("username") != user:
         return redirect(url_for("finance.view_financial"))
@@ -258,22 +254,14 @@ def update_financial(idx):
         amount_raw = form.get("amount")
 
         if not amount_raw:
-<<<<<<< HEAD
-            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount is required")
-=======
             return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount is required", logged_in=True)
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         try:
             amount = float(amount_raw)
             if amount <= 0:
                 raise ValueError
         except:
-<<<<<<< HEAD
-            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount must be greater than 0")
-=======
             return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount must be greater than 0", logged_in=True)
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         account = form.get("account")
         new_account = form.get("new_account")
@@ -313,10 +301,6 @@ def update_financial(idx):
         record=record,
         accounts=user_accounts,
         source=source,
-<<<<<<< HEAD
-        wallpaper=get_user_wallpaper(),
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         user=get_current_user(),
         logged_in=bool(user),
     )
@@ -328,10 +312,6 @@ def budget():
 
     budgets = load_data(f_budget, [])
     records = load_data(f_expense, [])
-<<<<<<< HEAD
-    user = session["user"]
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     if request.method == "POST":
         if not user:
@@ -345,12 +325,8 @@ def budget():
                 "budget.html",
                 budgets=[], categories=CATEGORY_MAP["expense"],
                 warnings=[], error="Category and amount required",
-<<<<<<< HEAD
-                wallpaper=get_user_wallpaper(), user=get_current_user(),
-=======
                 user=get_current_user(),
                 logged_in=True,
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             )
 
         try:
@@ -360,12 +336,8 @@ def budget():
                 "budget.html",
                 budgets=[], categories=CATEGORY_MAP["expense"],
                 warnings=[], error="Invalid amount",
-<<<<<<< HEAD
-                wallpaper=get_user_wallpaper(), user=get_current_user(),
-=======
                 user=get_current_user(),
                 logged_in=True,
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
             )
 
         found = False
@@ -416,10 +388,6 @@ def budget():
         budgets=budget_display,
         categories=CATEGORY_MAP["expense"],
         warnings=warnings,
-<<<<<<< HEAD
-        wallpaper=get_user_wallpaper(),
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         user=get_current_user(),
         logged_in=bool(user),
     )
@@ -622,20 +590,12 @@ def goals():
             notes = request.form.get("notes", "")
 
             if not name or not target or not goal_type:
-<<<<<<< HEAD
-                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="All fields required", wallpaper=get_user_wallpaper(), user=get_current_user())
-=======
                 return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="All fields required", user=get_current_user(), logged_in=True)
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
             try:
                 target = float(target)
             except Exception:
-<<<<<<< HEAD
-                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="Invalid target amount", wallpaper=get_user_wallpaper(), user=get_current_user())
-=======
                 return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="Invalid target amount", user=get_current_user(), logged_in=True)
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
             new_id = max([g.get("id", 0) for g in goals_list], default=0) + 1
             goals_list.append({
@@ -753,10 +713,6 @@ def goals():
         long_goals=long_goals,
         active_goals=active_goals,
         completed_goals=completed_goals,
-<<<<<<< HEAD
-        wallpaper=get_user_wallpaper(),
-=======
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         user=get_current_user(),
         logged_in=bool(user),
     )
@@ -777,11 +733,7 @@ def delete_goal(goal_id):
 @finance_bp.route("/reopen_goal/<int:goal_id>")
 def reopen_goal(goal_id):
     if "user" not in session:
-<<<<<<< HEAD
-        return redirect(url_for("auth.login"))
-=======
         return redirect(url_for("dashboard"))
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     user = session["user"]
     goals_list = load_data(f_goals, [])
@@ -813,11 +765,7 @@ def edit_goal(goal_id):
         try:
             target = float(target)
         except Exception:
-<<<<<<< HEAD
-            return render_template("edit_goal.html", goal=goal, error="Invalid target amount", wallpaper=get_user_wallpaper(), user=get_current_user())
-=======
             return render_template("edit_goal.html", goal=goal, error="Invalid target amount", user=get_current_user(), logged_in=True)
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
         goal["name"] = name
         goal["target"] = target
@@ -838,23 +786,13 @@ def edit_goal(goal_id):
 # ================= ACCOUNTS =================
 @finance_bp.route("/accounts", methods=["GET", "POST"])
 def accounts():
-<<<<<<< HEAD
-    if "user" not in session:
-        return redirect(url_for("auth.login"))
-
-    user = session["user"]
-=======
     user = session.get("user")
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     accounts_data = load_data(f_accounts, [])
     records = load_data(f_expense, [])
 
     if request.method == "POST":
-<<<<<<< HEAD
-=======
         if not user:
             return redirect(url_for("dashboard"))
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
         name = request.form.get("name", "").strip()
         purpose = request.form.get("purpose", "spending")
         if name and not any(a["name"] == name and a["username"] == user for a in accounts_data):
@@ -884,26 +822,14 @@ def accounts():
     return render_template(
         "accounts.html",
         account_list=account_list,
-<<<<<<< HEAD
-        wallpaper=get_user_wallpaper(),
-        user=get_current_user(),
-=======
         user=get_current_user(),
         logged_in=bool(user),
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     )
 
 
 @finance_bp.route("/edit_account/<name>", methods=["GET", "POST"])
 def edit_account(name):
-<<<<<<< HEAD
-    if "user" not in session:
-        return redirect(url_for("auth.login"))
-
-    user = session["user"]
-=======
     user = session.get("user")
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     accounts_data = load_data(f_accounts, [])
     records = load_data(f_expense, [])
 
@@ -935,24 +861,15 @@ def edit_account(name):
         "edit_account.html",
         account=account,
         error=error,
-<<<<<<< HEAD
-        wallpaper=get_user_wallpaper(),
-        user=get_current_user(),
-=======
         user=get_current_user(),
         logged_in=True,
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     )
 
 
 @finance_bp.route("/delete_account/<name>")
 def delete_account(name):
     if "user" not in session:
-<<<<<<< HEAD
-        return redirect(url_for("auth.login"))
-=======
         return redirect(url_for("dashboard"))
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
 
     user = session["user"]
     accounts_data = load_data(f_accounts, [])
@@ -1039,8 +956,5 @@ def finance_home():
         user=get_current_user(),
         savings_rate=savings_rate,
         theme=(current_user or {}).get("theme", "mocha"),
-<<<<<<< HEAD
-=======
         logged_in=bool(user),
->>>>>>> a857ae47f922cc5718ae9f2e06461a517aa4a7d1
     )
