@@ -36,7 +36,7 @@
     <div class="card centered-card edit-card">
         <div class="centered-icon">✏️</div>
         <div class="section-title">Edit Profile</div>
-        <p class="centered-desc">Update your username, email, or profile picture.</p>
+        <p class="centered-desc">Update your username or profile picture.</p>
 
         <form method="POST" enctype="multipart/form-data" class="centered-form">
 
@@ -58,17 +58,6 @@
                     name="username"
                     class="form-input"
                     value="{{ user.username }}"
-                    required
-                >
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Email</label>
-                <input
-                    type="email"
-                    name="email"
-                    class="form-input"
-                    value="{{ user.email }}"
                     required
                 >
             </div>

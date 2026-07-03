@@ -88,7 +88,6 @@ def register_profile_routes(app):
         if request.method == "POST":
 
             new_username = request.form["username"]
-            new_email = request.form["email"]
             profile_picture = request.files["profile_picture"]
 
             for user in users:
@@ -96,7 +95,6 @@ def register_profile_routes(app):
                 if user["username"] == session["user"]:
 
                     user["username"] = new_username
-                    user["email"] = new_email
 
                     if profile_picture.filename != "":
 
@@ -128,46 +126,6 @@ def register_profile_routes(app):
             "edit_profile.html",
             user=current_user
         )
-    
-    @app.route("/upload_wallpaper", methods=["POST"])
-    def upload_wallpaper():
-
-        wallpaper = request.files["wallpaper"]
-
-        with open("users.json", "r") as f:
-            users = json.load(f)
-
-        for user in users:
-
-            if user["username"] == session["user"]:
-
-                if wallpaper.filename != "":
-
-                    filename = wallpaper.filename
-
-                    folder = os.path.join(
-                        "Profile_Pages",
-                        "static",
-                        "wallpapers"
-                    )
-
-                    os.makedirs(folder, exist_ok=True)
-
-                    save_path = os.path.join(
-                        folder,
-                        filename
-                    )
-
-                    wallpaper.save(save_path)
-
-                    user["wallpaper"] = filename
-
-                break
-
-        with open("users.json", "w") as f:
-            json.dump(users, f, indent=4)
-
-        return redirect("/profile")
     
     # =========================
     # CHANGE THEME
@@ -203,24 +161,5 @@ def register_profile_routes(app):
         with open("users.json", "w") as file:
 
             json.dump(users, file, indent=4)
-
-        return redirect("/profile")
-    
-    @app.route("/remove_wallpaper",methods=["POST"])
-    def remove_wallpaper():
-
-        with open("users.json", "r") as f:
-            users = json.load(f)
-
-        for user in users:
-
-            if user["username"] == session["user"]:
-
-                user["wallpaper"] = None
-
-                break
-
-        with open("users.json", "w") as f:
-            json.dump(users, f, indent=4)
 
         return redirect("/profile")

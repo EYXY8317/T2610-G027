@@ -25,17 +25,7 @@
 
 <body
 class="{{ user.theme if user else 'adaptive' }}"
-
-{% if wallpaper %}
-style="
-background-image:
-url('/profile_static/wallpapers/{{ wallpaper }}');
-"
-{% endif %}
-
 >
-
-<div class="wallpaper-overlay"></div>
 
 <nav class="navbar">
     <div class="logo-section">

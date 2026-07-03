@@ -47,16 +47,12 @@ def register():
     if request.method == "POST":
         users    = load_data(f_users, [])
         username = request.form["username"]
-        email    = request.form["email"]
         password = request.form["password"]
         question = request.form["question"]
         answer   = request.form["answer"]
 
         if any(u["username"] == username for u in users):
             return render_template("login.html", reg_error="Username already taken",
-                                   show_register=True)
-        if any((u.get("email") or "").lower() == email.lower() for u in users):
-            return render_template("login.html", reg_error="Email already registered",
                                    show_register=True)
         if not is_valid_password(password):
             return render_template("login.html",
@@ -66,7 +62,6 @@ def register():
         users.append({
             "username": username,
             "password": hash_password(password),
-            "email":    email,
             "security_question": question,
             "security_answer":   hash_password(answer),
             "theme": "cozy",
@@ -88,13 +83,17 @@ def logout():
 @auth_bp.route("/forgot_username", methods=["GET", "POST"])
 def forgot_username():
     if request.method == "POST":
-        email = request.form["email"]
-        users = load_data(f_users, [])
+        question = request.form["question"]
+        answer   = request.form["answer"]
+        users    = load_data(f_users, [])
+        hashed_answer = hash_password(answer)
         for u in users:
-            if u["email"] == email:
+            if (u.get("security_question") == question and
+                    u.get("security_answer") == hashed_answer):
                 return redirect(url_for("auth.login", panel="forgot_username",
                                         result=u["username"]))
-        return redirect(url_for("auth.login", panel="forgot_username", error="Email not found"))
+        return redirect(url_for("auth.login", panel="forgot_username",
+                                error="No matching account found"))
     return redirect(url_for("auth.login", panel="forgot_username"))
 
 

@@ -80,11 +80,6 @@
         </div>
 
         <div class="input-box">
-          <i class="fa-regular fa-envelope"></i>
-          <input type="email" name="email" placeholder="Email" required autocomplete="email">
-        </div>
-
-        <div class="input-box">
           <i class="fa-solid fa-lock"></i>
           <input type="password" id="regPassword" name="password" placeholder="Password" required autocomplete="new-password">
           <span class="toggle-eye" onclick="togglePassword('regPassword',this)">🙈</span>
@@ -172,8 +167,19 @@
       <h2>Forgot Username</h2>
       <form action="/forgot_username" method="POST">
         <div class="input-box">
-          <i class="fa-regular fa-envelope"></i>
-          <input type="email" name="email" placeholder="Email" required autocomplete="email">
+          <i class="fa-solid fa-circle-question"></i>
+          <select name="question" required>
+            <option value="">Security Question</option>
+            <option value="nickname">What is your nickname?</option>
+            <option value="birth_city">Where is your birth city?</option>
+            <option value="favourite_subject">What is your favourite subject?</option>
+            <option value="mother_name">What is your mother's name?</option>
+            <option value="best_friend">What is your best friend's name?</option>
+          </select>
+        </div>
+        <div class="input-box">
+          <i class="fa-regular fa-comment"></i>
+          <input type="text" name="answer" placeholder="Answer" required>
         </div>
         <button type="submit">Find Username</button>
       </form>

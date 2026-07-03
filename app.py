@@ -52,15 +52,6 @@ def load_data(file, default):
     except:
         return default
 
-def get_user_wallpaper():
-    if "user" not in session:
-        return None
-    users = load_data(f_users, [])
-    for u in users:
-        if u["username"] == session["user"]:
-            return u.get("wallpaper")
-    return None
-
 def get_current_user():
     if "user" not in session:
         return None
@@ -228,7 +219,6 @@ def dashboard():
     return render_template(
         "dashboard.html",
         user                  = current_user,
-        wallpaper             = get_user_wallpaper(),
         fin_expense           = cur_expense,
         fin_change            = expense_change,
         fin_weeks             = week_expenses,

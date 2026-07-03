@@ -107,14 +107,6 @@ input[type="file"]{
     transform:translateY(-2px);
 }
 
-.wallpaper-preview{
-    width:100%;
-    border-radius:22px;
-    margin-bottom:20px;
-    border:2px solid rgba(255,255,255,0.4);
-    box-shadow:0 10px 20px rgba(0,0,0,0.12);
-}
-
 .quick-actions{
     display:flex;
     gap:15px;
@@ -122,46 +114,11 @@ input[type="file"]{
     flex-wrap:wrap;
 }
 
-.dashboard-title{
-    margin-top:40px;
-}
-
-.stat-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px;
+.stat-block{
     margin-top:20px;
 }
 
-.stat-card{
-
-    background:rgba(255,255,255,0.55);
-
-    border-radius:22px;
-
-    padding:25px;
-
-    transition:0.3s;
-
-    cursor:pointer;
-
-    position:relative;
-
-    overflow:hidden;
-
-    border:1px solid rgba(255,255,255,0.35);
-}
-
-.stat-card:hover{
-
-    transform:translateY(-6px) scale(1.02);
-
-    background:rgba(255,255,255,0.75);
-
-    box-shadow:0 15px 30px rgba(0,0,0,0.12);
-}
-
-.stat-card h3{
+.stat-block h3{
 
     font-size:1rem;
 
@@ -170,7 +127,7 @@ input[type="file"]{
     color:#6b5d50;
 }
 
-.stat-card p{
+.stat-block p{
 
     font-size:2rem;
 
@@ -181,7 +138,7 @@ input[type="file"]{
     color:#2c241b;
 }
 
-.stat-card span{
+.stat-block span{
 
     font-size:0.95rem;
 
@@ -260,23 +217,14 @@ body{
     box-shadow:var(--shadow);
 }
 
-.stat-card{
-
-    background:var(--bg-card-2);
-
-    border-radius:var(--radius-small);
-
-    border:1px solid var(--border-color);
-}
-
 .profile-info p,
-.stat-card h3,
-.stat-card span{
+.stat-block h3,
+.stat-block span{
 
     color:var(--text-secondary);
 }
 
-.stat-card p,
+.stat-block p,
 .topbar-links a,
 .section-title,
 .profile-info h1{
@@ -724,7 +672,6 @@ body.ash{
     color:var(--button-bg);
 }
 
-/* secondary button (used for Remove Wallpaper) */
 .secondary-btn{
     border:1.5px solid var(--primary-border, #e8ddd1);
     background:transparent;

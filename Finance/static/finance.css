@@ -97,26 +97,6 @@ body{
 
 
 
-/* ================================================= */
-/* ================= WALLPAPER ===================== */
-/* ================================================= */
-
-.wallpaper-overlay{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,0.18);
-
-    z-index:-1;
-}
-
-body.dark .wallpaper-overlay{
-
-    background:rgba(0,0,0,0.55);
-}
-
 
 
 

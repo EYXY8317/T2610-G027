@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from .finance_helpers import (
-    load_data, save_data, get_user_wallpaper, get_current_user,
+    load_data, save_data, get_current_user,
     CATEGORY_MAP, BASE_DIR
 )
 
@@ -84,7 +84,6 @@ def add_financial():
         template_data = {
             "accounts": user_accounts,
             "categories": CATEGORY_MAP,
-            "wallpaper": get_user_wallpaper(),
             "user": get_current_user(),
             "form_data": form
         }
@@ -169,7 +168,6 @@ def add_financial():
         "add.html",
         accounts=user_accounts,
         categories=CATEGORY_MAP,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user()
     )
 
@@ -208,7 +206,6 @@ def view_financial():
         records=display_records,
         accounts=user_accounts,
         selected_account=selected_account,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -306,7 +303,6 @@ def update_financial(idx):
         record=record,
         accounts=user_accounts,
         source=source,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -330,7 +326,7 @@ def budget():
                 "budget.html",
                 budgets=[], categories=CATEGORY_MAP["expense"],
                 warnings=[], error="Category and amount required",
-                wallpaper=get_user_wallpaper(), user=get_current_user(),
+                user=get_current_user(),
             )
 
         try:
@@ -340,7 +336,7 @@ def budget():
                 "budget.html",
                 budgets=[], categories=CATEGORY_MAP["expense"],
                 warnings=[], error="Invalid amount",
-                wallpaper=get_user_wallpaper(), user=get_current_user(),
+                user=get_current_user(),
             )
 
         found = False
@@ -391,7 +387,6 @@ def budget():
         budgets=budget_display,
         categories=CATEGORY_MAP["expense"],
         warnings=warnings,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -416,7 +411,6 @@ def edit_budget(category):
     return render_template(
         "edit_budget.html",
         budget=budget,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user()
     )
 
@@ -572,7 +566,6 @@ def summary():
         short_goals=short_goals,
         long_goals=long_goals,
         all_goals=all_goals,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -599,12 +592,12 @@ def goals():
             notes = request.form.get("notes", "")
 
             if not name or not target or not goal_type:
-                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="All fields required", wallpaper=get_user_wallpaper(), user=get_current_user())
+                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="All fields required", user=get_current_user())
 
             try:
                 target = float(target)
             except Exception:
-                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="Invalid target amount", wallpaper=get_user_wallpaper(), user=get_current_user())
+                return render_template("goals.html", short_goals=[], long_goals=[], active_goals=[], completed_goals=[], accounts=user_accounts, error="Invalid target amount", user=get_current_user())
 
             new_id = max([g.get("id", 0) for g in goals_list], default=0) + 1
             goals_list.append({
@@ -722,7 +715,6 @@ def goals():
         long_goals=long_goals,
         active_goals=active_goals,
         completed_goals=completed_goals,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -772,12 +764,12 @@ def edit_goal(goal_id):
         target = request.form.get("target")
 
         if not name or not target:
-            return render_template("edit_goal.html", goal=goal, error="All fields required", wallpaper=get_user_wallpaper(), user=get_current_user())
+            return render_template("edit_goal.html", goal=goal, error="All fields required", user=get_current_user())
 
         try:
             target = float(target)
         except Exception:
-            return render_template("edit_goal.html", goal=goal, error="Invalid target amount", wallpaper=get_user_wallpaper(), user=get_current_user())
+            return render_template("edit_goal.html", goal=goal, error="Invalid target amount", user=get_current_user())
 
         goal["name"] = name
         goal["target"] = target
@@ -791,7 +783,6 @@ def edit_goal(goal_id):
     return render_template(
         "edit_goal.html",
         goal=goal,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user()
     )
 
@@ -835,7 +826,6 @@ def accounts():
     return render_template(
         "accounts.html",
         account_list=account_list,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -877,7 +867,6 @@ def edit_account(name):
         "edit_account.html",
         account=account,
         error=error,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
     )
 
@@ -972,7 +961,6 @@ def finance_home():
         warning_budgets=warning_budgets,
         active_goals=active_goals,
         recent_records=recent_records,
-        wallpaper=get_user_wallpaper(),
         user=get_current_user(),
         savings_rate=savings_rate,
         theme=(current_user or {}).get("theme", "mocha"),
