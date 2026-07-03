@@ -6,7 +6,9 @@ from Calendar_Pages.calendar_routes import calendar_bp
 
 import json
 import os
+import re
 from datetime import datetime, timedelta
+import calendar as _cal
 from jinja2 import ChoiceLoader, FileSystemLoader
 
 from Profile_Pages.profile_routes import register_profile_routes
@@ -66,6 +68,35 @@ def get_current_user():
     for u in users:
         if u["username"] == session["user"]:
             return u
+
+_MOOD_EMOJIS = {"Happy":"😊","Sad":"😢","Angry":"😠","Excited":"🤩","Anxious":"😰","Peaceful":"😌","Tired":"😴"}
+
+def _diary_text(content):
+    content = (content or "").strip()
+    if not content:
+        return ""
+    texts = []
+    for chunk in content.split("||ITEM||"):
+        chunk = chunk.strip()
+        if not chunk:
+            continue
+        try:
+            parsed = json.loads(chunk)
+            if parsed.get("type") == "text":
+                text = re.sub(r"<[^>]+>", "", parsed.get("html", "")).strip()
+                if text:
+                    texts.append(text)
+        except Exception:
+            text = re.sub(r"<[^>]+>", "", chunk).strip()
+            if text:
+                texts.append(text)
+    return " · ".join(texts)[:160]
+
+def _parse_ddate(ds):
+    try:
+        return datetime.strptime(ds, "%d/%m/%Y")
+    except Exception:
+        return datetime.min
 
 # ================= DASHBOARD =================
 @app.route("/dashboard")
@@ -140,18 +171,84 @@ def dashboard():
         total_target += g.get("target", 0)
     savings_pct = round((total_saved / total_target) * 100) if total_target else 0
 
+    # Diary data for dashboard card
+    f_journal = os.path.join(BASE_DIR, "journal.json")
+    journal_entries = load_data(f_journal, [])
+    today_str_diary = now.strftime("%d/%m/%Y")
+
+    today_diary  = None
+    recent_diary = None
+    recent_dt    = datetime.min
+
+    for _e in journal_entries:
+        if _e.get("date") == today_str_diary:
+            today_diary = _e
+        has = bool(_diary_text(_e.get("content", ""))) or bool((_e.get("mood") or "").strip())
+        if has:
+            dt = _parse_ddate(_e.get("date", ""))
+            if dt > recent_dt:
+                recent_dt    = dt
+                recent_diary = _e
+
+    _diary_display        = today_diary or recent_diary
+    dash_diary_text       = _diary_text(_diary_display.get("content","")) if _diary_display else ""
+    dash_diary_mood       = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
+    dash_diary_mood_emoji = _MOOD_EMOJIS.get(dash_diary_mood, "")
+    dash_diary_topic      = (_diary_display.get("topic") or "").strip()   if _diary_display else ""
+    dash_diary_date       = _diary_display.get("date","")                  if _diary_display else ""
+    dash_diary_is_today   = today_diary is not None
+    try:
+        dash_diary_date_fmt = datetime.strptime(dash_diary_date, "%d/%m/%Y").strftime("%d %b %Y")
+    except Exception:
+        dash_diary_date_fmt = dash_diary_date
+
+    # Calendar data for dashboard card
+    f_tasks_dash = os.path.join(BASE_DIR, "Calendar_Pages", "tasks.json")
+    all_tasks_dash = load_data(f_tasks_dash, [])
+    today_str_cal = now.strftime("%Y-%m-%d")
+    dash_today_tasks_count = len([
+        t for t in all_tasks_dash
+        if t.get("username") == user
+        and t.get("status") != "trash"
+        and (t.get("date") == today_str_cal or t.get("repeat") == "daily")
+    ])
+    cal_task_days = list({
+        int(t["date"].split("-")[2])
+        for t in all_tasks_dash
+        if t.get("username") == user
+        and t.get("status") != "trash"
+        and t.get("date", "").startswith(cur_month)
+        and len(t.get("date", "")) >= 10
+    })
+    cal_first_weekday = (_cal.weekday(now.year, now.month, 1) + 1) % 7
+    cal_days_in_month = _cal.monthrange(now.year, now.month)[1]
+    cal_month_label   = now.strftime("%B %Y")
+    cal_today_day     = now.day
+
     return render_template(
         "dashboard.html",
-        user             = current_user,
-        wallpaper        = get_user_wallpaper(),
-        fin_expense      = cur_expense,
-        fin_change       = expense_change,
-        fin_weeks        = week_expenses,
-        fin_max_week     = max_week,
-        fin_balance      = available_balance,
-        fin_saved        = total_saved,
-        fin_target       = total_target,
-        fin_savings_pct  = savings_pct,
+        user                  = current_user,
+        wallpaper             = get_user_wallpaper(),
+        fin_expense           = cur_expense,
+        fin_change            = expense_change,
+        fin_weeks             = week_expenses,
+        fin_max_week          = max_week,
+        fin_balance           = available_balance,
+        fin_saved             = total_saved,
+        fin_target            = total_target,
+        fin_savings_pct       = savings_pct,
+        dash_diary_text       = dash_diary_text,
+        dash_diary_mood       = dash_diary_mood,
+        dash_diary_mood_emoji = dash_diary_mood_emoji,
+        dash_diary_topic      = dash_diary_topic,
+        dash_diary_date_fmt   = dash_diary_date_fmt,
+        dash_diary_is_today   = dash_diary_is_today,
+        cal_month_label       = cal_month_label,
+        cal_first_weekday     = cal_first_weekday,
+        cal_days_in_month     = cal_days_in_month,
+        cal_today_day         = cal_today_day,
+        cal_task_days         = cal_task_days,
+        dash_today_tasks_count= dash_today_tasks_count,
     )
 
 # ================= CALENDAR STATIC =================
@@ -165,7 +262,14 @@ def calendar_static(filename):
 # ================= CALENDAR =================
 @app.route("/calendar")
 def calendar():
-    return render_template("mypage.html")
+    current_user = get_current_user()
+    return render_template("mypage.html", user=current_user)
+
+# ================= USER THEME API =================
+@app.route('/api/user-theme')
+def api_user_theme():
+    u = get_current_user()
+    return jsonify({"theme": u.get("theme", "mocha") if u else "mocha"})
 
 # ================= DIARY STATIC =================
 @app.route('/diary_static/<path:filename>')
@@ -316,6 +420,34 @@ def today_page():
                 continue
             net_savings += r.get("amount", 0) if r.get("type") in ("income", "saving") else -r.get("amount", 0)
 
+    # Diary entry for today / most recent
+    f_journal = os.path.join(BASE_DIR, "journal.json")
+    journal_entries = load_data(f_journal, [])
+    today_str_diary = now.strftime("%d/%m/%Y")
+
+    today_diary  = None
+    recent_diary = None
+    recent_dt    = datetime.min
+
+    for _e in journal_entries:
+        if _e.get("date") == today_str_diary:
+            today_diary = _e
+        has = bool(_diary_text(_e.get("content", ""))) or bool((_e.get("mood") or "").strip())
+        if has:
+            dt = _parse_ddate(_e.get("date", ""))
+            if dt > recent_dt:
+                recent_dt    = dt
+                recent_diary = _e
+
+    _diary_display = today_diary or recent_diary
+    _mood_emojis   = {"Happy":"😊","Sad":"😢","Angry":"😠","Excited":"🤩","Anxious":"😰","Peaceful":"😌","Tired":"😴"}
+    diary_text        = _diary_text(_diary_display.get("content","")) if _diary_display else ""
+    diary_mood        = (_diary_display.get("mood") or "").strip()    if _diary_display else ""
+    diary_mood_emoji  = _mood_emojis.get(diary_mood, "")
+    diary_topic       = (_diary_display.get("topic") or "").strip()   if _diary_display else ""
+    diary_date        = _diary_display.get("date","")                  if _diary_display else ""
+    diary_is_today    = today_diary is not None
+
     # Today's calendar tasks: exact date match OR daily repeat, not trashed
     _priority_order = {"red": 0, "orange": 1, "blue": 2, "gray": 3}
     today_tasks = [
@@ -342,6 +474,12 @@ def today_page():
         net_savings      = net_savings,
         today_tasks      = today_tasks,
         user             = current_user,
+        diary_text       = diary_text,
+        diary_mood       = diary_mood,
+        diary_mood_emoji = diary_mood_emoji,
+        diary_topic      = diary_topic,
+        diary_date       = diary_date,
+        diary_is_today   = diary_is_today,
     )
 
 # ================= RUN =================

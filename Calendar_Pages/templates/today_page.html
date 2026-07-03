@@ -7,8 +7,15 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded">
     <link rel="stylesheet" href="/calendar_static/mystyle.css">
     <link rel="stylesheet" href="/calendar_static/today_page.css">
+    <script src="/calendar_static/themecolor.js"></script>
+    <script>
+    (function(){
+        var t = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+        setTheme(t);
+    })();
+    </script>
 </head>
-<body>
+<body class="{{ user.theme if user and user.theme else 'mocha' }}">
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar">
@@ -52,18 +59,36 @@
             <div class="tp-col-body">
                 <div class="tp-mood-row">
                     <span class="tp-mood-label">Today's Mood</span>
-                    <span class="tp-mood-val tp-mood-placeholder">— Coming soon</span>
+                    {% if diary_mood %}
+                    <span class="tp-mood-val">{{ diary_mood_emoji }} {{ diary_mood }}</span>
+                    {% else %}
+                    <span class="tp-mood-val tp-mood-placeholder">— Not recorded</span>
+                    {% endif %}
                 </div>
                 <div class="tp-diary-card">
-                    <div class="tp-diary-card-label">Today's Diary Entry</div>
-                    <p class="tp-diary-card-text">
-                        Your diary entry will appear here once the Diary module is connected.
-                    </p>
-                    <span class="tp-diary-time">Diary integration coming soon</span>
+                    {% if diary_is_today %}
+                    <div class="tp-diary-card-label">Today's Entry</div>
+                    {% elif diary_date %}
+                    <div class="tp-diary-card-label">Last Entry · {{ diary_date }}</div>
+                    {% else %}
+                    <div class="tp-diary-card-label">No entries yet</div>
+                    {% endif %}
+
+                    {% if diary_text %}
+                    <p class="tp-diary-card-text">{{ diary_text }}</p>
+                    {% elif diary_topic %}
+                    <p class="tp-diary-card-text"><em>{{ diary_topic }}</em></p>
+                    {% else %}
+                    <p class="tp-diary-card-text tp-diary-empty">Nothing written yet — tap Open Diary to start.</p>
+                    {% endif %}
+
+                    {% if diary_date and not diary_is_today %}
+                    <span class="tp-diary-time">{{ diary_date }}</span>
+                    {% endif %}
                 </div>
             </div>
             <div class="tp-col-foot">
-                <button class="tp-open-btn tp-btn-diary" disabled>Open Diary &rsaquo;</button>
+                <a href="/journal" class="tp-open-btn tp-btn-diary">Open Diary &rsaquo;</a>
             </div>
         </div>
 
@@ -135,7 +160,7 @@
             <div class="tp-col-head">
                 <span class="tp-col-icon">📅</span>
                 <span class="tp-col-title">Today's Events</span>
-                <span class="tp-view-all">View Calendar</span>
+                <a href="/calendar?view=calendar" class="tp-view-all">View Calendar</a>
             </div>
             {% set priority_label = {'red': 'High', 'orange': 'Medium', 'blue': 'Low', 'gray': 'No Priority'} %}
             <div class="tp-col-body">
@@ -263,23 +288,6 @@
 
 </div><!-- /.tp-page -->
 
-<!-- THEME POPUP -->
-<div id="themePopup" class="theme-popup">
-    <div class="theme-popup-content">
-        <div class="theme-popup-header">
-            <h2><span class="material-symbols-rounded">palette</span> Choose Theme</h2>
-            <button class="theme-close-btn" onclick="closeThemePopup()">✕</button>
-        </div>
-        <div class="theme-grid">
-            <div class="theme-card" onclick="setTheme('mocha')">Mocha Latte</div>
-            <div class="theme-card" onclick="setTheme('lavender')">Lavender Dream</div>
-            <div class="theme-card" onclick="setTheme('matcha')">Matcha Green</div>
-            <div class="theme-card" onclick="setTheme('ash')">Ash Gray</div>
-        </div>
-    </div>
-</div>
-
-<script src="/calendar_static/themecolor.js"></script>
 <script>
 (function () {
     // Date display
@@ -292,17 +300,27 @@
     document.getElementById('tp-day').textContent = days[now.getDay()];
 
     // Donut chart
-    const totals = {{ category_totals | tojson }};
+    const totals  = {{ category_totals | tojson }};
+    const theme   = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
     const canvas  = document.getElementById('tp-donut');
     const ctx     = canvas.getContext('2d');
     const entries = Object.entries(totals);
     const total   = entries.reduce((s, [, v]) => s + v, 0);
-    const colors  = ['#8b6b4f','#c4a882','#e07b54','#d9c3ad','#b18a68','#7a5c3f','#f0d4b8'];
+
+    const colorMap = {
+        mocha:    ['#8b6b4f','#c4a882','#e07b54','#d9c3ad','#b18a68','#7a5c3f','#f0d4b8'],
+        lavender: ['#7c5cff','#9a83ff','#5c3fd8','#b89bff','#d8cfff','#ebe3ff','#c4a882'],
+        matcha:   ['#5e8b6a','#8db79a','#3d6e4e','#a8c8b0','#b8d4be','#d7e7da','#eef6f0'],
+        ash:      ['#5f5f5f','#8c8c8c','#3d3d3d','#a0a0a0','#bdbdbd','#dddddd','#f0f0f0'],
+    };
+    const emptyMap = { mocha: '#e8ddd1', lavender: '#ece7f7', matcha: '#d7e7da', ash: '#dddddd' };
+    const colors   = colorMap[theme] || colorMap.mocha;
+    const empty    = emptyMap[theme]  || emptyMap.mocha;
 
     if (total === 0) {
         ctx.beginPath();
         ctx.arc(40, 40, 28, 0, Math.PI * 2);
-        ctx.strokeStyle = '#e8ddd1';
+        ctx.strokeStyle = empty;
         ctx.lineWidth   = 14;
         ctx.stroke();
     } else {
@@ -322,10 +340,6 @@
         ctx.fillStyle = '#ffffff';
         ctx.fill();
     }
-
-    // Apply saved theme
-    const savedTheme = {{ ((user.theme if user and user.theme else 'mocha')) | tojson }};
-    if (typeof setTheme === 'function') setTheme(savedTheme);
 })();
 </script>
 

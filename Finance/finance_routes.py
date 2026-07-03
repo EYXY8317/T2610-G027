@@ -975,5 +975,5 @@ def finance_home():
         wallpaper=get_user_wallpaper(),
         user=get_current_user(),
         savings_rate=savings_rate,
-        theme=(current_user or {}).get("theme", "adaptive"),
+        theme=(current_user or {}).get("theme", "mocha"),
     )

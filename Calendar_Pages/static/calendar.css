@@ -1,5 +1,5 @@
 /* ==================================================
-   1. CALENDAR CONTAINER
+   1.CALENDAR CONTAINER
 ================================================== */
 
 .calendar{
@@ -39,6 +39,40 @@
     font-weight:700;
 
     color:#2f2f52;
+
+}
+
+
+/* =====================================
+   WEEKDAY HEADER
+   Display weekday names
+   显示星期标题
+===================================== */
+
+.weekday-header{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(7,1fr);
+
+    gap:14px;
+
+    margin-bottom:16px;
+
+}
+
+.weekday-header div{
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:var(--primary);
+
+    padding:10px 0;
 
 }
 
@@ -480,238 +514,6 @@
 }
 
 /* ==================================================
-   CALENDAR POPUP
-================================================== */
-
-.calendar-popup{
-
-    display:none;
-
-    position:fixed;
-
-    width:420px;
-
-    max-height:75vh;
-
-    overflow-y:auto;
-
-    background:white;
-
-    border:1px solid var(--primary-border);
-
-    border-radius:24px;
-
-    padding:24px;
-
-    box-shadow:
-    0 10px 35px var(--shadow-medium);
-
-    z-index:9999;
-
-}
-
-/* ==================================================
-   POPUP HEADER
-================================================== */
-
-.popup-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:24px;
-
-}
-
-.popup-header h3{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    font-size:20px;
-
-    color:#2f2f52;
-
-}
-
-
-/* ==================================================
-   CLOSE BUTTON
-================================================== */
-
-.popup-close-btn{
-
-    width:36px;
-
-    height:36px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:var(--primary-light);
-
-    color:var(--primary);
-
-    font-size:20px;
-
-    cursor:pointer;
-
-}
-
-
-/* ==================================================
-   POPUP SECTION
-================================================== */
-
-.popup-section{
-
-    margin-bottom:20px;
-
-}
-
-
-/* ==================================================
-   LABEL
-================================================== */
-
-.popup-section label{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    margin-bottom:10px;
-
-    font-size:14px;
-
-    font-weight:600;
-
-    color:#5d5b7d;
-
-}
-
-
-/* ==================================================
-   INPUT + SELECT
-================================================== */
-
-.popup-section input,
-.popup-section select{
-
-    width:100%;
-
-    padding:12px 14px;
-
-    border-radius:14px;
-
-    border:1px solid var(--primary-border);
-
-    background:var(--primary-light);
-
-    outline:none;
-
-}
-
-
-/* ==================================================
-   TIME ROW
-================================================== */
-
-.time-row{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-}
-
-.time-row input{
-
-    flex:1;
-
-}
-
-
-/* ==================================================
-   CUSTOM BOX
-================================================== */
-
-.hidden-box{
-
-    margin-top:12px;
-
-}
-
-
-/* ==================================================
-   POPUP BUTTONS
-================================================== */
-
-.popup-buttons{
-
-    margin-top:24px;
-
-}
-
-
-
-/* ==================================================
-   SAVE BUTTON
-================================================== */
-
-.save-btn{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    border:none;
-
-    color:white;
-
-    cursor:pointer;
-
-    padding:12px 18px;
-
-    border-radius:14px;
-
-    background:
-    linear-gradient(
-        135deg,
-        var(--gradient-start),
-        var(--gradient-end)
-    );
-
-}
-
-
-/* ==================================================
-   FULL WIDTH SAVE BUTTON
-================================================== */
-
-.full-width-btn{
-
-    width:100%;
-
-    justify-content:center;
-
-}
-
-
-/* ==================================================
   2. CALENDAR DAY MODAL
 ================================================== */
 
@@ -1039,9 +841,6 @@
     background:var(--primary-hover);
 
 }
-
-
-
 
 
 /* ==================================================

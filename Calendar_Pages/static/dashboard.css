@@ -11,9 +11,11 @@ body{
 
     padding:110px 20px 20px;
 
-    background:#f7f3ee;
+    background:var(--background, #f7f3ee);
 
     color:#3b2f2a;
+
+    transition: background 0.35s ease;
 
 }
 
@@ -39,7 +41,7 @@ body{
     width:calc(100% - 80px);
     max-width:1400px;
     background:white;
-    border:1px solid #eee4da;
+    border:1px solid var(--primary-border, #eee4da);
     border-radius:60px;
     padding:10px 32px;
     display:grid;
@@ -67,7 +69,7 @@ body{
     width:52px;
     height:52px;
 
-    background:#f2e5d8;
+    background:var(--primary-light, #f2e5d8);
 
     border-radius:14px;
 
@@ -125,17 +127,17 @@ body{
 
 .nav-links a.active{
 
-    background:#8b5e3c;
+    background:var(--primary, #8b5e3c);
 
     color:white;
 
-    border:none;
+    border-color:var(--primary, #8b5e3c);
 
 }
 
 .nav-links a:hover{
 
-    background:#c9a88a;
+    background:var(--primary-accent, #c9a88a);
 
     color:white;
 
@@ -283,7 +285,9 @@ body{
 
     width:100%;
 
-    height:290px;
+    flex:1;
+
+    min-height:220px;
 
     border:none;
 
@@ -293,13 +297,13 @@ body{
 
     background:#faf6f1;
 
+    overflow:hidden;
+
 }
 
 .finance-preview.preview-box{
 
     height:auto;
-
-    flex:1;
 
 }
 
@@ -342,7 +346,7 @@ body{
 
 .finance-preview{
 
-    background:#f7f1ff;
+    background:#edf7f2;
 
     padding:22px;
 
@@ -537,9 +541,9 @@ body{
     display: flex;
     flex-direction: column;
     gap: 6px;
-    background: #f5f3ff;
+    background: #e0f2e9;
 }
-.fin-tile-savings { background: #f0fdf4; }
+.fin-tile-savings { background: #e8f7ef; }
 .fin-tile-label {
     font-size: 13px;
     font-weight: 600;
@@ -550,7 +554,7 @@ body{
     font-weight: 700;
     color: #2f2521;
 }
-.fin-savings-pct { color: #7c3aed; }
+.fin-savings-pct { color: #2e7a4e; }
 .fin-tile-change {
     font-size: 13px;
     font-weight: 600;
@@ -565,13 +569,13 @@ body{
 .fin-tile-sub { font-size: 13px; color: #888; }
 .fin-savings-bar-bg {
     height: 5px;
-    background: #e9d5ff;
+    background: #c4e8d4;
     border-radius: 99px;
     overflow: hidden;
 }
 .fin-savings-bar-fill {
     height: 100%;
-    background: #7c3aed;
+    background: #72bf8e;
     border-radius: 99px;
     max-width: 100%;
 }
@@ -582,7 +586,7 @@ body{
 
     padding:18px;
 
-    background:#fff2f4;
+    background:#fff0f5;
 
 }
 
@@ -590,7 +594,7 @@ body{
 
 .diary-label{
 
-    color:#ff6f8f;
+    color:#e87da0;
 
     font-size:12px;
 
@@ -644,7 +648,7 @@ body{
 
 .calendar-preview{
 
-    background:#f5f8ed;
+    background:#f5eee7;
 
     padding:18px;
 
@@ -662,7 +666,7 @@ body{
 
     font-weight:600;
 
-    color:#55663a;
+    color:#8b6b4f;
 
     font-size:16px;
 
@@ -680,7 +684,7 @@ body{
 
     font-size:10px;
 
-    color:#95a07b;
+    color:#c4a882;
 
     margin-bottom:14px;
 
@@ -730,7 +734,7 @@ body{
 
 .calendar-grid span:hover{
 
-    background:#edf3df;
+    background:#f5eee7;
 
 }
 
@@ -738,14 +742,14 @@ body{
 
 .active-day{
 
-    background:#8aa05a;
+    background:#8b6b4f;
 
     color:white !important;
 
     font-weight:600;
 
     box-shadow:
-    0 4px 10px rgba(138,160,90,0.25);
+    0 4px 10px rgba(139,107,79,0.25);
 
 }
 
@@ -757,7 +761,7 @@ body{
 
     font-size:12px;
 
-    color:#7c9b4d;
+    color:#8b6b4f;
 
     display:flex;
 
@@ -766,3 +770,134 @@ body{
     gap:6px;
 
 }
+
+/* ================= FINANCE BAR CHART ================= */
+
+.fin-mini-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    align-self: flex-start;
+}
+
+.fin-badge-up      { background: #fee2e2; color: #991b1b; }
+.fin-badge-down    { background: #dcfce7; color: #15803d; }
+.fin-badge-neutral { background: #f3f4f6; color: #6b7280; }
+
+.fin-chart-area {
+    margin: 10px 0 12px;
+    padding: 10px 0 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.fin-chart-title {
+    font-size: 12px;
+    color: #888;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.fin-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 8px;
+    height: 110px;
+    margin-top: 8px;
+}
+
+.fin-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+}
+
+.fin-bar-amount {
+    font-size: 10px;
+    color: #888;
+    min-height: 14px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.fin-bar {
+    width: 100%;
+    max-width: 44px;
+    background: #72bf8e;
+    border-radius: 6px 6px 0 0;
+    transition: height 0.3s ease;
+}
+
+.fin-bar-label {
+    font-size: 11px;
+    color: #888;
+    font-weight: 600;
+}
+
+/* ================= DIARY MOOD ROW ================= */
+
+.diary-mood-row {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #e87da0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ================= CALENDAR TASK DOTS ================= */
+
+.cal-empty {
+    visibility: hidden;
+}
+
+.calendar-preview .calendar-grid {
+    gap: 6px;
+}
+
+.calendar-preview .calendar-grid span {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+    position: relative;
+}
+
+.calendar-grid span.has-task:not(.active-day)::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #8b6b4f;
+}
+
+/* ================= PER-CARD COLOURS ================= */
+
+/* Finance — pastel green */
+.card-finance .icon-box       { background: #e0f2e9; }
+.card-finance:hover           { border-color: #a8d9bc; }
+.card-finance .card-btn       { background: #e8f5ee; color: #2e7a4e; }
+.card-finance .card-btn:hover { background: #72bf8e; color: white; }
+
+/* Diary — pink */
+.card-diary .icon-box       { background: #fce8ef; }
+.card-diary:hover           { border-color: #f0a8c0; }
+.card-diary .card-btn       { background: #fce8ef; color: #8b1a40; }
+.card-diary .card-btn:hover { background: #e87da0; color: white; }
+
+/* Calendar — mocha */
+.card-calendar .icon-box       { background: #f5eee7; }
+.card-calendar:hover           { border-color: #d9c3ad; }
+.card-calendar .card-btn       { background: #f5eee7; color: #7b5a40; }
+.card-calendar .card-btn:hover { background: #c4a882; color: white; }
