@@ -6,17 +6,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
 /* ===== THEMES =====
-   "Classic" is the default (root values, no body class needed).
-   Theme select toggles one of the classes below on <body>. */
+   "Classic" is the default (root values, no body class needed) and
+   follows the site-wide theme (set via Settings) since neither the
+   user nor this diary page has picked its own theme yet. Picking
+   Dark/Ocean/Blush from the diary's own theme select overrides that
+   with fixed colors by toggling one of the classes below on <body>. */
 :root {
-    --diary-bg: #F2EFE9;
+    --diary-bg: var(--background, #F2EFE9);
     --diary-canvas-bg: #faf6ee;
     --diary-canvas-border: #ddd8cf;
     --diary-grid-line: rgba(180,170,155,0.25);
     --diary-text: #2a2a2a;
     --diary-caret: #888;
-    --diary-accent: #8b5e3c;
-    --diary-accent-hover: #c9a88a;
+    --diary-accent: var(--primary, #8b5e3c);
+    --diary-accent-hover: var(--primary-accent, #c9a88a);
     --diary-quote-bg: #ebe7e0;
     --diary-quote-text: #555;
     --diary-date-color: #1a1a1a;

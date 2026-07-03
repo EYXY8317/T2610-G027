@@ -24,10 +24,8 @@ function openThemePopup(){
 function closeThemePopup(){
 
     // Hide the theme popup window
-
-    document
-        .getElementById("themePopup")
-        .classList.remove("show");
+    const popup = document.getElementById("themePopup");
+    if(popup) popup.classList.remove("show");
 
 }
 
@@ -38,6 +36,9 @@ function closeThemePopup(){
 ================================================== */
 
 function setTheme(theme){
+
+    // Cache theme so other pages can apply it instantly
+    try{ localStorage.setItem('lifepages-theme', theme); }catch(e){}
 
     /* =====================================
        MOCHA LATTE THEME
@@ -377,9 +378,10 @@ function setTheme(theme){
     ===================================== */
 
     // Refresh progress ring using new theme colors
-    updateProgress();
+    if(typeof updateProgress === 'function') updateProgress();
 
     // Close theme popup
-    closeThemePopup();
-    
+    const _popup = document.getElementById("themePopup");
+    if(_popup) _popup.classList.remove("show");
+
 }

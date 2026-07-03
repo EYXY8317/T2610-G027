@@ -23,9 +23,10 @@
         "priority": "red",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "work",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-07-02T06:20:54.170Z"
     },
     {
         "id": 1781717918193,
@@ -156,10 +157,10 @@
         "priority": "red",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "shopping",
         "username": "moonlit_xiny",
-        "completedDate": "2026-06-19T09:58:50.111Z"
+        "completedDate": "2026-07-02T06:25:57.928Z"
     },
     {
         "id": 1781953370714,
@@ -171,9 +172,10 @@
         "priority": "orange",
         "tag": "meeting",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "study",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-07-02T06:27:12.970Z"
     },
     {
         "id": 1781973928660,
@@ -200,9 +202,10 @@
         "priority": "blue",
         "tag": "",
         "description": "",
-        "status": "active",
+        "status": "completed",
         "category": "workout",
-        "username": "moonlit_xiny"
+        "username": "moonlit_xiny",
+        "completedDate": "2026-07-02T06:31:43.988Z"
     },
     {
         "id": 1781974041877,
@@ -388,5 +391,48 @@
         "status": "trash",
         "category": "shopping",
         "username": "ZOEY"
+    },
+    {
+        "id": 1782824440673,
+        "text": "FFF",
+        "date": "2026-06-30",
+        "startTime": "21:00",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "",
+        "tag": "",
+        "description": "",
+        "status": "completed",
+        "category": "personal",
+        "username": "moonlit_xiny",
+        "completedDate": "2026-07-02T06:30:23.335Z"
+    },
+    {
+        "id": 1782891984129,
+        "text": "Normal Day",
+        "date": "2026-07-01",
+        "startTime": "15:46",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "red",
+        "tag": "",
+        "description": "",
+        "status": "active",
+        "category": "personal",
+        "username": "moonlit_xiny"
+    },
+    {
+        "id": 1782973192260,
+        "text": "77777",
+        "date": "2026-07-02",
+        "startTime": "14:20",
+        "endTime": "",
+        "repeat": "none",
+        "priority": "gray",
+        "tag": "number",
+        "description": "",
+        "status": "active",
+        "category": "work",
+        "username": "moonlit_xiny"
     }
 ]

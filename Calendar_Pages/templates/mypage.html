@@ -17,25 +17,42 @@
 <body>
 
 <nav class="navbar">
+
     <div class="logo-section">
+
         <div class="logo-box">
             <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
         </div>
+
         <div class="logo-text">Life Pages</div>
+
     </div>
+
     <div class="nav-links">
+
         <a href="/dashboard">Home</a>
+
         <a href="/today">Today</a>
+
         <a href="/finance">Finance Page</a>
+
         <a href="/journal">Diary Page</a>
+
         <a href="/calendar" class="active">Calendar Page</a>
+
          <a href="/profile">Settings</a>
+
     </div>
+
 </nav>
+
+
+<!-- =====================================
+     SIDEBAR
+===================================== -->
 
 <div class="container">
 
-    <!-- Sidebar -->
     <div class="sidebar">
 
         <div class="logo">
@@ -150,16 +167,6 @@
 
     </div>
 
-   <div class="menu-item"
-        onclick="openThemePopup()">
-
-    <span class="material-symbols-rounded">
-         palette
-    </span>
-
-    <span>Theme</span>
-
-</div>
 
 </div>
 
@@ -186,7 +193,11 @@
 
 </div>   
 
-<!-- TODAY PAGE -->
+
+<!-- =====================================
+     TODAY TASK
+===================================== -->
+
 <div id="today" class="page active">
 
     <!-- TODAY HEADER -->
@@ -402,7 +413,11 @@
 
 </div>
 
-<!-- Work -->
+
+<!-- =====================================
+     TO DO LIST 
+===================================== -->
+
 <div id="work" class="page">
 
     <h2 class="page-title">
@@ -642,9 +657,11 @@
 
 </div>
 
-<!-- ==================================================
-     CALENDAR 
-================================================== -->
+
+<!-- =====================================
+     CALENDAR
+===================================== -->
+
 <div id="calendar" class="page">
 
     <!-- Header（两个视图都显示） -->
@@ -712,23 +729,45 @@
 
     <!-- Month View -->
     <div id="monthView">
+
         <div class="calendar">
+
+            <div class="weekday-header">
+
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+
+        </div>
+
             <div id="calendarDays" class="days"></div>
         </div>
     </div>
 
     <!-- Year View -->
     <div id="yearView" class="year-view">
+
         <div class="year-header">
+
             <h2 id="yearTitle"></h2>
+
         </div>
+
         <div id="yearGrid"></div>
+
     </div>
 
  </div>
 
 
-<!-- COMPLETED PAGE -->
+<!-- =====================================
+     COMPLETE
+===================================== -->
+
 <div id="completed" class="page">
 
     <h2 class="page-title">
@@ -811,7 +850,11 @@
 
 </div>
 
-<!-- TRASH PAGE -->
+
+<!-- =====================================
+     TRASH
+===================================== -->
+
 <div id="trash" class="page">
 
     <div class="page-header">
@@ -846,6 +889,9 @@
 </div>
 
 
+<!-- =====================================
+     POPUP
+===================================== -->
 
 <!-- CALENDAR POPUP -->
 <div id="calendarPopup" class="calendar-popup">
@@ -1050,6 +1096,10 @@
 
 </div>
 
+
+<!-- =====================================
+     Detail Panel
+===================================== -->
 
 <!-- Editable Task Detail Panel -->
 <div id="taskDetailPanel" class="task-detail-panel">
@@ -1335,85 +1385,24 @@
 </div>
 
 
-<!-- THEME POPUP -->
-
-<div id="themePopup"
-     class="theme-popup">
-
-    <div class="theme-popup-content">
-
-        <div class="theme-popup-header">
-
-            <h2>
-
-                <span class="material-symbols-rounded">
-                    palette
-                </span>
-
-                Choose Theme
-
-            </h2>
-
-           <button
-            class="theme-close-btn"
-            onclick="closeThemePopup()">
-
-             ✕
-
-            </button>
-
-    </div>
-
-        <div class="theme-grid">
-
-            <div class="theme-card"
-                 onclick="setTheme('mocha')">
-
-                 Mocha Latte
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('lavender')">
-
-                 Lavender Dream
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('matcha')">
-
-                 Matcha Green
-
-            </div>
-
-            <div class="theme-card"
-                 onclick="setTheme('ash')">
-
-                 Ash Gray
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
 <!-- =====================================
      JS FILES
 ===================================== -->
 
-<script src="/calendar_static/task1.js"></script>
-
-<script src="/calendar_static/task2.js"></script>
+<script src="/calendar_static/task.js"></script>
 
 <script src="/calendar_static/calendar.js"></script>
 
 <script src="/calendar_static/today.js"></script>
 
 <script src="/calendar_static/themecolor.js"></script>
+
+<script>
+(function(){
+    const savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+    setTheme(savedTheme);
+})();
+</script>
 
 
 

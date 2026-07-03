@@ -1,5 +1,5 @@
 /* =====================================
-   THEME VARIABLES 主题色（棕色）
+   1.THEME VARIABLES 主题色（棕色）
 ===================================== */
 
 :root{
@@ -49,7 +49,7 @@
 
 
 /* ==================================================
-   GLOBAL SETTINGS
+   2.GLOBAL SETTINGS
 ================================================== */
 
 *{
@@ -70,6 +70,68 @@ body{
 
 }
 
+/* ==================================================
+   3.MATERIAL ICON SETTINGS
+================================================== */
+
+.material-symbols-rounded{
+
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24;
+
+}
+
+/* ==================================================
+   4.LAYOUT
+================================================== */
+
+/* ==================================================
+   MAIN LAYOUT
+================================================== */
+
+.container{
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/* ==================================================
+   MAIN CONTENT
+================================================== */
+
+.main{
+
+    flex:1;
+
+    padding:32px 40px;
+
+}
+
+
+/* ==================================================
+   PAGE DISPLAY
+================================================== */
+
+.page{
+
+    display:none;
+
+}
+
+.page.active{
+
+    display:block;
+
+}
+
+/* ==================================================
+   5.NAVIGATION
+================================================== */
 
 /* ==================================================
    NAVBAR
@@ -214,21 +276,10 @@ body{
 
 }
 
-/* ==================================================
-   MAIN LAYOUT
-================================================== */
-
-.container{
-
-    display:flex;
-
-    min-height:100vh;
-
-}
 
 
 /* ==================================================
-   SIDEBAR
+  6.SIDEBAR
 ================================================== */
 
 .sidebar{
@@ -358,34 +409,9 @@ body{
 
 }
 
-
 /* ==================================================
-   MATERIAL ICON SETTINGS
+   7.MAIN CONTENT
 ================================================== */
-
-.material-symbols-rounded{
-
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 300,
-    'GRAD' 0,
-    'opsz' 24;
-
-}
-
-
-/* ==================================================
-   MAIN CONTENT
-================================================== */
-
-.main{
-
-    flex:1;
-
-    padding:32px 40px;
-
-}
-
 
 /* ==================================================
    TOPBAR
@@ -402,7 +428,6 @@ body{
     margin-bottom:32px;
 
 }
-
 
 /* ==================================================
    SEARCH BOX
@@ -454,21 +479,18 @@ body{
 }
 
 /* ==================================================
-   PAGE DISPLAY
+   PAGE HEADER
 ================================================== */
 
-.page{
+.page-header{
 
-    display:none;
+    display:flex;
 
-}
+    align-items:center;
 
-.page.active{
-
-    display:block;
+    margin-bottom:24px;
 
 }
-
 
 
 /* ==================================================
@@ -565,53 +587,8 @@ body{
 }
 
 /* ==================================================
-   TASK INPUT CONTAINER
+   8.SHARED COMPONENTS（共用组件)
 ================================================== */
-
-.task-input{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-    background:white;
-
-    border:1px solid var(--primary-border);
-
-    border-radius:24px;
-
-    padding:16px 18px;
-
-    margin-bottom:24px;
-
-    box-shadow:
-    0 6px 20px var(--shadow-light);
-
-}
-
-
-/* ==================================================
-   TASK INPUT FIELD
-================================================== */
-
-.task-input input{
-
-    flex:1;
-
-    border:none;
-
-    outline:none;
-
-    background:transparent;
-
-    font-size:18px;
-
-    color:#3b3b5f;
-
-}
-
 
 /* ==================================================
    ICON BUTTONS
@@ -658,6 +635,47 @@ body{
 
 }
 
+/* ==================================================
+   ACTION BUTTON
+================================================== */
+
+.task-action-btn{
+
+    width:38px;
+
+    height:38px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--primary-light);
+
+    border:1px solid var(--primary-border);
+
+    cursor:pointer;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    transition:0.25s;
+
+}
+
+.task-action-btn:hover{
+
+    background:var(--primary-hover);
+
+}
+
+.task-action-btn .material-symbols-rounded{
+
+    color:var(--primary);
+
+}
 
 /* ==================================================
    ADD BUTTON
@@ -703,6 +721,308 @@ body{
 
 }
 
+/* ==================================================
+   EMPTY STATE
+================================================== */
+
+.empty{
+
+    background:white;
+
+    border-radius:24px;
+
+    border:1px dashed var(--primary-border);
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#a4a1bf;
+
+}
+
+/* ==================================================
+   CALENDAR图标 POPUP
+================================================== */
+
+.calendar-popup{
+
+    display:none;
+
+    position:absolute;
+
+    width:420px;
+
+    max-height:75vh;
+
+    overflow-y:auto;
+
+    background:white;
+
+    border:1px solid var(--primary-border);
+
+    border-radius:24px;
+
+    padding:24px;
+
+    box-shadow:
+    0 10px 35px var(--shadow-medium);
+
+    z-index:9999;
+
+}
+
+/* ==================================================
+   POPUP HEADER
+================================================== */
+
+.popup-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.popup-header h3{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:20px;
+
+    color:#2f2f52;
+
+}
+
+
+/* ==================================================
+   CLOSE BUTTON
+================================================== */
+
+.popup-close-btn{
+
+    width:36px;
+
+    height:36px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:var(--primary-light);
+
+    color:var(--primary);
+
+    font-size:20px;
+
+    cursor:pointer;
+
+}
+
+
+/* ==================================================
+   POPUP SECTION
+================================================== */
+
+.popup-section{
+
+    margin-bottom:20px;
+
+}
+
+
+/* ==================================================
+   LABEL
+================================================== */
+
+.popup-section label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#5d5b7d;
+
+}
+
+
+/* ==================================================
+   INPUT + SELECT
+================================================== */
+
+.popup-section input,
+.popup-section select{
+
+    width:100%;
+
+    padding:12px 14px;
+
+    border-radius:14px;
+
+    border:1px solid var(--primary-border);
+
+    background:var(--primary-light);
+
+    outline:none;
+
+}
+
+
+/* ==================================================
+   TIME ROW
+================================================== */
+
+.time-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.time-row input{
+
+    flex:1;
+
+}
+
+
+/* ==================================================
+   CUSTOM BOX
+================================================== */
+
+.hidden-box{
+
+    margin-top:12px;
+
+}
+
+
+/* ==================================================
+   POPUP BUTTONS
+================================================== */
+
+.popup-buttons{
+
+    margin-top:24px;
+
+}
+
+
+
+/* ==================================================
+   SAVE BUTTON
+================================================== */
+
+.save-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    padding:12px 18px;
+
+    border-radius:14px;
+
+    background:
+    linear-gradient(
+        135deg,
+        var(--gradient-start),
+        var(--gradient-end)
+    );
+
+}
+
+
+/* ==================================================
+   FULL WIDTH SAVE BUTTON
+================================================== */
+
+.full-width-btn{
+
+    width:100%;
+
+    justify-content:center;
+
+}
+
+/* ==================================================
+   9.TASK COMPONENTS
+================================================== */
+
+/* ==================================================
+   TASK INPUT CONTAINER
+================================================== */
+
+.task-input{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    background:white;
+
+    border:1px solid var(--primary-border);
+
+    border-radius:24px;
+
+    padding:16px 18px;
+
+    margin-bottom:24px;
+
+    box-shadow:
+    0 6px 20px var(--shadow-light);
+
+}
+
+
+/* ==================================================
+   TASK INPUT FIELD
+================================================== */
+
+.task-input input{
+
+    flex:1;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:18px;
+
+    color:#3b3b5f;
+
+}
 
 /* ==================================================
    TASK CARD
@@ -861,7 +1181,6 @@ body{
 
 }
 
-
 /* ==================================================
    PRIORITY
 ================================================== */
@@ -891,69 +1210,6 @@ body{
 
 
 /* ==================================================
-   ACTION BUTTON
-================================================== */
-
-.task-action-btn{
-
-    width:38px;
-
-    height:38px;
-
-    border:none;
-
-    border-radius:12px;
-
-    background:var(--primary-light);
-
-    border:1px solid var(--primary-border);
-
-    cursor:pointer;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    transition:0.25s;
-
-}
-
-.task-action-btn:hover{
-
-    background:var(--primary-hover);
-
-}
-
-.task-action-btn .material-symbols-rounded{
-
-    color:var(--primary);
-
-}
-
-
-/* ==================================================
-   EMPTY STATE
-================================================== */
-
-.empty{
-
-    background:white;
-
-    border-radius:24px;
-
-    border:1px dashed var(--primary-border);
-
-    padding:50px;
-
-    text-align:center;
-
-    color:#a4a1bf;
-
-}
-
-/* ==================================================
    PRIORITY FLAGS
 ================================================== */
 
@@ -981,77 +1237,9 @@ body{
 
 }
 
-
-/* Flag icon size */
-
-.priority-box .material-symbols-rounded{
-
-    font-size:18px;
-
-    vertical-align:middle;
-
-}
-
-
 /* ==================================================
-   SELECTED PRIORITY
+   10.PANEL COMPONENTS
 ================================================== */
-
-.priority-selected{
-
-    background:var(--primary-light) !important;
-
-    border:1px solid var(--primary-accent) !important;
-
-    font-weight:600;
-
-}
-
-
-/* ==================================================
-   PRIORITY OPTIONS
-================================================== */
-
-.priority-box{
-
-    display:flex;
-
-    flex-wrap:wrap;
-
-    gap:10px;
-
-}
-
-.priority-box span{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    padding:10px 14px;
-
-    border-radius:14px;
-
-    background:var(--primary-light);
-
-    border:1px solid var(--primary-border);
-
-    cursor:pointer;
-
-    transition:0.25s;
-
-}
-
-
-.priority-box span:hover{
-
-    background:var(--primary-hover);
-
-}
-
-
 
 /* ==================================================
    TASK DETAIL PANEL
@@ -1301,18 +1489,161 @@ body{
 }
 
 /* ==================================================
-   PAGE HEADER
+   PRIORITY OPTIONS
 ================================================== */
 
-.page-header{
+.priority-box{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+.priority-box span{
 
     display:flex;
 
     align-items:center;
 
-    margin-bottom:24px;
+    gap:6px;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    background:var(--primary-light);
+
+    border:1px solid var(--primary-border);
+
+    cursor:pointer;
+
+    transition:0.25s;
 
 }
+
+
+.priority-box span:hover{
+
+    background:var(--primary-hover);
+
+}
+
+/* Flag icon size */
+
+.priority-box .material-symbols-rounded{
+
+    font-size:18px;
+
+    vertical-align:middle;
+
+}
+
+/* ==================================================
+   SELECTED PRIORITY
+================================================== */
+
+.priority-selected{
+
+    background:var(--primary-light) !important;
+
+    border:1px solid var(--primary-accent) !important;
+
+    font-weight:600;
+
+}
+
+
+/* ==================================================
+   11.TAG COMPONENTS
+================================================== */
+
+/* ==================================================
+   TAG INPUT WRAPPER
+   Allows suggestion dropdown positioning
+================================================== */
+
+.tag-wrapper{
+
+    position:relative;
+
+}
+
+
+/* ==================================================
+   TAG SUGGESTION DROPDOWN
+   Appears below tag input field
+================================================== */
+
+.tag-suggestions{
+
+    display:none;
+
+    position:absolute;
+
+    top:100%;
+
+    left:0;
+
+    width:100%;
+
+    margin-top:6px;
+
+    background:white;
+
+    border:1px solid var(--primary-border);
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    max-height:180px;
+
+    overflow-y:auto;
+
+    z-index:9999;
+
+    box-shadow:
+    0 8px 24px var(--shadow-medium);
+
+}
+
+
+/* ==================================================
+   TAG SUGGESTION ITEM
+================================================== */
+
+.tag-suggestion{
+
+    padding:12px 16px;
+
+    cursor:pointer;
+
+    color:#4f4f73;
+
+    font-size:14px;
+
+    transition:0.2s;
+
+}
+
+
+/* ==================================================
+   TAG SUGGESTION HOVER
+================================================== */
+
+.tag-suggestion:hover{
+
+   background:var(--primary-light);
+
+   color:var(--primary);
+}
+
+/* ==================================================
+   12.TRASH PAGE
+================================================== */
 
 /* =====================================
    TRASH CATEGORY TITLE
@@ -1404,86 +1735,8 @@ body{
 }
 
 /* ==================================================
-   TAG INPUT WRAPPER
-   Allows suggestion dropdown positioning
+   13.COMPLETED PAGE
 ================================================== */
-
-.tag-wrapper{
-
-    position:relative;
-
-}
-
-
-/* ==================================================
-   TAG SUGGESTION DROPDOWN
-   Appears below tag input field
-================================================== */
-
-.tag-suggestions{
-
-    display:none;
-
-    position:absolute;
-
-    top:100%;
-
-    left:0;
-
-    width:100%;
-
-    margin-top:6px;
-
-    background:white;
-
-    border:1px solid var(--primary-border);
-
-    border-radius:14px;
-
-    overflow:hidden;
-
-    max-height:180px;
-
-    overflow-y:auto;
-
-    z-index:9999;
-
-    box-shadow:
-    0 8px 24px var(--shadow-medium);
-
-}
-
-
-/* ==================================================
-   TAG SUGGESTION ITEM
-================================================== */
-
-.tag-suggestion{
-
-    padding:12px 16px;
-
-    cursor:pointer;
-
-    color:#4f4f73;
-
-    font-size:14px;
-
-    transition:0.2s;
-
-}
-
-
-/* ==================================================
-   TAG SUGGESTION HOVER
-================================================== */
-
-.tag-suggestion:hover{
-
-   background:var(--primary-light);
-
-   color:var(--primary);
-}
-
 
 /* =====================================
    FILTER DROPDOWN
@@ -1702,7 +1955,11 @@ body{
 }
 
 /* =====================================
-   COMPLETE ANIMATION
+   14.COMPLETE ANIMATION / EFFECTS 
+===================================== */
+
+/* =====================================
+   COMPLETE ANIMATION (完成toast)
 ===================================== */
 
 .task-completing{
@@ -1729,12 +1986,11 @@ body{
 
     left:50%;
 
-    transform:
-        translateX(-50%);
+    transform:translateX(-50%);
 
-    background:var(--primary);
+    background:white;
 
-    color:white;
+    color:#2f2f52;
 
     padding:14px 24px;
 
@@ -1744,8 +2000,10 @@ body{
 
     font-weight:600;
 
+    border:1px solid #e5e7eb;
+
     box-shadow:
-        0 10px 25px var(--shadow-strong);
+        0 10px 25px rgba(0,0,0,.08);
 
     opacity:0;
 
@@ -1754,9 +2012,7 @@ body{
         opacity 0.4s ease;
 
     z-index:9999;
-
 }
-
 
 #toast.show{
 
@@ -1765,6 +2021,10 @@ body{
     opacity:1;
 
 }
+
+/* =====================================
+   15.POPUP / MODAL
+===================================== */
 
 /* =====================================
    CHANGES THEME COLOR 
