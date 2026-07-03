@@ -211,6 +211,14 @@ def dashboard():
         dash_today_tasks_count= dash_today_tasks_count,
     )
 
+# ================= SHARED STATIC (global page-transition effect) =================
+@app.route('/shared_static/<path:filename>')
+def shared_static(filename):
+    return send_from_directory(
+        os.path.join(BASE_DIR, 'shared_static'),
+        filename
+    )
+
 # ================= CALENDAR STATIC =================
 @app.route('/calendar_static/<path:filename>')
 def calendar_static(filename):

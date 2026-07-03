@@ -22,6 +22,7 @@
     (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
     </script>
 
+    <link rel="stylesheet" href="/shared_static/page-transitions.css">
 </head>
 
 <body
@@ -745,5 +746,6 @@ new Chart(document.getElementById("pieChart"), {
 
 {% endif %}
 
+    <script src="/shared_static/page-transitions.js" defer></script>
 </body>
 </html>

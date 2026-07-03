@@ -23,6 +23,7 @@
 (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
 </script>
 
+    <link rel="stylesheet" href="/shared_static/page-transitions.css">
 </head>
 
 <body
@@ -174,5 +175,6 @@ class="{{ user.theme if user else 'adaptive' }}"
 
 </div>
 
+    <script src="/shared_static/page-transitions.js" defer></script>
 </body>
 </html>

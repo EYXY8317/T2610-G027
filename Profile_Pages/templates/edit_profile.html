@@ -12,6 +12,7 @@
         setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
     })();
     </script>
+    <link rel="stylesheet" href="/shared_static/page-transitions.css">
 </head>
 <body class="{{ user.theme if user and user.theme else 'mocha' }}">
 
@@ -105,5 +106,6 @@ document.querySelectorAll('.file-input-hidden').forEach(function(input){
 });
 </script>
 
+    <script src="/shared_static/page-transitions.js" defer></script>
 </body>
 </html>

@@ -66,6 +66,7 @@
         .then(function(d){ setTheme(d.theme || 'mocha'); });
     </script>
 
+    <link rel="stylesheet" href="/shared_static/page-transitions.css">
 </head>
 
 <body>
@@ -170,6 +171,7 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
         src="/diary_home_static/js/main.js?v=2"
     ></script>
 
+    <script src="/shared_static/page-transitions.js" defer></script>
 </body>
 
 </html>
