@@ -1193,12 +1193,21 @@ document.addEventListener("DOMContentLoaded", function () {
             renderTasks(activePageId);
         }
     }
+    
+// =====================================
+// Search Input Events
+// 搜索输入事件
+// =====================================
 
+// Search while typing (250ms debounce)
+// 输入时延迟搜索（250 毫秒防抖）
     searchInput.addEventListener("input", () => {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(runSearch, 250);
     });
 
+// Search immediately when Enter is pressed
+// 按 Enter 键立即搜索
     searchInput.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
             clearTimeout(debounceTimer);
@@ -1206,12 +1215,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+// Show search results when input is focused
+// 输入框获得焦点时显示搜索结果
+
     searchInput.addEventListener("focus", () => {
         if (searchInput.value.trim() && searchResults.innerHTML) {
             searchResults.classList.add("open");
         }
     });
 
+// Hide search results when clicking outside
+// 点击外部时隐藏搜索结果
     document.addEventListener("click", (e) => {
         const box = document.getElementById("diarySearchBox");
         if (box && !box.contains(e.target)) {
