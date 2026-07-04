@@ -18,9 +18,11 @@
 
     <script src="/calendar_static/themecolor.js"></script>
     <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+    <script id="theme-data" type="application/json">{{ theme | tojson }}</script>
     <script>
     (function(){
-        setTheme({{ theme | tojson }} || 'mocha');
+        var theme = JSON.parse(document.getElementById('theme-data').textContent) || 'mocha';
+        setTheme(theme);
     })();
     </script>
 

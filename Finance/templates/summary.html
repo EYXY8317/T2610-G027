@@ -18,8 +18,12 @@
 
     <script src="/calendar_static/themecolor.js"></script>
     <script src="{{ url_for('static', filename='login-gate.js') }}"></script>
+    <script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
     <script>
-    (function(){ setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }}); })();
+    (function(){
+        var theme = JSON.parse(document.getElementById('theme-data').textContent);
+        setTheme(theme);
+    })();
     </script>
 
     <link rel="stylesheet" href="/shared_static/page-transitions.css">
@@ -29,24 +33,6 @@
 class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.ui_style else 'premium' }}"
 
 >
-
-
-<nav class="navbar">
-    <div class="logo-section">
-        <div class="logo-box">
-            <img src="/calendar_static/images/LifePages.png" alt="Life Pages">
-        </div>
-        <div class="logo-text">Life Pages</div>
-    </div>
-    <div class="nav-links">
-        <a href="/dashboard">Home</a>
-        <a href="/today">Today</a>
-        <a href="/finance" class="active">Finance Page</a>
-        <a href="/diary_homepage">Diary Page</a>
-        <a href="/calendar">Calendar Page</a>
-        <a href="/profile">Settings</a>
-    </div>
-</nav>
 
 <nav class="navbar">
     <div class="logo-section">
