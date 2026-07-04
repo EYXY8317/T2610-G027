@@ -1,3 +1,11 @@
+// 图片连续记录组件的设置面板：已上传照片的列表（每张都能裁剪✂或
+// 删除✕）、上传新照片的输入框、显示模式（手动切换/自动轮播）、
+// 要不要显示日期标签、自动轮播的时间间隔。
+// Settings panel for the Picture Streak widget: the list of already
+// uploaded photos (each with a crop ✂ and remove ✕ button), the new-photo
+// upload input, display mode (manual switching / auto-scroll), whether to
+// show the date label, and the auto-scroll interval.
+
 import {
     getPictureStreakState,
     SCROLL_INTERVALS

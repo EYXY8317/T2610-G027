@@ -10,6 +10,17 @@ import {
 }
 from "../dashboard/expandWidget.js";
 
+// "Weather Day" 组件：只显示"今天"这一天的详细天气（最高/最低/
+// 平均温度可选一个当主要显示、体感温度、湿度、城市名、更新时间等），
+// 并且会根据组件当前的实际大小，自动调整字体大小让内容刚好填满
+// （既不会太挤溢出，也不会显得太小太空）。
+// The "Weather Day" widget: shows detailed weather for just "today"
+// (choosing one of high/low/average temperature as the main display,
+// plus feels-like temperature, humidity, city name, update time, etc),
+// and automatically adjusts its font size to fit the widget's actual
+// current size (neither overflowing/too cramped, nor too small and
+// empty-looking).
+
 const STATE_KEY = "weather-day-state";
 
 const DEFAULT_STATE = {
@@ -79,6 +90,18 @@ function _applyFontSizes(body, base) {
     });
 }
 
+// 自动缩放算法：先用一个"已知的基准字号"（16px）把内容画一遍，
+// 量出这份内容实际需要多宽/多高（scrollWidth/scrollHeight）；
+// 再用"组件实际可用的宽高" ÷ "内容需要的宽高" 算出缩放倍数，
+// 取宽度缩放和高度缩放中较小的那个（保证两个方向都不会溢出），
+// 乘上基准字号，就是最终应该用的字号。
+// Auto-scale algorithm: first renders the content at a known baseline
+// font size (16px) to measure how much width/height it actually needs
+// (scrollWidth/scrollHeight); then divides the widget's actually
+// available width/height by that needed width/height to get a scale
+// factor, taking whichever of the width-scale or height-scale is smaller
+// (so neither direction overflows), and multiplies that by the baseline
+// font size to get the final size to use.
 function applyWeatherDayScale(widget) {
     if (!widget) return;
     const body = widget.querySelector(".wd-body");
@@ -178,6 +201,7 @@ export async function renderWeatherDay() {
             : "";
 
         // Secondary temperature: omit whichever value is already shown as the main.
+        // 次要温度：如果某个值已经被当作主要显示了，这里就不重复显示它。
         const secondaryParts = [
             state.tempDisplay !== "max" ? `↑ ${toDisplayTemp(tMax, unit)}` : "",
             state.tempDisplay !== "min" ? `↓ ${toDisplayTemp(tMin, unit)}` : ""
@@ -207,6 +231,15 @@ export async function renderWeatherDay() {
             </div>
         `;
 
+        // 用 requestAnimationFrame 等浏览器先把上面这段 HTML 真正画到
+        // 屏幕上，才能量出正确的 offsetWidth/offsetHeight，再执行
+        // 自动缩放；同时只在第一次渲染时注册"组件被手动调整大小"的
+        // 监听器，避免重复注册。
+        // Uses requestAnimationFrame to wait for the browser to actually
+        // paint the HTML above before measuring offsetWidth/offsetHeight
+        // and running the auto-scale; also only registers the "widget was
+        // manually resized" listener on the first render, to avoid
+        // registering it more than once.
         requestAnimationFrame(() => {
             const widget = document.getElementById("weather-day-widget");
             applyWeatherDayScale(widget);

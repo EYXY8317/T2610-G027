@@ -16,7 +16,7 @@
   {% elif show_register is defined and show_register %}show-register
   {% endif %}">
 
-  <!-- ========== LOGIN PANEL ========== -->
+  <!-- ========== LOGIN PANEL / 登录面板 ========== -->
   <div class="login-panel">
 
     <div class="left-panel">
@@ -61,7 +61,7 @@
     </div>
   </div>
 
-  <!-- ========== REGISTER PANEL ========== -->
+  <!-- ========== REGISTER PANEL / 注册面板 ========== -->
   <div class="register-panel">
 
     <div class="left-panel">
@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <!-- ========== FORGOT PASSWORD PANEL ========== -->
+  <!-- ========== FORGOT PASSWORD PANEL / 忘记密码面板 ========== -->
   <div class="forgot-panel">
     <div class="left-panel">
       <h1>Recover your password</h1>
@@ -160,7 +160,7 @@
     </div>
   </div>
 
-  <!-- ========== FORGOT USERNAME PANEL ========== -->
+  <!-- ========== FORGOT USERNAME PANEL / 忘记用户名面板 ========== -->
   <div class="forgot-username-panel">
     <div class="left-panel">
       <h1>Recover your username</h1>
@@ -201,6 +201,12 @@
 </div>
 
 <script>
+// 密码显示/隐藏切换（登录框和注册框的密码栏都用同一个函数，
+// 靠传进来的 inputId 区分是哪一个）。
+// Toggles a password field between hidden/visible (shared by both the
+// login and register password fields — which one it's toggling is
+// decided by the inputId passed in).
+
 function togglePassword(inputId, eyeEl) {
   const input = document.getElementById(inputId);
   if (input.type === 'password') { input.type = 'text'; eyeEl.textContent = '🙉'; }
@@ -210,6 +216,20 @@ function togglePassword(inputId, eyeEl) {
 const regPasswordInput = document.getElementById('regPassword');
 const passwordRules = document.getElementById('passwordRules');
 
+// 密码规则实时检查清单：每次用户在注册密码框里打字，
+// 都重新检查一遍这 4 条规则是否满足，并且把对应的图标/文字颜色
+// 切换成"打勾"或者"叉叉"。
+// /[A-Z]/.test(value) 这种写法是"正则表达式"（regular expression）——
+// [A-Z] 表示"任意一个大写字母"，.test(value) 检查 value 这个字符串
+// 里有没有出现至少一次这种字符，返回 true/false。
+// Live password-rules checklist: every time the user types in the
+// register password field, all 4 rules are re-checked and each one's
+// icon/color flips between a checkmark and an X.
+// /[A-Z]/.test(value) is a "regular expression" (regex) — [A-Z] means
+// "any single uppercase letter", and .test(value) checks whether that
+// pattern occurs at least once anywhere in the value string, returning
+// true/false.
+
 function updatePasswordRules() {
   const value = regPasswordInput.value;
   const checks = {
@@ -218,6 +238,14 @@ function updatePasswordRules() {
     lower: /[a-z]/.test(value),
     number: /[0-9]/.test(value),
   };
+
+  // Object.keys(checks)：拿到 ["length","upper","lower","number"]
+  // 这样一个字符串数组，遍历它，根据每一条规则的 key
+  // 找到清单里对应的那个 <li data-rule="..."> 元素并更新它的样式。
+  // Object.keys(checks): gives back the array
+  // ["length","upper","lower","number"]; iterating over it lets each
+  // rule's key be used to find its matching <li data-rule="..."> element
+  // in the checklist and update its styling.
 
   Object.keys(checks).forEach(function (rule) {
     const li = passwordRules.querySelector('[data-rule="' + rule + '"]');
@@ -230,6 +258,19 @@ function updatePasswordRules() {
 
 regPasswordInput.addEventListener('input', updatePasswordRules);
 updatePasswordRules();
+
+// ================= PANEL SWITCHING =================
+// ================= 面板切换 =================
+// 登录/注册/忘记密码/忘记用户名这 4 个面板其实都同时存在于页面里，
+// 只是外层 .container 这个 div 身上挂了哪个 class（比如
+// "show-register"），就靠 CSS 来决定当前显示哪一个面板、隐藏其它的——
+// 切换面板不需要重新请求页面，只是简单地换一下 container 的 class 名。
+// All 4 panels (login/register/forgot-password/forgot-username) actually
+// exist in the page at the same time — which class is on the outer
+// .container div (e.g. "show-register") is what CSS uses to decide which
+// panel is currently visible and which are hidden. Switching panels
+// doesn't reload the page at all, it's just swapping the container's
+// class name.
 
 const container = document.querySelector('.container');
 

@@ -1,3 +1,13 @@
+// "单日天气"组件的设置面板：城市/温度单位（做法跟 weatherHourSettings.js
+// 一样），这个组件特有的"主要显示哪个温度"（最高/最低/平均）以及
+// 一长串"要不要显示"的开关（副温度、城市名、体感温度、湿度、图标、
+// 更新时间）。
+// Settings panel for the "Weather Day" widget: city/temperature unit
+// (same approach as weatherHourSettings.js), plus this widget's own
+// "which temperature to feature" (max/min/avg) and a longer list of
+// show/hide toggles (secondary temp, city name, feels-like, humidity,
+// icon, update time).
+
 import {
     getCityList,
     getWeatherConfig

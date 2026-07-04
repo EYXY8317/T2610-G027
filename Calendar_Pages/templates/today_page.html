@@ -27,6 +27,7 @@
 <body class="{{ user.theme if user and user.theme else 'mocha' }}">
 
 <!-- ===== NAVBAR ===== -->
+<!-- ===== 导航栏 ===== -->
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">
@@ -50,9 +51,10 @@
 </nav>
 
 <!-- ===== PAGE WRAPPER ===== -->
+<!-- ===== 页面容器 ===== -->
 <div class="tp-page">
 
-    <!-- DATE SECTION -->
+    <!-- DATE SECTION / 日期区块 -->
     <div class="tp-date-section">
         <div class="tp-date-row">
             <span class="material-symbols-rounded tp-date-icon">calendar_today</span>
@@ -61,10 +63,10 @@
         <div class="tp-day-name" id="tp-day"></div>
     </div>
 
-    <!-- FOUR-COLUMN DASHBOARD -->
+    <!-- FOUR-COLUMN DASHBOARD / 四栏仪表盘 -->
     <div class="tp-dashboard">
 
-        <!-- DIARY & MOOD -->
+        <!-- DIARY & MOOD / 日记与心情 -->
         <div class="tp-col tp-col-diary">
             <div class="tp-col-head">
                 <span class="tp-col-icon">📖</span>
@@ -111,7 +113,7 @@
 
         <div class="tp-divider"></div>
 
-        <!-- FINANCE SUMMARY -->
+        <!-- FINANCE SUMMARY / 财务摘要 -->
         <div class="tp-col tp-col-finance">
             <div class="tp-col-head">
                 <span class="tp-col-icon">💳</span>
@@ -172,7 +174,7 @@
 
         <div class="tp-divider"></div>
 
-        <!-- TODAY'S EVENTS -->
+        <!-- TODAY'S EVENTS / 今日事件 -->
         <div class="tp-col tp-col-events">
             <div class="tp-col-head">
                 <span class="tp-col-icon">📅</span>
@@ -210,7 +212,7 @@
 
         <div class="tp-divider"></div>
 
-        <!-- GOALS PROGRESS -->
+        <!-- GOALS PROGRESS / 目标进度 -->
         <div class="tp-col tp-col-goals">
             <div class="tp-col-head">
                 <span class="tp-col-icon">🎯</span>
@@ -242,7 +244,7 @@
 
     </div><!-- /.tp-dashboard -->
 
-    <!-- LIFE SUMMARY -->
+    <!-- LIFE SUMMARY / 人生总览 -->
     <div class="tp-summary-section">
         <div class="tp-summary-head">
             <span class="material-symbols-rounded tp-summary-icon">bar_chart</span>
@@ -308,6 +310,7 @@
 <script>
 (function () {
     // Date display
+    // 显示日期
     const now = new Date();
     const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
     const months = ['January','February','March','April','May','June',
@@ -317,6 +320,13 @@
     document.getElementById('tp-day').textContent = days[now.getDay()];
 
     // Donut chart
+    // 环形图 —— 这里没有用像 summary.html 那样的 Chart.js 库，
+    // 而是直接用浏览器原生的 Canvas 2D 绘图 API（ctx.arc/ctx.fill 等）
+    // 手动一笔一笔把每个扇形画出来。
+    // Donut chart — unlike summary.html (which uses the Chart.js
+    // library), this one hand-draws each slice directly with the
+    // browser's native Canvas 2D drawing API (ctx.arc/ctx.fill/etc).
+
     const totals  = {{ category_totals | tojson }};
     const theme   = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
     const canvas  = document.getElementById('tp-donut');
@@ -335,12 +345,28 @@
     const empty    = emptyMap[theme]  || emptyMap.mocha;
 
     if (total === 0) {
+        // 完全没有支出数据时，画一个空心的灰色圆圈占位，
+        // 而不是画一个"什么扇形都没有"的空白画布。
+        // When there's no spending data at all, draw an empty gray ring
+        // as a placeholder, rather than leaving a blank canvas with no
+        // slices at all.
         ctx.beginPath();
         ctx.arc(40, 40, 28, 0, Math.PI * 2);
         ctx.strokeStyle = empty;
         ctx.lineWidth   = 14;
         ctx.stroke();
     } else {
+        // angle 从 -90 度（也就是 -Math.PI/2，圆的正上方）开始画起；
+        // 每个分类的扇形角度 = 这个分类金额占总金额的比例 × 整圆的
+        // 360 度（2π 弧度）。画完一个扇形后，把 angle 往前推进
+        // slice 这么多，下一个扇形就从上一个扇形结束的地方接着画，
+        // 这样所有扇形拼起来正好是一整个圆，不会重叠也不会留空隙。
+        // angle starts at -90 degrees (-Math.PI/2, straight up from the
+        // circle's center); each category's slice angle = that category's
+        // share of the total × the full circle (2π radians). After
+        // drawing a slice, angle is advanced by that slice's size, so the
+        // next slice picks up exactly where the previous one ended —
+        // together they form one complete circle with no overlaps or gaps.
         let angle = -Math.PI / 2;
         entries.forEach(([, val], i) => {
             const slice = (val / total) * Math.PI * 2;
@@ -352,6 +378,11 @@
             ctx.fill();
             angle += slice;
         });
+        // 最后在中间叠画一个纯白的小圆，把实心的饼图"挖空"变成
+        // 环形图（甜甜圈形状）。
+        // Finally, a small solid white circle is drawn on top in the
+        // center, "punching a hole" through the solid pie to turn it into
+        // a ring (donut shape).
         ctx.beginPath();
         ctx.arc(40, 40, 20, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';

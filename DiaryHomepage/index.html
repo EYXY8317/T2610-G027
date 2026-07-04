@@ -1,3 +1,11 @@
+<!-- 首页的整体页面骨架：导航栏 + 组件设置菜单 + 拖拽辅助线元素 +
+     空的 #dashboard 容器（组件的 HTML 由 main.js 在页面加载后动态
+     塞进去，不是写死在这个文件里）。
+     The homepage's overall page skeleton: navbar + widget settings menu
+     + drag-guide-line elements + an empty #dashboard container (the
+     widgets' HTML is dynamically inserted by main.js after the page
+     loads, not hardcoded in this file). -->
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -58,6 +66,14 @@
         href="/diary_home_static/css/deco.css"
     >
 
+    <!-- 先用 localStorage 里存的主题立刻上色（避免闪一下默认颜色），
+         再去问服务器"这个账号真正保存的主题是什么"，等回来了就
+         用服务器的数据覆盖一次（保证跨设备登录也能看到一致的主题）。
+         First applies the theme cached in localStorage right away (avoids
+         a flash of the default color), then asks the server what theme
+         this account actually has saved, overwriting once that response
+         comes back (so logging in from another device still shows the
+         same theme). -->
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
@@ -71,6 +87,11 @@
 
 <body>
 
+<!-- 页面主体（body）背景色也要跟着主题变，因为 <body> 本身不算在
+     themecolor.js 的 CSS 变量范围内，只能在这里另外单独设置一次。
+     The <body> element's own background color also needs to follow the
+     theme, since <body> itself isn't covered by themecolor.js's CSS
+     variables — it has to be set separately here. -->
 <script>
 fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
     var bg={mocha:'#f7f3ee',lavender:'#f7f4ff',matcha:'#f7fbf7',ash:'#f5f5f5'};
@@ -110,6 +131,13 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
 
     </nav>
 
+    <!-- 检查目前有没有登录：有登录的话，导航栏右边这个区块就直接
+         隐藏起来（登录后的头像/用户名交给 Profile 模块处理，这里不用
+         重复显示）；没登录的话，就插入一个"登录"按钮。
+         Checks whether a user is currently logged in: if so, this navbar
+         section is simply hidden (the logged-in avatar/username is
+         handled by the Profile module, no need to duplicate it here); if
+         not, a "Login" button is inserted instead. -->
     <script>
     fetch('/api/whoami').then(function(r){ return r.json(); }).then(function(d){
         var el = document.getElementById('navProfile');

@@ -1,5 +1,8 @@
 // Exact copy of ZOEY's saved home_layout (users.json), used as the layout
 // applied for first-time users and when the layout is reset.
+// ZOEY 账号保存下来的首页布局（users.json 里的 home_layout）的完整拷贝，
+// 给第一次使用的用户当默认布局，或者用户点击“重置布局”时使用。
+// 这个文件很大，是因为里面包含了每个装饰贴纸/图片的完整 base64 数据。
 export const ZOEY_DEFAULT_LAYOUT = {
     "picture-streak-extra-instances": [],
     "digital-clock-widget-layout": {

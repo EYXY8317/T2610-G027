@@ -1,9 +1,21 @@
 import { getDecoItems, addDecoItem, removeDecoItem, updateDecoItem } from "./decoData.js";
 import { openDecoPicker, closeDecoPicker } from "./decoPicker.js";
 
+// "装饰模式"（deco mode）：允许用户在组件上面贴一些贴纸/装饰图案，
+// 可以拖动位置、拖角落调整大小（保持原始长宽比例）、拖旋转把手
+// 转动角度，点击 ✕ 删除。这个文件负责渲染这些装饰元素、绑定它们的
+// 拖动/缩放/旋转交互，具体的数据存取（增删改查）则交给 decoData.js。
+// "Deco mode": lets the user stick decorative stickers/images onto a
+// widget — draggable to reposition, resizable via the corner handle
+// (keeps its original aspect ratio), rotatable via the rotate handle, and
+// removable via the ✕ button. This file renders these decoration
+// elements and wires up their drag/resize/rotate interactions; the
+// actual data storage (add/remove/update) is delegated to decoData.js.
+
 let _selectedItem = null;
 
 // ── Init ────────────────────────────────────────────────────────────────────
+// ── 初始化 ────────────────────────────────────────────────────────────────────
 
 export function initDecoLayer(widget) {
     if (widget.querySelector(".deco-layer")) return;
@@ -13,7 +25,16 @@ export function initDecoLayer(widget) {
 }
 
 // ── Render ──────────────────────────────────────────────────────────────────
+// ── 渲染 ──────────────────────────────────────────────────────────────────
 
+// 把当前保存的装饰项列表同步到 DOM：先删掉数据里已经没有的
+// （用户在别处删除过），再给数据里有、但 DOM 里还没有的项创建新元素，
+// 已存在的元素不会重新创建（避免打断正在进行的拖动/动画）。
+// Syncs the currently saved decoration items list to the DOM: first
+// removes any DOM elements no longer present in the data (deleted
+// elsewhere), then creates new elements for items in the data that
+// aren't in the DOM yet — elements that already exist aren't
+// re-created (so an in-progress drag/animation isn't interrupted).
 export function applyDecoItems(widget, items) {
     const layer = widget.querySelector(".deco-layer");
     if (!layer) return;
@@ -60,6 +81,7 @@ function _createDecoEl(item) {
 }
 
 // ── Interaction ─────────────────────────────────────────────────────────────
+// ── 交互 ─────────────────────────────────────────────────────────────
 
 function _enableInteraction(widget, el, itemId) {
     const deleteBtn = el.querySelector(".deco-delete-btn");
@@ -72,6 +94,15 @@ function _enableInteraction(widget, el, itemId) {
     });
 
     // ── Rotate ────────────────────────────────────────────────
+    // ── 旋转 ────────────────────────────────────────────────
+    // 用 Math.atan2 算出鼠标相对装饰元素中心点的角度：按下时记录起始
+    // 角度和起始旋转值，拖动时用"当前角度 - 起始角度"得到转动的差值，
+    // 加到起始旋转值上，就是新的旋转角度。
+    // Uses Math.atan2 to compute the mouse's angle relative to the
+    // decoration element's center point: on mousedown it records the
+    // starting angle and starting rotation, and while dragging,
+    // "current angle - starting angle" gives the amount rotated, which is
+    // added to the starting rotation to get the new rotation angle.
     const rotateHandle = el.querySelector(".deco-rotate-handle");
     rotateHandle.addEventListener("mousedown", e => {
         e.stopPropagation();
@@ -100,6 +131,7 @@ function _enableInteraction(widget, el, itemId) {
     });
 
     // ── Drag ──────────────────────────────────────────────────
+    // ── 拖动 ──────────────────────────────────────────────────
     el.addEventListener("mousedown", e => {
         if (e.target.classList.contains("deco-resize-handle")) return;
         if (e.target.classList.contains("deco-rotate-handle")) return;
@@ -135,6 +167,12 @@ function _enableInteraction(widget, el, itemId) {
     });
 
     // ── Resize ────────────────────────────────────────────────
+    // ── 调整大小 ────────────────────────────────────────────────
+    // 只记录水平方向的拖动距离（dx），再用起始的长宽比例（aspect）
+    // 算出对应的高度——这样调整大小时图片不会变形。
+    // Only tracks the horizontal drag distance (dx), then uses the
+    // starting aspect ratio to compute the matching height — so the
+    // image never gets stretched out of shape while resizing.
     const handle = el.querySelector(".deco-resize-handle");
     handle.addEventListener("mousedown", e => {
         e.stopPropagation();
@@ -173,8 +211,11 @@ function _selectItem(el) {
 }
 
 // ── Deco Mode ───────────────────────────────────────────────────────────────
+// ── 装饰模式 ───────────────────────────────────────────────────────────────
 
 // Wire up a widget for deco-mode click: empty click → open picker, item click → select
+// 给组件绑定装饰模式下的点击事件：点击空白处 → 打开贴纸选择器；
+// 点击已有的装饰项 → 交给装饰项自己的点击逻辑处理（选中它）。
 export function enableDecoClick(widget) {
     widget.addEventListener("click", e => {
         if (!document.body.classList.contains("deco-mode")) return;

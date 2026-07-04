@@ -98,6 +98,7 @@
 }
 
 /* ── Section cards ───────────────────────────────────────── */
+/* ── 区块卡片 ── */
 
 .setting-section {
     background: rgba(255, 255, 255, 0.55);
@@ -176,6 +177,7 @@
 }
 
 /* ── Tab bar ─────────────────────────────────────────────── */
+/* ── 标签栏 ── */
 
 .setting-tabs {
 
@@ -234,6 +236,7 @@
 }
 
 /* ── Tab panes ───────────────────────────────────────────── */
+/* ── 标签页内容 ── */
 
 .setting-pane {
 
@@ -263,6 +266,7 @@
 }
 
 /* ── Multi-select chip rows (Quote: categories + sources) ─── */
+/* ── 多选标签行（语录：分类 + 来源） ── */
 
 .quote-cat-chips,
 .quote-src-chips {
@@ -278,6 +282,7 @@
 }
 
 /* ── Saved quote full-text item ──────────────────────────── */
+/* ── 已保存语录的完整文字项 ── */
 
 .quote-saved-item {
 
@@ -435,6 +440,7 @@
 }
 
 /* ── Palette category chips ──────────────────────────────── */
+/* ── 调色板分类标签 ── */
 
 .palette-cat-chips {
     display: flex;
@@ -468,6 +474,7 @@
 }
 
 /* ── Per-category palette grid ───────────────────────────── */
+/* ── 每个分类各自的调色板网格 ── */
 
 .palette-cat-grid {
     display: none;
@@ -481,6 +488,7 @@
 }
 
 /* ── Universal color palette grid (Colors tab) ───────────── */
+/* ── 通用调色板网格（颜色标签页） ── */
 
 .ap-palette-grid {
     display: grid;
@@ -530,6 +538,7 @@
 }
 
 /* ── Clock type cards ────────────────────────────────────── */
+/* ── 时钟类型卡片 ── */
 
 .clock-type-grid {
     display: grid;
@@ -591,6 +600,7 @@
 }
 
 /* ── Timezone chips & cards ──────────────────────────────── */
+/* ── 时区标签与卡片 ── */
 
 .tz-cat-chips {
     display: flex;
@@ -654,6 +664,7 @@
 }
 
 /* ── Widget size inputs ───────────────────────────────────── */
+/* ── 组件尺寸输入框 ── */
 
 .size-input-wrap {
     display: flex;
@@ -694,6 +705,7 @@
 }
 
 /* ── Slider rows (opacity, border width) ─────────────────── */
+/* ── 滑块行（透明度、边框宽度） ── */
 
 .background-opacity-slider-row,
 .border-width-slider-row {
@@ -723,6 +735,7 @@
 }
 
 /* ── Section accordion ────────────────────────────────────── */
+/* ── 手风琴折叠区块 ── */
 
 .setting-section-toggle {
     display: flex;
@@ -765,6 +778,7 @@
 }
 
 /* ── Apply to All ─────────────────────────────────────────── */
+/* ── 应用到全部 ── */
 
 .apply-to-all-btn {
     width: 100%;
@@ -799,6 +813,7 @@
 
 
 /* ── Toggle chip — single button replacing Show/Hide pairs ───────────── */
+/* ── 切换标签 —— 用一个按钮代替“显示/隐藏”这一对按钮 ── */
 
 .toggle-chips {
     display: flex;

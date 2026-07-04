@@ -97,6 +97,7 @@ body.theme-blush {
 }
 
 /* ===== RESET & BASE ===== */
+/* ===== 重置与基础样式 ===== */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -114,6 +115,7 @@ body {
 }
 
 /* ===== NAVBAR ===== */
+/* ===== 导航栏 ===== */
 .navbar {
     position: sticky;
     top: 0;
@@ -190,6 +192,7 @@ body {
 }
 
 /* ===== SEARCH WIDGET (navbar right) ===== */
+/* ===== 搜索组件（导航栏右侧） ===== */
 #navRight {
     display: flex;
     align-items: center;
@@ -264,6 +267,7 @@ body {
 }
 
 /* ===== SEARCH RESULTS DROPDOWN ===== */
+/* ===== 搜索结果下拉框 ===== */
 #searchResults {
     position: absolute;
     top: 62px;
@@ -335,6 +339,7 @@ body {
 }
 
 /* ===== MAIN LAYOUT ===== */
+/* ===== 主布局 ===== */
 #mainContent {
     max-width: 1100px;
     margin: 0 auto;
@@ -342,6 +347,7 @@ body {
 }
 
 /* ===== DATE DISPLAY ===== */
+/* ===== 日期显示 ===== */
 #dateSection {
     text-align: center;
     padding: 32px 0 24px;
@@ -385,6 +391,7 @@ body {
 }
 
 /* ===== TOOLBAR (mood + topic) ===== */
+/* ===== 工具栏（心情 + 主题） ===== */
 #toolbar {
     display: flex;
     align-items: center;
@@ -468,6 +475,7 @@ body {
 }
 
 /* ===== CANVAS / WRITING AREA ===== */
+/* ===== 画布 / 书写区域 ===== */
 #canvas {
     position: relative;
     min-height: 420px;
@@ -509,6 +517,7 @@ body {
 
 
 /* ===== AUTO SAVE INDICATOR ===== */
+/* ===== 自动保存提示 ===== */
 #autoSaveIndicator {
     display: inline-flex;
     align-items: center;
@@ -555,6 +564,7 @@ body {
 }
 
 /* ===== BUTTONS ===== */
+/* ===== 按钮 ===== */
 button {
     font-family: 'Inter', sans-serif;
 }
@@ -591,6 +601,7 @@ button {
 }
 
 /* ===== FILE UPLOAD ===== */
+/* ===== 文件上传 ===== */
 #uploadImg {
     font-size: 12px;
     color: #888;
@@ -598,6 +609,7 @@ button {
 }
 
 /* ===== DATE NAV ===== */
+/* ===== 日期导航 ===== */
 #dateNav {
     display: flex;
     align-items: center;
@@ -627,6 +639,7 @@ button {
 }
 
 /* ===== QUOTE / MSG ===== */
+/* ===== 语录 / 消息 ===== */
 #quoteSection {
     margin-top: 48px;
     padding: 24px 32px;
@@ -655,6 +668,7 @@ button {
 }
 
 /* ===== STICKY TOOLBAR WRAPPER ===== */
+/* ===== 吸顶工具栏容器 ===== */
 #stickyBars {
     position: sticky;
     top: 72px;
@@ -663,6 +677,7 @@ button {
 }
 
 /* ===== FORMAT BAR ===== */
+/* ===== 格式工具栏 ===== */
 #formatBar {
     display: flex;
     align-items: center;
@@ -697,6 +712,7 @@ button {
 }
 
 /* ── Canonical reminder / confirmation popup (matches journal_page) ── */
+/* ── 标准提示/确认弹窗（与 journal_page 保持一致） ── */
 
 .reminder-overlay {
     position: fixed;
@@ -839,6 +855,7 @@ button {
 }
 
 /* ===== WHITE PAPER CANVAS ===== */
+/* ===== 白纸画布 ===== */
 #canvas {
     position: relative;
     min-height: 520px;
@@ -874,6 +891,7 @@ button {
 }
 
 /* ===== ENTRANCE ANIMATIONS ===== */
+/* ===== 入场动画 ===== */
 @keyframes diaryFadeUp {
     from { opacity: 0; transform: translateY(16px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -886,6 +904,7 @@ button {
 #quoteSection { animation: diaryFadeUp 0.5s ease 0.28s both; }
 
 /* ===== TEXTBOX / IMAGE POP-IN (played once, on creation) ===== */
+/* ===== 文本框/图片的弹出动画（创建时播放一次） ===== */
 @keyframes diaryPopIn {
     from { opacity: 0; transform: scale(0.85); }
     to   { opacity: 1; transform: scale(1); }
@@ -896,6 +915,7 @@ button {
 }
 
 /* ===== AUTOSAVE "SAVED" CHECK PULSE ===== */
+/* ===== 自动保存“已保存”打勾脉冲动画 ===== */
 @keyframes savedPop {
     0%   { transform: scale(0.6); opacity: 0; }
     60%  { transform: scale(1.15); opacity: 1; }
@@ -907,6 +927,7 @@ button {
 }
 
 /* ===== MOOD SELECTION BOUNCE ===== */
+/* ===== 心情选择弹跳动画 ===== */
 @keyframes moodBounce {
     0%, 100% { transform: scale(1); }
     40%      { transform: scale(1.22); }
@@ -918,6 +939,7 @@ button {
 }
 
 /* ===== QUOTE REVEAL FADE ===== */
+/* ===== 语录淡入动画 ===== */
 @keyframes quoteFadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to   { opacity: 1; transform: translateY(0); }

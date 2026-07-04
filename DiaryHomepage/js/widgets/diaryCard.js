@@ -4,6 +4,17 @@ import {
 } from "../settings/appearance/widgetAppearance.js";
 import { userScopedKey } from "../currentUser.js";
 
+// "Diary"组件：首页上用来快速跳转到日记页面的卡片，可以选择三种
+// 封面图案（书皮），并且有两种显示模式——"button"（显示封面+标题+
+// 简介+"打开日记"按钮）或"direct"（只显示一张铺满整个卡片的封面图，
+// 点击卡片任何地方都能直接跳转，更简洁）。
+// The "Diary" widget: a card on the home page for quickly jumping to the
+// diary page, with a choice of three cover designs (book skins) and two
+// display modes — "button" (shows the cover + title + blurb + an "Open
+// Diary" button) or "direct" (shows just a full-card cover image, where
+// clicking anywhere on the card jumps straight to the diary — a more
+// minimal look).
+
 export const BOOK_OPTIONS = [
     { label: "Black Classic",   src: "/diary_home_static/assets/books/book1.png", scale: 0.88 },
     { label: "Pink Strawberry", src: "/diary_home_static/assets/books/book2.png", scale: 0.78 },

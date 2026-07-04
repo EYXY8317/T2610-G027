@@ -1,3 +1,13 @@
+// 跟 collisionX.js 完全对称的"垂直方向吸附"计算，只是把"左右"
+// 换成"上下"：顶边对顶边、底边对底边、中线对中线、顶边贴底边、
+// 底边贴顶边（加不加 20px 间距的版本都有），以及同样的三方联动
+// "配对居中"吸附，只是方向变成垂直。
+// The exact vertical-direction counterpart to collisionX.js, just with
+// "left/right" swapped for "top/bottom": top-to-top, bottom-to-bottom,
+// middle-to-middle, top-touching-bottom, bottom-touching-top (with and
+// without a 20px gap), and the same three-way "pair-center" snap, just
+// in the vertical direction.
+
 export function computeVerticalSnap(widget, newTop) {
 
     const widgets =
@@ -247,6 +257,10 @@ export function computeVerticalSnap(widget, newTop) {
             // ── Pair-center snap (vertical) ───────────────────────────────
             // Snap W so that the pair (W, otherWidget) stacked vertically
             // is centred beside a third widget P.
+            //
+            // ── 垂直方向的三方联动"配对居中"吸附 ───────────────────────────────
+            // 让"正在拖的组件 W"和"otherWidget"这一对上下堆叠的组件，
+            // 作为一个整体，垂直居中对齐在第三个组件 P 的旁边。
 
             widgets.forEach(pWidget => {
 

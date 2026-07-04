@@ -1,5 +1,13 @@
 import { userScopedKey } from "../currentUser.js";
 
+// "High Streak" 组件：显示"历史最长连续写日记天数的记录"（跟
+// nowStreak.js 的"当前连续天数"不同，这个是查看所有日记日期后，
+// 找出曾经出现过的最长连续区间，即使现在已经断掉了）。
+// The "High Streak" widget: shows the all-time best (longest ever)
+// consecutive journaling streak (unlike nowStreak.js's "current streak",
+// this one scans every journal date to find the longest run that ever
+// occurred, even if the streak has since been broken).
+
 const STORAGE_KEY = "high-streak-display";
 
 const DEFAULT_STATE = {
@@ -24,6 +32,7 @@ function todayKey() {
 }
 
 // Current streak: consecutive days ending today (or yesterday)
+// 当前连续天数：从今天（如果今天还没写就从昨天）往前数，连续写了几天
 function calculateStreak(dates) {
     const date = new Date();
     if (!dates.has(date.toISOString().slice(0, 10))) {
@@ -40,6 +49,13 @@ function calculateStreak(dates) {
 }
 
 // Best ever streak across all journal entries
+// 把所有写过日记的日期从旧到新排序，逐一比较相邻两个日期是否刚好
+// 差一天（86400000 毫秒 = 一天）：如果是，说明连续天数继续累加；
+// 如果不是，说明断了，重新从 1 开始数，同时记录出现过的最大值。
+// Sorts every journal date from oldest to newest, then checks each pair
+// of adjacent dates to see if they're exactly one day apart (86400000ms
+// = one day): if so, the running streak count keeps growing; if not, the
+// streak broke, so it resets to 1 — while tracking the largest value seen.
 function calculateHighStreak(dates) {
     if (dates.size === 0) return 0;
     const sorted = [...dates].sort();

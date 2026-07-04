@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
 
+<!-- ================================================= -->
+<!-- ===================== HEAD ======================= -->
+<!-- ===================== 头部 ========================= -->
+<!-- Page metadata, stylesheets, theme bootstrap script -->
+<!-- 页面元数据、样式表、主题初始化脚本                       -->
+<!-- ================================================= -->
+
 <head>
 
     <meta name="logged-in" content="{{ 'true' if logged_in else 'false' }}">
@@ -26,6 +33,8 @@
     })();
     </script>
 
+    <!-- ===== PAGE-LOCAL STYLES (profile/login button) ===== -->
+    <!-- ===== 页面专属样式（个人资料/登录按钮） ===== -->
     <style>
         .profile{ display:flex; align-items:center; gap:10px; justify-self:end; }
         .profile-link{ text-decoration:none; color:#3b2f2a; font-weight:600; font-size:14px; }
@@ -41,6 +50,13 @@
 <body
 class="{{ theme }} {{ ui_style }}"
 >
+
+<!-- ================================================= -->
+<!-- ==================== NAVBAR ====================== -->
+<!-- ==================== 导航栏 ======================== -->
+<!-- Site-wide nav: logo, top-level page links, login   -->
+<!-- 全站导航：logo、顶级页面链接、登录入口                  -->
+<!-- ================================================= -->
 
 <nav class="navbar">
     <div class="logo-section">
@@ -64,7 +80,12 @@ class="{{ theme }} {{ ui_style }}"
     </div>
 </nav>
 
-<!-- TOPBAR -->
+<!-- ================================================= -->
+<!-- ==================== TOPBAR ====================== -->
+<!-- ==================== 顶部栏 ======================== -->
+<!-- Finance-section sub-nav: Dashboard/Add/View/etc.   -->
+<!-- 财务模块子导航：仪表盘/新增/查看等                       -->
+<!-- ================================================= -->
 
 <div class="topbar">
 
@@ -88,7 +109,12 @@ class="{{ theme }} {{ ui_style }}"
 
 <div class="summary-wrapper">
 
-    <!-- HERO -->
+    <!-- ================================================= -->
+    <!-- ===================== HERO ======================= -->
+    <!-- ===================== 欢迎区 ======================= -->
+    <!-- Welcome banner + current available balance         -->
+    <!-- 欢迎横幅 + 当前可用余额                                -->
+    <!-- ================================================= -->
 
     <div class="finance-hero summary-card hover-card">
 
@@ -139,10 +165,16 @@ class="{{ theme }} {{ ui_style }}"
 
     </div>
 
-    <!-- OVERVIEW -->
+    <!-- ================================================= -->
+    <!-- =================== OVERVIEW ===================== -->
+    <!-- =================== 概览区 ========================= -->
+    <!-- 4 stat boxes: balance, savings, income, expense     -->
+    <!-- 4个统计框：余额、储蓄、收入、支出                        -->
+    <!-- ================================================= -->
 
     <div class="summary-grid">
 
+        <!-- STAT: Available Balance / 统计：可用余额 -->
         <div class="overview-box hover-card">
 
             <p>
@@ -155,6 +187,7 @@ class="{{ theme }} {{ ui_style }}"
 
         </div>
 
+        <!-- STAT: Savings Balance / 统计：储蓄余额 -->
         <div class="overview-box hover-card">
 
             <p>
@@ -167,6 +200,7 @@ class="{{ theme }} {{ ui_style }}"
 
         </div>
 
+        <!-- STAT: Monthly Income / 统计：月收入 -->
         <div class="overview-box hover-card">
 
             <p>
@@ -179,6 +213,7 @@ class="{{ theme }} {{ ui_style }}"
 
         </div>
 
+        <!-- STAT: Monthly Expense / 统计：月支出 -->
         <div class="overview-box hover-card">
 
             <p>
@@ -193,11 +228,17 @@ class="{{ theme }} {{ ui_style }}"
 
     </div>
 
-    <!-- MAIN GRID -->
+    <!-- ================================================= -->
+    <!-- ================== MAIN GRID ===================== -->
+    <!-- ================== 主网格 ========================= -->
+    <!-- Two side-by-side cards: Analysis + Quick Actions    -->
+    <!-- 左右并排两张卡片：分析 + 快捷操作                        -->
+    <!-- ================================================= -->
 
     <div class="finance-dashboard-grid">
 
-        <!-- INSIGHTS -->
+        <!-- ===== ANALYSIS (balance / savings / rate / budget health) ===== -->
+        <!-- ===== 分析（余额/储蓄/储蓄率/预算健康状况） ===== -->
 
         <div class="summary-card hover-card">
 
@@ -207,6 +248,7 @@ class="{{ theme }} {{ ui_style }}"
 
         <div class="analysis-list">
 
+            <!-- ROW: Available Balance / 行：可用余额 -->
             <div class="analysis-row">
 
                 <div class="analysis-left">
@@ -235,6 +277,7 @@ class="{{ theme }} {{ ui_style }}"
 
             </div>
 
+            <!-- ROW: Savings Balance / 行：储蓄余额 -->
             <div class="analysis-row">
 
                 <div class="analysis-left">
@@ -263,6 +306,7 @@ class="{{ theme }} {{ ui_style }}"
 
             </div>
 
+            <!-- ROW: Savings Rate / 行：储蓄率 -->
             <div class="analysis-row">
 
                 <div class="analysis-left">
@@ -291,6 +335,7 @@ class="{{ theme }} {{ ui_style }}"
 
             </div>
 
+            <!-- ROW: Budget Health / 行：预算健康状况 -->
             <div class="analysis-row">
 
                 <div class="analysis-left">
@@ -329,7 +374,8 @@ class="{{ theme }} {{ ui_style }}"
 
     </div>
 
-        <!-- QUICK ACTIONS -->
+        <!-- ===== QUICK ACTIONS (shortcut cards to Add/Budget/Goals/Summary) ===== -->
+        <!-- ===== 快捷操作（跳转到新增/预算/目标/汇总的快捷卡片） ===== -->
 
         <div class="summary-card hover-card">
 
@@ -341,6 +387,7 @@ class="{{ theme }} {{ ui_style }}"
 
             <div class="quick-actions-grid">
 
+                <!-- ACTION: Add Record / 操作：新增记录 -->
                 <a
                 href="/add"
                 class="quick-action-card"
@@ -360,6 +407,7 @@ class="{{ theme }} {{ ui_style }}"
 
                 </a>
 
+                <!-- ACTION: Manage Budget / 操作：管理预算 -->
                 <a
                 href="/budget"
                 class="quick-action-card"
@@ -379,6 +427,7 @@ class="{{ theme }} {{ ui_style }}"
 
                 </a>
 
+                <!-- ACTION: Savings Goals / 操作：储蓄目标 -->
                 <a
                 href="/goals"
                 class="quick-action-card"
@@ -398,6 +447,7 @@ class="{{ theme }} {{ ui_style }}"
 
                 </a>
 
+                <!-- ACTION: Analytics / 操作：数据分析 -->
                 <a
                 href="/summary"
                 class="quick-action-card"
@@ -423,7 +473,12 @@ class="{{ theme }} {{ ui_style }}"
 
     </div>
 
-    <!-- RECENT RECORDS -->
+    <!-- ================================================= -->
+    <!-- ================ RECENT RECORDS =================== -->
+    <!-- ================ 最近记录 =========================== -->
+    <!-- Latest transactions table + empty state, link to /view -->
+    <!-- 最新交易记录表格 + 空状态，链接到 /view 查看全部           -->
+    <!-- ================================================= -->
 
     <div class="summary-card hover-card">
 
@@ -544,7 +599,12 @@ class="{{ theme }} {{ ui_style }}"
 
     </div>
 
-    <!-- GOALS -->
+    <!-- ================================================= -->
+    <!-- =================== ACTIVE GOALS =================== -->
+    <!-- =================== 进行中的目标 ===================== -->
+    <!-- In-progress savings goals grid + empty state         -->
+    <!-- 进行中的储蓄目标网格 + 空状态                             -->
+    <!-- ================================================= -->
 
     <div class="summary-card hover-card">
 
@@ -632,6 +692,16 @@ class="{{ theme }} {{ ui_style }}"
     </div>
 
 </div>
+
+<!-- ================================================= -->
+<!-- =================== SCRIPTS ======================= -->
+<!-- =================== 脚本 =========================== -->
+<!-- Fills in goal progress-bar widths (set via -->
+<!-- data-width so the % comes from the server, -->
+<!-- not hardcoded inline styles) -->
+<!-- 填充目标进度条宽度（通过 data-width 属性传值， -->
+<!-- 百分比由后端计算而非写死在样式中） -->
+<!-- ================================================= -->
 
 <script>
 

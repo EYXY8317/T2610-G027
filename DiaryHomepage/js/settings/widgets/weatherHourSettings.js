@@ -1,3 +1,12 @@
+// "每小时天气"组件的设置面板：图表颜色/大小、城市选择（从预设城市
+// 列表里挑，并且自动判断当前配置的经纬度对应哪个城市该显示"已选中"）、
+// 温度单位（摄氏/华氏）、要显示哪些信息（湿度/图标/温度）。
+// Settings panel for the "Weather Hour" widget: graph color/size, city
+// selection (picked from a preset city list, automatically figuring out
+// which city matches the current configured lat/lon so it shows as
+// "selected"), temperature unit (Celsius/Fahrenheit), which info to show
+// (humidity/icon/temperature).
+
 import {
     getCityList,
     getWeatherConfig
@@ -32,6 +41,16 @@ export function getWeatherHourSettings() {
                 <span>City</span>
                 <select class="weather-city-select">
                     ${cities.map(c =>
+                        // Math.abs(...) < 0.1：经纬度是浮点数，直接用 ==
+                        // 比较可能因为极小的精度误差而永远不相等，所以用
+                        // "差值小于 0.1"这种近似相等的判断方式，来找出
+                        // 当前配置对应的是列表里哪一个城市。
+                        // Math.abs(...) < 0.1: lat/lon are floating-point
+                        // numbers, so comparing with == could fail to
+                        // match due to tiny precision errors — an
+                        // "approximately equal" check (difference under
+                        // 0.1) is used instead to find which city in the
+                        // list matches the current config.
                         `<option value="${c.lat},${c.lon}"${
                             Math.abs(c.lat - config.latitude) < 0.1 &&
                             Math.abs(c.lon - config.longitude) < 0.1

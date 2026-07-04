@@ -3,6 +3,14 @@ import { syncLayoutToServer } from "./serverLayout.js";
 import { getConstraints } from "../dashboard/resizeConstraints.js";
 import { showReminderPopup } from "../shared/reminderPopup.js";
 
+// "添加组件"面板：显示所有目前被隐藏的组件，让用户点击"Add"把它们
+// 重新加回首页；同时也支持添加多个 Picture Streak 组件实例
+// （不像其他组件只能有一个）。
+// The "Add Widget" panel: lists every widget that's currently hidden, so
+// the user can click "Add" to bring it back onto the home page; it also
+// supports adding multiple Picture Streak widget instances (unlike other
+// widgets, which can only have one).
+
 const WIDGET_INFO = {
     "digital-clock-widget":   { name: "Digital Clock",   icon: "🕐" },
     "weather-hour-widget":    { name: "Weather Hours",   icon: "🌤️" },
@@ -20,6 +28,7 @@ const WIDGET_INFO = {
 const ALL_IDS = Object.keys(WIDGET_INFO);
 
 // ── Extra picture streak instances ───────────────────────────
+// ── 额外的 Picture Streak 实例 ───────────────────────────
 const EXTRA_KEY = "picture-streak-extra-instances";
 
 export function getExtraPictureInstances() {
@@ -42,6 +51,14 @@ export function removeExtraPictureInstance(id) {
     localStorage.removeItem(`${id}-appearance`);
 }
 
+// 决定"再加一个 Picture Streak"时应该用哪个 id：如果原本那个基础
+// 实例被隐藏了，优先把它复原（而不是凭空多建一个）；否则从 2 开始
+// 找一个还没被用过的编号，生成新的额外实例 id。
+// Decides which id to use when adding another Picture Streak: if the
+// original base instance is currently hidden, it's restored first
+// (instead of creating a brand new one out of nowhere); otherwise it
+// searches upward from 2 for an unused number to generate a new extra
+// instance id.
 function nextPictureId() {
     const hidden = getHiddenWidgets();
     // If the base instance is hidden, restore it instead of creating a new one
@@ -54,7 +71,13 @@ function nextPictureId() {
 }
 
 // ── Layout helpers ────────────────────────────────────────────
+// ── 布局相关的辅助函数 ────────────────────────────────────────────
 
+// 收集所有目前显示中（没被隐藏）的组件占用的矩形区域，用来判断
+// "新加的组件放哪里才不会跟别的组件重叠"。
+// Collects the rectangle occupied by every widget that's currently
+// visible (not hidden), used to figure out where a newly added widget
+// can be placed without overlapping anything else.
 function getOccupied(excludeId) {
     const hidden = getHiddenWidgets();
     const extras = getExtraPictureInstances();
@@ -75,6 +98,13 @@ function getOccupied(excludeId) {
         });
 }
 
+// 从导航栏下方开始，按固定步长（20px）逐格扫描屏幕，找到第一个
+// 大小够放下新组件、并且跟已占用区域没有重叠（含 GAP 间距缓冲）
+// 的空位。找不到就返回 null。
+// Starting just below the navbar, scans the screen in fixed steps (20px)
+// looking for the first spot big enough for the new widget that doesn't
+// overlap any already-occupied area (with a GAP buffer). Returns null if
+// no spot is found.
 function tryFit(occupied, w, h, navH) {
     const GAP  = 14;
     const STEP = 20;
@@ -116,11 +146,13 @@ export function openAddWidgetPanel() {
     const hidden = getHiddenWidgets();
 
     // Standard widgets: show ones that are hidden
+    // 普通组件：只列出目前被隐藏的那些
     const hiddenWidgets = ALL_IDS.filter(id =>
         id !== "picture-streak-widget" && hidden.includes(id)
     );
 
     // Picture streak is always addable
+    // Picture Streak 永远可以再加一个，不受"是否隐藏"限制
     const panelWidgets = [
         ...hiddenWidgets,
         "picture-streak-widget",
@@ -157,6 +189,20 @@ export function openAddWidgetPanel() {
     overlay.querySelector(".add-widget-close").addEventListener("click", () => overlay.remove());
     overlay.addEventListener("click", e => { if (e.target === overlay) overlay.remove(); });
 
+    // 点击某个组件卡片的"Add"按钮：先算出应该用哪个组件 id
+    // （Picture Streak 要特殊处理，可能是复原或是新建一个实例），
+    // 再找一块没有重叠的空位放它；如果找不到空位就弹出提示，
+    // 否则显示/新建这个组件、把它的布局写入 localStorage、
+    // 标记"重新加载后自动进入编辑模式"、同步到服务器，
+    // 最后刷新整个页面，让新组件真正出现在画面上。
+    // Clicking a widget card's "Add" button: first works out which
+    // widget id to use (Picture Streak needs special handling — it might
+    // be restoring the hidden base instance or creating a brand new
+    // extra one), then looks for a non-overlapping empty spot for it; if
+    // none is found, shows a popup instead. Otherwise it shows/creates
+    // the widget, writes its layout into localStorage, marks "re-enter
+    // edit mode after reload", syncs to the server, then reloads the
+    // whole page so the new widget actually appears on screen.
     overlay.querySelectorAll(".add-widget-btn").forEach(btn => {
         btn.addEventListener("click", async () => {
             const clickedId = btn.dataset.id;
@@ -176,9 +222,11 @@ export function openAddWidgetPanel() {
 
             if (widgetId === "picture-streak-widget") {
                 // Restoring the base instance from hidden
+                // 从隐藏状态复原基础实例
                 showWidget(widgetId);
             } else if (widgetId.startsWith("picture-streak-widget-")) {
                 // Brand new extra instance
+                // 全新的额外实例
                 addExtraPictureInstance(widgetId);
             } else {
                 showWidget(widgetId);

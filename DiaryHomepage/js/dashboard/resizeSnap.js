@@ -11,6 +11,11 @@ import {
 const SNAP_DIST = 8;
 const GAP_SIZE  = 20;
 
+// 从一串候选值（candidates）里，找出跟 value 最接近、并且距离在
+// SNAP_DIST（8px）以内的那一个；如果都太远，返回 null（不吸附）。
+// Finds whichever candidate value is closest to value, as long as it's
+// within SNAP_DIST (8px); if all candidates are too far away, returns
+// null (no snap).
 function nearestSnap(value, candidates) {
     let best = null;
     let bestDist = SNAP_DIST;
@@ -21,6 +26,24 @@ function nearestSnap(value, candidates) {
     return best;
 }
 
+// 拖动组件"边缘"来调整大小时的吸附逻辑（比如只拖右边缘、只拖下边缘，
+// 或者拖角落同时改两个方向）：dir 参数是像 "e"/"se"/"nw" 这样的
+// 方向代码（e=东/右，w=西/左，n=北/上，s=南/下）。每个方向各自
+// 检查自己的边缘位置有没有靠近某个"对齐候选点"（仪表盘正中线、
+// 其他组件的边缘/中心线、留出 20px 间距的位置）；如果没有靠近对齐点，
+// 就退而求其次，检查新的宽度/高度是不是接近别的组件的宽度/高度
+// （"same size" 吸附，让两个组件大小看起来一样）。
+// Snap logic when resizing a widget by dragging one of its edges (e.g.
+// dragging only the right edge, only the bottom edge, or a corner that
+// changes two directions at once): the dir parameter is a direction code
+// like "e"/"se"/"nw" (e=east/right, w=west/left, n=north/top,
+// s=south/bottom). Each direction independently checks whether its edge
+// position is close to some "alignment candidate" (the dashboard's exact
+// center line, other widgets' edges/center lines, or a position leaving
+// a 20px gap); if it's not close to any alignment point, it falls back
+// to checking whether the new width/height is close to another widget's
+// width/height (a "same size" snap, making the two widgets look the same
+// size).
 export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
     const dashboard = document.getElementById("dashboard");
     const dashCX    = dashboard.clientWidth  / 2;
@@ -124,6 +147,19 @@ export function applyEdgeResizeSnap(widget, newW, newH, newL, newT, dir) {
 }
 
 
+// 拖动"右下角调整大小把手"（同时改宽高）时用的另一套吸附逻辑：
+// 分别检查右边缘和下边缘是不是贴近其他组件的对应边缘（含留 20px
+// 间距的版本），贴近就直接把宽度/高度设成对齐后的值。这个版本
+// 比上面的 applyEdgeResizeSnap 更简单，没有"同尺寸吸附"和辅助线，
+// 是给只能从右下角调整大小的旧版拖拽把手用的。
+// A separate, simpler snap used when dragging the "bottom-right resize
+// handle" (which changes width and height together): checks whether the
+// right edge and bottom edge are close to other widgets' matching edges
+// (including a version with a 20px gap), and if so, sets the width/height
+// directly to the aligned value. This version is simpler than
+// applyEdgeResizeSnap above — no "same size" snap or guide lines — meant
+// for the older resize handle that can only resize from the bottom-right
+// corner.
 export function applyResizeSnap(
     widget,
     width,

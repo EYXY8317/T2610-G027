@@ -1,5 +1,16 @@
 import { userScopedKey } from "../currentUser.js";
 
+// "Picture Streak" 组件：让用户上传照片、按日期显示，支持单张切换
+// 浏览（上一张/下一张）或自动轮播模式（按设定的时间间隔自动切换）。
+// 支持同时存在多个实例（picture-streak-widget、
+// picture-streak-widget-2、-3……），每个实例各自独立存自己的照片。
+// The "Picture Streak" widget: lets the user upload photos shown by
+// date, either browsed one at a time (prev/next buttons) or
+// auto-scrolling on a configured time interval. Supports multiple
+// simultaneous instances (picture-streak-widget,
+// picture-streak-widget-2, -3, ...), each storing its own photos
+// independently.
+
 const SCROLL_INTERVALS = [
     { value: "30s", label: "Every 30 seconds", ms: 30_000 },
     { value: "1m",  label: "Every 1 minute",   ms: 60_000 },
@@ -17,6 +28,16 @@ const DEFAULT_STATE = {
     currentIndex: 0
 };
 
+// 早期版本里，第一个（唯一的）Picture Streak 实例用的 key 是
+// "picture-streak-state"（没有 -widget 后缀）；后来改成支持多实例后，
+// 每个实例的 key 变成 "<id>-state"。这里做一次性的迁移：如果旧 key
+// 有数据、新 key 还没有，就把旧数据复制过去，让老用户的照片不会丢失。
+// In an earlier version, the first (only) Picture Streak instance used
+// the key "picture-streak-state" (no "-widget" suffix); after multi-
+// instance support was added, each instance's key became "<id>-state".
+// This does a one-time migration: if the old key has data and the new
+// key doesn't yet, the old data is copied over so existing users don't
+// lose their photos.
 function getStorageKey(id) {
     // Backward compat: first instance may still have data under the old key
     if (id === "picture-streak-widget") {
@@ -63,6 +84,13 @@ function renderPhoto(photo, showDateLabel) {
     `;
 }
 
+// 两种显示模式："scroll"（轮播）把所有照片都渲染进 DOM，用 CSS
+// 控制哪一张是 active（可见）的，配合下面的定时器切换；单张模式
+// 只渲染当前这一张，配上手动的上一张/下一张按钮。
+// Two display modes: "scroll" renders every photo into the DOM at once,
+// with CSS controlling which one is "active" (visible), driven by the
+// timer below; single mode only renders the current photo, with manual
+// prev/next buttons.
 function renderWidget(state) {
     const { photos, displayMode, showDateLabel, currentIndex } = state;
 
@@ -108,6 +136,13 @@ function updateState(id, partial) {
     return next;
 }
 
+// 每个组件实例（id）自己的自动轮播定时器，用 Map 存起来，方便
+// 在设置变动时先清掉旧的定时器再重新开一个（避免同一个组件同时有
+// 多个定时器一起跑）。
+// Each widget instance (id) gets its own auto-scroll timer, tracked in a
+// Map so that whenever settings change, the old timer can be cleared
+// before starting a fresh one (avoids the same widget ending up with
+// multiple timers running at once).
 const scrollTimers = new Map();
 
 function startScrollTimer(id, state) {

@@ -22,10 +22,18 @@ def set_security_question():
         question = "What is your best friend's name?"
     else:
         print("Invalid choice. Please try again.")
+
+        # return = 结束这个函数，并且把结果传回给调用它的地方；
+        # None = "没有值"、空、空指针；
+        # 这里一次返回两个 None，表示"问题"和"答案"都拿不到，
+        # 调用方看到两个都是 None 就知道用户没选有效的题号。
+        # return = stops the function and sends a result back to whatever
+        # called it; None = "no value" / empty / null.
+        # Returning two Nones here means both "question" and "answer" are
+        # unavailable — the caller sees both are None and knows the user
+        # didn't pick a valid option.
+
         return None, None
-        #Return = Stop function + send result
-          #None = No value, empty, null
-          #Return two empty values
 
     answer = input("Please enter your answer: ")
     hashed_answer = hash_password(answer)

@@ -65,7 +65,7 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
     <div class="profile-wrapper">
 
-        <!-- LEFT -->
+        <!-- LEFT / 左侧 -->
 
         <div class="card">
 
@@ -117,11 +117,11 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
         </div>
 
-        <!-- RIGHT -->
+        <!-- RIGHT / 右侧 -->
 
         <div class="card">
 
-            <!-- STATS -->
+            <!-- STATS / 统计信息 -->
 
             <div class="section-title">
                 Dashboard
@@ -219,6 +219,18 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
 <script>
 
+// ================= THEME PREVIEW =================
+// ================= 主题预览 =================
+// 点击一个主题色块，先只是"预览"效果（马上改变页面颜色，
+// 但还没有真的保存到账号里）；要点了 Apply Theme 按钮之后，
+// 才会真正提交表单存进后端。这样用户可以随便切换看效果，
+// 不用每次点一下都真的存一次档。
+// Clicking a theme swatch only "previews" it (the page's colors change
+// immediately, but nothing is actually saved to the account yet);
+// only clicking the Apply Theme button actually submits the form to save
+// it on the backend. This lets the user freely click through different
+// themes to see how they look without committing a save on every click.
+
 const THEME_NAMES = {
     mocha:    'Mocha Latte',
     lavender: 'Lavender Dream',
@@ -235,11 +247,28 @@ function previewTheme(btn) {
     _pendingTheme = theme;
 
     // Apply CSS vars for live preview but keep localStorage pointing to saved theme
+    // 只把当前页面的 CSS 变量换成新主题的颜色（视觉上的预览），
+    // 但 localStorage 里存的"用户实际保存过的主题"先保持不变——
+    // 这样如果用户刷新页面或者跳去别的页面而没有点 Apply，
+    // 看到的还是原本保存过的主题，而不是刚才随手点开的预览效果。
+    // Only swaps the current page's CSS variables to the new theme's
+    // colors (a visual preview); the "actually saved" theme kept in
+    // localStorage is left untouched — so if the user refreshes or
+    // navigates away without clicking Apply, they still see the
+    // previously saved theme, not whatever preview they were just
+    // clicking through.
     const lsBackup = localStorage.getItem('lifepages-theme');
     setTheme(theme);
     try { localStorage.setItem('lifepages-theme', lsBackup || _savedTheme); } catch(e) {}
 
     // Swap body class so profile.css body-class variables also update
+    // 用正则表达式把 <body> class 里原本的主题名（mocha/lavender/
+    // matcha/ash 四选一）替换成新选的主题名，这样 profile.css 里
+    // 那些按 body class 区分的样式规则也会跟着一起切换。
+    // A regex swaps whichever theme name (one of
+    // mocha/lavender/matcha/ash) is currently on <body>'s class for the
+    // newly picked one, so profile.css's body-class-based style rules
+    // switch over too.
     document.body.className = document.body.className.replace(
         /\b(mocha|lavender|matcha|ash)\b/g, theme
     );
@@ -254,6 +283,11 @@ function previewTheme(btn) {
     document.getElementById('theme-label').textContent = THEME_NAMES[theme] || theme;
 
     // Toggle apply button
+    // 只有当预览的主题跟"已保存的主题"不一样时，Apply 按钮才启用——
+    // 如果点来点去又点回了原本的主题，就没有什么需要"应用"的了。
+    // The Apply button is only enabled when the previewed theme differs
+    // from the "already saved" one — if clicking around lands back on the
+    // original theme, there's nothing new to apply.
     const applyBtn = document.getElementById('apply-theme-btn');
     if (theme !== _savedTheme) {
         applyBtn.removeAttribute('disabled');
@@ -263,6 +297,14 @@ function previewTheme(btn) {
         document.getElementById('theme-sublabel').textContent = 'Current interface appearance';
     }
 }
+
+// 注意：applyTheme() 这个函数被定义了两次，两次内容完全一模一样——
+// 后面这份定义会直接覆盖前面那份（JS 允许函数重复定义，不会报错），
+// 所以实际效果不受影响，但这是明显的重复代码，可以删掉其中一份。
+// Note: applyTheme() is defined twice below, with completely identical
+// bodies — the second definition simply overwrites the first (JS allows
+// redefining a function without erroring), so behavior is unaffected, but
+// this is clearly duplicated code that one copy could be removed from.
 
 function applyTheme() {
     if (window.requireLogin && window.requireLogin()) return;
@@ -279,6 +321,7 @@ function applyTheme() {
 }
 
 // Update file upload name labels
+// 更新文件上传后显示的文件名标签
 document.querySelectorAll('.file-input-hidden').forEach(function(input){
     input.addEventListener('change', function(){
         var el = this.closest('.file-upload-label').querySelector('.file-upload-name');

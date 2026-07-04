@@ -26,6 +26,7 @@ body {
 }
 
 /* ── Navbar (Life Pages style, fixed overlay) ── */
+/* ── 导航栏（Life Pages 风格，固定悬浮） ── */
 
 .navbar {
 
@@ -436,6 +437,7 @@ body {
 }
 
 /* ── Canonical reminder / confirmation popup ─────────────── */
+/* ── 标准提示/确认弹窗 ── */
 
 .reminder-overlay {
     position: fixed;
@@ -523,6 +525,7 @@ body {
 }
 
 /* ── Image crop modal (shared by widgets that store photos client-side) ── */
+/* ── 图片裁剪弹窗（供客户端存储照片的组件共用） ── */
 
 .crop-card {
     max-width: none;
@@ -563,6 +566,7 @@ body {
 .crop-handle.se { bottom: -6px; right: -6px;  cursor: nwse-resize; }
 
 /* ── Onboarding "?" help button + guide modal ────────────── */
+/* ── 新手引导“？”帮助按钮 + 引导弹窗 ── */
 
 .onboarding-help-btn {
     width: 32px;
@@ -766,6 +770,7 @@ body {
 #gap-guide.gap-v::after  { bottom: 0; }
 
 /* ── Add Widget panel ────────────────────────────────────── */
+/* ── 添加组件面板 ── */
 
 .add-widget-overlay {
     position: fixed;
@@ -874,6 +879,7 @@ body {
 }
 
 /* ── Template picker ─────────────────────────────────────────── */
+/* ── 模板选择器 ── */
 
 .template-picker-panel {
     width: 480px;
@@ -952,6 +958,7 @@ body {
 }
 
 /* ── Entrance / hover effects ────────────────────────────────── */
+/* ── 入场/悬停动画效果 ── */
 
 @keyframes navFadeDown {
     from { opacity: 0; transform: translateY(-10px); }

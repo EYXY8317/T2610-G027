@@ -1,4 +1,5 @@
 /* ── Size / Position HUD ─────────────────────────────────── */
+/* ── 尺寸/位置浮层 ── */
 
 #size-hud {
     display: none;
@@ -18,6 +19,7 @@
 }
 
 /* ── Same-size guide line (blue) ─────────────────────────── */
+/* ── 等大参考线（蓝色） ── */
 
 #same-size-guide-v,
 #same-size-guide-h {
@@ -286,6 +288,7 @@
 }
 
 /* ── Edge / corner resize hit zones (injected dynamically) ── */
+/* ── 边缘/角落缩放触发区域（动态注入） ── */
 
 .resize-n, .resize-s, .resize-e, .resize-w,
 .resize-ne, .resize-nw, .resize-sw {
@@ -311,6 +314,7 @@
 .resize-w  { left: 0;   top: 8px; bottom: 8px; width:  6px; cursor: w-resize; }
 
 /* Corner squares */
+/* 四角方块（裁剪手柄） */
 .resize-ne { top: 0;    right:  0; width: 12px; height: 12px; cursor: ne-resize; }
 .resize-nw { top: 0;    left:   0; width: 12px; height: 12px; cursor: nw-resize; }
 .resize-sw { bottom: 0; left:   0; width: 12px; height: 12px; cursor: sw-resize; }
@@ -349,6 +353,7 @@
 }
 
 /* ── Digital Clock ──────────────────────────────────────── */
+/* ── 数字时钟 ── */
 
 .clock-digital,
 .clock-minimal {
@@ -380,6 +385,7 @@
 }
 
 /* ── Flip Clock ──────────────────────────────────────────── */
+/* ── 翻页时钟 ── */
 
 .flip-clock-wrap {
     display: flex;
@@ -439,6 +445,7 @@
 }
 
 /* ── Static back layers (always visible) ── */
+/* ── 静态背景层（始终可见） ── */
 .flip-back-top {
     top: 0;
     align-items: flex-end;
@@ -458,6 +465,7 @@
 }
 
 /* ── Animated front layers ── */
+/* ── 动画前景层 ── */
 .flip-front-top {
     top: 0;
     align-items: flex-end;
@@ -531,6 +539,7 @@
 }
 
 /* ── Quote ───────────────────────────────────────────────── */
+/* ── 语录 ── */
 
 .quote-body {
     position: relative;
@@ -626,6 +635,7 @@
 }
 
 /* ── Emotion Summary ─────────────────────────────────────── */
+/* ── 情绪总结 ── */
 
 #emotion-summary-widget {
     left: 1050px;
@@ -635,6 +645,7 @@
 }
 
 /* ── Emotion Summary body ────────────────────────────────── */
+/* ── 情绪总结内容 ── */
 
 /* Stretch content to fill the card height instead of centering */
 #emotion-summary-widget .widget-content {
@@ -677,6 +688,7 @@
 .es-empty small { font-size: 0.88em; color: #c4bfb8; }
 
 /* ── Pie chart ───────────────────────────────────────────── */
+/* ── 饼图 ── */
 
 /* Outer wrapper — column by default, row when card is wide */
 .es-pie-outer {
@@ -807,6 +819,7 @@
 }
 
 /* ── Line chart ──────────────────────────────────────────── */
+/* ── 折线图 ── */
 
 .es-line-wrap {
     width: 100%;
@@ -845,6 +858,7 @@
 }
 
 /* ── Diary mood chips ────────────────────────────────────── */
+/* ── 日记心情标签 ── */
 
 .es-diary-moods {
     display: flex;
@@ -865,6 +879,7 @@
 }
 
 /* ── Calendar nav in widget header ───────────────────────── */
+/* ── 组件头部里的日历导航 ── */
 
 /* Container injected into widget-header, right side (wide card) */
 .es-hdr-cal {
@@ -918,6 +933,7 @@
 }
 
 /* ── Mood Heatmap ────────────────────────────────────────── */
+/* ── 心情热力图 ── */
 
 /* Outer wrapper: stacks heatmap + legend; switches to row when wide */
 .es-hm-outer {
@@ -1044,6 +1060,7 @@
 
 
 /* Hover tooltip */
+/* 悬停提示框 */
 .es-hm-tooltip {
     display: none;
     position: absolute;
@@ -1065,6 +1082,7 @@
 .es-hm-tt-empty { color: #888; font-size: 0.9em; margin-top: 2px; }
 
 /* ── Today Emotion diary mood badge ─────────────────────── */
+/* ── “今日情绪”组件里的日记心情徽章 ── */
 
 .te-diary-mood {
     font-size: 0.78em;
@@ -1080,6 +1098,7 @@
 .te-diary-mood:empty { display: none; }
 
 /* ── Shared mood colors ──────────────────────────────────── */
+/* ── 共用的心情颜色 ── */
 
 .mood-happy  { background: #10b981; color: #fff; }
 .mood-sad    { background: #6366f1; color: #fff; }
@@ -1087,6 +1106,7 @@
 
 
 /* ── Picture Streak ──────────────────────────────────────── */
+/* ── 图片连续记录 ── */
 
 #picture-streak-widget {
     left: 700px;
@@ -1220,6 +1240,7 @@
 }
 
 /* ── Streak widgets ──────────────────────────────────────── */
+/* ── 连续记录类组件 ── */
 
 #now-streak-widget,
 #high-streak-widget {
@@ -1322,6 +1343,7 @@
 
 
 /* ── Weather Week ────────────────────────────────────────── */
+/* ── 一周天气 ── */
 
 #weather-week-widget {
     left: 1000px;
@@ -1429,6 +1451,7 @@
 }
 
 /* ── Weather Day ─────────────────────────────────────────── */
+/* ── 单日天气 ── */
 
 .wd-body {
     display: flex;
@@ -1507,6 +1530,7 @@
 }
 
 /* ── Today Emotion ───────────────────────────────────────── */
+/* ── 今日情绪 ── */
 
 .te-card {
     width: 100%;
@@ -1586,6 +1610,7 @@
 }
 
 /* Locked emoji row */
+/* 已锁定的表情行 */
 
 .te-emoji-row--locked {
     cursor: not-allowed;
@@ -1660,6 +1685,7 @@
 .te-total.error { color: #ef4444; }
 
 /* Settings emoji inputs */
+/* 设置面板的表情输入 */
 
 .te-emoji-inputs {
     display: flex;
@@ -1678,6 +1704,7 @@
 }
 
 /* ── Diary Card ──────────────────────────────────────────────── */
+/* ── 日记卡片 ── */
 
 #diary-card-widget .widget-content {
     overflow: hidden;
@@ -1793,6 +1820,7 @@
 }
 
 /* Settings */
+/* 设置 */
 
 .dc-book-slots {
     display: flex;

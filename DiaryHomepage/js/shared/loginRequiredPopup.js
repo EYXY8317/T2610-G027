@@ -1,6 +1,10 @@
 // Shared "Login Required" modal — visually identical to the one injected by
 // Finance/static/login-gate.js, so guests see the same popup everywhere in
 // the app regardless of which page/widget triggers it.
+// 共享的"需要登录"弹窗——跟 Finance/static/login-gate.js 里注入的那个
+// 弹窗视觉上完全一样，这样不管是哪个页面/组件触发的，访客看到的
+// 都是同一个弹窗，体验保持一致。
+
 function ensureModal() {
     if (document.getElementById("login-required-overlay")) return;
 
@@ -51,6 +55,10 @@ export function showLoginRequiredPopup() {
 
 // Diary page loads this as a module but calls it from classic inline
 // scripts, so it needs a window global too (same pattern as reminderPopup.js).
+// 日记页面把这个文件当作 module 加载，但实际调用它的地方是传统的
+// 内联 <script>，所以也需要挂一份到 window 上作为全局变量——
+// 跟 reminderPopup.js 是同样的处理方式。
+
 if (typeof window !== "undefined") {
     window.showLoginRequiredPopup = showLoginRequiredPopup;
 }

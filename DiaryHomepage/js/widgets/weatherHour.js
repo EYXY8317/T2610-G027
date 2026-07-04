@@ -7,6 +7,19 @@ from "./weatherConfig.js";
 
 import { getWidgetAppearance } from "../settings/appearance/widgetAppearance.js";
 
+// "Weather Hour" 组件：用 Chart.js 画一条"未来 24 小时温度变化"的
+// 折线图（可选叠加一条湿度曲线），鼠标悬停在线上会显示这个时间点的
+// 天气图标、温度、体感温度。这些 export 出来的变量（showWeatherIcon
+// 等）是给设置面板用的模块级共享状态——设置面板改了这些变量之后，
+// 重新调用 renderWeatherHour() 就会用新的值重新画图。
+// The "Weather Hour" widget: uses Chart.js to draw a "next 24 hours
+// temperature" line graph (optionally overlaid with a humidity curve),
+// showing the weather icon/temperature/feels-like temperature for that
+// point in time on hover. The exported variables below (showWeatherIcon,
+// etc.) are module-level shared state used by the settings panel — after
+// the settings panel changes these variables, calling
+// renderWeatherHour() again redraws the graph with the new values.
+
 export let showWeatherIcon = true;
 export let showWeatherTemperature = true;
 export let showHumidity = false;
@@ -21,6 +34,11 @@ export function setShowHumidity(value) { showHumidity = value; }
 export function setGraphColor(value) { graphColor = value; }
 export function setChartFontSize(value) { chartFontSize = Number(value); }
 
+// 把十六进制颜色（如 "#4A90E2"）转换成 rgba(...) 格式，这样才能
+// 指定透明度（alpha），用来画折线图下方那种"由深到透明"的渐变填充。
+// Converts a hex color (like "#4A90E2") into rgba(...) format, so an
+// alpha (transparency) value can be specified — used to draw the
+// "solid fading to transparent" gradient fill under the line graph.
 function hexToRgba(hex, alpha) {
     const h = hex.replace("#", "");
     const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
@@ -90,6 +108,14 @@ export async function renderWeatherHour() {
         const allCodes = data.hourly.weather_code;
         const allTimes = data.hourly.time;
 
+        // API 一口气返回了两天份（48 小时）的数据，这里找到第一个
+        // "小时数 >= 现在这个小时"的位置，从那里开始往后取 24 小时，
+        // 这样图表永远是从"现在"开始的未来 24 小时，而不是从午夜开始。
+        // The API returns two full days (48 hours) of data in one go;
+        // this finds the first index where the hour is >= the current
+        // hour, then takes the next 24 hours from there — so the graph
+        // always starts from "now" and shows the next 24 hours, instead
+        // of starting from midnight.
         const startIndex = allTimes.findIndex(t => {
             const h = new Date(t).getHours();
             return h >= currentHour;
@@ -99,6 +125,9 @@ export async function renderWeatherHour() {
 
         // Always collect all hours so hover works at any position;
         // labels and dots are shown only at the step interval.
+        // 一律收集全部 24 个小时的数据点（保证鼠标悬停在任何位置都
+        // 有对应的提示信息），至于要不要显示"频率间隔"（比如每 2/3/5
+        // 小时显示一个点）则是另外由设置面板控制的显示层面的事。
         const indices = [];
         for (let i = start; indices.length < 24 && i < allTemps.length; i++) {
             indices.push(i);
@@ -122,6 +151,14 @@ export async function renderWeatherHour() {
         const lineWidth = Math.max(2, Math.round(graphSize / 45));
         const dotHoverR = Math.max(5, lineWidth * 2.5);
 
+        // 自定义 Chart.js 插件：在折线图的数据集画出来之前，先用
+        // canvas 的渐变 API 生成一个"从上到下越来越透明"的渐变色，
+        // 再把它设成折线图下方填充区域的颜色，营造出立体的光影效果。
+        // Custom Chart.js plugin: before the line chart's dataset is
+        // drawn, it uses the canvas gradient API to create a "fades from
+        // solid to transparent, top to bottom" gradient, then sets it as
+        // the line chart's area-fill color, giving it a layered shading
+        // look.
         const gradientPlugin = {
             id: "areaGradient",
             beforeDatasetsDraw(chart) {
@@ -255,6 +292,11 @@ export async function renderWeatherHour() {
 
 }
 
+// 用 ResizeObserver 监听组件大小变化，按组件宽度（相对 300px 基准）
+// 算出图表文字应该多大，再重新渲染整个图表。
+// Uses a ResizeObserver to watch for the widget's size changing,
+// computes how large the chart's text should be based on the widget's
+// width (relative to a 300px baseline), and re-renders the whole chart.
 export function initWeatherHourFontScale() {
     const widget = document.getElementById("weather-hour-widget");
     if (!widget) return;

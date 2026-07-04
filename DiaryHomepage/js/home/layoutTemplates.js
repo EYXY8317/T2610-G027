@@ -1,9 +1,31 @@
+// 参考坐标系统：宽 1000 × 高 800。
+// applyTemplate() 调用时会把这些坐标按实际浏览器窗口大小缩放，
+// 所以不管用户屏幕分辨率是多少，套用模板后画面都能刚好填满。
+//
+// 参考单位下的网格间距 = 14（会按比例一起缩放）
+// 参考单位下的外边距 = 0（实际的 16px 像素边距是在 applyTemplate() 里另外处理的）
+//
 // Reference coordinate system: 1000 wide × 800 tall.
 // applyTemplate() scales these to the actual viewport at apply time,
 // so templates always fit on screen regardless of resolution.
 //
 // Grid gap in reference units = 14  (scales proportionally)
 // Outer margin in reference units = 0 (handled by 16px pixel margin in applyTemplate)
+
+// 下面这个 TEMPLATES 数组，是"一键换布局"功能提供的几套预先设计好的
+// 首页主题：每个模板包含要隐藏哪些组件（hidden）、每个组件的位置/
+// 大小（widgets 里的 x/y/w/h，都是参考坐标系里的数值）、每个组件的
+// 外观设置（ap，即 appearance）、以及可选的装饰贴纸摆放（deco，
+// 用相对组件自身尺寸的百分比 xPct/yPct/wPct 表示，这样不管组件被
+// 缩放成多大，贴纸都能摆在正确的相对位置）。
+// The TEMPLATES array below holds the pre-designed home page themes
+// offered by the "one-click layout switch" feature: each template
+// specifies which widgets to hide (hidden), each widget's position/size
+// (the x/y/w/h in widgets, all in reference-coordinate units), each
+// widget's appearance settings (ap), and optional decoration sticker
+// placement (deco, expressed as percentages relative to the widget's own
+// size — xPct/yPct/wPct — so no matter how large the widget ends up
+// being scaled, the stickers land in the correct relative position).
 
 const TEMPLATES = [
 
@@ -276,6 +298,8 @@ const TEMPLATES = [
 
 // ── Apply ──────────────────────────────────────────────────────────────────────
 // Scales the 1000×800 reference grid to the actual viewport at call time.
+// ── 应用模板 ──────────────────────────────────────────────────────────────────────
+// 把 1000×800 的参考网格，按调用当下实际的浏览器窗口大小缩放。
 
 export { TEMPLATES };
 
@@ -291,6 +315,11 @@ export function applyTemplate(templateId) {
 
     localStorage.setItem("active-template", templateId);
 
+    // 把每个组件的参考坐标（x/y/w/h）乘上缩放比例，转换成实际像素值，
+    // 存进对应的 "<id>-layout" 和 "<id>-appearance" 里。
+    // Multiplies each widget's reference coordinates (x/y/w/h) by the
+    // scale factor to convert them into actual pixel values, saving them
+    // into the matching "<id>-layout" and "<id>-appearance" keys.
     template.widgets.forEach(({ id, x, y, w, h, ap }) => {
         const layout = {
             left:   Math.round(16 + x * scaleX) + "px",
@@ -304,6 +333,8 @@ export function applyTemplate(templateId) {
 
     // Apply template deco — positions are stored as percentages and converted to pixels
     // using each widget's actual rendered dimensions at this viewport size.
+    // 应用模板的装饰贴纸——存储时用的是百分比，这里换算成这个视窗
+    // 大小下每个组件实际渲染出来的像素尺寸对应的像素坐标。
     if (template.deco) {
         Object.entries(template.deco).forEach(([widgetId, decoItems]) => {
             const wRef = template.widgets.find(w => w.id === widgetId);

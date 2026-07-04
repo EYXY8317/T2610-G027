@@ -3,6 +3,14 @@ import {
 }
 from "../../widgets/quote.js";
 
+// Quote 组件设置面板：可以选字体样式、内容/作者颜色、要显示哪些
+// 分类的名言、要不要自动轮播、名言来源（系统内置 / 自己添加），
+// 以及自己添加、查看、删除保存的名言。
+// The Quote widget's settings panel: choose the font style,
+// content/author color, which categories of quotes to show, whether to
+// auto-rotate, the quote source (built-in system quotes vs. your own),
+// and add/view/remove your own saved quotes.
+
 const ALL_CATEGORIES = [
     { key: "time",         label: "Time" },
     { key: "self",         label: "Self Love" },
@@ -17,6 +25,11 @@ export function getQuoteSettings() {
     const cats    = state.systemCategories || ["encouragement"];
     const sources = state.showSources     || ["system", "user"];
 
+    // 把用户自己保存的每条名言渲染成一行，附带一个"✕"删除按钮
+    // （data-index 记住是列表中的第几条，方便点击时定位删除）。
+    // Renders each of the user's saved quotes as one row, with an "✕"
+    // remove button (data-index remembers which position in the list it
+    // is, so the click handler knows which one to delete).
     const savedList = state.savedQuotes.length
         ? state.savedQuotes.map((q, i) => `
             <div class="quote-saved-item">
@@ -28,6 +41,16 @@ export function getQuoteSettings() {
 
     const textColor   = state.textColor   || "#1a1a1a";
     const authorColor = state.authorColor || "#888888";
+
+    // 返回值分成好几个"区块"（style/location/graph/display），是因为
+    // 设置弹窗把不同组件的设置项，按统一的标签分类展示（样式/位置/
+    // 图表/显示），这个组件只用到 style 和 display 两个区块，
+    // 其余留空字符串即可。
+    // The return value is split into several "sections"
+    // (style/location/graph/display) because the settings popup groups
+    // every widget's settings under the same shared tab categories
+    // (Style/Location/Graph/Display) — this widget only uses the style
+    // and display sections, so the rest are left as empty strings.
 
     return {
 

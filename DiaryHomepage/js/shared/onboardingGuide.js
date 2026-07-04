@@ -3,6 +3,11 @@ import { userScopedKey } from "../currentUser.js";
 // Reuses the "reminder-overlay"/"reminder-card" classes from reminderPopup.js
 // for a consistent backdrop + card look, layered with onboarding-specific
 // classes for the larger, multi-section layout.
+// 新手引导弹窗：借用 reminderPopup.js 里的 "reminder-overlay"/
+// "reminder-card" 样式类，保持跟其他弹窗一致的半透明背景+卡片外观，
+// 再叠加专属于新手引导的样式类，做出这个更大、分成好几个区块的
+// 版面。首次登录的用户会自动看到这个引导，之后也可以点导航栏的
+// "?" 按钮随时重新打开。
 
 const ONBOARDING_SEEN_KEY = "hasSeenOnboarding";
 
@@ -89,6 +94,9 @@ function markOnboardingSeen() {
 // Injects the "?" help button into the navbar and, for first-time users on
 // this account, auto-opens the guide once. The button itself always opens
 // the guide on click regardless of whether it's already been seen.
+// 把 "?" 帮助按钮插入导航栏，并且对这个账号的首次访客，自动打开一次
+// 引导弹窗。这个按钮本身不管之前有没有看过，点击时永远会重新打开
+// 引导（方便用户想再看一次的时候随时能找到）。
 export function initOnboardingGuide() {
     const navbarRight = document.querySelector(".navbar-right");
     if (!navbarRight || document.getElementById("onboarding-help-btn")) return;

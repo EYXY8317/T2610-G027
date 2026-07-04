@@ -1,3 +1,11 @@
+# ================= MOOD QUOTE LISTS =================
+# ================= 心情语录列表 =================
+# 每种心情各有一份鼓励语录清单，根据用户当天选的心情随机挑一句，
+# 显示在日记页面的引言框里。
+# Each mood has its own list of encouragement quotes; one is picked at
+# random based on the mood the user selected that day, and shown in the
+# diary page's quote box.
+
 happy_list = [
 "This moment matters more than you think.",
 "You earned this, don’t downplay it.",
@@ -194,8 +202,12 @@ unwell_list = [
 ]
 
 # ================= keyword-based topic matching =================
+# ================= 基于关键词的主题匹配 =================
 # Maps a topic category to the keywords (searched in the diary text,
 # lowercase) that indicate the entry is about that topic.
+# 把每个主题分类对应到一组关键词（会在日记正文里做小写匹配搜索），
+# 用来判断这篇日记内容是不是在讲这个主题。
+
 TOPIC_KEYWORDS = {
     "school_work": [
         "exam", "test", "study", "studying", "assignment", "homework",
@@ -215,6 +227,9 @@ TOPIC_KEYWORDS = {
 
 # Per-mood, per-topic quotes: used instead of the general mood list when
 # the diary text mentions a matching topic's keywords.
+# 按"心情 + 主题"分类的专属语录：当日记正文命中了某个主题的关键词时，
+# 会优先用这里更贴合场景的语录，而不是用上面那份泛用的心情语录清单。
+
 TOPIC_QUOTES = {
     "happy": {
         "school_work": [

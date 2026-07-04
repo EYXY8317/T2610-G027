@@ -1,3 +1,14 @@
+// "等间距吸附"：拖动一个组件到另外两个组件之间时，如果这两个组件
+// 之间的空隙刚好能放下正在拖的这个组件、并且拖到了"让左右（或上下）
+// 两边间距相等"的位置附近，就自动吸附到那个正中间的位置，并且画一条
+// 参考线标出这段相等的间距。
+// "Equal-gap snapping": when dragging a widget between two other
+// widgets, if the gap between those two is big enough to fit the widget
+// being dragged, and the drag lands near the position that would make
+// the left/right (or top/bottom) spacing equal, it automatically snaps
+// into that exact centered position and draws a guide line marking the
+// equal gap.
+
 const SNAP_DIST       = 8;   // px — how close before snapping
 const ROW_OVERLAP_MIN = 30;  // min vertical overlap (px) to count as "same row"
 const COL_OVERLAP_MIN = 30;  // min horizontal overlap (px) to count as "same column"
@@ -35,6 +46,9 @@ export function hideGapGuide() {
  * Snaps the dragged widget to an equal-gap position between any two
  * other widgets on the same row (horizontal) or column (vertical).
  *
+ * 把正在拖动的组件，吸附到"同一行（水平方向）或同一列（垂直方向）
+ * 上任意两个其他组件之间、间距相等"的位置。
+ *
  * @returns {{ left: number, top: number }}
  */
 export function applyGapSnap(widget, newLeft, newTop) {
@@ -45,6 +59,16 @@ export function applyGapSnap(widget, newLeft, newTop) {
     const wH = widget.offsetHeight;
 
     // ── Horizontal equal gap (same row) ──────────────────────────
+    // ── 水平方向等间距（同一行） ──────────────────────────
+
+    // 先筛选出"跟拖动中的组件在垂直方向上有足够重叠"的其他组件——
+    // 重叠够多才算是"同一行"，然后按左边界从左到右排序，
+    // 方便下面按"相邻两个"依次检查它们中间的空隙。
+    // First filter down to other widgets that overlap enough vertically
+    // with the dragged widget — enough overlap is what counts as "the
+    // same row" — then sort them left-to-right by their left edge, so the
+    // loop below can check the gap between each adjacent pair in order.
+
     const rowWidgets = others
         .filter(o => {
             const oTop = o.offsetTop;
@@ -62,10 +86,23 @@ export function applyGapSnap(widget, newLeft, newTop) {
         const rLeft  = R.offsetLeft;
         const space  = rLeft - lRight;
 
+        // 这两个组件中间的空隙，如果连拖动中的组件都塞不下，就跳过
+        // （+4 留一点点缓冲，避免刚好卡住）。
+        // If the gap between these two widgets can't even fit the widget
+        // being dragged, skip this pair (+4 leaves a small buffer so it
+        // doesn't just barely get stuck).
         if (space <= wW + 4) continue;
+        // 拖动中的组件位置离这段空隙太远（左边或右边），也跳过——
+        // 只有真的靠近这段空隙时才需要继续判断吸附。
+        // If the dragged widget's position is too far from this gap
+        // (either side), also skip — only bother checking snap alignment
+        // when it's actually near this gap.
         if (newLeft + wW < lRight - SNAP_DIST) continue;
         if (newLeft > rLeft + SNAP_DIST) continue;
 
+        // 计算"让左右两边间距刚好相等"所对应的目标左边界坐标。
+        // Computes the target left-edge coordinate that would make the
+        // left/right spacing exactly equal.
         const targetLeft = lRight + (space - wW) / 2;
 
         if (Math.abs(newLeft - targetLeft) < SNAP_DIST) {
@@ -75,6 +112,11 @@ export function applyGapSnap(widget, newLeft, newTop) {
     }
 
     // ── Vertical equal gap (same column) ─────────────────────────
+    // ── 垂直方向等间距（同一列） ─────────────────────────
+    // 跟上面水平方向的逻辑完全对称，只是把"左右"换成"上下"。
+    // Exactly symmetric to the horizontal logic above, just with
+    // "left/right" swapped for "top/bottom".
+
     const colWidgets = others
         .filter(o => {
             const oLeft  = o.offsetLeft;

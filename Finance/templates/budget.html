@@ -47,6 +47,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 </nav>
 
 <!-- ================= TOPBAR ================= -->
+<!-- ================= 顶部栏 ================== -->
 
 <div class="topbar">
 
@@ -67,10 +68,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 </div>
 
 <!-- ================= MAIN ================= -->
+<!-- ================= 主区块 ================= -->
 
 <div class="summary-wrapper">
 
     <!-- ===== HERO ===== -->
+    <!-- ===== 顶部欢迎区 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -148,6 +151,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== BUDGET LIST ===== -->
+    <!-- ===== 预算列表 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -244,7 +248,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 </div>
 
-<!-- ================= TNG INPUT ================= -->
+<!-- ================= AMOUNT INPUT (calculator-style entry) ================= -->
+<!-- ================= 金额输入框（计算器式数字输入） ================= -->
+<!-- 跟 add.html 金额栏是同一套"以分为单位整数 + 数字键盘"技巧, -->
+<!-- 详细说明见 add.html。 -->
+<!-- Same "integer cents + digit keypad" trick as add.html's amount -->
+<!-- field — see add.html for the full explanation. -->
 
 <script>
 

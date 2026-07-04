@@ -1,5 +1,23 @@
+/* setProperty('--xxx', value) 是在网页最外层的 <html> 元素上直接设置
+   CSS 自定义属性（也叫 CSS 变量）的值。整个项目的 CSS 文件里到处都用
+   var(--primary) 这种写法引用这些变量，所以只要在这里统一改一次
+   --primary 等变量的值，所有引用了它的样式就会立刻跟着换色，
+   不需要一个个文件手动改颜色。下面 4 个主题各自把同一组变量名
+   （--background、--primary、--primary-light 等）设置成不同的颜色值，
+   就实现了"一键换肤"。
+   setProperty('--xxx', value) sets a CSS custom property (a "CSS
+   variable") directly on the page's top-level <html> element. Throughout
+   this project's CSS files, styles reference these variables via
+   var(--primary); changing --primary's value here in one place instantly
+   re-colors every style that references it, without needing to manually
+   edit colors file by file. Each of the 4 themes below sets the very same
+   set of variable names (--background, --primary, --primary-light, etc.)
+   to different color values, which is what makes "one-click theme
+   switching" work. */
+
 /* ==================================================
   1. THEME POPUP
+  主题选择弹窗
 ================================================== */
 
 /* =====================================
@@ -33,6 +51,7 @@ function closeThemePopup(){
 /* ==================================================
   2. THEME SYSTEM
      Change application color theme instantly
+     主题系统 —— 立即切换整个应用的配色
 ================================================== */
 
 function setTheme(theme){
@@ -42,6 +61,7 @@ function setTheme(theme){
 
     /* =====================================
        MOCHA LATTE THEME
+       摩卡拿铁主题
     ===================================== */
 
     if(theme === "mocha"){
@@ -126,6 +146,7 @@ function setTheme(theme){
 
     /* =====================================
        LAVENDER DREAM THEME
+       薰衣草紫主题
     ===================================== */
 
     else if(theme === "lavender"){
@@ -209,6 +230,7 @@ function setTheme(theme){
 
     /* =====================================
        MATCHA GREEN THEME
+       抹茶绿主题
     ===================================== */
 
     else if(theme === "matcha"){
@@ -292,6 +314,7 @@ function setTheme(theme){
 
     /* =====================================
        ASH GRAY THEME
+       灰烬灰主题
     ===================================== */
 
     else if(theme === "ash"){

@@ -1,3 +1,15 @@
+// 注意：这个文件里的函数名是 getWeatherHourSettings，跟 Weather Hour
+// 组件真正在用的 weatherHourSettings.js 内容重复（同样的"频率/显示
+// 图标/显示温度/图表颜色"设置项）。经过搜索确认，本文件（
+// frequencySetting.js）在项目里没有任何地方 import 或引用它，
+// 属于已经不再使用的遗留/重复文件。
+// Note: this file's function is named getWeatherHourSettings, and
+// duplicates the content that the Weather Hour widget actually uses from
+// weatherHourSettings.js (the same Frequency/Show Icon/Show
+// Temperature/Graph Color settings). Confirmed via search that this file
+// (frequencySetting.js) isn't imported or referenced anywhere in the
+// project — it's leftover/duplicate dead code no longer in use.
+
 export function getWeatherHourSettings() {
 
     return `

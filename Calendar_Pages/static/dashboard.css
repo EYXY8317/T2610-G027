@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ================= RESET ================= */
+/* ================= 重置 ================= */
 
 *{
     margin:0;
@@ -22,6 +23,7 @@ body{
 }
 
 /* ================= MAIN CONTAINER ================= */
+/* ================= 主容器 ================= */
 
 .dashboard{
 
@@ -33,6 +35,7 @@ body{
 }
 
 /* ================= NAVBAR ================= */
+/* ================= 导航栏 ================= */
 
 .navbar{
 
@@ -54,6 +57,7 @@ body{
 }
 
 /* ================= LEFT SIDE ================= */
+/* ================= 左侧 ================= */
 
 .logo-section{
 
@@ -65,6 +69,7 @@ body{
 }
 
 /* ICON PLACEHOLDER */
+/* 图标占位符 */
 
 .logo-box{
 
@@ -104,6 +109,7 @@ body{
 }
 
 /* ================= NAVIGATION ================= */
+/* ================= 导航 ================= */
 
 .nav-links{
     display:flex;
@@ -183,7 +189,8 @@ body{
     background:var(--primary-accent, #c9a88a);
 }
 
-/* ================= HERO字体 ================= */
+/* ================= HERO FONT ================= */
+/* ================= 欢迎区字体 ================= */
 
 .hero{
     text-align:center;
@@ -204,6 +211,7 @@ body{
 }
 
 /* ================= CARDS ================= */
+/* ================= 卡片 ================= */
 
 .cards-container{
 
@@ -217,6 +225,7 @@ body{
 }
 
 /* ================= CARD ================= */
+/* ================= 卡片 ================= */
 
 .card{
 
@@ -253,6 +262,7 @@ body{
 }
 
 /* CARD TOP */
+/* 卡片顶部 */
 
 .card-top{
     display:flex;
@@ -261,6 +271,7 @@ body{
 }
 
 /* LEFT */
+/* 左侧 */
 
 .card-left{
     display:flex;
@@ -268,6 +279,7 @@ body{
 }
 
 /* ICON */
+/* 图标 */
 .icon-box{
 
     width:70px;
@@ -300,6 +312,7 @@ body{
 }
 
 /* TEXT */
+/* 文字 */
 .card-text h2{
     margin-bottom:5px;
     font-size:32px;
@@ -316,6 +329,7 @@ body{
 }
 
 /* PREVIEW BOX */
+/* 预览框 */
 
 .preview-box{
 
@@ -344,6 +358,7 @@ body{
 }
 
 /* BUTTON */
+/* 按钮 */
 
 .card-btn{
 
@@ -379,6 +394,7 @@ body{
 
 
 /* ================= FINANCE PREVIEW ================= */
+/* ================= 财务预览 ================= */
 
 .finance-preview{
 
@@ -401,6 +417,7 @@ body{
 }
 
 /* HEADER */
+/* 页头 */
 
 .finance-header{
 
@@ -413,6 +430,7 @@ body{
 }
 
 /* SMALL TEXT */
+/* 小字文本 */
 
 .finance-header span{
 
@@ -423,6 +441,7 @@ body{
 }
 
 /* MONEY */
+/* 金额 */
 
 .finance-header h3{
 
@@ -435,6 +454,7 @@ body{
 }
 
 /* SUBTEXT */
+/* 副文本 */
 
 .finance-header p{
 
@@ -447,6 +467,7 @@ body{
 }
 
 /* BADGE */
+/* 徽章 */
 
 .finance-badge{
 
@@ -465,6 +486,7 @@ body{
 }
 
 /* CHART */
+/* 图表 */
 
 .finance-chart{
 
@@ -481,6 +503,7 @@ body{
 }
 
 /* GROUP */
+/* 分组 */
 
 .finance-bar-group{
 
@@ -495,6 +518,7 @@ body{
 }
 
 /* BAR */
+/* 进度条 */
 
 .bar{
 
@@ -515,6 +539,7 @@ body{
 .bar4{ height:140px; }
 
 /* LABEL */
+/* 标签 */
 
 .finance-bar-group span{
 
@@ -546,6 +571,7 @@ body{
 .pill-over { background:#fee2e2; color:#991b1b; }
 
 /* Mini dashboard */
+/* 迷你仪表盘 */
 .fin-mini-top {
     display: flex;
     justify-content: space-between;
@@ -617,6 +643,7 @@ body{
 }
 
 /* ================= DIARY PREVIEW ================= */
+/* ================= 日记预览 ================= */
 
 .diary-preview{
 
@@ -633,6 +660,7 @@ body{
 }
 
 /* LABEL */
+/* 标签 */
 
 .diary-label{
 
@@ -645,6 +673,7 @@ body{
 }
 
 /* TITLE */
+/* 标题 */
 
 .diary-preview h3{
 
@@ -661,6 +690,7 @@ body{
 }
 
 /* DATE */
+/* 日期 */
 
 .diary-date{
 
@@ -673,6 +703,7 @@ body{
 }
 
 /* TEXT */
+/* 文字 */
 
 .diary-text{
 
@@ -687,6 +718,7 @@ body{
 }
 
 /* EMOTION CHART */
+/* 情绪图表 */
 
 .dash-es-header{
 
@@ -875,6 +907,7 @@ body{
 }
 
 /* ================= CALENDAR PREVIEW ================= */
+/* ================= 日历预览 ================= */
 
 .calendar-preview{
 
@@ -887,6 +920,7 @@ body{
 }
 
 /* TOP */
+/* 顶部 */
 
 .calendar-top{
 
@@ -903,6 +937,7 @@ body{
 }
 
 /* WEEK DAYS */
+/* 星期几 */
 
 .week-days{
 
@@ -921,6 +956,7 @@ body{
 }
 
 /* GRID */
+/* 网格 */
 
 .calendar-grid{
 
@@ -939,6 +975,7 @@ body{
 }
 
 /* DAYS */
+/* 日期格子 */
 
 .calendar-grid span{
 
@@ -961,6 +998,7 @@ body{
 }
 
 /* HOVER */
+/* 悬停效果 */
 
 .calendar-grid span:hover{
 
@@ -969,6 +1007,7 @@ body{
 }
 
 /* ACTIVE DAY */
+/* 当前日期 */
 
 .active-day{
 
@@ -984,6 +1023,7 @@ body{
 }
 
 /* EVENT */
+/* 事件 */
 
 .event-box{
 
@@ -1002,6 +1042,7 @@ body{
 }
 
 /* ================= FINANCE BAR CHART ================= */
+/* ================= 财务柱状图 ================= */
 
 .fin-mini-badge {
     font-size: 12px;
@@ -1072,6 +1113,7 @@ body{
 }
 
 /* ================= DIARY MOOD ROW ================= */
+/* ================= 日记心情行 ================= */
 
 .diary-mood-row {
     margin-top: 10px;
@@ -1084,6 +1126,7 @@ body{
 }
 
 /* ================= CALENDAR TASK DOTS ================= */
+/* ================= 日历任务圆点 ================= */
 
 .cal-empty {
     visibility: hidden;
@@ -1113,6 +1156,7 @@ body{
 }
 
 /* ================= PER-CARD COLOURS ================= */
+/* ================= 每张卡片各自的颜色 ================= */
 
 /* Finance — pastel green */
 .card-finance .icon-box       { background: #e0f2e9; }

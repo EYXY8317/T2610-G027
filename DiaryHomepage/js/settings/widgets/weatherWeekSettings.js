@@ -1,3 +1,11 @@
+// "一周天气"组件的设置面板：城市/温度单位（做法跟 weatherHourSettings.js
+// 一样，见那边的详细说明），加上这个组件特有的"显示几天"（3/5/7天）
+// 和"要不要显示天气图标"选项。
+// Settings panel for the "Weather Week" widget: city/temperature unit
+// (same approach as weatherHourSettings.js — see there for the detailed
+// explanation), plus this widget's own "how many days to show" (3/5/7)
+// and "show weather icon" options.
+
 import {
     getCityList,
     getWeatherConfig

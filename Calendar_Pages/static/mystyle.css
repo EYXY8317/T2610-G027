@@ -7,43 +7,52 @@
 :root{
 
     /* Main Background */
+    /* 主背景色 */
 
     --background:#f7f3ee;
 
     /* Sidebar */
+    /* 侧边栏 */
 
     --sidebar-top:#fcfaf7;
     --sidebar-bottom:#f4eee7;
 
     /* Main Theme Color */
+    /* 主题色 */
 
     --primary:#8b6b4f;
 
     /* Light Colors */
+    /* 浅色配色 */
 
     --primary-light:#f5eee7;
     --primary-hover:#ece0d3;
     --primary-soft:#faf7f3;
 
     /* Border */
+    /* 边框 */
 
     --primary-border:#e8ddd1;
 
     /* Accent */
+    /* 强调色 */
 
     --primary-accent:#d9c3ad;
 
     /* Gradients */
+    /* 渐变色 */
 
     --gradient-start:#b18a68;
     --gradient-end:#8b6b4f;
 
     /* Quote Card */
+    /* 语录卡片 */
 
     --quote-start:#fcfaf7;
     --quote-end:#f5eee7;
 
     /* Shadows */
+    /* 阴影 */
 
     --shadow-light:rgba(139,107,79,0.08);
 
@@ -268,6 +277,7 @@ body{
 }
 
 /* Active Page */
+/* 当前页面 */
 .nav-link.active{
 
     background:var(--primary);
@@ -1735,6 +1745,7 @@ body{
 }
 
 /* Flag icon size */
+/* 旗帜图标大小 */
 
 .priority-box .material-symbols-rounded{
 

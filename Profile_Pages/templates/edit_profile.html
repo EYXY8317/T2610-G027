@@ -91,6 +91,19 @@
 </div>
 
 <script>
+// FileReader：浏览器内置的对象，可以在文件真正上传到服务器之前，
+// 先在浏览器本地把选中的图片读出来预览。readAsDataURL(file) 会把
+// 图片转换成一段 base64 编码的文字（data URL），读取完成后触发
+// onload，这时候把这段文字直接赋给 <img> 的 src，就能立刻看到
+// 选中的新头像长什么样，不需要真的先上传到后端才能预览。
+// FileReader: a built-in browser object that can read a selected image
+// locally in the browser, before it's ever uploaded to the server.
+// readAsDataURL(file) converts the image into a base64-encoded text
+// string (a data URL); once reading finishes, onload fires, and assigning
+// that string directly to the <img>'s src shows the newly picked avatar
+// immediately — no need to actually upload it to the backend first just
+// to preview it.
+
 document.querySelectorAll('.file-input-hidden').forEach(function(input){
     input.addEventListener('change', function(){
         var el = this.closest('.file-upload-label').querySelector('.file-upload-name');

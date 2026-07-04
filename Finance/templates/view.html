@@ -54,6 +54,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 <!-- ================================================= -->
 <!-- ==================== TOPBAR ===================== -->
+<!-- ==================== 顶部栏 ======================= -->
 <!-- ================================================= -->
 
 <div class="topbar">
@@ -80,11 +81,13 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
     <!-- ================================================= -->
     <!-- ===================== MAIN ====================== -->
+    <!-- ===================== 主区块 ====================== -->
     <!-- ================================================= -->
 
     <div class="summary-card hover-card">
 
         <!-- ===== HEADER ===== -->
+        <!-- ===== 头部 ===== -->
 
         <div class="view-header">
 
@@ -116,6 +119,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         </div>
 
         <!-- ===== SUCCESS ===== -->
+        <!-- ===== 成功提示 ===== -->
 
         {% if success %}
 
@@ -132,6 +136,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         {% endif %}
 
         <!-- ===== ERROR ===== -->
+        <!-- ===== 错误提示 ===== -->
 
         {% if error %}
 
@@ -148,6 +153,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         {% endif %}
 
         <!-- ===== FILTER ===== -->
+        <!-- ===== 筛选 ===== -->
 
         <form
         method="GET"
@@ -198,6 +204,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         </form>
 
         <!-- ===== EMPTY ===== -->
+        <!-- ===== 空状态 ===== -->
 
         {% if not records %}
 
@@ -247,6 +254,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         </form>
 
         <!-- ===== TABLE ===== -->
+        <!-- ===== 表格 ===== -->
 
         <div class="table-wrapper">
 
@@ -407,6 +415,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 </div>
 
 <!-- RECEIPT MODAL -->
+<!-- 收据大图弹窗 -->
 
 <div
     class="receipt-modal"
@@ -427,6 +436,14 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 <script>
 
+// 点击收据缩略图时，把这张图的地址塞进弹窗里的大图 <img>，
+// 再给弹窗加上 "open" 这个 CSS class 来显示它（具体怎么显示/动画
+// 由 finance.css 里 .receipt-modal.open 的样式决定）。
+// When a receipt thumbnail is clicked, the clicked image's src is copied
+// into the modal's full-size <img>, then the "open" CSS class is added to
+// the modal to reveal it (the actual show/animation styling lives in
+// finance.css's .receipt-modal.open rule).
+
 function openReceiptModal(src) {
 
     document.getElementById("receiptModalImg").src = src;
@@ -438,6 +455,11 @@ function closeReceiptModal() {
 
     document.getElementById("receiptModal").classList.remove("open");
 }
+
+// 按下 Esc 键也能关闭弹窗，跟点击弹窗背景（见 view.html 里
+// onclick="closeReceiptModal()"）是等效的两种关闭方式。
+// Pressing Esc also closes the modal — an alternative to clicking the
+// modal's backdrop (see the onclick="closeReceiptModal()" in the HTML).
 
 document.addEventListener("keydown", function(e) {
 

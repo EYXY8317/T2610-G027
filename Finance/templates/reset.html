@@ -15,10 +15,10 @@
 
 <body>
 
-<!-- MAIN CONTAINER -->
+<!-- MAIN CONTAINER / 主容器 -->
 <div class="container">
 
-    <!-- LEFT PANEL -->
+    <!-- LEFT PANEL / 左侧面板 -->
     <div class="left-panel">
 
         <h1>Create a new password</h1>
@@ -29,7 +29,7 @@
 
     </div>
 
-    <!-- RIGHT PANEL -->
+    <!-- RIGHT PANEL / 右侧面板 -->
     <div class="right-panel">
 
         <h2>Reset Password</h2>
@@ -85,6 +85,14 @@
 </div>
 
 <script>
+// 点击眼睛图标切换密码框是"显示明文"还是"隐藏成圆点"——
+// input.type 在 "password"（自动隐藏）和 "text"（明文显示）之间切换，
+// 同时把眼睛图标换成对应的睁眼/闭眼表情，给用户一个视觉提示。
+// Clicking the eye icon toggles the password field between "hidden as
+// dots" and "shown as plain text" — input.type switches between
+// "password" (auto-masked) and "text" (visible), and the eye emoji swaps
+// to match, giving the user a visual cue of the current state.
+
 function togglePassword(inputId, eyeId) {
     const input = document.getElementById(inputId);
     const eye = document.getElementById(eyeId);

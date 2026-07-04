@@ -20,6 +20,7 @@
 <div class="dashboard">
 
 <!-- ================= NAVBAR ================= -->
+<!-- ================= 导航栏 ================== -->
 
     <nav class="navbar">
 
@@ -61,6 +62,7 @@
     </nav>
 
 <!-- ================= HERO ================= -->
+<!-- ================= 欢迎区 ================= -->
 
     <section class="hero">
 
@@ -73,10 +75,11 @@
     </section>
 
 <!-- ================= CARDS ================= -->
+<!-- ================= 卡片 ================== -->
 
     <section class="cards-container">
 
-        <!-- FINANCE -->
+        <!-- FINANCE / 财务 -->
 
         <div class="card card-finance">
 
@@ -108,7 +111,7 @@
 
          <div class="preview-box finance-preview">
 
-           <!-- Available Balance -->
+           <!-- Available Balance / 可用余额 -->
            <div class="fin-mini-top">
              <div>
                <span class="fin-mini-label">Available Balance</span>
@@ -119,7 +122,7 @@
              </span>
            </div>
 
-           <!-- Weekly bar chart -->
+           <!-- Weekly bar chart / 每周柱状图 -->
            <div class="fin-chart-area">
              <span class="fin-chart-title">Weekly Spending</span>
              <div class="fin-bars">
@@ -135,7 +138,7 @@
              </div>
            </div>
 
-           <!-- Footer tiles -->
+           <!-- Footer tiles / 底部小卡片 -->
            <div class="fin-mini-tiles">
              <div class="fin-tile fin-tile-expense">
                <span class="fin-tile-label">This Month</span>
@@ -161,7 +164,7 @@
 
         </div>
 
-        <!-- DIARY -->
+        <!-- DIARY / 日记 -->
 
         <div class="card card-diary">
 
@@ -219,7 +222,7 @@
 
         </div>
 
-        <!-- CALENDAR -->
+        <!-- CALENDAR / 日历 -->
 
         <div class="card card-calendar">
 
@@ -298,6 +301,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+// ================= EMOTION SUMMARY DONUT =================
+// ================= 情绪总结环形图 =================
+// 首页的 Diary 卡片里有一个环形图，统计"这个月每种心情各出现了几天"，
+// 数据来自 /diary_data 接口（跟日记页面搜索用的是同一份日记数据）。
+// 用户可以点左右箭头切换月份重新统计，不需要跳转到日记页面。
+// The Diary card on the home dashboard has a donut chart summarizing "how
+// many days this month had each mood", sourced from the /diary_data
+// endpoint (the same underlying diary data the diary page's search uses).
+// Clicking the left/right arrows re-tallies a different month without
+// having to navigate to the diary page.
+
 (function(){
     const MOOD_COLORS = {
         happy:   "#E4CC6D",
@@ -306,6 +320,13 @@
         anxious: "#F5A455",
         unwell:  "#8FAD83",
     };
+    // 旧版心情系统用过不同的名字（meh/smile/neutral/首字母大写等），
+    // 这个映射表把它们统一转换成现在这 5 种心情的名字，
+    // 这样旧日记数据也能正确统计进图表里。
+    // Older versions of the mood system used different names
+    // (meh/smile/neutral/capitalized, etc.) — this lookup table
+    // normalizes them all to the current 5 mood names, so older diary
+    // entries still get correctly counted into the chart.
     const LEGACY_NORM = { meh: "unwell", smile: "happy", neutral: "unwell", Happy: "happy", Sad: "sad", Angry: "angry" };
     function normalizeMood(mood) { return LEGACY_NORM[mood] || mood; }
     function moodIconUrl(mood) { return `/diary_home_static/assets/emotions/${mood}.png`; }
@@ -317,12 +338,24 @@
     let viewMonth      = today.getMonth();
 
     function monthCounts(year, month) {
+        // new Date(year, month + 1, 0)：JS 里一个经典的小技巧——
+        // "下个月第 0 天"其实就等于"这个月的最后一天"，用这个办法可以
+        // 直接算出任意年月一共有几天，不用自己写一堆闰年判断逻辑。
+        // new Date(year, month + 1, 0): a classic JS trick — "day 0 of
+        // next month" is equivalent to "the last day of this month", a
+        // handy way to get how many days are in any given month without
+        // writing manual leap-year logic.
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const todayStr = today.toISOString().slice(0, 10);
         const mm = String(month + 1).padStart(2, "0");
         const counts = {};
         for (let d = 1; d <= daysInMonth; d++) {
             const date = `${year}-${mm}-${String(d).padStart(2, "0")}`;
+            // 超过今天的日期还没发生，不该被统计进去
+            // （比如查看当前月份时，不能把月底还没到的日子也算进来）。
+            // Dates past today haven't happened yet and shouldn't be
+            // counted (e.g. when viewing the current month, days later
+            // in the month that haven't occurred yet must be excluded).
             if (date > todayStr) break;
             const mood = diaryData[date] && diaryData[date].mood;
             if (mood) {
@@ -336,6 +369,14 @@
     function destroyChart() {
         if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
     }
+
+    // Chart.js 的用法（new Chart(canvas, {...})）在 Finance 的
+    // summary.html 里有更详细的说明，这里不重复解释，
+    // 只解释这份图表特有的"没有数据时显示空心灰圈"这个处理。
+    // Chart.js usage (new Chart(canvas, {...})) is explained in more
+    // detail in Finance's summary.html — not repeated here. Only this
+    // chart's own special case is called out below: showing an empty
+    // gray ring when there's no data yet.
 
     function renderMonth() {
         const monthEl = document.getElementById("dash-es-month");
@@ -354,6 +395,14 @@
 
         const counts  = monthCounts(viewYear, viewMonth);
         const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+        // 这个月完全没有心情记录时，画一个空心灰圈占位并隐藏图例/
+        // "最常见心情"提示，而不是让 Chart.js 因为没有数据而报错
+        // 或者画出一个空白图表。
+        // When there's no mood data at all for this month, draw an empty
+        // gray ring placeholder and hide the legend/"most felt" callout,
+        // rather than letting Chart.js error out or render a blank chart
+        // with no data.
 
         if (!entries.length) {
             bodyEl.style.display      = "flex";

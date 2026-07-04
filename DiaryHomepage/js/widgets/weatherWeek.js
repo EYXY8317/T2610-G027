@@ -4,6 +4,12 @@ import {
 }
 from "./weatherConfig.js";
 
+// "Weather Week" 组件：显示未来 7 天（或用户设置的天数）的每日
+// 最高/最低温度和天气图标，数据来自 Open-Meteo 免费天气 API。
+// The "Weather Week" widget: shows the daily high/low temperature and
+// weather icon for the next 7 days (or however many the user configures),
+// using data from the free Open-Meteo weather API.
+
 const STATE_KEY = "weather-week-state";
 
 const DEFAULT_STATE = {
@@ -61,6 +67,12 @@ export function createWeatherWeekWidget() {
 
 }
 
+// 向 Open-Meteo API 请求未来 7 天的每日天气数据（天气代码、
+// 最高/最低温度、体感温度、湿度）。
+// Requests the next 7 days of daily weather data from the Open-Meteo
+// API (weather code, high/low temperature, "feels like" temperature,
+// humidity).
+
 async function fetchWeekData(lat, lon) {
 
     const url =
@@ -96,6 +108,9 @@ export async function renderWeatherWeek() {
         const d = data.daily;
         const days = Math.min(state.showDays, d.time.length);
 
+        // 每一天生成一个"列"：星期几、天气图标（可选）、最高/最低温。
+        // Builds one "column" per day: weekday name, weather icon
+        // (optional), and high/low temperature.
         const cols = Array.from({ length: days }, (_, i) => {
 
             const date = new Date(d.time[i]);

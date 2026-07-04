@@ -30,6 +30,7 @@ from .calendar_logic import (
 
 # ===============================
 # BLUEPRINT
+# 蓝图
 # ===============================
 
 calendar_bp = Blueprint(
@@ -41,6 +42,7 @@ calendar_bp = Blueprint(
 # GET TASKS
 # Return all tasks
 # of current user
+# 返回当前用户的所有任务
 # ===============================
 
 @calendar_bp.route(
@@ -74,6 +76,15 @@ def calendar_tasks():
 
     }
 
+    # 把这个用户的所有任务，按各自的 category（work/shopping/study/
+    # personal/workout）分别丢进 grouped 字典对应的桶里——
+    # "if category in grouped" 顺便过滤掉了任何不认识的分类值，
+    # 避免因为脏数据而报错。
+    # Buckets each of this user's tasks into the matching category
+    # (work/shopping/study/personal/workout) inside the grouped dict —
+    # "if category in grouped" also filters out any unrecognized category
+    # value along the way, preventing bad data from causing an error.
+
     for task in tasks:
 
         category = task.get(
@@ -92,6 +103,7 @@ def calendar_tasks():
 
 # ===============================
 # ADD TASK API
+# 新增任务接口
 # ===============================
 
 @calendar_bp.route(
@@ -122,6 +134,7 @@ def create_task():
 
 # ===============================
 # UPDATE TASK API
+# 更新任务接口
 # ===============================
 
 @calendar_bp.route(
@@ -140,6 +153,9 @@ def update_task_api():
 
     data = request.json
 
+    # 遗留的调试语句，每次更新任务都会打印到终端，不影响功能。
+    # Leftover debug statement — prints to the terminal on every task
+    # update; doesn't affect functionality.
     print("UPDATE DATA:", data)
 
     update_task(
@@ -162,6 +178,7 @@ def update_task_api():
 # DELETE TASK API
 # Permanently remove task
 # from database
+# 从数据（文件）中永久删除任务
 # ===============================
 
 @calendar_bp.route(
@@ -199,6 +216,7 @@ def delete_task_api():
 # EMPTY TRASH API
 # Permanently remove all
 # trash tasks
+# 永久删除所有回收站里的任务
 # ===============================
 
 @calendar_bp.route(

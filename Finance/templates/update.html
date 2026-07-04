@@ -54,6 +54,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 <!-- ================================================= -->
 <!-- ==================== TOPBAR ===================== -->
+<!-- ==================== 顶部栏 ======================= -->
 <!-- ================================================= -->
 
 <div class="topbar">
@@ -80,11 +81,13 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
     <!-- ================================================= -->
     <!-- ===================== MAIN ====================== -->
+    <!-- ===================== 主区块 ====================== -->
     <!-- ================================================= -->
 
     <div class="summary-card hover-card">
 
         <!-- ===== HEADER ===== -->
+        <!-- ===== 头部 ===== -->
 
         <div class="add-header">
 
@@ -107,6 +110,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         </div>
 
         <!-- ===== ERROR ===== -->
+        <!-- ===== 错误提示 ===== -->
 
         {% if error %}
 
@@ -123,6 +127,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         {% endif %}
 
         <!-- ===== SUCCESS ===== -->
+        <!-- ===== 成功提示 ===== -->
 
         {% if success %}
 
@@ -139,6 +144,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
         {% endif %}
 
         <!-- ===== FORM ===== -->
+        <!-- ===== 表单 ===== -->
 
         <form
         method="POST"
@@ -485,6 +491,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 <!-- ================================================= -->
 <!-- ==================== SCRIPT ===================== -->
+<!-- ==================== 脚本 ========================= -->
 <!-- ================================================= -->
 
 <script>
@@ -492,6 +499,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 document.addEventListener("DOMContentLoaded", function () {
 
     // ================= CATEGORY =================
+    // ================= 分类 =================
+    // 跟 add.html 里的分类逻辑是同一套做法：根据选中的类型，
+    // 动态生成对应的分类选项列表，并且把编辑前原本的分类重新选中。
+    // Same approach as the category logic in add.html: dynamically build
+    // the category option list based on the selected type, and re-select
+    // whichever category this record originally had.
 
     const categories = {
 
@@ -571,6 +584,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ================= ACCOUNT =================
+    // ================= 账户 =================
+    // 选了"➕ Create New Account"才展开新账户名称输入栏，
+    // 切回已有账户时清空刚才输入的新账户名称。
+    // Only expands the new-account-name field when "➕ Create New Account"
+    // is selected; switching back to an existing account clears out
+    // whatever new-account name was typed.
 
     const accountSelect =
         document.getElementById("account");
@@ -611,6 +630,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ================= RECEIPT FILENAME =================
+    // ================= 收据文件名 =================
 
     const receiptInput = document.getElementById("receiptInput");
 
@@ -628,7 +648,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-    // ================= TNG INPUT =================
+    // ================= AMOUNT INPUT (calculator-style entry) =================
+    // ================= 金额输入框（计算器式数字输入） =================
+    // 跟 add.html 金额栏用的是同一套"以分为单位的整数 + 数字键盘"技巧
+    // （见 add.html 里的详细说明），这里的输入框虽然标了 readonly，
+    // 但下面这段 JS 是靠直接赋值 amountInput.value 来更新它的，
+    // 并不会受 readonly 影响（readonly 只挡用户的默认键盘输入）。
+    // Same "integer cents + digit keypad" trick as the amount field in
+    // add.html (see the detailed explanation there). This field is marked
+    // readonly, but the JS below updates it by directly assigning
+    // amountInput.value, which readonly doesn't block (readonly only
+    // blocks the browser's own default keyboard editing).
 
     let value =
 

@@ -1,3 +1,11 @@
+// 数字时钟组件的设置面板内容——分成好几个标签页：样式（时钟类型）、
+// 位置（时区下拉框，列出常见城市对应的时区）、显示（12/24 小时制、
+// 秒数/日期/星期几要不要显示）。
+// The settings-panel content for the digital clock widget — split across
+// several tabs: style (clock type), location (a timezone dropdown listing
+// common cities' timezones), display (12h/24h format, whether to show
+// seconds/date/weekday).
+
 export function getDigitalClockSettings() {
 
     return {

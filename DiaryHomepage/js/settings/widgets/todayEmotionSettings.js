@@ -1,3 +1,8 @@
+// 生成"今日情绪"组件的设置面板内容：选中效果（边框/发光/缩放）
+// 和是否显示标题这两组选项。
+// Builds the settings-panel content for the "Today Emotion" widget: the
+// selection effect (border/glow/scale) and whether to show the title.
+
 import { getTodayEmotionState } from "../../widgets/todayEmotion.js";
 
 export function getTodayEmotionSettings() {

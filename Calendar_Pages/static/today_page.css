@@ -4,12 +4,14 @@
 ============================================================ */
 
 /* ---- PAGE BACKGROUND ---- */
+/* ---- 页面背景 ---- */
 body {
     background: var(--background, #f7f3ee);
     transition: background 0.35s ease;
 }
 
 /* ---- NAVBAR ICON LINKS ---- */
+/* ---- 导航栏图标链接 ---- */
 .nav-icon-link {
     display: flex;
     align-items: center;
@@ -21,6 +23,7 @@ body {
 }
 
 /* ---- PAGE WRAPPER ---- */
+/* ---- 页面容器 ---- */
 .tp-page {
     max-width: 1440px;
     margin: 0 auto;
@@ -28,6 +31,7 @@ body {
 }
 
 /* ---- DATE SECTION ---- */
+/* ---- 日期区块 ---- */
 .tp-date-section {
     text-align: center;
     margin-bottom: 48px;
@@ -57,6 +61,7 @@ body {
 }
 
 /* ---- FOUR-COLUMN DASHBOARD ---- */
+/* ---- 四栏仪表盘 ---- */
 .tp-dashboard {
     display: flex;
     align-items: stretch;
@@ -84,6 +89,7 @@ body {
 }
 
 /* ---- COLUMN HEADER ---- */
+/* ---- 栏目头部 ---- */
 .tp-col-head {
     display: flex;
     align-items: center;
@@ -116,6 +122,7 @@ body {
 .tp-view-all:hover { background: var(--primary-hover, #ece0d3); }
 
 /* ---- COLUMN BODY ---- */
+/* ---- 栏目内容 ---- */
 .tp-col-body {
     flex: 1;
     display: flex;
@@ -125,6 +132,7 @@ body {
 }
 
 /* ---- COLUMN FOOTER ---- */
+/* ---- 栏目底部 ---- */
 .tp-col-foot {
     margin-top: 20px;
     flex-shrink: 0;
@@ -157,6 +165,7 @@ body {
 .tp-btn-goals:hover:not(:disabled)  { background: #72bf8e; color: #fff; opacity: 1; }
 
 /* ---- DIARY COLUMN ---- */
+/* ---- 日记栏 ---- */
 .tp-mood-row {
     display: flex;
     align-items: center;
@@ -195,6 +204,7 @@ body {
 .tp-diary-empty { color: #bbb; font-style: italic; }
 
 /* ---- FINANCE COLUMN ---- */
+/* ---- 财务栏 ---- */
 .tp-spending-row {
     display: flex;
     align-items: flex-start;
@@ -267,6 +277,7 @@ body {
 }
 
 /* ---- EVENTS COLUMN ---- */
+/* ---- 事件栏 ---- */
 .tp-event-placeholder {
     background: #eff6ff;
     border-radius: 14px;
@@ -323,6 +334,7 @@ body {
 }
 
 /* ---- GOALS COLUMN ---- */
+/* ---- 目标栏 ---- */
 .tp-goal-item { margin-bottom: 14px; }
 .tp-goal-item:last-child { margin-bottom: 0; }
 .tp-goal-top {
@@ -349,6 +361,7 @@ body {
 }
 
 /* ---- LIFE SUMMARY ---- */
+/* ---- 人生总览 ---- */
 .tp-summary-section { margin-top: 4px; }
 .tp-summary-head {
     display: flex;

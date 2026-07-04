@@ -1,3 +1,20 @@
+// 这个文件负责组件"外观"设置面板的内容：预设调色板数据
+// （PALETTE_CATEGORIES）、每个分类下的调色板卡片、以及"颜色/样式"
+// 两个标签页要显示的 HTML。大部分函数都是"拼 HTML 字符串"——
+// 根据当前设置值（savedApp）算出该显示什么内容，用模板字符串拼接出
+// 一整段 HTML，再交给调用方塞进设置弹窗里。isActive(preset) 这类函数
+// 是用来判断"当前颜色是不是刚好匹配某个预设调色板"，从而给对应的
+// 调色板卡片加上"已选中"的高亮样式。
+// This file builds the content for the widget "appearance" settings
+// panel: preset palette data (PALETTE_CATEGORIES), the palette cards
+// under each category, and the HTML for the "Colors"/"Style" tabs. Most
+// functions are "HTML string building" — given the current settings
+// (savedApp), they work out what to display and assemble it as one HTML
+// string via template literals, which the caller then inserts into the
+// settings popup. Functions like isActive(preset) check "does the current
+// color combination happen to match one of the preset palettes", which is
+// what highlights the matching palette card as "selected".
+
 import {
     getFontSizeSetting
 }

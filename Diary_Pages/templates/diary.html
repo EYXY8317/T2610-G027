@@ -532,6 +532,7 @@
 <body>
 
 <!-- ===== NAVBAR ===== -->
+<!-- ===== 导航栏 ===== -->
 <nav class="navbar">
     <div class="logo-section">
         <div class="logo-box">
@@ -571,6 +572,7 @@
 <div id="searchResults"></div>
 
 <!-- ===== MAIN CONTENT ===== -->
+<!-- ===== 主要内容 ===== -->
 <div id="mainContent">
 
     <div id="dateSection">
@@ -579,10 +581,10 @@
         <div id="monthYear"></div>
     </div>
 
-    <!-- Sticky toolbar wrapper -->
+    <!-- Sticky toolbar wrapper / 吸顶工具栏容器 -->
     <div id="stickyBars">
 
-    <!-- Toolbar: mood + topic -->
+    <!-- Toolbar: mood + topic / 工具栏：心情 + 主题 -->
     <div id="toolbar">
         <label>Mood</label>
         <input type="hidden" id="mood" name="mood"
@@ -595,7 +597,7 @@
             {{ "readonly" if (mode == "view" or not logged_in) else "" }}>
     </div>
 
-    <!-- Format Bar -->
+    <!-- Format Bar / 格式工具栏 -->
     <div id="formatBar">
         <button class="fbar-btn" id="undoBtn" disabled title="Undo (Ctrl+Z)">↩ Undo</button>
         <button class="fbar-btn" id="redoBtn" disabled title="Redo (Ctrl+Y)">↪ Redo</button>
@@ -640,7 +642,7 @@
 
     </div><!-- end #stickyBars -->
 
-    <!-- Canvas -->
+    <!-- Canvas / 画布 -->
     <div id="canvas">
         <div id="box" contenteditable="false"></div>
     </div>
@@ -682,14 +684,24 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <!-- Shared confirm/cancel popup (also used by DiaryHomepage); exposes window.showReminderPopup -->
+<!-- 共享的确认/取消弹窗（DiaryHomepage 也在用）；挂载 window.showReminderPopup -->
 <script type="module" src="/diary_home_static/js/shared/reminderPopup.js"></script>
 <!-- Shared "Login Required" popup (also used by DiaryHomepage); exposes window.showLoginRequiredPopup -->
+<!-- 共享的"需要登录"弹窗（DiaryHomepage 也在用）；挂载 window.showLoginRequiredPopup -->
 <script type="module" src="/diary_home_static/js/shared/loginRequiredPopup.js?v=2"></script>
 <script src="/diary_static/script.js"></script>
 
 <!-- Day name + month/year -->
+<!-- 星期几 + 月份/年份 -->
 <script>
 (function(){
+    // dateDisplay 里存的是 "DD/MM/YYYY" 格式的日期文字，拆开三段
+    // 分别拿到日/月/年，构造一个真正的 JS Date 对象，
+    // 才能反查出"星期几"和对应的英文月份名称。
+    // dateDisplay holds the date as "DD/MM/YYYY" text; splitting it into
+    // day/month/year and building a real JS Date object is what lets the
+    // day-of-week and month name be looked up below.
+
     const raw = document.getElementById("dateDisplay").innerText.trim();
     const parts = raw.split("/");
     if (parts.length === 3) {
@@ -704,6 +716,7 @@
 </script>
 
 <!-- ===== CANVAS LOGIC ===== -->
+<!-- ===== 画布逻辑 ===== -->
 <script>
 (function(){
     const canvas    = document.getElementById("canvas");
@@ -770,6 +783,23 @@
     const editDoneBtn  = document.getElementById("editDoneBtn");
     const editCancelBtn= document.getElementById("editCancelBtn");
     let _snapshot = null;
+
+    // ================= SNAPSHOT (serialize / restore the whole canvas) =================
+    // ================= 快照（把整个画布序列化 / 还原） =================
+    // takeSnapshot() 把画布上所有的文本框和图片都读出来，打包成一份
+    // 纯数据的对象（不包含任何 DOM 元素本身）——这份数据既能存去后端
+    // （自动保存），也能存进撤销/重做栈里，还能在"取消编辑"时用来
+    // 把画布还原回进入编辑模式之前的样子。
+    // restoreSnapshot() 做的是相反的事：把这样一份数据重新"画"回画布上
+    // （先清空画布上所有现有的文本框/图片，再依照数据逐个重新创建）。
+    // takeSnapshot() reads every text box and image currently on the
+    // canvas and packages them into a plain data object (no DOM elements
+    // themselves) — this data can be sent to the backend (autosave),
+    // pushed onto the undo/redo stacks, or used to restore the canvas to
+    // how it looked before entering edit mode if editing is cancelled.
+    // restoreSnapshot() does the reverse: it "redraws" that data back onto
+    // the canvas (first clearing every existing text box/image, then
+    // recreating each one from the data).
 
     function takeSnapshot() {
         const chunks = [];
@@ -895,7 +925,27 @@
 
     /* ════════════════════════════════
        UNDO / REDO
+       撤销 / 重做
     ════════════════════════════════ */
+    // 撤销/重做用两个"栈"（stack，后进先出的列表）实现：每次操作前
+    // 用 pushHistory() 把"操作前"的快照存进 _undoStack；点撤销时，
+    // 把当前状态先存进 _redoStack（这样才能重做回来），再从
+    // _undoStack 弹出上一个快照还原回去；点重做则是反过来。
+    // _MAX_UNDO 限制最多记住 30 步，超过就用 .shift() 把最早的
+    // 那一步丢掉，避免无限占用内存。只要做了任何新操作
+    // （pushHistory 被调用），_redoStack 就会被清空——因为一旦分出了
+    //新的操作分支，原本"重做"能恢复的那些历史就不再有意义了。
+    // Undo/redo is implemented with two "stacks" (last-in-first-out
+    // lists): pushHistory() saves a "before the operation" snapshot onto
+    // _undoStack before every operation. Clicking undo first saves the
+    // current state onto _redoStack (so it can be redone later), then
+    // pops the last snapshot off _undoStack and restores it; redo works
+    // the opposite way. _MAX_UNDO caps memory at 30 remembered steps,
+    // discarding the oldest via .shift() once exceeded. Any time a new
+    // operation happens (pushHistory is called), _redoStack is cleared —
+    // once a new branch of edits happens, whatever "redo" could have
+    // restored no longer makes sense to keep.
+
     const _undoStack = [];
     const _redoStack = [];
     const _MAX_UNDO  = 30;
@@ -1595,7 +1645,19 @@
 
     /* ════════════════════════════════
        SAVE
+       保存
     ════════════════════════════════ */
+    // 保存分三步：schedSave() 负责"防抖"（跟 script.js 里文字自动保存
+    // 用的是同一个技巧——每次有新改动就重新等 1 秒，真正停手超过 1 秒
+    // 才继续下一步），doSave() 把画布上所有内容序列化打包成一串文字，
+    // sendSave() 才是真正调用 /autosave 接口把数据发给后端。
+    // Saving happens in three steps: schedSave() debounces (the same
+    // technique as the text autosave in script.js — every new edit resets
+    // a 1-second wait, only proceeding once the user has actually paused
+    // for a full second), doSave() serializes everything on the canvas
+    // into one packed string, and sendSave() is what actually calls the
+    // /autosave endpoint to send the data to the backend.
+
     function setAutoSave(state) {
         if (!autoSaveEl) return;
         autoSaveEl.className = "save-" + state;
@@ -1773,6 +1835,7 @@
 </script>
 
 <!-- Mood ↔ Homepage sync (MOOD_LIST shared source of truth) -->
+<!-- 心情 ↔ 首页同步（MOOD_LIST 是唯一的数据来源） -->
 <script type="module">
 import { MOOD_LIST, getMood, saveMood } from '/diary_home_static/js/mood_sync.js';
 

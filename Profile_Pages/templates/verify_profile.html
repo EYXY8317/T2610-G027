@@ -9,6 +9,21 @@
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     (function(){
+        // 先用 localStorage 里缓存的主题名快速上色（避免刚加载页面时
+        // 先短暂闪一下默认主题再变成正确的），然后再用 fetch 去问后端
+        // "这个用户实际保存的主题是什么"，确认一致后覆盖成准确值——
+        // 这个页面没有像其他页面那样把主题值直接嵌进 <script id="theme-data">
+        // 标签里（可能是因为这个页面本来就比较简单），所以改成用一次
+        // 网络请求去后端确认，而不是模板渲染时就直接嵌进去。
+        // Applies the theme cached in localStorage first (avoiding a
+        // brief flash of the default theme before the correct one loads),
+        // then fetches "what theme does this user actually have saved"
+        // from the backend and overwrites with the confirmed value. This
+        // page doesn't embed the theme value directly via a
+        // <script id="theme-data"> tag like other pages do (likely just
+        // because this page is simpler), so it asks the backend over the
+        // network instead of having it baked in at template-render time.
+
         setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
         fetch('/api/user-theme')
             .then(function(r){ return r.json(); })

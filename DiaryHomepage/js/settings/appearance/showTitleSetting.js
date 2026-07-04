@@ -1,3 +1,8 @@
+// "是否显示标题栏"这个设置的 HTML，以及真正应用它的函数
+// （直接切换 .widget-header 的 display 样式）。
+// The HTML for the "show title bar" setting, plus the function that
+// actually applies it (toggling .widget-header's display style directly).
+
 export function getShowTitleSetting() {
 
     return `

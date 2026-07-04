@@ -158,6 +158,24 @@ import {
 }
 from "../settings/deco/decoData.js";
 
+// 首页的总入口函数：负责按正确的顺序，把首页从"一片空白"变成
+// "所有组件都显示出来、可以拖动/调整大小/设置"的完整状态。
+// 大致顺序是：确认登录用户 → 清理跨账号残留缓存 → 从服务器加载
+// 保存的布局 → 把组件的 HTML 画到页面上 → 给没有保存过布局的
+// 新用户填入默认布局 → 给每个组件绑定拖动/调整大小/右键菜单等
+// 交互 → 初始化每个具体组件自己的逻辑（天气、心情、连续天数等）→
+// 绑定撤销/重做、编辑模式、装饰模式、删除全部、重置布局等全局功能。
+// The homepage's main entry function: responsible for turning the
+// homepage from "completely blank" into the full working state where
+// every widget is shown and can be dragged/resized/configured, in the
+// correct order. Roughly: resolve the logged-in user → wipe any
+// cross-account leftover cache → load the saved layout from the server →
+// paint each widget's HTML onto the page → seed a default layout for
+// new users who have no saved layout yet → wire up drag/resize/
+// right-click-menu interactions on every widget → initialize each
+// individual widget's own logic (weather, mood, streaks, etc) → wire up
+// undo/redo, edit mode, deco mode, delete-all, and reset-layout global
+// features.
 export async function initializeHomepage() {
 
     const dashboard =
@@ -220,6 +238,13 @@ export async function initializeHomepage() {
             )
         );
 
+    // 给每个组件依次绑定：读取保存的位置/大小、应用内容边界限制、
+    // 应用保存的外观设置、字体自动缩放、右键菜单（打开设置弹窗）、
+    // 拖动、调整大小。
+    // For each widget in turn, this wires up: loading its saved
+    // position/size, applying content boundary constraints, applying its
+    // saved appearance settings, auto font scaling, a right-click menu
+    // (opens the settings popup), dragging, and resizing.
     widgets.forEach(
         widget => {
 
@@ -281,6 +306,11 @@ export async function initializeHomepage() {
 
     updateDigitalClock();
 
+    // 初始化每个具体组件自己的数据/渲染逻辑（各自负责自己的 localStorage
+    // 读取、向服务器请求数据、画出初始内容）。
+    // Initializes each individual widget's own data/render logic (each
+    // handles its own localStorage reads, server data requests, and
+    // drawing its initial content).
     renderWeatherHour();
     initWeatherHourFontScale();
     renderWeatherDay();
@@ -293,7 +323,7 @@ export async function initializeHomepage() {
     initializeEmotionSummary();
     initializeQuote();
     initializeDiaryCard();
-    
+
     const undoBtn = document.getElementById("history-undo");
     const redoBtn = document.getElementById("history-redo");
     if (undoBtn && redoBtn) {
@@ -316,12 +346,21 @@ export async function initializeHomepage() {
         widgets
     );
 
+    // 如果之前是通过"添加组件"面板加了新组件后刷新页面回来的，
+    // 这里会检测到那个标记，自动帮用户重新点一次"编辑布局"按钮，
+    // 让用户不需要自己再点一次就能继续调整刚加的组件。
+    // If the page reload happened right after adding a new widget from
+    // the "Add Widget" panel, this detects that marker and automatically
+    // clicks the "Edit Layout" button on the user's behalf, so they don't
+    // have to click it again themselves to keep adjusting the widget they
+    // just added.
     if (sessionStorage.getItem("restore-edit-mode")) {
         sessionStorage.removeItem("restore-edit-mode");
         editLayoutButton.click();
     }
 
     // ── Deco ──────────────────────────────────────────────────────────────
+    // ── 装饰功能 ──────────────────────────────────────────────────────────────
     widgets.forEach(widget => {
         initDecoLayer(widget);
         applyDecoItems(widget, getDecoItems(widget.id));
@@ -353,6 +392,7 @@ export async function initializeHomepage() {
     }
 
     // Exit deco mode when pressing Escape
+    // 按 Escape 键退出装饰模式
     document.addEventListener("keydown", e => {
         if (e.key === "Escape" && document.body.classList.contains("deco-mode")) {
             _endDecoMode();
@@ -360,6 +400,7 @@ export async function initializeHomepage() {
     });
 
     // Delete All Widgets button
+    // "删除所有组件"按钮
     const deleteAllBtn = document.getElementById("delete-all-widgets-btn");
     if (deleteAllBtn) {
         deleteAllBtn.addEventListener("click", () => {
@@ -377,6 +418,7 @@ export async function initializeHomepage() {
     }
 
     // Reset Layout button — re-applies default positions + styles to all widgets
+    // "重置布局"按钮——把所有组件重新套用回默认的位置和样式
     const resetLayoutButton = document.getElementById("reset-layout-btn");
     if (resetLayoutButton) {
         resetLayoutButton.addEventListener("click", () => {

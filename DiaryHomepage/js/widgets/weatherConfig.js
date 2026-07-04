@@ -1,3 +1,12 @@
+// 天气类组件（每小时/单日/一周）共用的配置：当前选中的城市（经纬度）
+// 和温度单位，存在同一个 localStorage key 下面，所以换一个城市，
+// 所有天气组件都会一起跟着更新，不用每个组件单独设置一次。
+// Shared configuration for the weather widgets (hour/day/week): the
+// currently selected city (lat/lon) and temperature unit, stored under
+// one shared localStorage key — so changing the city updates every
+// weather widget together, instead of needing to set it separately per
+// widget.
+
 const STORAGE_KEY = "weather-config";
 
 const DEFAULT_CONFIG = {
@@ -45,6 +54,12 @@ export function toDisplayTemp(celsius, unit) {
     return Math.round(celsius) + "°C";
 }
 
+// 内置的城市列表，给"选择城市"下拉框用；每个城市配一组固定的经纬度，
+// 用来向天气 API 请求这个城市的天气数据。
+// The built-in city list used by the "select city" dropdown; each city
+// has a fixed lat/lon pair, used to request that city's weather data from
+// the weather API.
+
 const CITIES = [
     { name: "Kuala Lumpur", lat: 3.03, lon: 101.75 },
     { name: "Singapore", lat: 1.29, lon: 103.85 },
@@ -69,6 +84,14 @@ const CITIES = [
 export function getCityList() {
     return CITIES;
 }
+
+// 把天气 API 返回的"天气代码"（一个数字）转换成对应的表情符号。
+// 这些数字区间是 Open-Meteo 天气 API 的标准 WMO 天气代码规范——
+// 数字越界代表天气现象越"重"（比如 0 是晴天，99 是雷暴）。
+// Converts the "weather code" (a number) returned by the weather API into
+// a matching emoji. These number ranges follow the Open-Meteo weather
+// API's standard WMO weather code convention — higher numbers represent
+// more severe weather (e.g. 0 is clear sky, 99 is a thunderstorm).
 
 export function getWeatherIconEmoji(code) {
     if (code === 0) return "☀️";

@@ -1,3 +1,14 @@
+// "布局模板"选择弹窗——展示几套预设好的首页布局主题（配色 + 排版），
+// 用户点 Apply 之后先弹出二次确认（因为会替换掉当前的组件排列/外观
+// 设置），确认后才真正套用模板、同步到服务器、并刷新页面让新布局
+// 生效。
+// The "layout templates" picker popup — shows a few preset home-page
+// layout themes (color palette + arrangement). Clicking Apply first shows
+// a confirmation (since it replaces the current widget arrangement/
+// appearance settings), and only after confirming does it actually apply
+// the template, sync it to the server, and reload the page for the new
+// layout to take effect.
+
 import { TEMPLATES, applyTemplate } from "./layoutTemplates.js";
 import { syncLayoutToServer } from "./serverLayout.js";
 import { showReminderPopup } from "../shared/reminderPopup.js";

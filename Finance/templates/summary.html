@@ -52,6 +52,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 </nav>
 
 <!-- ===== TOPBAR ===== -->
+<!-- ===== 顶部栏 ===== -->
 
 <div class="topbar">
 
@@ -72,10 +73,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 </div>
 
 <!-- ===== MAIN ===== -->
+<!-- ===== 主区块 ===== -->
 
 <div class="summary-wrapper">
 
     <!-- ===== FILTER ===== -->
+    <!-- ===== 筛选 ===== -->
 
     <div class="summary-card summary-hero hover-card">
         <h1 class="summary-main-title">
@@ -185,6 +188,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== EMPTY ===== -->
+    <!-- ===== 空状态 ===== -->
 
     {% if income == 0 and expense == 0 %}
 
@@ -210,10 +214,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     {% else %}
 
     <!-- ===== SUMMARY GRID ===== -->
+    <!-- ===== 汇总网格 ===== -->
 
 <div class="summary-grid">
 
     <!-- ===== MONTHLY OVERVIEW ===== -->
+    <!-- ===== 月度概览 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -284,6 +290,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== YEARLY OVERVIEW ===== -->
+    <!-- ===== 年度概览 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -338,6 +345,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== SPENDING ===== -->
+    <!-- ===== 消费行为 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -413,6 +421,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== BUDGET ===== -->
+    <!-- ===== 预算 ===== -->
 
     <div class="summary-card hover-card">
 
@@ -495,6 +504,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
     </div>
 
     <!-- ===== GOALS ===== -->
+    <!-- ===== 目标 ===== -->
 
     <div class="summary-card hover-card full-width-card">
 
@@ -585,6 +595,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 {% endif %}
 
 <!-- ===== CHART ===== -->
+<!-- ===== 图表 ===== -->
 
 {% if top_categories %}
 
@@ -594,15 +605,36 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
 <script>
 
+// 这一段用了 Chart.js（在 <head> 里通过 CDN 引入的第三方图表库）
+// 画一个"消费分类占比"的环形图（doughnut chart）。
+// This section uses Chart.js (a third-party charting library loaded via
+// CDN in <head>) to draw a "spending by category" doughnut chart.
+
 const rawData = JSON.parse(
     document.getElementById("chart-data").textContent
 );
+
+// top_categories 后端传来的格式是一组 [分类名, 金额, 百分比] 的列表，
+// 这里用 .map() 分别把"分类名"和"金额"各自抽出来，变成两个平行数组——
+// Chart.js 需要的正是"标签数组"+"数值数组"这样的形式。
+// top_categories arrives from the backend as a list of
+// [category, amount, percent] tuples. .map() here pulls out just the
+// "category name" and just the "amount" into two parallel arrays — which
+// is exactly the "labels array" + "values array" shape Chart.js expects.
 
 const categories = rawData.map(x => x[0]);
 
 const amounts = rawData.map(x => x[1]);
 
 const total = amounts.reduce((a, b) => a + b, 0);
+
+// new Chart(canvas元素, 配置对象)：Chart.js 的标准用法——
+// 把配置对象（图表类型、数据、样式选项）传给 Chart 构造函数，
+// 它就会自动在指定的 <canvas> 上把图画出来。
+// new Chart(canvasElement, configObject): Chart.js's standard usage —
+// pass a config object (chart type, data, style options) to the Chart
+// constructor and it automatically renders the chart onto the given
+// <canvas>.
 
 new Chart(document.getElementById("pieChart"), {
 
@@ -614,6 +646,11 @@ new Chart(document.getElementById("pieChart"), {
 
         datasets: [{
 
+            // 用三元表达式（? :）根据当前是不是"磨砂玻璃"主题
+            // 选择不同的图表边框颜色/粗细，让图表跟当前主题风格保持一致。
+            // A ternary (? :) picks a different chart border color/width
+            // depending on whether the "frosted glass" theme is active,
+            // so the chart's look matches the current theme.
             borderColor:
             document.body.classList.contains("frosted")
             ? 'rgba(255,255,255,0.55)'
@@ -626,6 +663,15 @@ new Chart(document.getElementById("pieChart"), {
 
             data: amounts,
 
+            // 用一串"链式三元表达式"依次检查 <body> 上挂着哪个主题的
+            // class（mocha/lavender/matcha/ash），给每个主题各自配一套
+            // 协调的图表配色；如果都不匹配（比如默认主题），就用最后
+            // 那一组通用配色兜底。
+            // A chain of ternaries checks which theme class is on <body>
+            // (mocha/lavender/matcha/ash) and picks a matching color
+            // palette for the chart in each case; if none of them match
+            // (e.g. the default theme), the final array is the fallback
+            // generic palette.
             backgroundColor:
 
             document.body.classList.contains("mocha")
@@ -681,6 +727,10 @@ new Chart(document.getElementById("pieChart"), {
     },
 
     options: {
+        // cutout: '72%'：环形图中间挖空的比例，数字越大中间的洞越大
+        // （环越细）。
+        // cutout: '72%': how much of the doughnut's center is hollow —
+        // the bigger the number, the bigger the hole (the thinner the ring).
         cutout: '72%',
 
         responsive: true,
@@ -693,6 +743,15 @@ new Chart(document.getElementById("pieChart"), {
 
                 labels: {
 
+                    // getComputedStyle(...).getPropertyValue('--text-main')：
+                    // 直接读取当前页面 CSS 变量 --text-main 实际生效的颜色值，
+                    // 这样图例文字颜色会自动跟随亮色/暗色主题切换，
+                    // 不需要在 JS 里另外写一套主题判断逻辑。
+                    // getComputedStyle(...).getPropertyValue('--text-main'):
+                    // reads the actual current value of the CSS variable
+                    // --text-main directly, so the legend text color
+                    // automatically follows light/dark theme switches
+                    // without needing separate theme-detection logic in JS.
                     color: getComputedStyle(document.body)
                     .getPropertyValue('--text-main'),
 
@@ -711,6 +770,13 @@ new Chart(document.getElementById("pieChart"), {
 
                 callbacks: {
 
+                    // 鼠标悬停在某一块扇形上时，Chart.js 会调用这个函数
+                    // 来决定提示框里显示什么文字；context.label 是这块
+                    // 对应的分类名，context.raw 是这块对应的原始金额数值。
+                    // When hovering over a slice, Chart.js calls this
+                    // function to decide what text the tooltip shows;
+                    // context.label is that slice's category name,
+                    // context.raw is that slice's raw amount value.
                     label: function(context) {
 
                         return (

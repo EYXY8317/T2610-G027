@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
     <script src="/calendar_static/themecolor.js"></script>
     <script>
+    // 主题加载逻辑跟 verify_profile.html 是同一套做法（先用本地缓存的
+    // 主题避免闪烁，再用 fetch 向后端确认准确值），详细说明见那个文件。
+    // Same theme-loading approach as verify_profile.html (apply the
+    // locally cached theme first to avoid a flash, then confirm the
+    // accurate value via fetch) — see that file for the full explanation.
+
     (function(){
         setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
         fetch('/api/user-theme')
