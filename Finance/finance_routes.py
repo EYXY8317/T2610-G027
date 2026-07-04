@@ -745,6 +745,64 @@ def reopen_goal(goal_id):
     save_data(f_goals, goals_list)
     return redirect(url_for("finance.goals"))
 
+# ================= QUICK STATUS ACTIONS =================
+@finance_bp.route("/pause_goal/<int:goal_id>")
+def pause_goal(goal_id):
+    if "user" not in session:
+        return redirect(url_for("dashboard"))
+
+    user = session["user"]
+    goals_list = load_data(f_goals, [])
+    for g in goals_list:
+        if g.get("id") == goal_id and g.get("username") == user:
+            g["status"] = "Paused"
+            break
+    save_data(f_goals, goals_list)
+    return redirect(url_for("finance.goals"))
+
+@finance_bp.route("/resume_goal/<int:goal_id>")
+def resume_goal(goal_id):
+    if "user" not in session:
+        return redirect(url_for("dashboard"))
+
+    user = session["user"]
+    goals_list = load_data(f_goals, [])
+    for g in goals_list:
+        if g.get("id") == goal_id and g.get("username") == user:
+            g["status"] = "In Progress"
+            break
+    save_data(f_goals, goals_list)
+    return redirect(url_for("finance.goals"))
+
+@finance_bp.route("/cancel_goal/<int:goal_id>")
+def cancel_goal(goal_id):
+    if "user" not in session:
+        return redirect(url_for("dashboard"))
+
+    user = session["user"]
+    goals_list = load_data(f_goals, [])
+    for g in goals_list:
+        if g.get("id") == goal_id and g.get("username") == user:
+            g["status"] = "Cancelled"
+            break
+    save_data(f_goals, goals_list)
+    return redirect(url_for("finance.goals"))
+
+@finance_bp.route("/complete_goal/<int:goal_id>")
+def complete_goal(goal_id):
+    if "user" not in session:
+        return redirect(url_for("dashboard"))
+
+    user = session["user"]
+    goals_list = load_data(f_goals, [])
+    for g in goals_list:
+        if g.get("id") == goal_id and g.get("username") == user:
+            g["status"] = "Completed"
+            g["completion_date"] = datetime.now().strftime("%Y-%m-%d")
+            break
+    save_data(f_goals, goals_list)
+    return redirect(url_for("finance.goals"))
+
 # ================= EDIT GOALS =================
 @finance_bp.route("/edit_goal/<int:goal_id>", methods=["GET", "POST"])
 def edit_goal(goal_id):

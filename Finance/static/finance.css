@@ -1869,6 +1869,46 @@ body.dark .budget-icon-del:hover{
     cursor:text;
 
     outline:none;
+
+    display:inline-block;
+
+    border-bottom:3px solid transparent;
+
+    transition:border-color 0.15s ease;
+}
+
+#amountDisplay:hover{
+
+    border-bottom-color:var(--border);
+}
+
+#amountDisplay:focus{
+
+    border-bottom-color:var(--accent);
+}
+
+#amountDisplay:focus::after{
+
+    content:"";
+
+    display:inline-block;
+
+    width:3px;
+
+    height:1em;
+
+    margin-left:6px;
+
+    vertical-align:-0.15em;
+
+    background:var(--accent);
+
+    animation:amount-caret-blink 1s step-end infinite;
+}
+
+@keyframes amount-caret-blink{
+
+    50%{ opacity:0; }
 }
 
 .goal-amount-input{

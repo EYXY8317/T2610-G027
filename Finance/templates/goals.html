@@ -267,6 +267,17 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                 </div>
                 {% endif %}
 
+                <!-- QUICK STATUS ACTIONS -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+                    {% if g.status == 'Paused' %}
+                    <a href="/resume_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#dbeafe;color:#1e40af;font-size:12px;font-weight:600;text-decoration:none;">▶️ Resume</a>
+                    {% else %}
+                    <a href="/pause_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:600;text-decoration:none;">⏸ Pause</a>
+                    {% endif %}
+                    <a href="/complete_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#d1fae5;color:#065f46;font-size:12px;font-weight:600;text-decoration:none;">🎉 Mark Complete</a>
+                    <a href="/cancel_goal/{{ g.id }}" data-auth-required="true" onclick="return confirm('Cancel this goal?')" style="padding:5px 10px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:12px;font-weight:600;text-decoration:none;">❌ Cancel</a>
+                </div>
+
                 <!-- ADD SAVINGS FORM -->
                 <form method="POST" style="margin-top:12px;">
                     <input type="hidden" name="action" value="save">
@@ -424,6 +435,17 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     📝 {{ g.notes }}
                 </div>
                 {% endif %}
+
+                <!-- QUICK STATUS ACTIONS -->
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;">
+                    {% if g.status == 'Paused' %}
+                    <a href="/resume_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#dbeafe;color:#1e40af;font-size:12px;font-weight:600;text-decoration:none;">▶️ Resume</a>
+                    {% else %}
+                    <a href="/pause_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#fef3c7;color:#92400e;font-size:12px;font-weight:600;text-decoration:none;">⏸ Pause</a>
+                    {% endif %}
+                    <a href="/complete_goal/{{ g.id }}" style="padding:5px 10px;border-radius:8px;background:#d1fae5;color:#065f46;font-size:12px;font-weight:600;text-decoration:none;">🎉 Mark Complete</a>
+                    <a href="/cancel_goal/{{ g.id }}" data-auth-required="true" onclick="return confirm('Cancel this goal?')" style="padding:5px 10px;border-radius:8px;background:#fee2e2;color:#991b1b;font-size:12px;font-weight:600;text-decoration:none;">❌ Cancel</a>
+                </div>
 
                 <!-- ADD SAVINGS FORM -->
                 <form method="POST" style="margin-top:12px;">
