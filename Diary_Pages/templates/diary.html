@@ -1042,11 +1042,19 @@
             e.stopPropagation();
             pushHistory();
 
+            const SNAP_DEG = 5; // snap when within this many degrees of a 90° step
+
             function onMove(e){
                 const rect = target.getBoundingClientRect();
                 const cx = rect.left + rect.width  / 2;
                 const cy = rect.top  + rect.height / 2;
-                const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
+                let angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
+
+                const nearestStep = Math.round(angle / 90) * 90;
+                if (Math.abs(angle - nearestStep) < SNAP_DEG) {
+                    angle = nearestStep;
+                }
+
                 target.style.transform = "rotate(" + angle + "deg)";
                 target.dataset.rotate  = angle;
             }
