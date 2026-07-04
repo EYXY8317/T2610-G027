@@ -888,17 +888,27 @@ body{
 
 .empty{
 
-    background:white;
+    display:flex;
 
-    border-radius:24px;
+    justify-content:center;
 
-    border:1px dashed var(--primary-border);
+    align-items:center;
 
-    padding:50px;
+    min-height:220px;
 
-    text-align:center;
+    margin-top:20px;
 
-    color:#a4a1bf;
+    border:2px dashed #e8d8c8;
+
+    border-radius:20px;
+
+    background:#fff;
+
+    color:#b0a2b8;
+
+    font-size:20px;
+
+    font-weight:600;
 
 }
 
@@ -2265,6 +2275,39 @@ body{
     background:var(--primary);
 
     color:white;
+
+}
+
+/* =====================================
+   EMPTY BOX 
+   （Complete & Trash没有任务时显示的空状态）
+===================================== */
+
+.empty-box{
+
+    width:100%;
+
+    min-height:180px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-top:18px;
+
+    background:#fff;
+
+    border:1px solid var(--primary-border);
+
+    border-radius:22px;
+
+    color:#9b8fb4;
+
+    font-size:18px;
+
+    font-weight:600;
 
 }
 

@@ -2091,19 +2091,14 @@ section.innerHTML = `
 
         container.innerHTML = `
 
-            <p
-                style="
-                    text-align:center;
-                    color:#888;
-                    padding:60px 20px;
-                "
-            >
+    
+        <div class="empty-box">
 
-                No completed tasks yet.
+        No completed tasks
 
-            </p>
+        </div>
 
-        `;
+    `;
 
     }
 
@@ -2338,19 +2333,13 @@ function renderTrash() {
 
         container.innerHTML = `
 
-            <p
-                style="
-                    text-align:center;
-                    color:#888;
-                    padding:60px 20px;
-                "
-            >
+          <div class="empty-box">
 
-                Trash is empty.
+             Trash is empty
 
-            </p>
-
-        `;
+          </div>
+ 
+    `;
 
     }
 
