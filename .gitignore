@@ -1,3 +1,13 @@
 __pycache__/
 *.pyc
 .env
+
+# Runtime data files (now sourced from Postgres in production, via db_store.py).
+# Kept out of git so local dev data / password hashes never get committed.
+users.json
+journal.json
+goals.json
+Calendar_Pages/tasks.json
+Finance/accounts.json
+Finance/budget.json
+Finance/expenses.json

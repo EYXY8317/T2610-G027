@@ -1,10 +1,11 @@
 from flask import app, render_template, session, request, redirect
 from password_system.password_hashing import hash_password
 from datetime import datetime
-import json
 import os
+from db_store import load_data, save_data
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+f_users = os.path.join(BASE_DIR, "users.json")
 
 # Files that hold per-user records keyed by "username", cascade-deleted
 # alongside the account entry in users.json.
@@ -27,8 +28,7 @@ def register_profile_routes(app):
         current_user = None
 
         if logged_in_user:
-            with open("users.json", "r") as f:
-                users = json.load(f)
+            users = load_data(f_users, [])
 
             for user in users:
                 if user["username"] == logged_in_user:
@@ -59,8 +59,7 @@ def register_profile_routes(app):
 
             password = hash_password(request.form.get("password", ""))
 
-            with open("users.json", "r") as f:
-                users = json.load(f)
+            users = load_data(f_users, [])
 
             for user in users:
 
@@ -84,8 +83,7 @@ def register_profile_routes(app):
 
             password = hash_password(request.form.get("password", ""))
 
-            with open("users.json", "r") as f:
-                users = json.load(f)
+            users = load_data(f_users, [])
 
             username = session["user"]
             matched = any(
@@ -98,21 +96,12 @@ def register_profile_routes(app):
 
             users = [u for u in users if u["username"] != username]
 
-            with open("users.json", "w") as f:
-                json.dump(users, f, indent=4)
+            save_data(f_users, users)
 
             for data_file in USER_DATA_FILES:
-
-                if not os.path.exists(data_file):
-                    continue
-
-                with open(data_file, "r") as f:
-                    records = json.load(f)
-
+                records = load_data(data_file, [])
                 records = [r for r in records if r.get("username") != username]
-
-                with open(data_file, "w") as f:
-                    json.dump(records, f, indent=4)
+                save_data(data_file, records)
 
             session.pop("user", None)
 
@@ -126,8 +115,7 @@ def register_profile_routes(app):
         if "user" not in session:
             return redirect("/")
 
-        with open("users.json", "r") as f:
-            users = json.load(f)
+        users = load_data(f_users, [])
 
         if request.method == "POST":
 
@@ -158,8 +146,7 @@ def register_profile_routes(app):
                     session["user"] = new_username
                     break
 
-            with open("users.json", "w") as f:
-                json.dump(users, f, indent=4)
+            save_data(f_users, users)
 
             return redirect("/profile")
 
@@ -194,9 +181,7 @@ def register_profile_routes(app):
 
             return redirect("/profile")
 
-        with open("users.json", "r") as file:
-
-            users = json.load(file)
+        users = load_data(f_users, [])
 
         for user in users:
 
@@ -206,8 +191,6 @@ def register_profile_routes(app):
 
                 break
 
-        with open("users.json", "w") as file:
-
-            json.dump(users, file, indent=4)
+        save_data(f_users, users)
 
         return redirect("/profile")

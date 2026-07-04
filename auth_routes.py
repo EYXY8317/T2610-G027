@@ -2,28 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
 from datetime import datetime
-import json, os
+import os
+from db_store import load_data, save_data
 
 auth_bp = Blueprint('auth', __name__, url_prefix='')
 
 BASE_DIR = os.path.dirname(__file__)
 f_users  = os.path.join(BASE_DIR, "users.json")
-
-
-# ================= HELPERS =================
-def load_data(file, default):
-    if not os.path.exists(file):
-        return default
-    try:
-        with open(file, "r") as f:
-            return json.load(f)
-    except Exception:
-        return default
-
-
-def save_data(file, data):
-    with open(file, "w") as f:
-        json.dump(data, f, indent=4)
 
 
 # ================= LOGIN =================
