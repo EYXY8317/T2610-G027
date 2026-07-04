@@ -13,5 +13,13 @@
         "security_answer": "406e54f502aec2c0fac44b584c00d9e690b607d608eeded0d516ead7692db5c4",
         "theme": "cozy",
         "last_login": "2026-07-04T13:52:30.107401"
+    },
+    {
+        "username": "paneltestuser2",
+        "password": "9d70b27b42655f113d9b3e7767d7664f2d3009237e2ff3253848078c46632d0b",
+        "security_question": "nickname",
+        "security_answer": "16477688c0e00699c6cfa4497a3612d7e83c532062b64b250fed8908128ed548",
+        "theme": "cozy",
+        "last_login": "2026-07-04T16:38:57.675299"
     }
 ]

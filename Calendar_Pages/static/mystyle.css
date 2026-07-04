@@ -1182,6 +1182,17 @@ body{
 
 }
 
+.task-card.selected{
+
+    background:var(--primary-light);
+
+    border:1px solid var(--primary-accent);
+
+    box-shadow:
+    0 6px 18px var(--shadow-medium);
+
+}
+
 
 /* ==================================================
    TASK LEFT
@@ -1367,7 +1378,7 @@ body{
 
     top:0;
 
-    right:-450px;
+    right:0;
 
     width:420px;
 
@@ -1381,12 +1392,24 @@ body{
 
     overflow-y:auto;
 
-    transition:0.35s ease;
+    transform:translateX(100%);
+
+    pointer-events:none;
+
+    transition:transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
     z-index:1200;
 
     box-shadow:
     -10px 0 40px var(--shadow-medium);
+
+}
+
+.task-detail-panel.open{
+
+    transform:translateX(0);
+
+    pointer-events:auto;
 
 }
 
