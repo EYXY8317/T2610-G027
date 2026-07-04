@@ -121,13 +121,29 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
         {% endif %}
 
+        <!-- ===== ERROR ===== -->
+
+        {% if error %}
+
+        <div class="insight-box">
+
+            <p style="color:#dc2626;font-weight:600;">
+
+                {{ error }}
+
+            </p>
+
+        </div>
+
+        {% endif %}
+
         <!-- ===== FORM ===== -->
 
         <form
         method="POST"
         class="add-form"
         enctype="multipart/form-data"
-        onsubmit="return validateAmount()"
+        id="addForm"
         >
 
             <!-- ROW 1 -->
@@ -325,6 +341,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                 <input
                     type="text"
+                    id="newAccountInput"
                     name="new_account"
                     value="{{ form_data.new_account if form_data else '' }}"
                     placeholder="Enter account name"
@@ -389,6 +406,13 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     name="amount"
                     value="{{ form_data.amount if form_data else '0.00' }}"
                 >
+
+                <small
+                    id="amountError"
+                    style="display:none;color:#dc2626;font-weight:600;"
+                >
+                    Please enter an amount greater than RM 0.00
+                </small>
 
             </div>
 
@@ -596,13 +620,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!accountSelect) return;
 
-        newAccountSection.style.display =
+        const isNew = accountSelect.value === "__new__";
 
-            accountSelect.value === "__new__"
+        newAccountSection.style.display = isNew ? "block" : "none";
 
-            ? "block"
+        const newAccountInput = document.getElementById("newAccountInput");
 
-            : "none";
+        if (isNew) {
+            newAccountInput.setAttribute("required", "required");
+        } else {
+            newAccountInput.removeAttribute("required");
+        }
     }
 
     typeSelect.addEventListener("change", function () {
@@ -730,27 +758,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("amountInput").value
             );
 
+        const amountError =
+            document.getElementById("amountError");
+
         if (amount <= 0) {
 
-            document
-                .getElementById("amountInput")
-                .setCustomValidity(
-                    "Please enter an amount greater than RM 0.00"
-                );
+            amountError.style.display = "block";
 
-            document
-                .getElementById("amountInput")
-                .reportValidity();
+            amountDisplay.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
 
             return false;
         }
 
-        document
-            .getElementById("amountInput")
-            .setCustomValidity("");
+        amountError.style.display = "none";
 
         return true;
     }
+
+    document.getElementById("addForm")
+        .addEventListener("submit", function(e) {
+            if (!validateAmount()) {
+                e.preventDefault();
+            }
+        });
 
 });
 
