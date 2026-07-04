@@ -256,18 +256,54 @@ async function addTask(listType) {
             listType + "TaskText"
         ).value.trim();
 
-    // Prevent empty task submission
-    // 防止新增空任务
-    if (!text) return;
 
-    // Ensure user selects a date
-    // 确保用户已经选择日期
+    // =====================================
+    // Validate task name and schedule
+    // 检查任务名称与日期是否填写
+    // =====================================
+
+    if (!text && !selectedDate) {
+
+        showReminderPopup({
+
+            title: "⚠️ Missing Information",
+
+            message: "Please enter a task name and set the schedule",
+
+            confirmText: "OK"
+
+        });
+
+        return;
+
+    }
+
+    if (!text) {
+
+        showReminderPopup({
+
+            title: "⚠️ Missing Information",
+
+            message: "Please enter a task name",
+
+            confirmText: "OK"
+
+        });
+
+        return;
+
+    }
+
     if (!selectedDate) {
 
         showReminderPopup({
-            title: "Missing Date",
-            message: "Please select a date first.",
+
+            title: "⚠️ Missing Information",
+
+            message: "Please set the schedule",
+
             confirmText: "OK"
+
         });
 
         return;
