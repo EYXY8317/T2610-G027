@@ -1,10 +1,12 @@
 import { userScopedKey } from "../currentUser.js";
 
 const SCROLL_INTERVALS = [
-    { value: "1h",  label: "Every 1 hour",  ms: 3_600_000 },
-    { value: "1d",  label: "Every 1 day",   ms: 86_400_000 },
-    { value: "1w",  label: "Every 1 week",  ms: 604_800_000 },
-    { value: "1mo", label: "Every 1 month", ms: 2_592_000_000 }
+    { value: "30s", label: "Every 30 seconds", ms: 30_000 },
+    { value: "1m",  label: "Every 1 minute",   ms: 60_000 },
+    { value: "1h",  label: "Every 1 hour",     ms: 3_600_000 },
+    { value: "1d",  label: "Every 1 day",      ms: 86_400_000 },
+    { value: "1w",  label: "Every 1 week",     ms: 604_800_000 },
+    { value: "1mo", label: "Every 1 month",    ms: 2_592_000_000 }
 ];
 
 const DEFAULT_STATE = {
