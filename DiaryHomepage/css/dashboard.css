@@ -522,6 +522,46 @@ body {
     background: #b8271d;
 }
 
+/* ── Image crop modal (shared by widgets that store photos client-side) ── */
+
+.crop-card {
+    max-width: none;
+}
+
+.crop-stage {
+    position: relative;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 8px;
+    line-height: 0;
+}
+
+.crop-preview-img {
+    display: block;
+    user-select: none;
+}
+
+.crop-selection {
+    position: absolute;
+    border: 1.5px dashed #fff;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
+    cursor: move;
+}
+
+.crop-handle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border: 1.5px solid #555;
+    border-radius: 50%;
+    z-index: 2;
+}
+.crop-handle.nw { top: -6px;    left: -6px;   cursor: nwse-resize; }
+.crop-handle.ne { top: -6px;    right: -6px;  cursor: nesw-resize; }
+.crop-handle.sw { bottom: -6px; left: -6px;   cursor: nesw-resize; }
+.crop-handle.se { bottom: -6px; right: -6px;  cursor: nwse-resize; }
+
 /* ── Onboarding "?" help button + guide modal ────────────── */
 
 .onboarding-help-btn {

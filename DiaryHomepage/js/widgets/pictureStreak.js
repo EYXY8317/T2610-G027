@@ -183,6 +183,12 @@ export function addPictureStreakPhoto(id, dataUrl, caption = "") {
     return updatePictureStreakState(id, { photos });
 }
 
+export function updatePictureStreakPhoto(id, index, dataUrl) {
+    const state = getState(id);
+    const photos = state.photos.map((p, i) => i === index ? { ...p, dataUrl } : p);
+    return updatePictureStreakState(id, { photos });
+}
+
 export function removePictureStreakPhoto(id, index) {
     const state = getState(id);
     const photos = state.photos.filter((_, i) => i !== index);

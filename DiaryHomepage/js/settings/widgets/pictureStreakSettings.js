@@ -13,6 +13,7 @@ export function getPictureStreakSettings(widgetId = "picture-streak-widget") {
             <div class="ps-settings-photo">
                 <img src="${p.dataUrl}" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:6px;">
                 <span style="flex:1;font-size:12px;">${p.caption || formatDate(p.date)}</span>
+                <button class="ps-crop-btn" data-index="${i}" title="Crop" style="border:none;background:none;cursor:pointer;color:#555;font-size:14px;">✂</button>
                 <button class="ps-remove-btn" data-index="${i}" style="border:none;background:none;cursor:pointer;color:#ef4444;font-size:14px;">✕</button>
             </div>
         `).join("")
