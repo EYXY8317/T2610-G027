@@ -61,8 +61,8 @@ class="{{ user.theme if user else 'adaptive' }}"
 
     <div class="topbar-links">
         <a href="/finance">Dashboard</a>
-        <a href="/view">View</a>
         <a href="/add">Add</a>
+        <a href="/view">View</a>
         <a href="/summary">Summary</a>
         <a href="/budget" class="active-link">Budget</a>
         <a href="/goals">Goals</a>
@@ -129,8 +129,8 @@ class="{{ user.theme if user else 'adaptive' }}"
                 <label>Budget Period</label>
 
                 <select name="period">
-                    <option value="monthly" {% if budget.period == 'monthly' or not budget.period %}selected{% endif %}>📅 Monthly</option>
                     <option value="weekly" {% if budget.period == 'weekly' %}selected{% endif %}>📅 Weekly</option>
+                    <option value="monthly" {% if budget.period == 'monthly' or not budget.period %}selected{% endif %}>📅 Monthly</option>
                     <option value="yearly" {% if budget.period == 'yearly' %}selected{% endif %}>📅 Yearly</option>
                 </select>
 

@@ -56,8 +56,8 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
     <div class="topbar-links">
         <a href="/finance">Dashboard</a>
-        <a href="/view">View</a>
         <a href="/add">Add</a>
+        <a href="/view">View</a>
         <a href="/summary">Summary</a>
         <a href="/budget" class="active-link">Budget</a>
         <a href="/goals">Goals</a>
@@ -125,8 +125,8 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                 <div>
                     <label>Budget Period</label>
                     <select name="period">
-                        <option value="monthly">📅 Monthly</option>
                         <option value="weekly">📅 Weekly</option>
+                        <option value="monthly">📅 Monthly</option>
                         <option value="yearly">📅 Yearly</option>
                     </select>
                 </div>

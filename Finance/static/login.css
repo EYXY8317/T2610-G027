@@ -187,9 +187,9 @@ body{
 
     list-style:none;
 
-    display:flex;
+    display:grid;
 
-    flex-wrap:wrap;
+    grid-template-columns:1fr 1fr;
 
     gap:6px 14px;
 

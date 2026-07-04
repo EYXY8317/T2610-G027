@@ -369,6 +369,11 @@ body{
     margin-bottom:40px;
 }
 
+.summary-grid .full-width-card{
+
+    grid-column:1 / -1;
+}
+
 
 
 
@@ -431,6 +436,15 @@ body{
 /* ================================================= */
 /* =================== OVERVIEW ==================== */
 /* ================================================= */
+
+.overview-stats{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+}
 
 .overview-box{
 
