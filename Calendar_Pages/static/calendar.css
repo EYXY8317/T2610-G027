@@ -636,16 +636,20 @@
 
     overflow-y:auto;
 
-    background:white;
+    background:var(--primary-soft);
 
     padding:24px;
 
-    border-radius:24px;
+    border-radius:12px;
+
+    border:1px solid var(--primary-border);
 
     z-index:10000;
 
     box-shadow:
-    0 20px 50px var(--shadow-strong);
+    0 8px 24px var(--shadow-medium);
+
+    font-family:'Inter', sans-serif;
 
 }
 
@@ -662,11 +666,15 @@
 
     align-items:center;
 
-    margin-bottom:20px;
+    margin:-24px -24px 20px;
 
-    padding-bottom:14px;
+    padding:16px 24px;
+
+    background:var(--primary-light);
 
     border-bottom:1px solid var(--primary-border);
+
+    border-radius:12px 12px 0 0;
 
 }
 
@@ -674,11 +682,11 @@
 
     margin:0;
 
-    font-size:24px;
+    font-size:18px;
 
-    font-weight:700;
+    font-weight:500;
 
-    color:#2f3367;
+    color:#1a1a1a;
 
     display:flex;
 
@@ -1002,19 +1010,13 @@
 
 .calendar-close-icon{
 
-    width:36px;
-
-    height:36px;
-
     border:none;
 
-    border-radius:12px;
+    background:none;
 
-    background:var(--primary-light);
+    color:#888;
 
-    color:var(--primary);
-
-    font-size:20px;
+    font-size:18px;
 
     cursor:pointer;
 
