@@ -120,8 +120,7 @@ fetch('/api/user-theme').then(function(r){return r.json();}).then(function(d){
             if (inner) inner.classList.add('profile-empty');
         } else {
             el.innerHTML =
-                '<a href="/login" class="profile-btn">Login</a>' +
-                '<a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>';
+                '<a href="/login" class="profile-btn profile-btn-solid">Login</a>';
         }
     }).catch(function(){});
     </script>
