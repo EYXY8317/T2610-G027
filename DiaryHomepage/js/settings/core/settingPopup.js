@@ -133,7 +133,9 @@ from "../widgets/pictureStreakSettings.js";
 import {
     updatePictureStreakState,
     addPictureStreakPhoto,
-    removePictureStreakPhoto
+    updatePictureStreakPhoto,
+    removePictureStreakPhoto,
+    getPictureStreakState
 }
 from "../../widgets/pictureStreak.js";
 
@@ -194,6 +196,11 @@ import {
     showReminderPopup
 }
 from "../../shared/reminderPopup.js";
+
+import {
+    openImageCropper
+}
+from "../../shared/cropImage.js";
 
 
 const WIDGET_NAMES = {
@@ -1302,37 +1309,42 @@ export function createSettingPopup(widgetId) {
                 if (!file) return;
                 const reader = new FileReader();
                 reader.onload = () => {
-                    const img = new Image();
-                    img.onload = () => {
-                        // Downscale before storing — photos are kept as base64 in
-                        // localStorage (5-10MB quota per origin), so full-resolution
-                        // uploads can exhaust it after just a few photos.
-                        const MAX_DIM = 1000;
-                        let { width, height } = img;
-                        if (width > MAX_DIM || height > MAX_DIM) {
-                            const scale = MAX_DIM / Math.max(width, height);
-                            width = Math.round(width * scale);
-                            height = Math.round(height * scale);
-                        }
-                        const canvas = document.createElement("canvas");
-                        canvas.width = width;
-                        canvas.height = height;
-                        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-                        const compressed = canvas.toDataURL("image/jpeg", 0.82);
+                    openImageCropper(reader.result, {
+                        onCancel: () => { psPhotoInput.value = ""; },
+                        onApply: (croppedDataUrl) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                // Downscale before storing — photos are kept as base64 in
+                                // localStorage (5-10MB quota per origin), so full-resolution
+                                // uploads can exhaust it after just a few photos.
+                                const MAX_DIM = 1000;
+                                let { width, height } = img;
+                                if (width > MAX_DIM || height > MAX_DIM) {
+                                    const scale = MAX_DIM / Math.max(width, height);
+                                    width = Math.round(width * scale);
+                                    height = Math.round(height * scale);
+                                }
+                                const canvas = document.createElement("canvas");
+                                canvas.width = width;
+                                canvas.height = height;
+                                canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+                                const compressed = canvas.toDataURL("image/jpeg", 0.82);
 
-                        try {
-                            addPictureStreakPhoto(widgetId, compressed, file.name);
-                            popup.remove();
-                            createSettingPopup(widgetId);
-                        } catch (err) {
-                            showReminderPopup({
-                                title: "Storage Full",
-                                message: "Couldn't save photo — local storage is full. Try removing some existing photos first.",
-                                confirmText: "OK"
-                            });
+                                try {
+                                    addPictureStreakPhoto(widgetId, compressed, file.name);
+                                    popup.remove();
+                                    createSettingPopup(widgetId);
+                                } catch (err) {
+                                    showReminderPopup({
+                                        title: "Storage Full",
+                                        message: "Couldn't save photo — local storage is full. Try removing some existing photos first.",
+                                        confirmText: "OK"
+                                    });
+                                }
+                            };
+                            img.src = croppedDataUrl;
                         }
-                    };
-                    img.src = reader.result;
+                    });
                 };
                 reader.readAsDataURL(file);
             });
@@ -1345,6 +1357,22 @@ export function createSettingPopup(widgetId) {
                 removePictureStreakPhoto(widgetId, idx);
                 popup.remove();
                 createSettingPopup(widgetId);
+            });
+        });
+
+        const psCropBtns = popup.querySelectorAll(".ps-crop-btn");
+        psCropBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = Number(btn.dataset.index);
+                const photo = getPictureStreakState(widgetId).photos[idx];
+                if (!photo) return;
+                openImageCropper(photo.dataUrl, {
+                    onApply: (croppedDataUrl) => {
+                        updatePictureStreakPhoto(widgetId, idx, croppedDataUrl);
+                        popup.remove();
+                        createSettingPopup(widgetId);
+                    }
+                });
             });
         });
 

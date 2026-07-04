@@ -559,7 +559,7 @@ button {
     font-family: 'Inter', sans-serif;
 }
 
-#editBtn, #deleteBtn {
+#editBtn, #deleteBtn, #backBtn {
     background: transparent;
     border: 1px solid #ddd8cf;
     color: #555;
@@ -572,7 +572,13 @@ button {
     letter-spacing: 0.03em;
 }
 
-#editBtn:hover {
+#backBtn {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+#editBtn:hover, #backBtn:hover {
     background: var(--diary-btn-hover-bg);
     color: var(--diary-btn-hover-text);
     border-color: var(--diary-btn-hover-bg);
