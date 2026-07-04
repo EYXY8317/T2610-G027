@@ -268,7 +268,7 @@ async function addTask(listType) {
 
             title: "⚠️ Missing Information",
 
-            message: "Please enter a task name and set the schedule",
+            message: "Please enter a task name and set the schedule (Date)",
 
             confirmText: "OK"
 
@@ -300,7 +300,7 @@ async function addTask(listType) {
 
             title: "⚠️ Missing Information",
 
-            message: "Please set the schedule",
+            message: "Please set the schedule (Date)",
 
             confirmText: "OK"
 
