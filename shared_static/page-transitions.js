@@ -56,4 +56,14 @@
     window.addEventListener('pageshow', function () {
         document.documentElement.classList.remove('page-exiting');
     });
+
+    // Once the load-in animation finishes, detach it entirely. A filling
+    // animation keeps applying its keyframe values (here, transform) even
+    // after it ends, which makes <body> a containing block for any
+    // position:fixed descendant (e.g. modals) instead of the viewport.
+    document.body.addEventListener('animationend', function (e) {
+        if (e.target === document.body && e.animationName === 'pageFadeIn') {
+            document.body.style.animation = 'none';
+        }
+    });
 })();

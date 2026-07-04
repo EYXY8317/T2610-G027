@@ -86,7 +86,12 @@
           <span class="toggle-eye" onclick="togglePassword('regPassword',this)">🙈</span>
         </div>
 
-        <div class="password-rules">8+ chars &bull; Uppercase &bull; Lowercase &bull; Number</div>
+        <ul class="password-rules" id="passwordRules">
+          <li data-rule="length"><i class="fa-solid fa-circle-xmark"></i> 8+ characters</li>
+          <li data-rule="upper"><i class="fa-solid fa-circle-xmark"></i> Uppercase letter</li>
+          <li data-rule="lower"><i class="fa-solid fa-circle-xmark"></i> Lowercase letter</li>
+          <li data-rule="number"><i class="fa-solid fa-circle-xmark"></i> Number</li>
+        </ul>
 
         <div class="input-box">
           <i class="fa-solid fa-circle-question"></i>
@@ -201,6 +206,30 @@ function togglePassword(inputId, eyeEl) {
   if (input.type === 'password') { input.type = 'text'; eyeEl.textContent = '🙉'; }
   else                           { input.type = 'password'; eyeEl.textContent = '🙈'; }
 }
+
+const regPasswordInput = document.getElementById('regPassword');
+const passwordRules = document.getElementById('passwordRules');
+
+function updatePasswordRules() {
+  const value = regPasswordInput.value;
+  const checks = {
+    length: value.length >= 8,
+    upper: /[A-Z]/.test(value),
+    lower: /[a-z]/.test(value),
+    number: /[0-9]/.test(value),
+  };
+
+  Object.keys(checks).forEach(function (rule) {
+    const li = passwordRules.querySelector('[data-rule="' + rule + '"]');
+    const icon = li.querySelector('i');
+    const met = checks[rule];
+    li.classList.toggle('met', met);
+    icon.className = met ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark';
+  });
+}
+
+regPasswordInput.addEventListener('input', updatePasswordRules);
+updatePasswordRules();
 
 const container = document.querySelector('.container');
 

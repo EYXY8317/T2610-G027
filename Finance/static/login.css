@@ -185,15 +185,51 @@ body{
 
 .password-rules{
 
-    font-size:12px;
+    list-style:none;
 
-    color:#888;
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px 14px;
+
+    padding:0;
+
+    font-size:13px;
+
+    color:#a33;
 
     line-height:1.4;
 
     margin-top:-12px;
 
-    margin-bottom:10px;
+    margin-bottom:14px;
+
+}
+
+.password-rules li{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    color:#b3261e;
+
+    transition:color 0.2s ease;
+
+}
+
+.password-rules li i{
+
+    font-size:13px;
+
+}
+
+.password-rules li.met{
+
+    color:#1e7a34;
 
 }
 
