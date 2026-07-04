@@ -239,6 +239,69 @@
             display: block;
         }
 
+        .img-toolbar .img-crop-btn {
+            font-size: 13px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        /* Cropping disables normal drag/resize/rotate for this image */
+        .img-wrap.cropping .img-toolbar,
+        .img-wrap.cropping .img-resize {
+            display: none !important;
+        }
+
+        .img-crop-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 30;
+            cursor: default;
+        }
+
+        .img-crop-selection {
+            position: absolute;
+            border: 1.5px dashed #fff;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.55);
+            cursor: move;
+        }
+
+        .img-crop-handle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 1.5px solid #555;
+            border-radius: 50%;
+            z-index: 31;
+        }
+        .img-crop-handle.nw { top: -6px;  left: -6px;  cursor: nwse-resize; }
+        .img-crop-handle.ne { top: -6px;  right: -6px; cursor: nesw-resize; }
+        .img-crop-handle.sw { bottom: -6px; left: -6px;  cursor: nesw-resize; }
+        .img-crop-handle.se { bottom: -6px; right: -6px; cursor: nwse-resize; }
+
+        .img-crop-actions {
+            position: absolute;
+            top: -34px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 32;
+            white-space: nowrap;
+        }
+
+        .img-crop-actions button {
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 4px 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+
+        .img-crop-apply  { background: #edf2ed; color: #4a7a4a; border-color: #c0d4c0 !important; }
+        .img-crop-cancel { background: #f0ede8; color: #555; }
+
         /* ── Format Bar ── */
         #formatBar {
             display: flex;
@@ -939,6 +1002,7 @@
             if (!canEdit) return;
             if (e.target.isContentEditable) return;
             if (e.button !== 0) return;
+            if (el.classList.contains("cropping")) return;
             e.preventDefault();
             e.stopPropagation();
             pushHistory();
@@ -992,6 +1056,182 @@
             }
             document.addEventListener("mousemove", onMove);
             document.addEventListener("mouseup", onUp);
+        });
+    }
+
+    /* ════════════════════════════════
+       IMAGE CROP
+       Crop is edited against the image's own unrotated box (rotation is
+       reset for the duration of the crop, then restored), so the overlay's
+       pixel math never has to account for rotation.
+    ════════════════════════════════ */
+    function startImageCrop(wrap, inner, img) {
+        if (wrap.classList.contains("cropping")) return;
+
+        const origRotate = inner.dataset.rotate || 0;
+        inner.style.transform = "rotate(0deg)";
+        wrap.classList.add("cropping");
+
+        const boxW = wrap.offsetWidth;
+        const boxH = wrap.offsetHeight;
+
+        const overlay = document.createElement("div");
+        overlay.className = "img-crop-overlay";
+
+        const inset = Math.min(boxW, boxH) * 0.1;
+        let selLeft = inset, selTop = inset;
+        let selW = Math.max(20, boxW - inset * 2);
+        let selH = Math.max(20, boxH - inset * 2);
+
+        const selection = document.createElement("div");
+        selection.className = "img-crop-selection";
+
+        const actions = document.createElement("div");
+        actions.className = "img-crop-actions";
+        const applyBtn = document.createElement("button");
+        applyBtn.type = "button";
+        applyBtn.className = "img-crop-apply";
+        applyBtn.textContent = "✓ Apply";
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.className = "img-crop-cancel";
+        cancelBtn.textContent = "✕ Cancel";
+        actions.appendChild(applyBtn);
+        actions.appendChild(cancelBtn);
+
+        const handles = {};
+        ["nw", "ne", "sw", "se"].forEach(corner => {
+            const h = document.createElement("div");
+            h.className = "img-crop-handle " + corner;
+            handles[corner] = h;
+            selection.appendChild(h);
+        });
+
+        selection.appendChild(actions);
+        overlay.appendChild(selection);
+        inner.appendChild(overlay);
+
+        function render() {
+            selection.style.left   = selLeft + "px";
+            selection.style.top    = selTop  + "px";
+            selection.style.width  = selW    + "px";
+            selection.style.height = selH    + "px";
+        }
+        render();
+
+        function clampSelection() {
+            selLeft = Math.max(0, Math.min(selLeft, boxW - selW));
+            selTop  = Math.max(0, Math.min(selTop,  boxH - selH));
+        }
+
+        function cleanup() {
+            overlay.remove();
+            wrap.classList.remove("cropping");
+            inner.style.transform = origRotate ? ("rotate(" + origRotate + "deg)") : "";
+            if (origRotate) inner.dataset.rotate = origRotate;
+        }
+
+        // Drag to move the selection box
+        selection.addEventListener("mousedown", function(e){
+            if (e.target !== selection) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const startX = e.clientX, startY = e.clientY;
+            const origLeft = selLeft, origTop = selTop;
+            function onMove(e){
+                selLeft = origLeft + (e.clientX - startX);
+                selTop  = origTop  + (e.clientY - startY);
+                clampSelection();
+                render();
+            }
+            function onUp(){
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+
+        // Drag corner handles to resize the selection box
+        const MIN_SEL = 20;
+        Object.keys(handles).forEach(corner => {
+            handles[corner].addEventListener("mousedown", function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                const startX = e.clientX, startY = e.clientY;
+                const orig = { left: selLeft, top: selTop, w: selW, h: selH };
+                function onMove(e){
+                    const dx = e.clientX - startX;
+                    const dy = e.clientY - startY;
+                    let { left, top, w, h } = orig;
+                    if (corner.includes("w")) { left = orig.left + dx; w = orig.w - dx; }
+                    if (corner.includes("e")) { w = orig.w + dx; }
+                    if (corner.includes("n")) { top = orig.top + dy; h = orig.h - dy; }
+                    if (corner.includes("s")) { h = orig.h + dy; }
+
+                    if (w < MIN_SEL) { if (corner.includes("w")) left -= (MIN_SEL - w); w = MIN_SEL; }
+                    if (h < MIN_SEL) { if (corner.includes("n")) top  -= (MIN_SEL - h); h = MIN_SEL; }
+                    left = Math.max(0, left);
+                    top  = Math.max(0, top);
+                    w = Math.min(w, boxW - left);
+                    h = Math.min(h, boxH - top);
+
+                    selLeft = left; selTop = top; selW = w; selH = h;
+                    render();
+                }
+                function onUp(){
+                    document.removeEventListener("mousemove", onMove);
+                    document.removeEventListener("mouseup", onUp);
+                }
+                document.addEventListener("mousemove", onMove);
+                document.addEventListener("mouseup", onUp);
+            });
+        });
+
+        cancelBtn.addEventListener("mousedown", e => { e.preventDefault(); e.stopPropagation(); });
+        cancelBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            cleanup();
+        });
+
+        applyBtn.addEventListener("mousedown", e => { e.preventDefault(); e.stopPropagation(); });
+        applyBtn.addEventListener("click", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+
+            const scaleX = img.naturalWidth  / boxW;
+            const scaleY = img.naturalHeight / boxH;
+            const sx = selLeft * scaleX;
+            const sy = selTop  * scaleY;
+            const sw = selW    * scaleX;
+            const sh = selH    * scaleY;
+
+            const off = document.createElement("canvas");
+            off.width  = Math.max(1, Math.round(sw));
+            off.height = Math.max(1, Math.round(sh));
+            off.getContext("2d").drawImage(img, sx, sy, sw, sh, 0, 0, off.width, off.height);
+
+            off.toBlob(function(blob){
+                if (!blob) { cleanup(); return; }
+                pushHistory();
+                const fd = new FormData();
+                fd.append("file", blob, "cropped.png");
+                fetch("/upload_image", { method: "POST", body: fd })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.url) {
+                            img.src = res.url;
+                            wrap.style.left   = (parseFloat(wrap.style.left) || 0) + selLeft + "px";
+                            wrap.style.top    = (parseFloat(wrap.style.top)  || 0) + selTop  + "px";
+                            wrap.style.width  = selW + "px";
+                            wrap.style.height = selH + "px";
+                        }
+                        cleanup();
+                        schedSave();
+                    })
+                    .catch(() => cleanup());
+            }, "image/png");
         });
     }
 
@@ -1155,11 +1395,17 @@
         rotBtn.title       = "Drag to rotate";
         rotBtn.style.cursor = "grab";
 
+        const cropBtn = document.createElement("span");
+        cropBtn.className   = "img-crop-btn";
+        cropBtn.textContent = "✂ crop";
+        cropBtn.title       = "Crop image";
+
         const delBtn = document.createElement("button");
         delBtn.className   = "img-del-btn";
         delBtn.textContent = "✕ delete";
 
         toolbar.appendChild(rotBtn);
+        toolbar.appendChild(cropBtn);
         toolbar.appendChild(delBtn);
 
         const resizeHandle = document.createElement("div");
@@ -1186,6 +1432,17 @@
             pushHistory();
             wrap.remove();
             schedSave();
+        });
+
+        cropBtn.addEventListener("mousedown", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        cropBtn.addEventListener("click", function(e){
+            if (!canEdit) return;
+            e.preventDefault();
+            e.stopPropagation();
+            startImageCrop(wrap, inner, img);
         });
 
         resizeHandle.addEventListener("mousedown", function(e){
