@@ -1,36 +1,22 @@
-import json
+import os
+from db_store import load_data, save_data
 
-FILE = "journal.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+FILE = os.path.join(BASE_DIR, "journal.json")
 
 #================================ load_entries() ================================
 def load_entries():
 # Function to load all journal entries from file
 # 从文件读取所有日记数据 （文件= journal.json）
-# If the file doesn't exist, return an empty list
-# 如果文件不存在，返回一个空列表
 
-    try:
-        with open(FILE,"r") as f:
-            return json.load(f)
-            # Convert json to python list (or dictionary)
-            # [] is list, {} is dict
-            # List = a container that holds multiple items like fruits = ["apple", "banana", "orange"]  
-    
-    except:
-    # If any error happens (file not exist / broken json)
-    # 如果发生错误（例如文件不存在 / JSON坏掉）
-        return[]
-        # Empty list if file doesn't exist
+    return load_data(FILE, [])
 
 #================================ save_entries(entries) ================================
 def save_entries(entries):
 # Function to save all entries into file
 # 这个函数把所有日记数据存进文件
 
-    with open(FILE, "w") as f:
-        json.dump(entries, f, indent=4)
-        # Convert python list (or dictionary) to json
-        # Indent=4 makes it nicely formatted (easy to read)
+    save_data(FILE, entries)
         
 #================================ add_entry(entry) ================================
 def add_entry(entry):

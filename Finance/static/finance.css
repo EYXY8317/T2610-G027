@@ -2488,7 +2488,8 @@ body.cozy .summary-card,
 body.cozy .goal-card,
 body.cozy .overview-box,
 body.cozy .budget-modern,
-body.cozy .amount-card{
+body.cozy .amount-card,
+body.cozy .receipt-card{
 
     background:#f8f1e8;
 

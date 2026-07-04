@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
     <script src="/calendar_static/themecolor.js"></script>
+    <script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
     <script>
     (function(){
-        setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
+        var theme = JSON.parse(document.getElementById('theme-data').textContent);
+        setTheme(theme);
     })();
     </script>
     <link rel="stylesheet" href="/shared_static/page-transitions.css">

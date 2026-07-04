@@ -12,6 +12,7 @@ import calendar as _cal
 from jinja2 import ChoiceLoader, FileSystemLoader
 
 from Profile_Pages.profile_routes import register_profile_routes
+from db_store import load_data, save_data
 
 # ================= BASE =================
 BASE_DIR = os.path.dirname(__file__)
@@ -43,15 +44,6 @@ app.register_blueprint(calendar_bp)
 f_users = os.path.join(BASE_DIR, "users.json")
 
 # ================= HELPERS =================
-def load_data(file, default):
-    if not os.path.exists(file):
-        return default
-    try:
-        with open(file, "r") as f:
-            return json.load(f)
-    except:
-        return default
-
 def get_user_wallpaper():
     if "user" not in session:
         return None
@@ -296,8 +288,7 @@ def save_home_layout():
         if u["username"] == session["user"]:
             u["home_layout"] = data
             break
-    with open(f_users, "w") as f:
-        json.dump(users, f, indent=4)
+    save_data(f_users, users)
     return jsonify({"ok": True})
 
 # ================= TODAY PAGE =================

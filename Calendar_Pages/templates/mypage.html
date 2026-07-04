@@ -58,8 +58,7 @@
 
     <div class="profile">
         {% if not logged_in %}
-        <a href="/login" class="profile-btn">Login</a>
-        <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+        <a href="/login" class="profile-btn profile-btn-solid">Login</a>
         {% endif %}
     </div>
 
@@ -1431,9 +1430,10 @@
 
 <script src="/calendar_static/themecolor.js"></script>
 
+<script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
 <script>
 (function(){
-    const savedTheme = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+    const savedTheme = JSON.parse(document.getElementById('theme-data').textContent);
     setTheme(savedTheme);
 })();
 </script>

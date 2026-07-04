@@ -20,8 +20,9 @@
 
     <script src="/static/login-gate.js?v=2"></script>
     <script src="/calendar_static/themecolor.js"></script>
+    <script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
     <script>
-    setTheme({{ (user.theme if user and user.theme else 'mocha') | tojson }});
+    setTheme(JSON.parse(document.getElementById('theme-data').textContent));
     </script>
 
     <style>
@@ -57,8 +58,7 @@ class="{{ user.theme if user.theme else 'mocha' }}"
     </div>
     <div class="profile">
         {% if not logged_in %}
-        <a href="/login" class="profile-btn">Login</a>
-        <a href="/login?panel=register" class="profile-btn profile-btn-solid">Sign Up</a>
+        <a href="/login" class="profile-btn profile-btn-solid">Login</a>
         {% endif %}
     </div>
 </nav>

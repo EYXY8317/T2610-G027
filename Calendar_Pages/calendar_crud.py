@@ -5,8 +5,8 @@
 # Read and save data 
 # 负责读取与保存数据
 # ===============================
-import json
 import os
+from db_store import load_data, save_data
 
 # ===============================
 # FILE PATH
@@ -19,59 +19,21 @@ TASK_FILE = os.path.join(
     "tasks.json"
 )
 
-print(
-    "TASK FILE =",
-    TASK_FILE
-)
-
 # ===============================
 # LOAD TASKS
-# Read tasks from JSON file 
+# Read tasks from JSON file
 # 读取 JSON 文件中的任务
 # ===============================
 
 def load_tasks():
-
-    if not os.path.exists(
-        TASK_FILE
-    ):
-
-        return []
-
-    try:
-
-        with open(
-            TASK_FILE,
-            "r",
-            encoding="utf-8"
-        ) as f:
-
-            return json.load(f)
-
-    except:
-
-        return []
+    return load_data(TASK_FILE, [])
 
 # ===============================
 # SAVE TASKS
-# Save tasks into JSON file 
+# Save tasks into JSON file
 # 将任务保存到 JSON 文件中
 # ===============================
 
 def save_tasks(tasks):
-
-    print("FILE PATH =", TASK_FILE)
-
-    with open(
-        TASK_FILE,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        json.dump(
-            tasks,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+    save_data(TASK_FILE, tasks)
 
