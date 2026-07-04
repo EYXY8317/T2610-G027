@@ -1101,11 +1101,27 @@
         fetch("/upload_image", { method: "POST", body: fd })
             .then(r => r.json())
             .then(res => {
-                if (res.url) {
-                    pushHistory();
-                    makeImg(res.url, 40, 40, 180, 135, 0, null);
+                if (!res.url) return;
+                pushHistory();
+
+                // Size the box to the photo's own aspect ratio so
+                // object-fit:contain never has to letterbox it — otherwise
+                // the visible photo sits inset from its draggable box and
+                // can't actually reach the canvas edges.
+                const probe = new Image();
+                const insert = (w, h) => {
+                    makeImg(res.url, 40, 40, w, h, 0, null);
                     schedSave();
-                }
+                };
+                probe.onload = function () {
+                    const maxSize = 200;
+                    const ratio = probe.naturalHeight / probe.naturalWidth;
+                    let w = maxSize, h = maxSize * ratio;
+                    if (h > maxSize) { h = maxSize; w = maxSize / ratio; }
+                    insert(w, h);
+                };
+                probe.onerror = function () { insert(180, 135); };
+                probe.src = res.url;
             });
 
         uploadImg.value = "";
