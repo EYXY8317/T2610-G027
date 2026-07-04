@@ -918,18 +918,20 @@ body{
 
     overflow-y:auto;
 
-    background:white;
+    background:var(--primary-soft);
 
     border:1px solid var(--primary-border);
 
-    border-radius:24px;
+    border-radius:12px;
 
     padding:24px;
 
     box-shadow:
-    0 10px 35px var(--shadow-medium);
+    0 8px 24px var(--shadow-medium);
 
     z-index:9999;
+
+    font-family:'Inter', sans-serif;
 
 }
 
@@ -947,7 +949,15 @@ body{
 
     align-items:center;
 
-    margin-bottom:24px;
+    margin:-24px -24px 20px;
+
+    padding:16px 24px;
+
+    background:var(--primary-light);
+
+    border-bottom:1px solid var(--primary-border);
+
+    border-radius:12px 12px 0 0;
 
 }
 
@@ -961,9 +971,9 @@ body{
 
     font-size:14px;
 
-    font-weight:600;
+    font-weight:500;
 
-    color:#4a4a4a;
+    color:#1a1a1a;
 
     line-height:1.5;
 
@@ -975,21 +985,15 @@ body{
 
 .popup-close-btn{
 
-    width:36px;
-
-    height:36px;
-
     border:none;
 
-    border-radius:12px;
-
-    background:var(--primary-light);
-
-    color:var(--primary);
-
-    font-size:20px;
+    background:none;
 
     cursor:pointer;
+
+    font-size:18px;
+
+    color:#888;
 
 }
 
@@ -1434,7 +1438,7 @@ body{
 
     height:100vh;
 
-    background:white;
+    background:var(--primary-soft);
 
     border-left:1px solid var(--primary-border);
 
@@ -1451,7 +1455,9 @@ body{
     z-index:1200;
 
     box-shadow:
-    -10px 0 40px var(--shadow-medium);
+    -8px 0 24px var(--shadow-medium);
+
+    font-family:'Inter', sans-serif;
 
 }
 
@@ -1476,7 +1482,13 @@ body{
 
     align-items:center;
 
-    margin-bottom:24px;
+    margin:-30px -30px 24px;
+
+    padding:16px 30px;
+
+    background:var(--primary-light);
+
+    border-bottom:1px solid var(--primary-border);
 
 }
 
@@ -1493,11 +1505,13 @@ body{
 
     outline:none;
 
-    font-size:24px;
+    background:none;
 
-    font-weight:700;
+    font-size:16px;
 
-    color:#2f2f52;
+    font-weight:500;
+
+    color:#1a1a1a;
 
 }
 
@@ -1514,9 +1528,9 @@ body{
 
     cursor:pointer;
 
-    font-size:22px;
+    font-size:18px;
 
-    color:#8f8cab;
+    color:#888;
 
 }
 
@@ -1764,6 +1778,96 @@ body{
 
     user-select: none;
 
+}
+
+/* ==================================================
+   CANONICAL REMINDER / CONFIRMATION POPUP
+   (same component used on Diary Page / Diary Homepage)
+================================================== */
+
+.reminder-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    background: rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reminder-card {
+    background: #F2EFE9;
+    border-radius: 16px;
+    padding: 28px 32px 24px;
+    min-width: 260px;
+    max-width: 340px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+.reminder-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.reminder-msg {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.reminder-msg strong {
+    color: #1a1a1a;
+}
+
+.reminder-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.reminder-btn {
+    padding: 9px 22px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.reminder-btn-secondary {
+    background: rgba(0, 0, 0, 0.07);
+    color: #555;
+}
+
+.reminder-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.12);
+    color: #1a1a1a;
+}
+
+.reminder-btn-primary {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.reminder-btn-primary:hover {
+    background: #333;
+}
+
+.reminder-btn-danger {
+    background: #d93025;
+    color: #fff;
+}
+
+.reminder-btn-danger:hover {
+    background: #b8271d;
 }
 
 /* ==================================================

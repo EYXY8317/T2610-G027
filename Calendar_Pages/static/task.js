@@ -264,9 +264,11 @@ async function addTask(listType) {
     // 确保用户已经选择日期
     if (!selectedDate) {
 
-        alert(
-            "Please select a date first"
-        );
+        showReminderPopup({
+            title: "Missing Date",
+            message: "Please select a date first.",
+            confirmText: "OK"
+        });
 
         return;
 
@@ -355,9 +357,11 @@ catch(error) {
         error
     );
 
-    alert(
-        "Failed to save task"
-    );
+    showReminderPopup({
+        title: "Save Failed",
+        message: "Failed to save task.",
+        confirmText: "OK"
+    });
 
     return;
 
@@ -508,9 +512,11 @@ async function deleteTask(listType, id) {
          task.status =
              oldStatus;
 
-        alert(
-            "Failed to update task"
-        );
+        showReminderPopup({
+            title: "Update Failed",
+            message: "Failed to update task.",
+            confirmText: "OK"
+        });
 
         return;
 
@@ -700,9 +706,11 @@ async function restoreTask(listType, id) {
 
         // Display error message
         // 显示恢复失败提示
-        alert(
-            "Restore failed"
-        );
+        showReminderPopup({
+            title: "Restore Failed",
+            message: "Restore failed.",
+            confirmText: "OK"
+        });
 
     }
 
@@ -720,24 +728,27 @@ function deleteCurrentTask() {
 
     // Ask user for confirmation
     // 询问用户是否确认删除
-    if (
-        confirm(
-            "Delete this task?"
-        )
-    ) {
+    showReminderPopup({
+        title: "Delete Task?",
+        message: "Delete this task?",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm: function() {
 
-        // Move current task to Trash
-        // 将当前任务移动到垃圾桶
-        deleteTask(
-            currentTaskListType,
-            currentTaskId
-        );
+            // Move current task to Trash
+            // 将当前任务移动到垃圾桶
+            deleteTask(
+                currentTaskListType,
+                currentTaskId
+            );
 
-        // Close task detail panel
-        // 关闭任务详情面板
-        closeDetailPanel();
+            // Close task detail panel
+            // 关闭任务详情面板
+            closeDetailPanel();
 
-    }
+        }
+    });
 
 }
 
@@ -749,69 +760,74 @@ function deleteCurrentTask() {
 // 从系统中彻底移除任务
 // ===============================
 
-async function permanentlyDeleteTask(listType, id) {
+function permanentlyDeleteTask(listType, id) {
 
     // Ask user for confirmation
     // 询问用户是否确认永久删除
-    if (
-        !confirm(
-            "Permanently delete this task?"
-        )
-    ) {
-        return;
-    }
+    showReminderPopup({
+        title: "Permanently Delete?",
+        message: "Permanently delete this task?",
+        confirmText: "Delete",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm: async function() {
 
-    // Remove task from local taskData
-    // 从本地 taskData 中删除任务
-    taskData[listType] =
-        taskData[listType].filter(
-            task => task.id !== id
-        );
+            // Remove task from local taskData
+            // 从本地 taskData 中删除任务
+            taskData[listType] =
+                taskData[listType].filter(
+                    task => task.id !== id
+                );
 
-    // Send delete request to Flask backend
-    // 向 Flask 后端发送删除请求
-const response =
-    await fetch(
-        "/calendar/delete_task",
-        {
-            method: "POST",
+            // Send delete request to Flask backend
+            // 向 Flask 后端发送删除请求
+            const response =
+                await fetch(
+                    "/calendar/delete_task",
+                    {
+                        method: "POST",
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-            body:
-                JSON.stringify({
-                    id: id
-                })
+                        body:
+                            JSON.stringify({
+                                id: id
+                            })
+                    }
+                );
+
+            // Convert response into JSON
+            // 将服务器响应转换为 JSON 格式
+            const result =
+                await response.json();
+
+            // Display error message if deletion failed
+            // 如果删除失败，则显示错误信息
+            if (!result.success) {
+
+                showReminderPopup({
+                    title: "Delete Failed",
+                    message: "Delete failed.",
+                    confirmText: "OK"
+                });
+
+                return;
+
+            }
+
+            // Refresh Trash page
+            // 刷新垃圾桶页面
+            renderTrash();
+
+            // Refresh tag filters
+            // 刷新标签筛选器
+            renderTagFilters();
+
         }
-    );
-
-    // Convert response into JSON
-    // 将服务器响应转换为 JSON 格式
-    const result =
-        await response.json();
-
-    // Display error message if deletion failed
-    // 如果删除失败，则显示错误信息
-    if (!result.success) {
-
-        alert(
-            "Delete failed"
-       );
-
-    return;
-
-}
-
-    // Refresh Trash page
-    // 刷新垃圾桶页面
-    renderTrash();
-
-    // Refresh tag filters
-    // 刷新标签筛选器
-    renderTagFilters();
+    });
 
 }
 
@@ -823,68 +839,73 @@ const response =
 // 永久删除所有垃圾桶中的任务
 // ===============================
 
-async function emptyTrash() { 
+function emptyTrash() {
 
     // Ask user for confirmation
     // 询问用户是否确认清空垃圾桶
-    if (
-        !confirm(
-            "Permanently delete all tasks in Trash?"
-        )
-    ) {
-        return;
-    }
+    showReminderPopup({
+        title: "Empty Trash?",
+        message: "Permanently delete all tasks in Trash?",
+        confirmText: "Delete All",
+        cancelText: "Cancel",
+        danger: true,
+        onConfirm: async function() {
 
-    // Remove all tasks with status "trash"
-    // 删除所有状态为 "trash" 的任务
-    Object.keys(taskData).forEach(listType => {
+            // Remove all tasks with status "trash"
+            // 删除所有状态为 "trash" 的任务
+            Object.keys(taskData).forEach(listType => {
 
-        taskData[listType] =
-            taskData[listType].filter(
-                task => task.status !== "trash"
-            );
+                taskData[listType] =
+                    taskData[listType].filter(
+                        task => task.status !== "trash"
+                    );
 
-    });
+            });
 
-    // Send request to Flask backend
-    // 向 Flask 后端发送清空垃圾桶请求
-const response =
-    await fetch(
-        "/calendar/empty_trash",
-        {
-            method: "POST",
+            // Send request to Flask backend
+            // 向 Flask 后端发送清空垃圾桶请求
+            const response =
+                await fetch(
+                    "/calendar/empty_trash",
+                    {
+                        method: "POST",
 
-            headers: {
-                "Content-Type":
-                    "application/json"
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+            // Convert server response into JSON
+            // 将服务器响应转换为 JSON 格式
+            const result =
+                await response.json();
+
+            // Display error message if operation failed
+            // 如果操作失败，则显示错误信息
+            if (!result.success) {
+
+                showReminderPopup({
+                    title: "Empty Trash Failed",
+                    message: "Failed to empty trash.",
+                    confirmText: "OK"
+                });
+
+                return;
+
             }
+
+            // Refresh Trash page
+            // 刷新垃圾桶页面
+            renderTrash();
+
+            // Refresh tag filters
+            // 刷新标签筛选器
+            renderTagFilters();
+
         }
-    );
-
-    // Convert server response into JSON
-    // 将服务器响应转换为 JSON 格式
-const result =
-    await response.json();
-
-    // Display error message if operation failed
-    // 如果操作失败，则显示错误信息
-if (!result.success) {
-
-    alert(
-        "Failed to empty trash"
-    );
-
-    return;
-
-}
-
-    // Refresh Trash page
-    // 刷新垃圾桶页面
-    renderTrash();
-
-    // Refresh tag filters
-    // 刷新标签筛选器
-    renderTagFilters();
+    });
 }
 
 // =====================================
@@ -3403,9 +3424,11 @@ const result =
     // 如果保存失败则显示错误信息
 if (!result.success) {
 
-    alert(
-        "Failed to save task"
-    );
+    showReminderPopup({
+        title: "Save Failed",
+        message: "Failed to save task.",
+        confirmText: "OK"
+    });
 
     return;
 
@@ -3453,9 +3476,11 @@ if (!result.success) {
 
     // Display success message
     // 显示保存成功提示
-    alert(
-        "✅ Changes saved successfully!"
-    );
+    showReminderPopup({
+        title: "Saved",
+        message: "✅ Changes saved successfully!",
+        confirmText: "OK"
+    });
 
 }
 
