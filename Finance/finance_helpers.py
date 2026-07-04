@@ -20,6 +20,7 @@ CATEGORY_MAP = {
         "Travel",
         "Entertainment",
         "Rent",
+        "Bills",
         "Education"
     ],
     "saving": [
