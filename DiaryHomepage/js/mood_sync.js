@@ -1,11 +1,11 @@
 import { userScopedKey } from "./currentUser.js";
 
 export const MOOD_LIST = [
-    { value: 'happy',   emoji: '😄', label: '开心',   image: '/diary_home_static/assets/emotions/happy.png' },
-    { value: 'sad',     emoji: '😢', label: '伤心',   image: '/diary_home_static/assets/emotions/sad.png' },
-    { value: 'angry',   emoji: '😠', label: '生气',   image: '/diary_home_static/assets/emotions/angry.png' },
-    { value: 'anxious', emoji: '😰', label: '焦虑',   image: '/diary_home_static/assets/emotions/anxious.png' },
-    { value: 'unwell',  emoji: '🤢', label: '不舒服', image: '/diary_home_static/assets/emotions/unwell.png' },
+    { value: 'happy',   emoji: '😄', label: '开心',   title: 'Happy',   image: '/diary_home_static/assets/emotions/happy.png' },
+    { value: 'sad',     emoji: '😢', label: '伤心',   title: 'Sad',     image: '/diary_home_static/assets/emotions/sad.png' },
+    { value: 'angry',   emoji: '😠', label: '生气',   title: 'Angry',   image: '/diary_home_static/assets/emotions/angry.png' },
+    { value: 'anxious', emoji: '😰', label: '焦虑',   title: 'Anxious', image: '/diary_home_static/assets/emotions/anxious.png' },
+    { value: 'unwell',  emoji: '🤢', label: '不舒服', title: 'Unwell',  image: '/diary_home_static/assets/emotions/unwell.png' },
 ];
 
 const MOOD_KEY = 'diary_mood_today';

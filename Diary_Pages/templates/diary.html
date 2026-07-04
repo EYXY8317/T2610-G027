@@ -1499,12 +1499,13 @@ const moodPicker = document.getElementById("mood-picker");
 const isDisabled = moodPicker && moodPicker.classList.contains("mood-picker-disabled");
 
 if (moodInput && moodPicker) {
-    MOOD_LIST.forEach(({ value, image, label }) => {
+    MOOD_LIST.forEach(({ value, image, label, title }) => {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "mood-img-btn";
         btn.dataset.value = value;
         btn.disabled = isDisabled;
+        btn.title = title;
         const img = document.createElement("img");
         img.src = image;
         img.alt = label;

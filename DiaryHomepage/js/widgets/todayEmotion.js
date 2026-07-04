@@ -140,6 +140,7 @@ function renderSelectMode(state) {
                 data-index="${i}"
                 data-value="${mood.value}"
                 aria-pressed="${isSelected}"
+                title="${mood.title}"
             ><img src="${mood.image}" alt="${mood.label}" class="te-mood-img"></button>
         `;
 
@@ -222,7 +223,7 @@ function renderSliderMode(state) {
 
     const rows = MOOD_LIST.slice(0, count).map((mood, i) => `
         <div class="te-slider-row">
-            <img src="${mood.image}" alt="${mood.label}" class="te-slider-emoji te-mood-img">
+            <img src="${mood.image}" alt="${mood.label}" title="${mood.title}" class="te-slider-emoji te-mood-img">
             <input
                 type="range"
                 class="te-pct-slider"
