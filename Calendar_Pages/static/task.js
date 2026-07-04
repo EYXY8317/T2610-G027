@@ -1501,6 +1501,24 @@ function renderTasks(listType) {
 
     });
 
+    // Re-apply selected highlight if the detail panel
+    // is currently open for a task in this list
+    // 如果详情面板正为本列表中的任务打开，则重新应用高亮
+    const detailPanel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    if (
+        detailPanel &&
+        detailPanel.classList.contains("open") &&
+        currentTaskListType === listType
+    ) {
+
+        highlightSelectedTaskCard();
+
+    }
+
 }
 
 // ===============================
@@ -3087,11 +3105,47 @@ function getPriorityDot(priority) {
 
 }
 
- 
+
 // ===============================
 // 11.TASK DETAIL PANEL
 //    Manage task editing panel
 // ===============================
+
+// ===============================
+// DETACH PANEL FROM BODY
+// Re-parent the panel to <html> so it
+// stays fixed to the viewport even though
+// the shared page-load animation leaves a
+// lingering transform on <body> (a CSS
+// transform on an ancestor turns "position:
+// fixed" descendants into page-relative
+// elements instead of viewport-relative ones)
+//
+// 将面板移出 body
+// 由于共享的页面加载动画会在 body 上
+// 留下持续的 transform（祖先元素的
+// transform 会让 "position:fixed" 的
+// 子元素相对于页面而非视口定位），
+// 因此将面板重新挂载到 <html> 下，
+// 以确保它始终固定于可视窗口
+// ===============================
+
+(function () {
+
+    const panel =
+        document.getElementById(
+            "taskDetailPanel"
+        );
+
+    if (panel) {
+
+        document.documentElement.appendChild(
+            panel
+        );
+
+    }
+
+})();
 
 // ===============================
 // SHOW TASK DETAIL PANEL
@@ -3205,14 +3259,55 @@ function showTaskDetail(
             "taskDetailPanel"
         );
 
-    panel.style.visibility =
-        "visible";
+    panel.classList.add(
+        "open"
+    );
 
-    panel.style.opacity =
-        "1";
+    // Highlight the matching task card
+    // 高亮对应的任务卡片
+    highlightSelectedTaskCard();
 
-    panel.style.right =
-        "0";
+}
+
+// ===============================
+// HIGHLIGHT SELECTED TASK CARD
+// Mark the card matching the task
+// currently open in the detail panel
+//
+// 高亮选中的任务卡片
+// 标记当前在详情面板中打开的任务
+// ===============================
+
+function highlightSelectedTaskCard() {
+
+    // Clear any previous highlight
+    // 清除之前的高亮
+    document
+        .querySelectorAll(
+            ".task-card.selected"
+        )
+        .forEach(el => {
+
+            el.classList.remove(
+                "selected"
+            );
+
+        });
+
+    // Find and highlight the current task's card
+    // 查找并高亮当前任务的卡片
+    const card =
+        document.querySelector(
+            `.task-card[data-list="${currentTaskListType}"][data-id="${currentTaskId}"]`
+        );
+
+    if (card) {
+
+        card.classList.add(
+            "selected"
+        );
+
+    }
 
 }
 
@@ -3387,24 +3482,23 @@ function closeDetailPanel() {
 
     // Slide panel out to the right
     // 将面板向右滑出画面
-    panel.style.right =
-        "-450px";
+    panel.classList.remove(
+        "open"
+    );
 
-    // Wait for animation to finish
-    // 等待动画结束后隐藏面板
-    setTimeout(() => {
+    // Clear the selected card highlight
+    // 清除任务卡片的高亮
+    document
+        .querySelectorAll(
+            ".task-card.selected"
+        )
+        .forEach(el => {
 
-        // Hide panel from view
-        // 隐藏面板
-        panel.style.visibility =
-            "hidden";
+            el.classList.remove(
+                "selected"
+            );
 
-        // Make panel transparent
-        // 将面板设为完全透明
-        panel.style.opacity =
-            "0";
-
-    }, 350);
+        });
 
 }
 
