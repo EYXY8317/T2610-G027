@@ -535,6 +535,8 @@ def today_page():
     recent_dt    = datetime.min
 
     for _e in journal_entries:
+        if _e.get("username") != user:
+            continue
         if _e.get("date") == today_str_diary:
             today_diary = _e
         has = bool(_diary_text(_e.get("content", ""))) or bool((_e.get("mood") or "").strip())
