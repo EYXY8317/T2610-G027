@@ -1760,7 +1760,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1em;
+    padding: 0.5em;
     box-sizing: border-box;
     background: transparent;
     overflow: hidden;
