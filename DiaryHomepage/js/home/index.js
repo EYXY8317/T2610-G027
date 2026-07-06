@@ -74,7 +74,8 @@ from "../settings/appearance/widgetAppearance.js";
 import {
     initHistoryButtons,
     undo,
-    redo
+    redo,
+    clearHistory
 }
 from "./historyManager.js";
 
@@ -430,6 +431,7 @@ export async function initializeHomepage() {
                 danger: true,
                 onConfirm: async () => {
                     resetToDefaultLayout();
+                    clearHistory();
                     await syncLayoutToServer();
                     menu.style.display = "none";
                     window.location.reload();
