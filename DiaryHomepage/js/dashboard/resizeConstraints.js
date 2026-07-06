@@ -26,7 +26,7 @@ const WIDGET_CONSTRAINTS = {
     "picture-streak-widget":  { minW:  40, minH:  40, maxW: 1800, maxH: 1800 },
     "emotion-summary-widget": { minW: 280, minH: 260, maxW:  800, maxH: 700 },
     "quote-widget":           { minW: 200, minH: 100, maxW:  800, maxH: 600 },
-    "diary-card-widget":      { minW: 180, minH: 100, maxW: 1800, maxH: 1800 }
+    "diary-card-widget":      { minW: 180, minH: 100, maxW: 1800, maxH: 1800, contentMaxW: 680, contentMaxH: 420 }
 };
 
 const DEFAULT_CONSTRAINTS = { minW: 180, minH: 100, maxW: 800, maxH: 500 };

@@ -1737,15 +1737,22 @@
 .dc-body {
     display: flex;
     flex-direction: row;
-    align-self: stretch;
+    align-self: center;
     width: 100%;
-    max-width: 680px;
-    max-height: 100%;
+    max-width: var(--content-max-w, 680px);
+    max-height: var(--content-max-h, 420px);
     margin: 0 auto;
     overflow: hidden;
     border-radius: 12px;
     min-height: 0;
     min-width: 0;
+}
+
+/* "direct" mode is a full-bleed cover, so it keeps filling the card
+   instead of capping out and leaving padding like "button" mode does. */
+.dc-body.dc-direct {
+    align-self: stretch;
+    max-height: 100%;
 }
 
 .dc-cover {
