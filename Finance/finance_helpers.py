@@ -1,6 +1,6 @@
 import os
 from flask import session
-from db_store import load_data, save_data
+from db_store import load_data, save_data, save_file, load_file, delete_file
 
 # ================= BASE =================
 # ================= 基础配置 =================

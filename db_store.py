@@ -127,6 +127,53 @@ if DATABASE_URL:
             )
             conn.commit()
 
+    # ================================================================
+    # Uploaded files (e.g. receipt images). Same idea as json_store above,
+    # but keyed by filename and storing raw bytes (BYTEA) instead of JSON —
+    # local disk on the web service doesn't survive restarts/redeploys, so
+    # uploads need to live in Postgres too, not just the JSON records.
+    # 上传的文件（比如收据图片）。跟上面的 json_store 思路一样，只是用
+    # 文件名当 key，存的是原始字节（BYTEA）而不是 JSON —— 网页服务的本地
+    # 磁盘在重启/重新部署后不会保留，所以上传的文件也得存进 Postgres，
+    # 不能只把记录存进数据库。
+    # ================================================================
+
+    def _ensure_file_table(cur):
+        cur.execute(
+            "CREATE TABLE IF NOT EXISTS file_store ("
+            "key TEXT PRIMARY KEY, data BYTEA NOT NULL)"
+        )
+
+    def save_file(path, data):
+        key = os.path.basename(path)
+
+        with _get_conn() as conn, conn.cursor() as cur:
+            _ensure_file_table(cur)
+            cur.execute(
+                "INSERT INTO file_store (key, data) VALUES (%s, %s) "
+                "ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data",
+                (key, psycopg2.Binary(data)),
+            )
+            conn.commit()
+
+    def load_file(path):
+        key = os.path.basename(path)
+
+        with _get_conn() as conn, conn.cursor() as cur:
+            _ensure_file_table(cur)
+            cur.execute("SELECT data FROM file_store WHERE key = %s", (key,))
+            row = cur.fetchone()
+            conn.commit()
+            return bytes(row[0]) if row else None
+
+    def delete_file(path):
+        key = os.path.basename(path)
+
+        with _get_conn() as conn, conn.cursor() as cur:
+            _ensure_file_table(cur)
+            cur.execute("DELETE FROM file_store WHERE key = %s", (key,))
+            conn.commit()
+
 else:
     # ===== 本地文件存储版本（没有数据库时使用） =====
     # ===== Local file-storage version (used when there's no database) =====
@@ -158,3 +205,18 @@ else:
             # data is read back by the program.
 
             json.dump(data, f, indent=4)
+
+    def save_file(path, data):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(data)
+
+    def load_file(path):
+        if not os.path.exists(path):
+            return None
+        with open(path, "rb") as f:
+            return f.read()
+
+    def delete_file(path):
+        if os.path.exists(path):
+            os.remove(path)

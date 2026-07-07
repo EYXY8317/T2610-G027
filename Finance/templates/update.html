@@ -398,13 +398,13 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                 </p>
 
+                <div id="amountDisplay" tabindex="0">{{ "%.2f"|format(record.amount) }}</div>
+
                 <input
-                    type="text"
+                    type="hidden"
                     id="amountInput"
                     name="amount"
-                    value="{{ record.amount }}"
-                    readonly
-                    required
+                    value="{{ "%.2f"|format(record.amount) }}"
                 >
 
             </div>
@@ -421,7 +421,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                 <div class="receipt-current">
 
                     <img
-                        src="{{ url_for('static', filename='receipts/' + record.receipt) }}"
+                        src="{{ url_for('finance.receipt_image', filename=record.receipt) }}"
                         class="receipt-thumb-preview"
                     >
 
@@ -494,6 +494,12 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 <!-- ==================== 脚本 ========================= -->
 <!-- ================================================= -->
 
+<script id="categories-data" type="application/json">
+
+{{ categories | tojson if categories else '{}' }}
+
+</script>
+
 <script>
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -502,35 +508,28 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================= 分类 =================
     // 跟 add.html 里的分类逻辑是同一套做法：根据选中的类型，
     // 动态生成对应的分类选项列表，并且把编辑前原本的分类重新选中。
+    // 分类列表从后端传来的 JSON 读取（跟 add.html 用的是同一份
+    // CATEGORY_MAP），而不是在这里单独写死一份 —— 避免两边的分类
+    // 列表以后改动时对不上，导致某些分类（比如 "Bills"）在编辑页
+    // 选不回来，必填校验一直不过，表单却又不提示任何错误信息。
     // Same approach as the category logic in add.html: dynamically build
     // the category option list based on the selected type, and re-select
-    // whichever category this record originally had.
+    // whichever category this record originally had. The category list is
+    // read from the same server-provided CATEGORY_MAP that add.html uses,
+    // instead of a separate hardcoded copy here — a hardcoded copy can
+    // silently drift out of sync (e.g. missing a category like "Bills"),
+    // which leaves the required <select> unable to reselect it and blocks
+    // submission via native validation with no visible error at all.
 
-    const categories = {
+    let categories = {};
 
-        income: [
-            "Salary",
-            "Freelance",
-            "Business",
-            "Gift",
-            "Bonus"
-        ],
-
-        expense: [
-            "Food",
-            "Transport",
-            "Entertainment",
-            "Rent",
-            "Education",
-            "Travel"
-        ],
-
-        saving: [
-            "Savings",
-            "Investment",
-            "Emergency Fund"
-        ]
-    };
+    try {
+        categories = JSON.parse(
+            document.getElementById("categories-data").textContent
+        );
+    } catch {
+        categories = {};
+    }
 
     const typeSelect =
         document.getElementById("typeSelect");
@@ -651,66 +650,76 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================= AMOUNT INPUT (calculator-style entry) =================
     // ================= 金额输入框（计算器式数字输入） =================
     // 跟 add.html 金额栏用的是同一套"以分为单位的整数 + 数字键盘"技巧
-    // （见 add.html 里的详细说明），这里的输入框虽然标了 readonly，
-    // 但下面这段 JS 是靠直接赋值 amountInput.value 来更新它的，
-    // 并不会受 readonly 影响（readonly 只挡用户的默认键盘输入）。
-    // Same "integer cents + digit keypad" trick as the amount field in
-    // add.html (see the detailed explanation there). This field is marked
-    // readonly, but the JS below updates it by directly assigning
-    // amountInput.value, which readonly doesn't block (readonly only
-    // blocks the browser's own default keyboard editing).
-
-    let value =
-
-        Math.round(
-            parseFloat("{{ record.amount or 0 }}") * 100
-        ) || 0;
-
-    let active = false;
+    // 加上同一个可聚焦的 <div>（而不是原生 <input>），因为闪烁光标
+    // 那条线是靠 ::after 伪元素画出来的，而 <input> 这类替换元素
+    // 不支持 ::before/::after，所以必须用 div 才能显示出光标效果。
+    // Same "integer cents + digit keypad" trick as add.html's amount
+    // field, using the same focusable <div> (instead of a native
+    // <input>) — the blinking caret bar is drawn with a ::after
+    // pseudo-element, and replaced elements like <input> can't render
+    // ::before/::after at all, so the div is required for the caret to
+    // show up here too.
 
     const amountInput =
         document.getElementById("amountInput");
 
-    amountInput.addEventListener(
-        "focus",
-        () => active = true
+    const amountDisplay =
+        document.getElementById("amountDisplay");
+
+    let value = Math.round(
+        parseFloat(amountInput.value || "0") * 100
     );
 
-    amountInput.addEventListener(
-        "blur",
-        () => active = false
-    );
+    function updateAmount() {
 
-    document.addEventListener("keydown", function(e) {
-
-        if (!active) return;
-
-        if (e.key >= "0" && e.key <= "9") {
-
-            value =
-            value * 10 + parseInt(e.key);
-
-        }
-
-        else if (e.key === "Backspace") {
-
-            value =
-            Math.floor(value / 10);
-
-        }
-
-        else {
-
-            return;
-
-        }
-
-        e.preventDefault();
-
-        amountInput.value =
+        const formatted =
             (value / 100).toFixed(2);
 
-    });
+        amountInput.value =
+            formatted;
+
+        amountDisplay.textContent =
+            formatted;
+    }
+
+    amountDisplay.addEventListener(
+        "keydown",
+        function(e) {
+
+            if (e.key >= "0" && e.key <= "9") {
+
+                value =
+                    value * 10 + parseInt(e.key);
+
+            }
+
+            else if (e.key === "Backspace") {
+
+                value =
+                    Math.floor(value / 10);
+
+            }
+
+            else {
+
+                return;
+            }
+
+            e.preventDefault();
+
+            updateAmount();
+
+        }
+    );
+
+    amountDisplay.addEventListener(
+        "click",
+        function() {
+
+            amountDisplay.focus();
+
+        }
+    );
 
 });
 
