@@ -543,7 +543,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                     <div
                         class="progress-bar
                         {% if goal.percent >= 100 %}
-                            over
+                            safe
                         {% elif goal.percent >= 80 %}
                             warning
                         {% else %}

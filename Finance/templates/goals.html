@@ -234,7 +234,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                 <!-- PROGRESS -->
                 <div class="progress-container">
-                    <div class="progress-bar {% if g.percent >= 100 %}over{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
+                    <div class="progress-bar {% if g.percent >= 100 %}safe{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
                         style="--width: {{ g.display_percent }}%;"></div>
                 </div>
 
@@ -404,7 +404,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
 
                 <!-- PROGRESS -->
                 <div class="progress-container">
-                    <div class="progress-bar {% if g.percent >= 100 %}over{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
+                    <div class="progress-bar {% if g.percent >= 100 %}safe{% elif g.percent >= 80 %}warning{% else %}safe{% endif %}"
                         style="--width: {{ g.display_percent }}%;"></div>
                 </div>
 
