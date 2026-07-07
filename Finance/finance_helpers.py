@@ -31,7 +31,8 @@ CATEGORY_MAP = {
         "Entertainment",
         "Rent",
         "Bills",
-        "Education"
+        "Education",
+        "Other"
     ],
     "saving": [
         "Savings",
