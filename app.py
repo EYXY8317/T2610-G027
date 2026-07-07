@@ -248,7 +248,7 @@ def dashboard():
         t for t in all_tasks_dash
         if t.get("username") == user
         and t.get("status") != "trash"
-        and (t.get("date") == today_str_cal or t.get("repeat") == "daily")
+        and t.get("date") == today_str_cal
     ])
     # 用花括号 {} 写的集合推导式（set comprehension）会自动去重 ——
     # 就算某天有好几个任务，这一天也只会出现一次，正好符合
