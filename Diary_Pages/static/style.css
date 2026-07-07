@@ -911,7 +911,7 @@ button {
 }
 
 .tb-wrap.pop-in, .img-wrap.pop-in {
-    animation: diaryPopIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: diaryPopIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ===== AUTOSAVE "SAVED" CHECK PULSE ===== */

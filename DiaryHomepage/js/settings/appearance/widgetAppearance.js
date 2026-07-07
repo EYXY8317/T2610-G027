@@ -136,6 +136,11 @@ export function applyWidgetAppearance(widget, app) {
         dcBtn.style.color = app.titleColor ? "#fff" : "";
     }
 
+    const sourceTag = widget.querySelector(".quote-source-tag");
+    if (sourceTag) {
+        sourceTag.style.color = app.titleColor || "";
+    }
+
     if (app.showBorder !== false) {
         widget.style.border    = `${app.borderWidth ?? 1.5}px solid ${app.borderColor || "#ddd8cf"}`;
         widget.style.boxShadow = "";

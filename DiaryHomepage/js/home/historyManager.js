@@ -30,6 +30,21 @@ function _refresh() {
     if (_redoBtn) _redoBtn.disabled = _redoStack.length === 0;
 }
 
+// Wipes both stacks outright — used by "Reset Layout" so a reset can never
+// be undone. Previously this relied only on the page reload that follows a
+// reset to implicitly clear the (in-memory-only) stacks; explicitly clearing
+// here means the guarantee no longer depends on that reload actually
+// happening first.
+// 直接清空两个栈——给"重置布局"用的，确保重置这个动作本身永远不能被
+// 撤销。之前这个保证完全依赖"重置后会刷新页面"来顺带清空这两个只存在
+// 内存里的栈；现在在这里显式清空，就不再依赖"刷新一定会先发生"这个
+// 隐含前提了。
+export function clearHistory() {
+    _undoStack.length = 0;
+    _redoStack.length = 0;
+    _refresh();
+}
+
 export function pushHistory(entry) {
     _undoStack.push(entry);
     if (_undoStack.length > MAX) _undoStack.shift();

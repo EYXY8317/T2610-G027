@@ -1724,9 +1724,21 @@ export function createSettingPopup(widgetId) {
     /* ── Restore open sections from previous widget ─────────── */
     /* ── 恢复上一个组件设置面板里"展开的小节"状态 ─────────── */
 
+    // "Mode" (Picture Streak's Manual/Auto Scroll switch) and "Display Elements"
+    // (every widget's toggle-chip row) hold the settings users reach for most —
+    // starting them collapsed meant a click on the segment button/chip silently
+    // landed on a hidden element the first time a widget's popup was ever opened.
+    // "Mode"（图片连续记录组件的手动/自动轮播切换）和"Display Elements"
+    // （每个组件都有的开关小节）是用户最常需要调整的设置——如果默认折叠，
+    // 第一次打开某个组件的设置面板时，点击那个按钮/开关其实点在了还没
+    // 展开、看不见的元素上，等于毫无反应。
+    const DEFAULT_OPEN_SECTIONS = ["Mode", "Display Elements"];
+
     popup.querySelectorAll(".setting-section").forEach(sec => {
         const label = sec.querySelector(".setting-section-toggle h3")?.textContent.trim();
-        if (label && _lastOpenSections.includes(label)) sec.classList.add("open");
+        if (label && (_lastOpenSections.includes(label) || DEFAULT_OPEN_SECTIONS.includes(label))) {
+            sec.classList.add("open");
+        }
     });
 
     /* ── Drag + register ──────────────────────────────────── */

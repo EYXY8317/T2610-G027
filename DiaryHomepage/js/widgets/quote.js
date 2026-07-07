@@ -218,9 +218,9 @@ function renderWidget(state) {
                 <div class="quote-author-row">
                     ${authorText}
                 </div>
-                ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
             </div>
             <div class="quote-corner-actions">
+                ${state.showSourceTag !== false ? `<div class="quote-source-tag">${quote.source === "user" ? "My Quote" : "Daily Quote"}</div>` : ""}
                 <button class="quote-save-btn${saved ? " saved" : ""}" title="${saved ? "Unsave" : "Save"}">${saved ? "★" : "☆"}</button>
                 ${!state.autoRotate ? `<button class="quote-next-btn" title="Next quote">↻</button>` : ""}
             </div>

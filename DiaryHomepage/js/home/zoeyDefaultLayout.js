@@ -84,6 +84,14 @@ export const ZOEY_DEFAULT_LAYOUT = {
         "titleColor": "#5C4033",
         "titleScale": "3"
     },
+    "weather-day-state": {
+        "showCity": true,
+        "showIcon": true,
+        "showFeelsLike": false,
+        "showHumidity": false,
+        "showUpdateTime": false,
+        "showRange": false
+    },
     "weather-week-widget-layout": {
         "left": "20px",
         "top": "620px",
