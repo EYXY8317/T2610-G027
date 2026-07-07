@@ -1094,19 +1094,29 @@
 
             const SNAP_DEG = 5; // snap when within this many degrees of a 90° step
 
-            function onMove(e){
-                const rect = target.getBoundingClientRect();
-                const cx = rect.left + rect.width  / 2;
-                const cy = rect.top  + rect.height / 2;
-                let angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI) + 90;
+            const rect = target.getBoundingClientRect();
+            const cx = rect.left + rect.width  / 2;
+            const cy = rect.top  + rect.height / 2;
+            const startAngle    = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+            const startRotation = parseFloat(target.dataset.rotate || "0");
 
-                const nearestStep = Math.round(angle / 90) * 90;
-                if (Math.abs(angle - nearestStep) < SNAP_DEG) {
-                    angle = nearestStep;
+            function onMove(e){
+                const angle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+                let newRotation = startRotation + (angle - startAngle);
+
+                // The rotate handle always sits at the box's current angle
+                // (it rotates along with it), so a fresh drag starts right on
+                // top of whichever 90° step the box is already at. Snapping
+                // back onto that same step would swallow the first few
+                // degrees of every drag — so only snap onto steps other than
+                // the one it started at.
+                const nearestStep = Math.round(newRotation / 90) * 90;
+                if (nearestStep !== startRotation && Math.abs(newRotation - nearestStep) < SNAP_DEG) {
+                    newRotation = nearestStep;
                 }
 
-                target.style.transform = "rotate(" + angle + "deg)";
-                target.dataset.rotate  = angle;
+                target.style.transform = "rotate(" + newRotation + "deg)";
+                target.dataset.rotate  = newRotation;
             }
             function onUp(){
                 document.removeEventListener("mousemove", onMove);
