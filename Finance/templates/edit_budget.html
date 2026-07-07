@@ -89,6 +89,12 @@ class="{{ user.theme if user else 'adaptive' }}"
 
     </div>
 
+    {% if error %}
+    <div class="budget-warning-banner">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
     <form method="POST">
 
         <div class="form-grid">
@@ -99,11 +105,11 @@ class="{{ user.theme if user else 'adaptive' }}"
                     Category
                 </label>
 
-                <input
-                    type="text"
-                    value="{{ budget.category }}"
-                    readonly
-                >
+                <select name="category" required>
+                    {% for cat in categories|default([]) %}
+                    <option value="{{ cat }}" {% if cat == budget.category %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
 
             </div>
 

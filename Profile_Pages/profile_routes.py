@@ -1,8 +1,11 @@
-from flask import app, render_template, session, request, redirect
+from flask import app, render_template, session, request, redirect, Response
 from password_system.password_hashing import hash_password
 from datetime import datetime
 import os
-from db_store import load_data, save_data
+import time
+import mimetypes
+from werkzeug.utils import secure_filename
+from db_store import load_data, save_data, save_file, load_file
 
 # 注意：这里从 flask 包里导入的 "app" 其实是 flask 内部的一个模块
 # （flask/app.py，里面定义了 Flask 这个类本身），并不是这个项目实际
@@ -22,6 +25,8 @@ from db_store import load_data, save_data
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 f_users = os.path.join(BASE_DIR, "users.json")
+
+PROFILE_PICTURES_DIR = os.path.join(BASE_DIR, "Profile_Pages", "static", "profile_pictures")
 
 # Files that hold per-user records keyed by "username", cascade-deleted
 # alongside the account entry in users.json.
@@ -171,32 +176,18 @@ def register_profile_routes(app):
 
                     if profile_picture.filename != "":
 
-                        # 注意：这里直接用用户上传的原始文件名保存，
-                        # 没有像 Diary/Finance 那边的图片上传那样用
-                        # secure_filename() 清理过，也没有限制只能是
-                        # 图片格式——如果文件名里被塞进特殊字符
-                        # （比如路径穿越写法），理论上有安全风险，
-                        # 值得之后补上跟其他上传接口一样的处理。
-                        # Note: this saves the file using the user's raw
-                        # uploaded filename as-is — unlike the image
-                        # uploads in Diary/Finance, it isn't run through
-                        # secure_filename() and doesn't restrict the file
-                        # to image formats. If the filename contains
-                        # special characters (e.g. a path-traversal
-                        # attempt), that's a theoretical security risk
-                        # worth hardening to match the other upload
-                        # endpoints.
+                        filename = secure_filename(profile_picture.filename)
+                        name, ext = os.path.splitext(filename)
+                        filename = f"{name}_{int(time.time())}{ext}"
 
-                        filename = profile_picture.filename
-
-                        save_path = os.path.join(
-                            "Profile_Pages",
-                            "static",
-                            "profile_pictures",
-                            filename
+                        # save_file goes through Postgres in production (via
+                        # db_store.py) so profile pictures survive
+                        # redeploys/restarts, instead of the web service's
+                        # ephemeral local disk.
+                        save_file(
+                            os.path.join(PROFILE_PICTURES_DIR, filename),
+                            profile_picture.read()
                         )
-
-                        profile_picture.save(save_path)
 
                         user["profile_picture"] = filename
 
@@ -218,6 +209,14 @@ def register_profile_routes(app):
             "edit_profile.html",
             user=current_user
         )
+
+    @app.route("/profile_static/profile_pictures/<filename>")
+    def profile_picture_image(filename):
+        data = load_file(os.path.join(PROFILE_PICTURES_DIR, secure_filename(filename)))
+        if data is None:
+            return "", 404
+        mimetype = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        return Response(data, mimetype=mimetype)
 
     # =========================
     # CHANGE THEME

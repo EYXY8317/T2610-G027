@@ -16,7 +16,10 @@ import re
 import json
 import time
 import random
+import mimetypes
 from werkzeug.utils import secure_filename
+from flask import Response
+from db_store import save_file, load_file
 
 
 # ================================ quote helpers ================================
@@ -520,8 +523,19 @@ def upload_image():
     name, ext = os.path.splitext(filename)
     filename = f"{name}_{int(time.time())}{ext}"
 
-    save_path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(save_path)
+    # save_file goes through Postgres in production (via db_store.py) so
+    # diary images survive redeploys/restarts, instead of the web service's
+    # ephemeral local disk.
+    save_file(os.path.join(UPLOAD_FOLDER, filename), file.read())
 
     url = "/diary_static/uploads/" + filename
     return jsonify({"url": url})
+
+
+@diary_bp.route("/diary_static/uploads/<filename>")
+def diary_uploaded_image(filename):
+    data = load_file(os.path.join(UPLOAD_FOLDER, secure_filename(filename)))
+    if data is None:
+        return "", 404
+    mimetype = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    return Response(data, mimetype=mimetype)
