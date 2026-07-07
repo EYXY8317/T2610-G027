@@ -548,6 +548,28 @@ def edit_budget(category):
         return redirect(url_for("finance.budget"))
 
     if request.method == "POST":
+        new_category = request.form.get("category", budget["category"])
+
+        # Each user can only have one budget per category (same rule the
+        # /budget "add" form enforces) — block the rename instead of
+        # silently merging into / overwriting an unrelated category's
+        # existing budget.
+        if new_category != budget["category"]:
+            conflict = any(
+                b is not budget and b["username"] == user and b["category"] == new_category
+                for b in budgets
+            )
+            if conflict:
+                return render_template(
+                    "edit_budget.html",
+                    budget=budget,
+                    categories=CATEGORY_MAP["expense"],
+                    error=f"You already have a budget for {new_category}.",
+                    user=get_current_user(),
+                    logged_in=True,
+                )
+            budget["category"] = new_category
+
         budget["amount"] = float(request.form.get("amount"))
         budget["period"] = request.form.get("period", budget.get("period", "monthly"))
         save_data(f_budget, budgets)
@@ -556,6 +578,7 @@ def edit_budget(category):
     return render_template(
         "edit_budget.html",
         budget=budget,
+        categories=CATEGORY_MAP["expense"],
         user=get_current_user(),
         logged_in=True,
     )
