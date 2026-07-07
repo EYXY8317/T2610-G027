@@ -413,7 +413,7 @@ body{
 
     background:var(--card-bg);
 
-    border:1px solid var(--border);
+    border:2px solid var(--primary-accent, var(--border));
 
     border-radius:var(--radius);
 
@@ -2609,7 +2609,6 @@ body.cozy{
     --delete-text:#b35c5c;
 }
 
-body.cozy .summary-card,
 body.cozy .goal-card,
 body.cozy .overview-box,
 body.cozy .budget-modern,
@@ -2618,7 +2617,14 @@ body.cozy .receipt-card{
 
     background:#f8f1e8;
 
-    border:1px solid #dcc9b4;
+    border:1px solid #c9a97e;
+}
+
+body.cozy .summary-card{
+
+    background:#f8f1e8;
+
+    border:2px solid #b8926a;
 }
 
 body.cozy input,
