@@ -654,6 +654,25 @@ body.ash{
     background:rgba(255,240,240,0.7);
 }
 
+.form-input-wrap{
+    position:relative;
+}
+
+.form-input-wrap .form-input{
+    padding-right:44px;
+}
+
+.form-toggle-eye{
+    position:absolute;
+    top:50%;
+    right:14px;
+    transform:translateY(-50%);
+    cursor:pointer;
+    user-select:none;
+    font-size:19px;
+    line-height:1;
+}
+
 .form-error{
     background:rgba(224,82,82,0.1);
     border:1px solid rgba(224,82,82,0.3);

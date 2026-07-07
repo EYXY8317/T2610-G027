@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Password — Life Pages</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
-    <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('profile_static', filename='profile.css') }}?v=2">
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     (function(){
@@ -69,14 +69,18 @@
         <form method="POST" class="centered-form">
             <div class="form-group">
                 <label class="form-label">Current Password</label>
-                <input
-                    type="password"
-                    name="password"
-                    class="form-input{% if error %} form-input-error{% endif %}"
-                    placeholder="Enter your password"
-                    autofocus
-                    required
-                >
+                <div class="form-input-wrap">
+                    <input
+                        type="password"
+                        id="verifyPassword"
+                        name="password"
+                        class="form-input{% if error %} form-input-error{% endif %}"
+                        placeholder="Enter your password"
+                        autofocus
+                        required
+                    >
+                    <span class="form-toggle-eye" onclick="togglePassword('verifyPassword',this)">🙈</span>
+                </div>
             </div>
             <button type="submit" class="btn form-submit-btn">Verify &amp; Continue</button>
         </form>
@@ -85,6 +89,13 @@
     </div>
 </div>
 
+    <script>
+    function togglePassword(inputId, eyeEl) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') { input.type = 'text'; eyeEl.textContent = '🙉'; }
+        else                           { input.type = 'password'; eyeEl.textContent = '🙈'; }
+    }
+    </script>
     <script src="/shared_static/page-transitions.js" defer></script>
 </body>
 </html>

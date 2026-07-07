@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link
         rel="stylesheet"
-        href="{{ url_for('profile_static', filename='profile.css') }}"
+        href="{{ url_for('profile_static', filename='profile.css') }}?v=2"
     >
 
     <script src="/static/login-gate.js?v=2"></script>
-    <script src="/calendar_static/themecolor.js"></script>
+    <script src="/calendar_static/themecolor.js?v=2"></script>
     <script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
     <script>
     setTheme(JSON.parse(document.getElementById('theme-data').textContent));
