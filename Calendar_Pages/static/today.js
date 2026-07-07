@@ -1,4 +1,31 @@
 // =====================================
+// LOCAL DATE STRING
+// Build a YYYY-MM-DD string from local
+// date parts (not UTC), so it matches
+// the date stored by the <input type="date">
+// picker used when creating tasks
+//
+// 使用本地日期（而非 UTC）拼接 YYYY-MM-DD 字符串，
+// 与新增任务时日期选择器保存的日期格式保持一致
+// =====================================
+
+function getLocalDateString(date) {
+
+    const year = date.getFullYear();
+
+    const month =
+        String(date.getMonth() + 1)
+            .padStart(2, "0");
+
+    const day =
+        String(date.getDate())
+            .padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+// =====================================
 // 1. TODAY DATE
 // Display current date on Today page
 //
@@ -107,7 +134,7 @@ function updateProgress() {
     // Get today's date
     // 获取今天日期
     const today =
-        new Date().toISOString().split("T")[0];
+        getLocalDateString(new Date());
 
     // Total tasks scheduled for today
     // 今天的任务总数
@@ -355,9 +382,7 @@ function renderTodayTasks() {
     // Get today's date in YYYY-MM-DD format
     // 获取今天的日期（YYYY-MM-DD 格式）
     const today =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+        getLocalDateString(new Date());
 
     // Store today's active tasks
     // 用来存放今天所有进行中的任务
