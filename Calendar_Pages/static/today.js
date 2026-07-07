@@ -725,5 +725,15 @@ document.addEventListener(
         // 加载并刷新 Today 页面数据
         updateTodayDashboard();
 
+        // Keep due-in/overdue countdowns live while the page
+        // stays open, instead of only updating on task actions
+        // or page navigation
+        // 页面停留期间也定时刷新倒计时/逾期状态，
+        // 而不是只在任务操作或切换页面时才更新
+        setInterval(
+            updateTodayDashboard,
+            60000
+        );
+
     }
 );
