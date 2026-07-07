@@ -357,7 +357,7 @@ class="{{ user.theme if user.theme else 'adaptive' }} {{ user.ui_style if user.u
                         {% if r.receipt %}
 
                         <img
-                            src="{{ url_for('static', filename='receipts/' + r.receipt) }}"
+                            src="{{ url_for('finance.receipt_image', filename=r.receipt) }}"
                             class="receipt-thumb"
                             onclick="openReceiptModal(this.src)"
                             alt="Receipt"

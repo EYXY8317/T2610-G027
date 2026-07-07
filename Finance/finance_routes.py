@@ -1,11 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, Response
 import json
+import mimetypes
 import os
 import uuid
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from .finance_helpers import (
-    load_data, save_data, get_current_user,
+    load_data, save_data, save_file, load_file, delete_file, get_current_user,
     CATEGORY_MAP, BASE_DIR
 )
 
@@ -32,7 +33,6 @@ def _allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def _save_receipt(file, username):
-    os.makedirs(RECEIPTS_DIR, exist_ok=True)
     ext = secure_filename(file.filename).rsplit(".", 1)[1].lower()
     # 用 uuid4()（随机生成一串几乎不可能重复的字符）拼在文件名里，
     # 这样即使两个用户上传了同名文件（比如都叫 "receipt.png"），
@@ -43,14 +43,23 @@ def _save_receipt(file, username):
     # they won't overwrite each other's saved receipt image.
 
     filename = f"{username}_{uuid.uuid4().hex}.{ext}"
-    file.save(os.path.join(RECEIPTS_DIR, filename))
+    # save_file goes through Postgres in production (via db_store.py) so
+    # receipts survive redeploys/restarts, instead of the web service's
+    # ephemeral local disk.
+    save_file(os.path.join(RECEIPTS_DIR, filename), file.read())
     return filename
 
 def _delete_receipt(filename):
     if filename:
-        path = os.path.join(RECEIPTS_DIR, filename)
-        if os.path.exists(path):
-            os.remove(path)
+        delete_file(os.path.join(RECEIPTS_DIR, filename))
+
+@finance_bp.route("/receipts/<filename>")
+def receipt_image(filename):
+    data = load_file(os.path.join(RECEIPTS_DIR, secure_filename(filename)))
+    if data is None:
+        return "", 404
+    mimetype = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+    return Response(data, mimetype=mimetype)
 
 def _goal_time_data(target_date_str, remaining_amount):
     # 根据目标日期和还差多少钱，算出：还剩几天/几个月、
@@ -369,14 +378,14 @@ def update_financial(idx):
         amount_raw = form.get("amount")
 
         if not amount_raw:
-            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount is required", logged_in=True)
+            return render_template("update.html", record=record, accounts=user_accounts, source=source, categories=CATEGORY_MAP, error="Amount is required", logged_in=True)
 
         try:
             amount = float(amount_raw)
             if amount <= 0:
                 raise ValueError
         except:
-            return render_template("update.html", record=record, accounts=user_accounts, source=source, error="Amount must be greater than 0", logged_in=True)
+            return render_template("update.html", record=record, accounts=user_accounts, source=source, categories=CATEGORY_MAP, error="Amount must be greater than 0", logged_in=True)
 
         account = form.get("account")
         new_account = form.get("new_account")
@@ -421,6 +430,7 @@ def update_financial(idx):
         record=record,
         accounts=user_accounts,
         source=source,
+        categories=CATEGORY_MAP,
         user=get_current_user(),
         logged_in=bool(user),
     )
