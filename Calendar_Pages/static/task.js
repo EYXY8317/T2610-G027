@@ -23,6 +23,77 @@ let taskData = {
 
 };
 
+// Tasks currently mid-way through being marked
+// complete (guards against duplicate recurring
+// tasks when the checkbox/button is clicked twice
+// before the first click finishes processing)
+// 正在标记完成中的任务 ID（防止连点导致重复任务被多次生成）
+let completingTaskIds = new Set();
+
+// Pending completion timers, keyed by task ID (the 600ms
+// animation delay in toggleComplete). Lets an uncheck/delete
+// that happens during that window cancel the delayed
+// completion instead of racing against it.
+// 待处理的完成计时器（按任务 ID 索引），
+// 用于在动画延迟期间取消完成操作，避免和后续取消/删除产生竞态
+let pendingCompletionTimers = new Map();
+
+// Monotonically increasing counter used alongside Date.now()
+// so two tasks created within the same millisecond never
+// collide on ID
+// 与 Date.now() 搭配使用的自增计数器，
+// 避免同一毫秒内创建的任务 ID 重复
+let lastGeneratedTaskId = 0;
+
+// ===============================
+// GENERATE TASK ID
+// Returns a unique, strictly increasing task ID
+//
+// 生成任务 ID
+// 返回一个唯一且严格递增的任务 ID
+// ===============================
+function generateTaskId() {
+
+    let id = Date.now();
+
+    if (id <= lastGeneratedTaskId) {
+
+        id = lastGeneratedTaskId + 1;
+
+    }
+
+    lastGeneratedTaskId = id;
+
+    return id;
+
+}
+
+// ===============================
+// ESCAPE HTML
+// Neutralize characters that would otherwise be
+// interpreted as HTML when inserted via innerHTML
+// (prevents stored XSS from task titles/tags)
+//
+// 转义 HTML 特殊字符
+// 防止任务标题、标签中的内容被当成 HTML/脚本执行
+// ===============================
+function escapeHTML(value) {
+
+    if (value === undefined || value === null) {
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
+}
+
 // Tag filter
 // 当前选中的标签筛选器
 let currentTagFilter = "all";
@@ -97,6 +168,13 @@ function showPage(pageId, element) {
     // Close all calendar popups
     // 关闭所有日历弹窗
     closeCalendar();
+
+    // Close day modal popup
+    // 关闭日期任务弹窗
+    const dayModal = document.getElementById("dayModal");
+    if (dayModal) {
+        dayModal.style.display = "none";
+    }
 
     // Close task detail panel
     // 关闭任务详情面板
@@ -314,7 +392,7 @@ async function addTask(listType) {
     // 创建任务对象
     let task = {
 
-        id: Date.now(),
+        id: generateTaskId(),
 
         text: text,
 
@@ -508,6 +586,23 @@ async function deleteTask(listType, id) {
     // 如果任务不存在则停止执行
     if (!task) return;
 
+    // Cancel any pending completion animation/timer for this
+    // task, otherwise it would fire 600ms later and silently
+    // revive this task out of Trash
+    // 取消该任务正在等待的完成计时器，
+    // 否则 600ms 后会把刚删除的任务从垃圾桶里"复活"
+    if (pendingCompletionTimers.has(id)) {
+
+        clearTimeout(
+            pendingCompletionTimers.get(id)
+        );
+
+        pendingCompletionTimers.delete(id);
+
+    }
+
+    completingTaskIds.delete(id);
+
     // Store current task status
     // 保存任务当前状态
     const oldStatus =
@@ -517,27 +612,53 @@ async function deleteTask(listType, id) {
     // 将任务状态改为 trash
     task.status = "trash";
 
-    // Send updated task data to Flask backend
-    // 将更新后的任务数据发送到 Flask 后端
-    const response =
-        await fetch(
-            "/calendar/update_task",
-            {
-                method: "POST",
+    let result;
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+    try {
 
-                body: JSON.stringify(task)
-            }
+        // Send updated task data to Flask backend
+        // 将更新后的任务数据发送到 Flask 后端
+        const response =
+            await fetch(
+                "/calendar/update_task",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(task)
+                }
+            );
+
+        // Convert response into JSON
+        // 将响应转换成 JSON 格式
+        result =
+            await response.json();
+
+    } catch (error) {
+
+        console.error(
+            "Failed to delete task:",
+            error
         );
 
-    // Convert response into JSON
-    // 将响应转换成 JSON 格式
-    const result =
-        await response.json();
+        // Restore previous task status
+        // 恢复任务原本的状态
+        task.status =
+            oldStatus;
+
+        showReminderPopup({
+            title: "Update Failed",
+            message: "Failed to update task.",
+            confirmText: "OK"
+        });
+
+        return;
+
+    }
 
     // Show error if update failed
     // 如果更新失败则显示错误信息
@@ -613,6 +734,21 @@ async function restoreTask(listType, id) {
     // 如果任务不存在，则停止执行
     if (!task) return;
 
+    // Defensively cancel any pending completion timer for this
+    // task, in case it's somehow still mid-completion
+    // 以防万一，取消该任务可能还在等待的完成计时器
+    if (pendingCompletionTimers.has(id)) {
+
+        clearTimeout(
+            pendingCompletionTimers.get(id)
+        );
+
+        pendingCompletionTimers.delete(id);
+
+    }
+
+    completingTaskIds.delete(id);
+
     // =====================================
     // OPTIMISTIC UI UPDATE
     // Immediately update UI before
@@ -669,33 +805,48 @@ async function restoreTask(listType, id) {
     // 将更新后的任务数据发送到后端
     // =====================================
 
-    const response =
-        await fetch(
+    let result;
 
-            "/calendar/update_task",
+    try {
 
-            {
+        const response =
+            await fetch(
 
-                method: "POST",
+                "/calendar/update_task",
 
-                headers: {
+                {
 
-                    "Content-Type":
-                        "application/json"
+                    method: "POST",
 
-                },
+                    headers: {
 
-                body:
-                    JSON.stringify(task)
+                        "Content-Type":
+                            "application/json"
 
-            }
+                    },
 
+                    body:
+                        JSON.stringify(task)
+
+                }
+
+            );
+
+        // Convert server response into JSON
+        // 将服务器响应转换为 JSON 格式
+        result =
+            await response.json();
+
+    } catch (error) {
+
+        console.error(
+            "Failed to restore task:",
+            error
         );
 
-    // Convert server response into JSON
-    // 将服务器响应转换为 JSON 格式
-    const result =
-        await response.json();
+        result = { success: false };
+
+    }
 
     // =====================================
     // ROLLBACK IF SAVE FAILED
@@ -808,41 +959,89 @@ function permanentlyDeleteTask(listType, id) {
         danger: true,
         onConfirm: async function() {
 
+            // Cancel any pending completion timer for this
+            // task before it's removed entirely
+            // 在彻底删除前，取消该任务可能还在等待的完成计时器
+            if (pendingCompletionTimers.has(id)) {
+
+                clearTimeout(
+                    pendingCompletionTimers.get(id)
+                );
+
+                pendingCompletionTimers.delete(id);
+
+            }
+
+            completingTaskIds.delete(id);
+
             // Remove task from local taskData
+            // (kept so it can be restored if the delete fails)
             // 从本地 taskData 中删除任务
+            // （保留一份，删除失败时可以恢复）
+            const removedTask =
+                taskData[listType].find(
+                    task => task.id === id
+                );
+
             taskData[listType] =
                 taskData[listType].filter(
                     task => task.id !== id
                 );
 
-            // Send delete request to Flask backend
-            // 向 Flask 后端发送删除请求
-            const response =
-                await fetch(
-                    "/calendar/delete_task",
-                    {
-                        method: "POST",
+            let result;
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+            try {
 
-                        body:
-                            JSON.stringify({
-                                id: id
-                            })
-                    }
+                // Send delete request to Flask backend
+                // 向 Flask 后端发送删除请求
+                const response =
+                    await fetch(
+                        "/calendar/delete_task",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    id: id
+                                })
+                        }
+                    );
+
+                // Convert response into JSON
+                // 将服务器响应转换为 JSON 格式
+                result =
+                    await response.json();
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to permanently delete task:",
+                    error
                 );
 
-            // Convert response into JSON
-            // 将服务器响应转换为 JSON 格式
-            const result =
-                await response.json();
+                result = { success: false };
+
+            }
 
             // Display error message if deletion failed
             // 如果删除失败，则显示错误信息
             if (!result.success) {
+
+                // Restore the task locally since the backend
+                // never actually deleted it
+                // 由于后端并未真正删除，恢复本地资料
+                if (removedTask) {
+
+                    taskData[listType].push(removedTask);
+
+                }
+
+                renderTrash();
 
                 showReminderPopup({
                     title: "Delete Failed",
@@ -978,139 +1177,339 @@ async function toggleComplete(
     // 如果任务不存在，则停止执行
     if (!task) return;
 
-    // Create next recurring task
-    // 如果任务为重复任务且被完成，
-    // 自动创建下一次重复任务
+    // Guard against double-firing (e.g. rapid double-click on
+    // the checkbox before the completion animation finishes)
+    // which would otherwise create the next recurring
+    // occurrence more than once
+    // 防止快速连点导致重复任务被多次生成
     if (
         checkbox.checked &&
-        task.repeat &&
-        task.repeat !== "none" &&
-        task.date
+        (task.status === "completed" || completingTaskIds.has(task.id))
     ) {
+        return;
+    }
 
-        // Convert task date into Date object
-        // 将任务日期转换为 Date 对象
-        let nextDate =
-            new Date(task.date);
+    // =====================================
+    // CHECK TASK (mark complete)
+    //
+    // Recurring-task creation is deferred until the
+    // animation timer actually fires (below), instead of
+    // running immediately. This way, if the user unchecks
+    // the box again before the animation finishes, cancelling
+    // the timer is enough to fully undo the click — nothing
+    // has been created or persisted yet to roll back.
+    //
+    // 勾选任务（标记完成）
+    // 生成下一次重复任务的逻辑被延后到动画计时器真正触发时才执行，
+    // 而不是立刻执行。这样如果用户在动画结束前又取消勾选，
+    // 只需要取消计时器就能完整撤销这次点击，
+    // 不需要再回滚任何已创建/已保存的资料
+    // =====================================
 
-        // Calculate next occurrence date
-        // 根据重复类型计算下一次日期
-        switch (task.repeat) {
+    if (checkbox.checked) {
 
-            case "daily":
+        completingTaskIds.add(task.id);
 
-                // Add 1 day
-                // 增加 1 天
-                nextDate.setDate(
-                    nextDate.getDate() + 1
-                );
+        // Get current task card
+        // 获取当前任务卡片
+        const taskCard =
+            checkbox.closest(
+                ".task-card"
+            );
 
-                break;
+        // Add slide-out animation
+        // 添加完成动画效果
+        if (taskCard) {
 
-            case "weekly":
-
-                // Add 7 days
-                // 增加 7 天
-                nextDate.setDate(
-                    nextDate.getDate() + 7
-                );
-
-                break;
-
-            case "monthly":
-
-                // Add 1 month
-                // 增加 1 个月
-                nextDate.setMonth(
-                    nextDate.getMonth() + 1
-                );
-
-                break;
-
-            case "yearly":
-
-                // Add 1 year
-                // 增加 1 年
-                nextDate.setFullYear(
-                    nextDate.getFullYear() + 1
-                );
-
-                break;
+            taskCard.classList.add(
+                "task-completing"
+            );
 
         }
 
-        // Create new recurring task
-        // 创建新的重复任务
-        taskData[listType].push({
+        // Wait for animation to finish
+        // 等待动画播放完成
+        const timerId = setTimeout(async () => {
 
-            ...task,
+            // Guard was cleared (uncheck/delete cancelled this
+            // timer, or the task no longer exists) — do nothing
+            // 计时器已被取消（用户取消勾选或删除了任务），不做任何事
+            if (
+                !pendingCompletionTimers.has(task.id) ||
+                !taskData[listType].includes(task) ||
+                task.status === "trash"
+            ) {
 
-            // Generate new unique ID
-            // 生成新的唯一 ID
-            id: Date.now(),
+                pendingCompletionTimers.delete(task.id);
+                completingTaskIds.delete(task.id);
+                return;
 
-            // New task should remain active
-            // 新任务状态设为 active
-            status: "active",
+            }
 
-            // Save next occurrence date
-            // 保存下一次执行日期
-            date:
-                nextDate
-                    .toISOString()
-                    .split("T")[0]
+            pendingCompletionTimers.delete(task.id);
 
-        });
+            // Create next recurring task
+            // 如果任务为重复任务，
+            // 自动创建下一次重复任务
+            if (
+                task.repeat &&
+                task.repeat !== "none" &&
+                task.date
+            ) {
+
+                // Convert task date into Date object
+                // 将任务日期转换为 Date 对象
+                let nextDate =
+                    new Date(task.date);
+
+                // Calculate next occurrence date
+                // 根据重复类型计算下一次日期
+                switch (task.repeat) {
+
+                    case "daily":
+
+                        nextDate.setDate(
+                            nextDate.getDate() + 1
+                        );
+
+                        break;
+
+                    case "weekly":
+
+                        nextDate.setDate(
+                            nextDate.getDate() + 7
+                        );
+
+                        break;
+
+                    case "monthly":
+
+                        nextDate.setMonth(
+                            nextDate.getMonth() + 1
+                        );
+
+                        break;
+
+                    case "yearly":
+
+                        nextDate.setFullYear(
+                            nextDate.getFullYear() + 1
+                        );
+
+                        break;
+
+                }
+
+                // Create new recurring task
+                // 创建新的重复任务
+                let nextTask = {
+
+                    ...task,
+
+                    id: generateTaskId(),
+
+                    status: "active",
+
+                    date:
+                        nextDate
+                            .toISOString()
+                            .split("T")[0]
+
+                };
+
+                taskData[listType].push(nextTask);
+
+                // Save next occurrence to Flask backend
+                // so it survives a page refresh
+                // 将下一次重复任务保存到 Flask 后端
+                // 避免刷新页面后消失
+                try {
+
+                    await fetch(
+                        "/calendar/add_task",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                ...nextTask,
+
+                                category: listType
+
+                            })
+
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Failed to save next recurring task:",
+                        error
+                    );
+
+                }
+
+            }
+
+            // Update task status
+            // 更新任务状态为 completed
+            task.status =
+                "completed";
+
+            // Save completion timestamp
+            // 保存任务完成时间
+            task.completedDate =
+                new Date()
+                .toISOString();
+
+            // Completion finished, guard no longer needed
+            // 完成流程已结束，不再需要守卫标记
+            completingTaskIds.delete(task.id);
+
+            // Save updated task to Flask
+            // 将更新后的任务保存到 Flask 后端
+            try {
+
+                await fetch(
+                    "/calendar/update_task",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify(
+                            task
+                        )
+                    }
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to save completed task:",
+                    error
+                );
+
+            }
+
+            // Refresh active task page
+            // 刷新当前任务页面
+            renderTasks(
+                listType
+            );
+
+            // Refresh completed page
+            // 刷新 Completed 页面
+            renderCompleted();
+
+            // Refresh trash page
+            // 刷新 Trash 页面
+            renderTrash();
+
+            // Refresh Today Dashboard
+            // 刷新 Today 页面 Dashboard
+            updateTodayDashboard();
+
+            // Refresh tag filters
+            // 刷新标签筛选器
+            renderTagFilters();
+
+            // Show completion message
+            // 显示完成提示讯息
+            showToast(
+                "✨ You Did It!"
+            );
+
+            // Refresh calendar if Calendar page is open
+            // 如果当前正在 Calendar 页面，则刷新日历
+            if (
+                document.getElementById(
+                    "calendar"
+                )
+                .classList.contains(
+                    "active"
+                )
+            ) {
+
+                generateCalendar();
+
+            }
+
+        }, 600);
+
+        pendingCompletionTimers.set(
+            task.id,
+            timerId
+        );
+
+        // Stop executing remaining code
+        // 停止执行后续代码
+        return;
 
     }
 
-// =====================================
-// COMPLETE TASK ANIMATION
-// Play completion animation
-// before moving task into
-// Completed page
-//
-// 完成任务动画
-// 在任务移动到 Completed 页面前
-// 播放完成动画
-// =====================================
+    // =====================================
+    // UNCHECK TASK
+    // Move task back to active
+    //
+    // 取消完成任务
+    // 将任务恢复到 Active 状态
+    // =====================================
 
-if (checkbox.checked) {
+    // If a completion is still pending (animation hasn't
+    // finished yet), cancel it — nothing was persisted as
+    // completed yet, so there is nothing left to undo
+    // 如果完成流程还在等待动画结束，直接取消计时器即可，
+    // 因为还没有任何"已完成"的资料被保存，不需要额外回滚
+    if (pendingCompletionTimers.has(task.id)) {
 
-    // Get current task card
-    // 获取当前任务卡片
-    const taskCard =
-        checkbox.closest(
-            ".task-card"
+        clearTimeout(
+            pendingCompletionTimers.get(task.id)
         );
 
-    // Add slide-out animation
-    // 添加完成动画效果
-    if (taskCard) {
+        pendingCompletionTimers.delete(task.id);
+        completingTaskIds.delete(task.id);
 
-        taskCard.classList.add(
-            "task-completing"
-        );
+        const taskCard =
+            checkbox.closest(
+                ".task-card"
+            );
+
+        if (taskCard) {
+
+            taskCard.classList.remove(
+                "task-completing"
+            );
+
+        }
+
+        return;
 
     }
 
-    // Wait for animation to finish
-    // 等待动画播放完成
-    setTimeout(async () => {
+    // Change task status back to active
+    // 将任务状态改回 active
+    task.status =
+        "active";
 
-        // Update task status
-        // 更新任务状态为 completed
-        task.status =
-            "completed";
+    // Clear completion guard so this task
+    // can be completed again later
+    // 清除完成状态守卫，以便之后可以再次完成该任务
+    completingTaskIds.delete(task.id);
 
-        // Save completion timestamp
-        // 保存任务完成时间
-        task.completedDate =
-            new Date()
-            .toISOString();
+    // Save updated task to Flask backend
+    // 将更新后的任务保存到 Flask 后端
+    try {
 
-        // Save updated task to Flask
-        // 将更新后的任务保存到 Flask 后端
         await fetch(
             "/calendar/update_task",
             {
@@ -1121,91 +1520,18 @@ if (checkbox.checked) {
                         "application/json"
                 },
 
-                body: JSON.stringify(
-                    task
-                )
+                body: JSON.stringify(task)
             }
         );
 
-        // Refresh active task page
-        // 刷新当前任务页面
-        renderTasks(
-            listType
+    } catch (error) {
+
+        console.error(
+            "Failed to save unchecked task:",
+            error
         );
 
-        // Refresh completed page
-        // 刷新 Completed 页面
-        renderCompleted();
-
-        // Refresh trash page
-        // 刷新 Trash 页面
-        renderTrash();
-
-        // Refresh Today Dashboard
-        // 刷新 Today 页面 Dashboard
-        updateTodayDashboard();
-
-        // Refresh tag filters
-        // 刷新标签筛选器
-        renderTagFilters();
-
-        // Show completion message
-        // 显示完成提示讯息
-        showToast(
-            "✨ You Did It!"
-        );
-
-        // Refresh calendar if Calendar page is open
-        // 如果当前正在 Calendar 页面，则刷新日历
-        if (
-            document.getElementById(
-                "calendar"
-            )
-            .classList.contains(
-                "active"
-            )
-        ) {
-
-            generateCalendar();
-
-        }
-
-    }, 600);
-
-    // Stop executing remaining code
-    // 停止执行后续代码
-    return;
-
-}
-
-// =====================================
-// UNCHECK TASK
-// Move task back to active
-//
-// 取消完成任务
-// 将任务恢复到 Active 状态
-// =====================================
-
-// Change task status back to active
-// 将任务状态改回 active
-task.status =
-    "active";
-
-// Save updated task to Flask backend
-// 将更新后的任务保存到 Flask 后端
-await fetch(
-    "/calendar/update_task",
-    {
-        method: "POST",
-
-        headers: {
-            "Content-Type":
-                "application/json"
-        },
-
-        body: JSON.stringify(task)
     }
-);
 
     // Refresh active task page
     // 刷新当前任务页面
@@ -1264,6 +1590,29 @@ async function completeTask(
     // 如果任务不存在，则停止执行
     if (!task) return;
 
+    // Guard against double-firing — either from rapid
+    // double-clicks on this button, or from the checkbox-based
+    // toggleComplete() running on the same task at the same time
+    // (they share the same completingTaskIds guard) — which
+    // would otherwise create the next recurring occurrence
+    // more than once
+    // 防止快速连点、或与勾选框的 toggleComplete() 同时触发，
+    // 导致重复任务被多次生成（两者共用同一个守卫集合）
+    if (
+        task.status === "completed" ||
+        completingTaskIds.has(task.id)
+    ) {
+        return;
+    }
+
+    completingTaskIds.add(task.id);
+
+    // Snapshot so a failed save can be rolled back
+    // 保存原始状态，保存失败时可以回滚
+    const oldStatus = task.status;
+    const oldCompletedDate = task.completedDate;
+    let nextTask = null;
+
     // Update task status
     // 更新任务状态为 completed
     task.status =
@@ -1274,21 +1623,166 @@ async function completeTask(
     task.completedDate =
         new Date().toISOString();
 
-    // Save updated task to Flask backend
-    // 将更新后的任务保存到 Flask 后端
-    await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
+    try {
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+        // Create next recurring task
+        // 如果任务为重复任务，
+        // 自动创建下一次重复任务
+        if (
+            task.repeat &&
+            task.repeat !== "none" &&
+            task.date
+        ) {
 
-            body: JSON.stringify(task)
+            // Convert task date into Date object
+            // 将任务日期转换为 Date 对象
+            let nextDate =
+                new Date(task.date);
+
+            // Calculate next occurrence date
+            // 根据重复类型计算下一次日期
+            switch (task.repeat) {
+
+                case "daily":
+                    nextDate.setDate(
+                        nextDate.getDate() + 1
+                    );
+                    break;
+
+                case "weekly":
+                    nextDate.setDate(
+                        nextDate.getDate() + 7
+                    );
+                    break;
+
+                case "monthly":
+                    nextDate.setMonth(
+                        nextDate.getMonth() + 1
+                    );
+                    break;
+
+                case "yearly":
+                    nextDate.setFullYear(
+                        nextDate.getFullYear() + 1
+                    );
+                    break;
+
+            }
+
+            // Create new recurring task
+            // 创建新的重复任务
+            nextTask = {
+
+                ...task,
+
+                id: generateTaskId(),
+
+                status: "active",
+
+                date:
+                    nextDate
+                        .toISOString()
+                        .split("T")[0]
+
+            };
+
+            taskData[listType].push(nextTask);
+
+            // Save next occurrence to Flask backend
+            // so it survives a page refresh
+            // 将下一次重复任务保存到 Flask 后端
+            // 避免刷新页面后消失
+            const nextResponse =
+                await fetch(
+                    "/calendar/add_task",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            ...nextTask,
+
+                            category: listType
+
+                        })
+
+                    }
+                );
+
+            if (!nextResponse.ok) {
+
+                throw new Error(
+                    "Failed to save next recurring task"
+                );
+
+            }
+
         }
-    );
+
+        // Save updated task to Flask backend
+        // 将更新后的任务保存到 Flask 后端
+        const response =
+            await fetch(
+                "/calendar/update_task",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(task)
+                }
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to save completed task"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Failed to complete task:",
+            error
+        );
+
+        // Roll back local state so it matches the backend
+        // 回滚本地状态，与后端保持一致
+        task.status = oldStatus;
+        task.completedDate = oldCompletedDate;
+
+        if (nextTask) {
+
+            taskData[listType] =
+                taskData[listType].filter(
+                    t => t !== nextTask
+                );
+
+        }
+
+        completingTaskIds.delete(task.id);
+
+        showReminderPopup({
+            title: "Save Failed",
+            message: "Failed to complete task.",
+            confirmText: "OK"
+        });
+
+        return;
+
+    }
+
+    completingTaskIds.delete(task.id);
 
     // Refresh active task page
     // 刷新当前任务页面
@@ -1448,7 +1942,7 @@ function renderTasks(listType) {
 
                 <div class="task-title">
 
-                    ${task.text}
+                    ${escapeHTML(task.text)}
 
                 </div>
 
@@ -1516,6 +2010,8 @@ function renderTasks(listType) {
                         `
                 : ""
                     }
+
+                    ${getRepeatBadge(task.repeat)}
 
                 </div>
 
@@ -1985,7 +2481,7 @@ section.innerHTML = `
 
                     <div class="task-title">
 
-                        ${task.text}
+                        ${escapeHTML(task.text)}
 
                     </div>
 
@@ -2040,6 +2536,8 @@ section.innerHTML = `
                             `
                     : ""
                 }
+
+                        ${getRepeatBadge(task.repeat)}
 
                     </div>
 
@@ -2204,7 +2702,7 @@ function renderTrash() {
 
                     <div class="task-title">
 
-                        ${task.text}
+                        ${escapeHTML(task.text)}
 
                     </div>
 
@@ -2268,6 +2766,8 @@ function renderTrash() {
                             `
                     : ""
                 }
+
+                        ${getRepeatBadge(task.repeat)}
 
                     </div>
 
@@ -2470,30 +2970,34 @@ function renderTagFilters() {
 
         // Create tag filter buttons
         // 创建标签按钮
+        // (built via DOM APIs rather than innerHTML so a tag
+        // containing HTML/JS special characters can never be
+        // interpreted as markup or break out of an attribute)
+        // 使用 DOM API 而非 innerHTML 创建，
+        // 避免标签中的特殊字符被当成 HTML/脚本执行
         [...tags]
             .sort()
             .forEach(tag => {
 
-                container.innerHTML += `
+                const chip =
+                    document.createElement("button");
 
-                <button
-                    class="
-                        tag-chip
-                        ${currentTagFilter === tag
-                        ? "active"
-                        : ""
-                    }
-                    "
-                    onclick="setTagFilter('${tag}')"
-                >
+                chip.className =
+                    "tag-chip" +
+                    (currentTagFilter === tag
+                        ? " active"
+                        : "");
 
-                   ${tag.charAt(0).toUpperCase()
-                    + tag.slice(1)
-                    }
+                chip.textContent =
+                    tag.charAt(0).toUpperCase()
+                    + tag.slice(1);
 
-                </button>
+                chip.addEventListener(
+                    "click",
+                    () => setTagFilter(tag)
+                );
 
-            `;
+                container.appendChild(chip);
 
             });
 
@@ -2590,24 +3094,27 @@ function renderTagSuggestions(keyword) {
 
     // Create suggestion items
     // 创建标签建议项目
+    // (DOM APIs instead of innerHTML — see renderTagFilters)
     [...tags]
         .sort()
         .forEach(tag => {
 
-            container.innerHTML += `
+            const item =
+                document.createElement("div");
 
-            <div
-                class="tag-suggestion"
-                onclick="selectTagSuggestion('${tag}')"
-            >
+            item.className =
+                "tag-suggestion";
 
-                ${tag.charAt(0).toUpperCase()
-                + tag.slice(1)
-                }
+            item.textContent =
+                tag.charAt(0).toUpperCase()
+                + tag.slice(1);
 
-            </div>
+            item.addEventListener(
+                "click",
+                () => selectTagSuggestion(tag)
+            );
 
-        `;
+            container.appendChild(item);
 
         });
 
@@ -2747,28 +3254,27 @@ function renderPopupTagSuggestions(keyword) {
 
     // Create suggestion items
     // 创建标签建议项目
+    // (DOM APIs instead of innerHTML — see renderTagFilters)
     [...tags]
         .sort()
         .forEach(tag => {
 
-            container.innerHTML += `
+            const item =
+                document.createElement("div");
 
-            <div
-                class="tag-suggestion"
-                onclick="
-                    selectPopupTagSuggestion(
-                        '${tag}'
-                    )
-                "
-            >
+            item.className =
+                "tag-suggestion";
 
-                ${tag.charAt(0).toUpperCase()
-                + tag.slice(1)
-                }
+            item.textContent =
+                tag.charAt(0).toUpperCase()
+                + tag.slice(1);
 
-            </div>
+            item.addEventListener(
+                "click",
+                () => selectPopupTagSuggestion(tag)
+            );
 
-        `;
+            container.appendChild(item);
 
         });
 
@@ -3153,6 +3659,49 @@ function getPriorityDot(priority) {
 
 
 // ===============================
+// REPEAT BADGE
+// Build the "special tag" shown on
+// tasks created from a repeating rule
+//
+// 重复标签
+// 为设置了重复的任务显示特殊标签
+// ===============================
+
+function getRepeatBadge(repeat) {
+
+    // No badge when task does not repeat
+    // 如果任务没有设置重复，则不显示标签
+    if (!repeat || repeat === "none") {
+
+        return "";
+
+    }
+
+    const repeatLabels = {
+        daily: "Daily",
+        weekly: "Weekly",
+        monthly: "Monthly",
+        yearly: "Yearly"
+    };
+
+    return `
+
+        <span class="task-repeat-badge">
+
+            <span class="material-symbols-rounded">
+                autorenew
+            </span>
+
+            ${repeatLabels[repeat] || "Repeat"}
+
+        </span>
+
+    `;
+
+}
+
+
+// ===============================
 // 11.TASK DETAIL PANEL
 //    Manage task editing panel
 // ===============================
@@ -3379,6 +3928,20 @@ async function saveTaskChanges() {
     // 如果任务不存在则停止执行
     if (!task) return;
 
+    // Snapshot editable fields so they can be rolled back
+    // if the save fails
+    // 保存修改前的原始资料，保存失败时可以回滚
+    const snapshot = {
+        text: task.text,
+        description: task.description,
+        date: task.date,
+        startTime: task.startTime,
+        endTime: task.endTime,
+        repeat: task.repeat,
+        priority: task.priority,
+        tag: task.tag
+    };
+
     // Update task data
     // 更新任务资料
     task.text =
@@ -3424,30 +3987,47 @@ async function saveTaskChanges() {
 
     // Save updated task to Flask backend
     // 将更新后的任务保存到 Flask 后端
-    const response =
-      await fetch(
-        "/calendar/update_task",
-        {
-            method: "POST",
+    let result;
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
+    try {
 
-            body:
-                JSON.stringify(task)
-        }
-    );
+        const response =
+          await fetch(
+            "/calendar/update_task",
+            {
+                method: "POST",
 
-    // Convert server response to JSON
-    // 将服务器响应转换为 JSON 格式
-const result =
-    await response.json();
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-    // Display error message if save fails
-    // 如果保存失败则显示错误信息
+                body:
+                    JSON.stringify(task)
+            }
+        );
+
+        // Convert server response to JSON
+        // 将服务器响应转换为 JSON 格式
+        result =
+            await response.json();
+
+    } catch (error) {
+
+        console.error(
+            "Failed to save task changes:",
+            error
+        );
+
+        result = { success: false };
+
+    }
+
+    // Roll back to the pre-edit values if save fails
+    // 如果保存失败则显示错误信息，并回滚到修改前的资料
 if (!result.success) {
+
+    Object.assign(task, snapshot);
 
     showReminderPopup({
         title: "Save Failed",

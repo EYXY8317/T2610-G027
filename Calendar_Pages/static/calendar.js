@@ -346,24 +346,52 @@ function showDayTasks(dateStr) {
     // 记录该日期是否有任务
     let hasTasks = false;
 
-    // Loop through all task categories
-    // 遍历所有任务分类
+    // Collect this day's active tasks across every category
+    // so they can be shown sorted by time instead of grouped
+    // by category
+    // 汇总当天所有分类的进行中任务，
+    // 以便按时间排序显示（而不是按分类分组）
+    let dayTasks = [];
+
     Object.keys(taskData).forEach(list => {
 
-        // Get active tasks for selected date
-        // 获取该分类中指定日期且状态为 active 的任务
-        const tasks =
-            taskData[list].filter(
+        taskData[list]
+            .filter(
                 t =>
                     t.status === "active" &&
                     t.date === dateStr
-            );
+            )
+            .forEach(task => {
 
-        // Loop through each task
-        // 遍历每一个任务
-        tasks.forEach(task => {
+                dayTasks.push({
+                    ...task,
+                    list
+                });
+
+            });
+
+    });
+
+    // Sort chronologically by start time (morning to night);
+    // tasks with no start time are shown last
+    // 按开始时间从早到晚排序；没有设置时间的任务排在最后
+    dayTasks.sort((a, b) => {
+
+        if (!a.startTime && !b.startTime) return 0;
+        if (!a.startTime) return 1;
+        if (!b.startTime) return -1;
+
+        return a.startTime.localeCompare(b.startTime);
+
+    });
+
+    // Loop through each task in chronological order
+    // 按时间顺序遍历每一个任务
+    dayTasks.forEach(task => {
 
             hasTasks = true;
+
+            const list = task.list;
 
             // Get priority border color
             // 根据优先级获取边框颜色
@@ -409,7 +437,7 @@ function showDayTasks(dateStr) {
                         class="calendar-task-title"
                     >
 
-                        ${task.text}
+                        ${escapeHTML(task.text)}
 
                     </div>
 
@@ -420,9 +448,11 @@ function showDayTasks(dateStr) {
                         class="calendar-task-meta"
                     >
 
-                        <div>
+                        <div class="calendar-task-time">
 
-                            🕒
+                            <span class="material-symbols-rounded">
+                                schedule
+                            </span>
 
                             ${
                                 task.startTime &&
@@ -471,6 +501,8 @@ function showDayTasks(dateStr) {
                              }
 
                         </div>
+
+                        ${getRepeatBadge(task.repeat)}
 
                     </div>
 
@@ -538,8 +570,6 @@ function showDayTasks(dateStr) {
             </div>
 
             `;
-
-        });
 
     });
 
