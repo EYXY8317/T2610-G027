@@ -2948,14 +2948,20 @@ function renderTagFilters() {
         `;
 
         // Collect tags from this category
+        // Only look at active tasks — otherwise a tag chip
+        // would keep showing forever even after every task
+        // using it has been completed or deleted
         // 收集当前分类中的所有标签
+        // 只统计 active 状态的任务，
+        // 否则任务被完成或删除后，标签按钮仍会一直留着
         const tags = new Set();
 
         taskData[listType].forEach(task => {
 
-            // Only collect non-empty tags
-            // 只收集非空标签
+            // Only collect non-empty tags from active tasks
+            // 只收集 active 任务里的非空标签
             if (
+                task.status === "active" &&
                 task.tag &&
                 task.tag.trim()
             ) {
@@ -2967,6 +2973,28 @@ function renderTagFilters() {
             }
 
         });
+
+        // If the tag currently being filtered on no longer has
+        // any active task using it on the page the user is
+        // looking at, reset back to "All" instead of leaving an
+        // invisible filter silently hiding everything
+        // 如果当前筛选的标签在这个正在查看的页面里
+        // 已经没有任何 active 任务在用，就重置回 "All"，
+        // 避免留下一个看不见但仍在生效的筛选条件
+        const pageEl =
+            document.getElementById(listType);
+
+        if (
+            currentTagFilter !== "all" &&
+            !tags.has(currentTagFilter) &&
+            pageEl &&
+            pageEl.classList.contains("active")
+        ) {
+
+            currentTagFilter = "all";
+            renderTasks(listType);
+
+        }
 
         // Create tag filter buttons
         // 创建标签按钮
