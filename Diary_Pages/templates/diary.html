@@ -117,6 +117,26 @@
             margin-left: auto;
         }
 
+        .tb-resize {
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            width: 14px;
+            height: 14px;
+            background: #555;
+            border-radius: 50%;
+            cursor: se-resize;
+            z-index: 20;
+            display: none;
+        }
+
+        .tb-wrap:hover .tb-resize,
+        .tb-wrap.active .tb-resize {
+            display: block;
+        }
+
+        #canvas.view-mode .tb-resize { display: none !important; }
+
         .tb-content {
             min-width: 80px;
             min-height: 28px;
@@ -853,6 +873,7 @@
                 fst: tb.style.fontStyle || "",
                 td: tb.style.textDecoration || "",
                 r:  parseFloat(wrap.dataset.rotate) || 0,
+                w:  wrap.style.width ? parseFloat(wrap.style.width) : undefined,
                 html: tb.innerHTML
             }));
         });
@@ -889,7 +910,7 @@
                 applyPaper(d.paper || "grid");
                 if (paperSel) paperSel.value = d.paper || "grid";
             } else if (d.type === "text") {
-                const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                const tb = makeTb(d.x, d.y, d.html, d.r, false, d.w);
                 tb.style.fontFamily = d.ff || "Inter";
                 tb.style.fontSize   = d.fs || "16px";
                 tb.style.color      = d.fc || "#2a2a2a";
@@ -1353,11 +1374,16 @@
         makeTb(e.clientX - rect.left, e.clientY - rect.top, "", 0, true);
     });
 
-    function makeTb(x, y, html, rotateDeg, doFocus) {
+    function makeTb(x, y, html, rotateDeg, doFocus, width) {
         const wrap = document.createElement("div");
         wrap.className  = "tb-wrap pop-in";
         wrap.style.left = x + "px";
         wrap.style.top  = y + "px";
+        // No stored width -> leave it unset so the box keeps shrinking to
+        // fit its content (the original behavior for every text box that's
+        // never been resized), instead of forcing every existing diary
+        // entry onto a fixed width the moment resize support shipped.
+        if (width) wrap.style.width = width + "px";
 
         const toolbar = document.createElement("div");
         toolbar.className = "tb-toolbar";
@@ -1419,8 +1445,36 @@
             schedSave();
         });
 
+        const resizeHandle = document.createElement("div");
+        resizeHandle.className = "tb-resize";
+
+        resizeHandle.addEventListener("mousedown", function(e){
+            if (!canEdit) return;
+            e.preventDefault();
+            e.stopPropagation();
+            pushHistory();
+            const startX = e.clientX;
+            const startW = wrap.offsetWidth;
+
+            function onMove(e){
+                const cr = canvas.getBoundingClientRect();
+                const wl = parseFloat(wrap.style.left) || 0;
+                let newW = Math.max(80, startW + (e.clientX - startX));
+                if (wl + newW > cr.width) newW = cr.width - wl;
+                wrap.style.width = Math.max(80, newW) + "px";
+            }
+            function onUp(){
+                document.removeEventListener("mousemove", onMove);
+                document.removeEventListener("mouseup", onUp);
+                schedSave();
+            }
+            document.addEventListener("mousemove", onMove);
+            document.addEventListener("mouseup", onUp);
+        });
+
         wrap.appendChild(toolbar);
         wrap.appendChild(tb);
+        wrap.appendChild(resizeHandle);
         canvas.appendChild(wrap);
 
         makeDraggable(wrap, dragHandle);
@@ -1761,6 +1815,7 @@
                 fst: tb.style.fontStyle  || "",
                 td: tb.style.textDecoration || "",
                 r:  parseFloat(wrap.dataset.rotate)  || 0,
+                w:  wrap.style.width ? parseFloat(wrap.style.width) : undefined,
                 html: tb.innerHTML
             }));
         });
@@ -1839,7 +1894,7 @@
                 applyPaper(d.paper || "grid");
                 if (paperSel) paperSel.value = d.paper || "grid";
             } else if (d.type === "text") {
-                const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                const tb = makeTb(d.x, d.y, d.html, d.r, false, d.w);
                 tb.style.fontFamily = d.ff || "Inter";
                 tb.style.fontSize   = d.fs || "16px";
                 tb.style.color      = d.fc || "#2a2a2a";
