@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='finance.css') }}">
     <link
         rel="stylesheet"
-        href="{{ url_for('profile_static', filename='profile.css') }}"
+        href="{{ url_for('profile_static', filename='profile.css') }}?v=2"
     >
 
     <script src="/static/login-gate.js?v=2"></script>
-    <script src="/calendar_static/themecolor.js"></script>
+    <script src="/calendar_static/themecolor.js?v=2"></script>
     <script id="theme-data" type="application/json">{{ (user.theme if user and user.theme else 'mocha') | tojson }}</script>
     <script>
     setTheme(JSON.parse(document.getElementById('theme-data').textContent));
@@ -191,7 +191,7 @@ class="{{ user.theme if user.theme else 'mocha' }}"
 
                 <h3>🕒 Last Login</h3>
 
-                <p>{{ last_login }}</p>
+                <p id="last-login-text" data-iso="{{ last_login_iso or '' }}">First login</p>
 
                 <span>
                     When you most recently signed in
@@ -218,6 +218,29 @@ class="{{ user.theme if user.theme else 'mocha' }}"
         </div>
 
 <script>
+
+// ================= LAST LOGIN (local time) =================
+// ================= 最近登录时间（本地时区） =================
+// The server sends the raw UTC timestamp (data-iso, with an explicit
+// +00:00 offset) instead of a pre-formatted string, because formatting it
+// on the server would bake in whichever timezone the server happens to
+// run in. new Date(isoString) parses that offset correctly and toLocale*
+// below renders it in whatever timezone this browser is actually in.
+// 服务器传过来的是原始的 UTC 时间戳（data-iso，带明确的 +00:00 时区偏移），
+// 而不是已经格式化好的字符串——因为如果在服务器那边就格式化好，
+// 就会固定成服务器所在的时区。new Date(isoString) 能正确解析这个偏移量，
+// 下面的 toLocale* 就会按这个浏览器实际所在的时区来显示。
+
+(function () {
+    var el = document.getElementById('last-login-text');
+    var iso = el && el.getAttribute('data-iso');
+    if (!iso) return;
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return;
+    var datePart = d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    var timePart = d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    el.textContent = datePart + ' at ' + timePart;
+})();
 
 // ================= THEME PREVIEW =================
 // ================= 主题预览 =================

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from password_system.password_hashing import hash_password
 from password_system.password_validation import is_valid_password
-from datetime import datetime
+from datetime import datetime, timezone
 import os
 from db_store import load_data, save_data
 
@@ -29,7 +29,12 @@ def login():
         password = hash_password(request.form["password"])
         for u in users:
             if u["username"] == username and u.get("password") == password:
-                u["last_login"] = datetime.now().isoformat()
+                # Stored with an explicit UTC offset (not a naive
+                # server-local timestamp) so the browser can correctly
+                # convert it to each viewer's own local time when displaying
+                # "Last Login" on the Settings page, regardless of which
+                # timezone the server itself happens to run in.
+                u["last_login"] = datetime.now(timezone.utc).isoformat()
                 save_data(f_users, users)
                 session["user"] = username
                 return redirect(url_for("dashboard"))

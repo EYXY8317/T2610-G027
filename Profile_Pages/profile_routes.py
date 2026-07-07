@@ -1,6 +1,5 @@
 from flask import app, render_template, session, request, redirect, Response
 from password_system.password_hashing import hash_password
-from datetime import datetime
 import os
 import time
 import mimetypes
@@ -68,17 +67,18 @@ def register_profile_routes(app):
                     current_user = user
                     break
 
-        last_login_display = "First login"
-
-        if current_user and current_user.get("last_login"):
-            last_login_display = datetime.fromisoformat(
-                current_user["last_login"]
-            ).strftime("%b %d, %Y at %I:%M %p")
+        # The raw UTC ISO timestamp is handed to the template as-is (rather
+        # than pre-formatted into a display string here) so a small script
+        # in profile.html can convert it to the viewer's own local time
+        # before showing it — formatting it server-side would bake in
+        # whichever timezone the server happens to run in, which is wrong
+        # for anyone viewing from a different timezone.
+        last_login_iso = current_user.get("last_login") if current_user else None
 
         return render_template(
             "profile.html",
             user=current_user,
-            last_login=last_login_display,
+            last_login_iso=last_login_iso,
             logged_in=bool(logged_in_user)
         )
 
