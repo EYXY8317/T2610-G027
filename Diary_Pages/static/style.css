@@ -204,16 +204,17 @@ body {
     gap: 10px;
 }
 
+/* Icon-sized pill that toggles the search panel. Opening it never grows
+   inline (unlike the old version, which added ~180px to this row and could
+   push/wrap Edit, Delete and the Saved indicator on narrower windows) —
+   the input+button live in a floating panel instead, see .search-panel. */
 #searchWidget {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 8px;
     background: #ebe7e0;
     border-radius: 20px;
-    padding: 6px 14px;
-    transition: all 0.2s ease;
-    flex-shrink: 1;
-    min-width: 0;
+    padding: 6px 10px;
 }
 
 #searchIconBtn {
@@ -226,18 +227,28 @@ body {
     transition: opacity 0.15s;
 }
 
-#searchIconBtn:hover {
+#searchIconBtn:hover,
+#searchWidget.open #searchIconBtn {
     opacity: 1;
 }
 
-#searchBox,
-#searchBtn {
+.search-panel {
     display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    align-items: center;
+    gap: 8px;
+    background: #ebe7e0;
+    border-radius: 16px;
+    padding: 8px 14px;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.15);
+    z-index: 260;
+    white-space: nowrap;
 }
 
-#searchWidget.open #searchBox,
-#searchWidget.open #searchBtn {
-    display: inline-block;
+#searchWidget.open .search-panel {
+    display: flex;
 }
 
 #searchBox {
@@ -249,8 +260,6 @@ body {
     color: #1a1a1a;
     outline: none;
     width: 180px;
-    min-width: 60px;
-    flex-shrink: 1;
 }
 
 #searchBox::placeholder {

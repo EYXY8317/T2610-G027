@@ -3,7 +3,7 @@
 <head>
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="/diary_static/style.css?v=5">
+    <link rel="stylesheet" href="/diary_static/style.css?v=6">
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
@@ -552,8 +552,10 @@
         <a id="backBtn" href="/diary_homepage" title="Back to Diary Dashboard">← Back</a>
         <div id="searchWidget">
             <span id="searchIconBtn">🔍</span>
-            <input type="text" id="searchBox" placeholder="Search diary...">
-            <button id="searchBtn">Search</button>
+            <div class="search-panel">
+                <input type="text" id="searchBox" placeholder="Search diary...">
+                <button id="searchBtn">Search</button>
+            </div>
         </div>
         <button id="editBtn">Edit</button>
         <button id="deleteBtn">Delete</button>
