@@ -212,6 +212,8 @@ body {
     border-radius: 20px;
     padding: 6px 14px;
     transition: all 0.2s ease;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 #searchIconBtn {
@@ -247,6 +249,8 @@ body {
     color: #1a1a1a;
     outline: none;
     width: 180px;
+    min-width: 60px;
+    flex-shrink: 1;
 }
 
 #searchBox::placeholder {
