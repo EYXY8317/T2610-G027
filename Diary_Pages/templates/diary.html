@@ -3,7 +3,7 @@
 <head>
     <title>Diary</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="/diary_static/style.css?v=6">
+    <link rel="stylesheet" href="/diary_static/style.css?v=7">
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     setTheme(localStorage.getItem('lifepages-theme') || 'mocha');
@@ -553,8 +553,11 @@
         <div id="searchWidget">
             <span id="searchIconBtn">🔍</span>
             <div class="search-panel">
-                <input type="text" id="searchBox" placeholder="Search diary...">
-                <button id="searchBtn">Search</button>
+                <div class="search-panel-row">
+                    <input type="text" id="searchBox" placeholder="Search diary...">
+                    <button id="searchBtn">Search</button>
+                </div>
+                <div id="searchResults"></div>
             </div>
         </div>
         <button id="editBtn">Edit</button>
@@ -570,8 +573,6 @@
     </div>
     {% endif %}
 </nav>
-
-<div id="searchResults"></div>
 
 <!-- ===== MAIN CONTENT ===== -->
 <!-- ===== 主要内容 ===== -->
