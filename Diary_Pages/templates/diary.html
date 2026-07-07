@@ -778,6 +778,38 @@
         return d;
     }
 
+    // ================= DEEP-UNWRAP (self-heal legacy multi-encoded chunks) =================
+    // ================= 深度解包（自愈旧数据里多层编码的区块） =================
+    // A properly saved chunk needs exactly one JSON.parse to become an
+    // element object. Older/corrupted data may have been JSON-stringified
+    // more than once (each stray resave of an unparsed chunk wraps it
+    // again), so a plain single JSON.parse leaves a *string* instead of an
+    // object, or throws outright. This keeps parsing while the result is
+    // still a string, so the real element is recovered no matter how many
+    // extra layers of escaping piled up, and reports whether more than one
+    // layer was found so the caller can trigger a self-heal resave.
+    // 正常保存的区块只需要一次 JSON.parse 就能变成对象。旧数据/被污染的
+    // 数据可能被多次 JSON.stringify 过（每次把还没解析成功的区块原样存回去，
+    // 就会再包一层），这样单次 JSON.parse 出来的还是一个字符串而不是对象，
+    // 或者直接解析报错。这个函数会一直解析，只要结果还是字符串就继续解，
+    // 不管叠了多少层转义都能把真正的内容还原出来，并且会告诉调用者
+    // 是否发现了不止一层（多层的话调用者就应该触发一次"自愈"重新保存）。
+
+    function deepUnwrapElement(raw) {
+        let value = raw;
+        let layers = 0;
+        while (typeof value === "string" && layers < 20) {
+            try {
+                value = JSON.parse(value);
+            } catch (e) {
+                return { obj: null, layers: layers, corrupted: layers > 0 };
+            }
+            layers++;
+        }
+        const obj = (value && typeof value === "object") ? value : null;
+        return { obj: obj, layers: layers, corrupted: layers !== 1 };
+    }
+
     const editBtn      = document.getElementById("editBtn");
     const editPopup    = document.getElementById("editActionPopup");
     const editDoneBtn  = document.getElementById("editDoneBtn");
@@ -848,23 +880,22 @@
         items.forEach(item => {
             item = item.trim();
             if (!item) return;
-            try {
-                const d = JSON.parse(item);
-                if (d.type === "meta") {
-                    applyPaper(d.paper || "grid");
-                    if (paperSel) paperSel.value = d.paper || "grid";
-                } else if (d.type === "text") {
-                    const tb = makeTb(d.x, d.y, d.html, d.r, false);
-                    tb.style.fontFamily = d.ff || "Inter";
-                    tb.style.fontSize   = d.fs || "16px";
-                    tb.style.color      = d.fc || "#2a2a2a";
-                    if (d.fw)  tb.style.fontWeight     = d.fw;
-                    if (d.fst) tb.style.fontStyle      = d.fst;
-                    if (d.td)  tb.style.textDecoration = d.td;
-                } else if (d.type === "img") {
-                    makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
-                }
-            } catch(e) {}
+            const { obj: d } = deepUnwrapElement(item);
+            if (!d) return;
+            if (d.type === "meta") {
+                applyPaper(d.paper || "grid");
+                if (paperSel) paperSel.value = d.paper || "grid";
+            } else if (d.type === "text") {
+                const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                tb.style.fontFamily = d.ff || "Inter";
+                tb.style.fontSize   = d.fs || "16px";
+                tb.style.color      = d.fc || "#2a2a2a";
+                if (d.fw)  tb.style.fontWeight     = d.fw;
+                if (d.fst) tb.style.fontStyle      = d.fst;
+                if (d.td)  tb.style.textDecoration = d.td;
+            } else if (d.type === "img") {
+                makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
+            }
         });
         if (moodSel) {
             moodSel.value = snap.mood;
@@ -1745,13 +1776,12 @@
             }));
         });
 
-        box.innerHTML = chunks.join("||ITEM||");
-        sendSave(revealImmediately);
+        sendSave(chunks.join("||ITEM||"), revealImmediately);
     }
 
-    function sendSave(revealImmediately){
+    function sendSave(content, revealImmediately){
         const data = new FormData();
-        data.append("content", box.innerHTML);
+        data.append("content", content);
         data.append("mood",    moodSel  ? moodSel.value  : "");
         data.append("topic",   topicInp ? topicInp.value : "");
         data.append("date",    getDate());
@@ -1776,31 +1806,45 @@
        LOAD SAVED CONTENT
     ════════════════════════════════ */
     const savedRaw = {{ (entry.content if entry else '') | tojson }};
+    let _neededHeal = false;
     if (savedRaw.trim()) {
         const items = savedRaw.split("||ITEM||");
         items.forEach(item => {
             item = item.trim();
             if (!item) return;
-            try {
-                const d = JSON.parse(item);
-                if (d.type === "meta") {
-                    applyPaper(d.paper || "grid");
-                    if (paperSel) paperSel.value = d.paper || "grid";
-                } else if (d.type === "text") {
-                    const tb = makeTb(d.x, d.y, d.html, d.r, false);
-                    tb.style.fontFamily = d.ff || "Inter";
-                    tb.style.fontSize   = d.fs || "16px";
-                    tb.style.color      = d.fc || "#2a2a2a";
-                    if (d.fw)  tb.style.fontWeight     = d.fw;
-                    if (d.fst) tb.style.fontStyle      = d.fst;
-                    if (d.td)  tb.style.textDecoration = d.td;
-                } else if (d.type === "img") {
-                    makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
-                }
-            } catch(e) {
+            const { obj: d, corrupted } = deepUnwrapElement(item);
+            if (corrupted) _neededHeal = true;
+            if (!d) {
+                // Truly unrecoverable (not JSON at any unwrap depth) — only
+                // legacy plain-text data should ever reach this branch.
                 if (item.length > 0) makeTb(40, 40, item, 0, false);
+                return;
+            }
+            if (d.type === "meta") {
+                applyPaper(d.paper || "grid");
+                if (paperSel) paperSel.value = d.paper || "grid";
+            } else if (d.type === "text") {
+                const tb = makeTb(d.x, d.y, d.html, d.r, false);
+                tb.style.fontFamily = d.ff || "Inter";
+                tb.style.fontSize   = d.fs || "16px";
+                tb.style.color      = d.fc || "#2a2a2a";
+                if (d.fw)  tb.style.fontWeight     = d.fw;
+                if (d.fst) tb.style.fontStyle      = d.fst;
+                if (d.td)  tb.style.textDecoration = d.td;
+            } else if (d.type === "img") {
+                makeImg(d.src, d.x, d.y, d.w, d.h, d.r, null);
             }
         });
+    }
+    // Self-heal: if any chunk needed more than one layer of JSON parsing,
+    // the stored content was corrupted by repeated re-encoding. The canvas
+    // above was just rebuilt from the recovered (clean) data, so saving now
+    // persists it back in the correct single-encoded format — the record
+    // heals itself the next time its owner opens the page, no separate
+    // migration step required. Guests never own the record, so they can't
+    // (and shouldn't try to) trigger this write.
+    if (_neededHeal && !isGuest) {
+        doSave();
     }
 
     /* ════════════════════════════════
