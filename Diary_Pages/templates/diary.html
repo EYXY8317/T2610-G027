@@ -1809,15 +1809,27 @@
     let _neededHeal = false;
     if (savedRaw.trim()) {
         const items = savedRaw.split("||ITEM||");
+        // Legacy pre-JSON diary entries were saved as a single plain-text
+        // blob (no "||ITEM||" separators at all). Only content shaped like
+        // that gets shown as raw text below — if it's a proper multi-chunk
+        // record, an unparseable item here is corrupted data (from this
+        // exact bug: a previously-broken chunk resurrected as visible text
+        // and then re-saved as if it were real content), not legacy text,
+        // so it gets dropped and healed away instead of displayed.
+        const isLegacyPlainText = items.length === 1;
         items.forEach(item => {
             item = item.trim();
             if (!item) return;
             const { obj: d, corrupted } = deepUnwrapElement(item);
             if (corrupted) _neededHeal = true;
             if (!d) {
-                // Truly unrecoverable (not JSON at any unwrap depth) — only
-                // legacy plain-text data should ever reach this branch.
-                if (item.length > 0) makeTb(40, 40, item, 0, false);
+                if (isLegacyPlainText) {
+                    // Truly unrecoverable (not JSON at any unwrap depth) —
+                    // only legacy plain-text data should ever reach this branch.
+                    if (item.length > 0) makeTb(40, 40, item, 0, false);
+                } else {
+                    _neededHeal = true;
+                }
                 return;
             }
             if (d.type === "meta") {
