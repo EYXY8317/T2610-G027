@@ -4,6 +4,9 @@ import {
 from "../../currentUser.js";
 
 import {
+    showSeconds as currentShowSeconds,
+    clockFormat as currentClockFormat,
+    clockType as currentClockType,
     setShowSeconds,
     setClockFormat,
     setClockType,
@@ -696,9 +699,9 @@ export function createSettingPopup(widgetId) {
     /* ── Digital Clock ────────────────────────────────────── */
     /* ── 数字时钟组件 ────────────────────────────────────── */
 
-    let showSeconds = true;
-    let clockFormat = "24h";
-    let clockType   = "digital";
+    let showSeconds = currentShowSeconds;
+    let clockFormat = currentClockFormat;
+    let clockType   = currentClockType;
 
     const showSecondsButtons = popup.querySelectorAll(".show-seconds-segment .segment-option");
     showSecondsButtons.forEach(button => {
