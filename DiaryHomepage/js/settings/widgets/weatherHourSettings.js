@@ -13,6 +13,13 @@ import {
 }
 from "../../widgets/weatherConfig.js";
 
+import {
+    showWeatherIcon,
+    showWeatherTemperature,
+    showHumidity
+}
+from "../../widgets/weatherHour.js";
+
 export function getWeatherHourSettings() {
 
     const config = getWeatherConfig();
@@ -75,9 +82,9 @@ export function getWeatherHourSettings() {
         display: `
             <h3>Display Elements</h3>
             <div class="toggle-chips">
-                <button class="toggle-chip wh-humidity-chip">Humidity</button>
-                <button class="toggle-chip wh-icon-chip active">Icon</button>
-                <button class="toggle-chip wh-temp-chip active">Temperature</button>
+                <button class="toggle-chip wh-humidity-chip${showHumidity ? " active" : ""}">Humidity</button>
+                <button class="toggle-chip wh-icon-chip${showWeatherIcon ? " active" : ""}">Icon</button>
+                <button class="toggle-chip wh-temp-chip${showWeatherTemperature ? " active" : ""}">Temperature</button>
             </div>
         `
 

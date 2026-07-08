@@ -20,9 +20,9 @@ export function getTodayEmotionSettings() {
             <div class="setting-row">
                 <span>Selected Effect</span>
                 <div class="segment-button te-effect-segment">
-                    <button class="segment-option active" data-value="border">Border</button>
-                    <button class="segment-option" data-value="glow">Glow</button>
-                    <button class="segment-option" data-value="scale">Scale</button>
+                    <button class="segment-option${state.selectedEffect === "border" ? " active" : ""}" data-value="border">Border</button>
+                    <button class="segment-option${state.selectedEffect === "glow" ? " active" : ""}" data-value="glow">Glow</button>
+                    <button class="segment-option${state.selectedEffect === "scale" ? " active" : ""}" data-value="scale">Scale</button>
                 </div>
             </div>
 

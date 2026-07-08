@@ -6,6 +6,36 @@
 // common cities' timezones), display (12h/24h format, whether to show
 // seconds/date/weekday).
 
+import {
+    showSeconds,
+    clockFormat,
+    clockType,
+    showDate,
+    showWeekday,
+    timezone
+}
+from "../../widgets/digitalClock/updateDigitalClock.js";
+
+const TIMEZONES = [
+    ["", "Local"],
+    ["UTC", "UTC"],
+    ["America/New_York", "New York (ET)"],
+    ["America/Chicago", "Chicago (CT)"],
+    ["America/Denver", "Denver (MT)"],
+    ["America/Los_Angeles", "Los Angeles (PT)"],
+    ["Europe/London", "London (GMT/BST)"],
+    ["Europe/Paris", "Paris (CET)"],
+    ["Europe/Berlin", "Berlin (CET)"],
+    ["Asia/Tokyo", "Tokyo (JST)"],
+    ["Asia/Shanghai", "Shanghai (CST)"],
+    ["Asia/Taipei", "Taipei (CST)"],
+    ["Asia/Seoul", "Seoul (KST)"],
+    ["Asia/Singapore", "Singapore (SGT)"],
+    ["Asia/Kuala_Lumpur", "Kuala Lumpur (MYT)"],
+    ["Australia/Sydney", "Sydney (AEST)"],
+    ["Pacific/Auckland", "Auckland (NZST)"]
+];
+
 export function getDigitalClockSettings() {
 
     return {
@@ -15,9 +45,9 @@ export function getDigitalClockSettings() {
             <div class="setting-row">
                 <span>Clock Type</span>
                 <div class="segment-button clock-type-segment">
-                    <button class="segment-option active" data-value="digital">Digital</button>
-                    <button class="segment-option" data-value="flip">Flip</button>
-                    <button class="segment-option" data-value="minimal">Minimal</button>
+                    <button class="segment-option${clockType === "digital" ? " active" : ""}" data-value="digital">Digital</button>
+                    <button class="segment-option${clockType === "flip" ? " active" : ""}" data-value="flip">Flip</button>
+                    <button class="segment-option${clockType === "minimal" ? " active" : ""}" data-value="minimal">Minimal</button>
                 </div>
             </div>
         `,
@@ -27,23 +57,9 @@ export function getDigitalClockSettings() {
             <div class="setting-row">
                 <span>Timezone</span>
                 <select class="clock-timezone-select">
-                    <option value="">Local</option>
-                    <option value="UTC">UTC</option>
-                    <option value="America/New_York">New York (ET)</option>
-                    <option value="America/Chicago">Chicago (CT)</option>
-                    <option value="America/Denver">Denver (MT)</option>
-                    <option value="America/Los_Angeles">Los Angeles (PT)</option>
-                    <option value="Europe/London">London (GMT/BST)</option>
-                    <option value="Europe/Paris">Paris (CET)</option>
-                    <option value="Europe/Berlin">Berlin (CET)</option>
-                    <option value="Asia/Tokyo">Tokyo (JST)</option>
-                    <option value="Asia/Shanghai">Shanghai (CST)</option>
-                    <option value="Asia/Taipei">Taipei (CST)</option>
-                    <option value="Asia/Seoul">Seoul (KST)</option>
-                    <option value="Asia/Singapore">Singapore (SGT)</option>
-                    <option value="Asia/Kuala_Lumpur">Kuala Lumpur (MYT)</option>
-                    <option value="Australia/Sydney">Sydney (AEST)</option>
-                    <option value="Pacific/Auckland">Auckland (NZST)</option>
+                    ${TIMEZONES.map(([value, label]) =>
+                        `<option value="${value}"${value === timezone ? " selected" : ""}>${label}</option>`
+                    ).join("")}
                 </select>
             </div>
         `,
@@ -55,15 +71,15 @@ export function getDigitalClockSettings() {
             <div class="setting-row">
                 <span>Clock Format</span>
                 <div class="segment-button clock-format-segment">
-                    <button class="segment-option active" data-value="24h">24H</button>
-                    <button class="segment-option" data-value="12h">12H</button>
+                    <button class="segment-option${clockFormat === "24h" ? " active" : ""}" data-value="24h">24H</button>
+                    <button class="segment-option${clockFormat === "12h" ? " active" : ""}" data-value="12h">12H</button>
                 </div>
             </div>
             <h3>Display Elements</h3>
             <div class="toggle-chips">
-                <button class="toggle-chip show-seconds-chip active">Seconds</button>
-                <button class="toggle-chip show-date-chip">Date</button>
-                <button class="toggle-chip show-weekday-chip">Weekday</button>
+                <button class="toggle-chip show-seconds-chip${showSeconds ? " active" : ""}">Seconds</button>
+                <button class="toggle-chip show-date-chip${showDate ? " active" : ""}">Date</button>
+                <button class="toggle-chip show-weekday-chip${showWeekday ? " active" : ""}">Weekday</button>
             </div>
         `
 
