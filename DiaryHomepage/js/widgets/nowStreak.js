@@ -145,6 +145,5 @@ export function getNowStreakState() {
 
 export function updateNowStreakState(partial) {
     const next = saveState(partial);
-    fetchJournalDates().then(dates => rerender(dates, next));
-    return next;
+    return fetchJournalDates().then(dates => { rerender(dates, next); return next; });
 }
