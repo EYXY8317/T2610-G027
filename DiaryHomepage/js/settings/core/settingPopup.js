@@ -165,11 +165,6 @@ import {
 from "../../dashboard/expandWidget.js";
 
 import {
-    contentOverflow
-}
-from "../../dashboard/resizeManager.js";
-
-import {
     getTodayEmotionSettings
 }
 from "../widgets/todayEmotionSettings.js";
@@ -1633,21 +1628,10 @@ export function createSettingPopup(widgetId) {
 
         const hsDisplayBtns = popup.querySelectorAll(".hs-display-segment .segment-option");
         hsDisplayBtns.forEach(btn => {
-            btn.addEventListener("click", async () => {
+            btn.addEventListener("click", () => {
                 hsDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                const value = btn.dataset.value;
-                await updateHighStreakState({ displayMode: value });
-                if (value === "heatmap") {
-                    autoExpandWidget(widgetId);
-                    const widget = document.getElementById(widgetId);
-                    if (widget && contentOverflow(widget) > 1) {
-                        // Not enough room to grow into — fall back to Number
-                        // so the widget doesn't stay stuck with a clipped heatmap.
-                        await updateHighStreakState({ displayMode: "number" });
-                        hsDisplayBtns.forEach(b => b.classList.toggle("active", b.dataset.value === "number"));
-                    }
-                }
+                updateHighStreakState({ displayMode: btn.dataset.value });
             });
         });
 
@@ -1676,21 +1660,10 @@ export function createSettingPopup(widgetId) {
 
         const nsDisplayBtns = popup.querySelectorAll(".ns-display-segment .segment-option");
         nsDisplayBtns.forEach(btn => {
-            btn.addEventListener("click", async () => {
+            btn.addEventListener("click", () => {
                 nsDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                const value = btn.dataset.value;
-                await updateNowStreakState({ displayMode: value });
-                if (value === "heatmap") {
-                    autoExpandWidget(widgetId);
-                    const widget = document.getElementById(widgetId);
-                    if (widget && contentOverflow(widget) > 1) {
-                        // Not enough room to grow into — fall back to Number
-                        // so the widget doesn't stay stuck with a clipped heatmap.
-                        await updateNowStreakState({ displayMode: "number" });
-                        nsDisplayBtns.forEach(b => b.classList.toggle("active", b.dataset.value === "number"));
-                    }
-                }
+                updateNowStreakState({ displayMode: btn.dataset.value });
             });
         });
 

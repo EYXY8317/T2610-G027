@@ -24,9 +24,17 @@ function showNoSpaceWarning() {
     setTimeout(() => el.remove(), 3500);
 }
 
-export function autoExpandWidget(widgetId) {
+// Returns whether the widget now fits its content without clipping
+// (true if nothing overflowed to begin with, or growing succeeded;
+// false if there wasn't room and the height change was reverted).
+// silent: true 时不弹出"空间不够"的提示——用于调用方自己有兜底方案
+// （比如换成弹窗展示）、不需要再额外打扰用户的场景。
+// silent: true suppresses the "not enough space" toast — for callers
+// that have their own graceful fallback (e.g. showing a popup instead)
+// and don't need to additionally interrupt the user.
+export function autoExpandWidget(widgetId, { silent = false } = {}) {
     const widget = document.getElementById(widgetId);
-    if (!widget) return;
+    if (!widget) return false;
 
     // contentOverflow：内容比组件当前高度多出来的像素数；
     // <= 1 时当作"没有溢出"（留 1px 的容差，避免浮点数误差
@@ -36,7 +44,7 @@ export function autoExpandWidget(widgetId) {
     // tolerance so floating-point rounding doesn't falsely trigger an
     // expand when nothing actually overflows).
     const overflow = contentOverflow(widget);
-    if (overflow <= 1) return;
+    if (overflow <= 1) return true;
 
     const newHeight = widget.offsetHeight + overflow;
     const dashboard = document.getElementById("dashboard");
@@ -46,8 +54,8 @@ export function autoExpandWidget(widgetId) {
     // If growing would push the widget past the dashboard's visible
     // height, bail out entirely without making any change.
     if (widget.offsetTop + newHeight > dashH) {
-        showNoSpaceWarning();
-        return;
+        if (!silent) showNoSpaceWarning();
+        return false;
     }
 
     const prevHeight = widget.style.height;
@@ -60,9 +68,10 @@ export function autoExpandWidget(widgetId) {
     // effectively undoing this auto-expand.
     if (isOverlapping(widget)) {
         widget.style.height = prevHeight;
-        showNoSpaceWarning();
-        return;
+        if (!silent) showNoSpaceWarning();
+        return false;
     }
 
     saveLayout(widget);
+    return true;
 }

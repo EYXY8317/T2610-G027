@@ -1,4 +1,12 @@
 import { userScopedKey } from "../currentUser.js";
+import { autoExpandWidget } from "../dashboard/expandWidget.js";
+import { contentOverflow } from "../dashboard/resizeManager.js";
+import {
+    renderStreakHeatmap,
+    renderStreakHeatmapTrigger,
+    openStreakHeatmapPopup
+}
+from "./streakHeatmap.js";
 
 // "High Streak" 组件：显示"历史最长连续写日记天数的记录"（跟
 // nowStreak.js 的"当前连续天数"不同，这个是查看所有日记日期后，
@@ -74,31 +82,15 @@ function calculateHighStreak(dates) {
     return max;
 }
 
-function renderHeatmap(dates) {
-    const weeks = 15;
-    const cells = [];
-    const today = new Date();
-    for (let w = weeks - 1; w >= 0; w--) {
-        const col = [];
-        for (let d = 0; d < 7; d++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - (w * 7 + (6 - d)));
-            const key = date.toISOString().slice(0, 10);
-            col.push(`<div class="streak-cell${dates.has(key) ? " active" : ""}" title="${key}"></div>`);
-        }
-        cells.push(`<div class="streak-col">${col.join("")}</div>`);
-    }
-    return `<div class="streak-heatmap">${cells.join("")}</div>`;
-}
-
-function renderWidget(dates, state) {
+// heatmapView: "full" | "trigger" — see nowStreak.js for the rationale.
+function renderWidget(dates, state, heatmapView = "full") {
     const high = calculateHighStreak(dates);
 
     if (state.displayMode === "heatmap") {
         return `
             <div class="streak-body">
                 <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
-                ${renderHeatmap(dates)}
+                ${heatmapView === "full" ? renderStreakHeatmap(dates) : renderStreakHeatmapTrigger()}
             </div>`;
     }
 
@@ -118,10 +110,25 @@ async function fetchJournalDates() {
     }
 }
 
+// See nowStreak.js's rerender for why heatmap mode is a two-pass render.
 function rerender(dates, state) {
-    const content = document.querySelector("#high-streak-widget .widget-content");
+    const widget  = document.getElementById("high-streak-widget");
+    const content = widget?.querySelector(".widget-content");
     if (!content) return;
-    content.innerHTML = renderWidget(dates, state);
+
+    if (state.displayMode !== "heatmap") {
+        content.innerHTML = renderWidget(dates, state);
+        return;
+    }
+
+    content.innerHTML = renderWidget(dates, state, "full");
+    autoExpandWidget(widget.id, { silent: true });
+
+    if (contentOverflow(widget) > 1) {
+        content.innerHTML = renderWidget(dates, state, "trigger");
+        content.querySelector(".streak-heatmap-btn")
+            ?.addEventListener("click", () => openStreakHeatmapPopup("High Streak", dates));
+    }
 }
 
 export function createHighStreakWidget() {
