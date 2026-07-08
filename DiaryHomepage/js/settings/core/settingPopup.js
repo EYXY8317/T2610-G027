@@ -1335,13 +1335,15 @@ export function createSettingPopup(widgetId) {
                 }
                 const author = authorEl?.value.trim() || "";
                 const cur = getQuoteState();
-                updateQuoteState({ userQuotes: [...(cur.userQuotes || []), { text, author }] });
-                if (textEl) {
-                    textEl.value = "";
-                }
-                if (authorEl) {
-                    authorEl.value = "";
-                }
+                const newQuote = { text, author };
+                // Also drops it straight into Saved Quotes so it's visible right
+                // away, instead of only living invisibly in the rotation pool.
+                updateQuoteState({
+                    userQuotes:  [...(cur.userQuotes  || []), newQuote],
+                    savedQuotes: [...(cur.savedQuotes || []), newQuote]
+                });
+                popup.remove();
+                createSettingPopup(widgetId);
             });
         }
 
@@ -1352,7 +1354,16 @@ export function createSettingPopup(widgetId) {
             btn.addEventListener("click", () => {
                 const idx = Number(btn.dataset.index);
                 const cur = getQuoteState();
-                updateQuoteState({ savedQuotes: cur.savedQuotes.filter((_, i) => i !== idx) });
+                const removed = cur.savedQuotes[idx];
+                // If the removed quote was also one of the user's own (added via
+                // "My Quotes"), drop it from the rotation pool too — otherwise it
+                // disappears from this list but keeps quietly showing up in the widget.
+                updateQuoteState({
+                    savedQuotes: cur.savedQuotes.filter((_, i) => i !== idx),
+                    userQuotes: removed
+                        ? cur.userQuotes.filter(q => !(q.text === removed.text && q.author === removed.author))
+                        : cur.userQuotes
+                });
                 popup.remove();
                 createSettingPopup(widgetId);
             });
