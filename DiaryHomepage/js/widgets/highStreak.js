@@ -1,12 +1,7 @@
 import { userScopedKey } from "../currentUser.js";
-import { autoExpandWidget } from "../dashboard/expandWidget.js";
+import { autoExpandWidget, showNoSpaceModal } from "../dashboard/expandWidget.js";
 import { contentOverflow } from "../dashboard/resizeManager.js";
-import {
-    renderStreakHeatmap,
-    renderStreakHeatmapTrigger,
-    openStreakHeatmapPopup
-}
-from "./streakHeatmap.js";
+import { renderStreakHeatmap } from "./streakHeatmap.js";
 
 // "High Streak" 组件：显示"历史最长连续写日记天数的记录"（跟
 // nowStreak.js 的"当前连续天数"不同，这个是查看所有日记日期后，
@@ -82,15 +77,14 @@ function calculateHighStreak(dates) {
     return max;
 }
 
-// heatmapView: "full" | "trigger" — see nowStreak.js for the rationale.
-function renderWidget(dates, state, heatmapView = "full") {
+function renderWidget(dates, state) {
     const high = calculateHighStreak(dates);
 
     if (state.displayMode === "heatmap") {
         return `
             <div class="streak-body">
                 <div class="streak-number">${high}<span class="streak-unit">days best</span></div>
-                ${heatmapView === "full" ? renderStreakHeatmap(dates) : renderStreakHeatmapTrigger()}
+                ${renderStreakHeatmap(dates)}
             </div>`;
     }
 
@@ -110,24 +104,21 @@ async function fetchJournalDates() {
     }
 }
 
-// See nowStreak.js's rerender for why heatmap mode is a two-pass render.
+// See nowStreak.js's rerender for the full rationale.
 function rerender(dates, state) {
     const widget  = document.getElementById("high-streak-widget");
     const content = widget?.querySelector(".widget-content");
     if (!content) return;
 
-    if (state.displayMode !== "heatmap") {
-        content.innerHTML = renderWidget(dates, state);
-        return;
-    }
+    content.innerHTML = renderWidget(dates, state);
+    if (state.displayMode !== "heatmap") return;
 
-    content.innerHTML = renderWidget(dates, state, "full");
-    autoExpandWidget(widget.id);
+    autoExpandWidget(widget.id, { silent: true });
 
     if (contentOverflow(widget) > 1) {
-        content.innerHTML = renderWidget(dates, state, "trigger");
-        content.querySelector(".streak-heatmap-btn")
-            ?.addEventListener("click", () => openStreakHeatmapPopup("High Streak", dates));
+        const reverted = saveState({ displayMode: "number" });
+        content.innerHTML = renderWidget(dates, reverted);
+        showNoSpaceModal();
     }
 }
 

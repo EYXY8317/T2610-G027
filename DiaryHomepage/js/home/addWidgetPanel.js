@@ -1,7 +1,7 @@
 import { getHiddenWidgets, showWidget } from "./widgetVisibility.js";
 import { syncLayoutToServer } from "./serverLayout.js";
 import { getConstraints } from "../dashboard/resizeConstraints.js";
-import { showReminderPopup } from "../shared/reminderPopup.js";
+import { showNoSpaceModal } from "../dashboard/expandWidget.js";
 
 // "添加组件"面板：显示所有目前被隐藏的组件，让用户点击"Add"把它们
 // 重新加回首页；同时也支持添加多个 Picture Streak 组件实例
@@ -134,14 +134,6 @@ function findEmptySpot(targetId) {
     return tryFit(occupied, minW, minH, navH);
 }
 
-function showNoSpacePopup() {
-    showReminderPopup({
-        title: "Not Enough Space",
-        message: "There isn't enough room to place this widget without overlapping. Try moving or resizing existing widgets first.",
-        confirmText: "OK"
-    });
-}
-
 export function openAddWidgetPanel() {
     const hidden = getHiddenWidgets();
 
@@ -216,7 +208,7 @@ export function openAddWidgetPanel() {
 
             const spot = findEmptySpot(widgetId);
             if (!spot) {
-                showNoSpacePopup();
+                showNoSpaceModal();
                 return;
             }
 

@@ -1642,7 +1642,11 @@ export function createSettingPopup(widgetId) {
             btn.addEventListener("click", () => {
                 hsDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                updateHighStreakState({ displayMode: btn.dataset.value });
+                // Heatmap mode can silently revert back to Number if there's no
+                // room to show it — re-sync the buttons with what actually stuck.
+                updateHighStreakState({ displayMode: btn.dataset.value }).then(next => {
+                    hsDisplayBtns.forEach(b => b.classList.toggle("active", b.dataset.value === next.displayMode));
+                });
             });
         });
 
@@ -1674,7 +1678,11 @@ export function createSettingPopup(widgetId) {
             btn.addEventListener("click", () => {
                 nsDisplayBtns.forEach(b => b.classList.remove("active"));
                 btn.classList.add("active");
-                updateNowStreakState({ displayMode: btn.dataset.value });
+                // Heatmap mode can silently revert back to Number if there's no
+                // room to show it — re-sync the buttons with what actually stuck.
+                updateNowStreakState({ displayMode: btn.dataset.value }).then(next => {
+                    nsDisplayBtns.forEach(b => b.classList.toggle("active", b.dataset.value === next.displayMode));
+                });
             });
         });
 

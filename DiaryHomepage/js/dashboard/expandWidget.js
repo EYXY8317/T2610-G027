@@ -12,6 +12,7 @@
 import { contentOverflow } from "./resizeManager.js";
 import { isOverlapping  } from "./overlapManager.js";
 import { saveLayout     } from "../home/saveLayout.js";
+import { showReminderPopup } from "../shared/reminderPopup.js";
 
 function showNoSpaceWarning() {
     // 如果已经有一条警告显示着，就不再重复弹出第二条。
@@ -24,10 +25,29 @@ function showNoSpaceWarning() {
     setTimeout(() => el.remove(), 3500);
 }
 
+// Same "not enough space" modal shown when there's no room to place a new
+// widget (see addWidgetPanel.js) — reused wherever a widget can't grow to
+// fit content it needs to show.
+// 跟"添加组件"面板里空间不够时弹出的提示是同一个弹窗（见
+// addWidgetPanel.js）——哪里需要"组件长不大、装不下内容"这个提示，
+// 就复用这一份，不用各自再写一份一样的文案。
+export function showNoSpaceModal() {
+    showReminderPopup({
+        title: "Not Enough Space",
+        message: "There isn't enough room to place this widget without overlapping. Try moving or resizing existing widgets first.",
+        confirmText: "OK"
+    });
+}
+
 // Returns whether the widget now fits its content without clipping
 // (true if nothing overflowed to begin with, or growing succeeded;
 // false if there wasn't room and the height change was reverted).
-export function autoExpandWidget(widgetId) {
+// silent: true 时不弹出"空间不够"的小提示——用于调用方打算自己
+// 展示更明确的说明（比如 showNoSpaceModal()），避免同一件事重复提示两次。
+// silent: true suppresses the small "not enough space" toast — for
+// callers that intend to show their own, more explicit explanation
+// (e.g. showNoSpaceModal()) instead, so the user isn't told twice.
+export function autoExpandWidget(widgetId, { silent = false } = {}) {
     const widget = document.getElementById(widgetId);
     if (!widget) return false;
 
@@ -49,7 +69,7 @@ export function autoExpandWidget(widgetId) {
     // If growing would push the widget past the dashboard's visible
     // height, bail out entirely without making any change.
     if (widget.offsetTop + newHeight > dashH) {
-        showNoSpaceWarning();
+        if (!silent) showNoSpaceWarning();
         return false;
     }
 
@@ -63,7 +83,7 @@ export function autoExpandWidget(widgetId) {
     // effectively undoing this auto-expand.
     if (isOverlapping(widget)) {
         widget.style.height = prevHeight;
-        showNoSpaceWarning();
+        if (!silent) showNoSpaceWarning();
         return false;
     }
 
