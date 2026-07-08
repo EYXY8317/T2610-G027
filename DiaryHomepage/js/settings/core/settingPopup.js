@@ -1308,20 +1308,6 @@ export function createSettingPopup(widgetId) {
             });
         });
 
-        const qTextColorPicker = popup.querySelector(".quote-text-color-picker");
-        if (qTextColorPicker) {
-            qTextColorPicker.addEventListener("input", event => {
-                updateQuoteState({ textColor: event.target.value });
-            });
-        }
-
-        const qAuthorColorPicker = popup.querySelector(".quote-author-color-picker");
-        if (qAuthorColorPicker) {
-            qAuthorColorPicker.addEventListener("input", event => {
-                updateQuoteState({ authorColor: event.target.value });
-            });
-        }
-
         // Add user quote
         // 添加用户自己写的语录
         const qAddBtn = popup.querySelector(".quote-add-btn");

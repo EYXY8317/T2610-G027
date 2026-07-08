@@ -3,13 +3,13 @@ import {
 }
 from "../../widgets/quote.js";
 
-// Quote 组件设置面板：可以选字体样式、内容/作者颜色、要显示哪些
-// 分类的名言、要不要自动轮播、名言来源（系统内置 / 自己添加），
-// 以及自己添加、查看、删除保存的名言。
-// The Quote widget's settings panel: choose the font style,
-// content/author color, which categories of quotes to show, whether to
-// auto-rotate, the quote source (built-in system quotes vs. your own),
-// and add/view/remove your own saved quotes.
+// Quote 组件设置面板：可以选字体样式、要显示哪些分类的名言、要不要
+// 自动轮播、名言来源（系统内置 / 自己添加），以及自己添加、查看、
+// 删除保存的名言。
+// The Quote widget's settings panel: choose the font style, which
+// categories of quotes to show, whether to auto-rotate, the quote source
+// (built-in system quotes vs. your own), and add/view/remove your own
+// saved quotes.
 
 const ALL_CATEGORIES = [
     { key: "time",         label: "Time" },
@@ -39,9 +39,6 @@ export function getQuoteSettings() {
         `).join("")
         : `<div style="font-size:12px;color:#9ca3af;margin-top:4px;">No saved quotes</div>`;
 
-    const textColor   = state.textColor   || "#1a1a1a";
-    const authorColor = state.authorColor || "#888888";
-
     // 返回值分成好几个"区块"（style/location/graph/display），是因为
     // 设置弹窗把不同组件的设置项，按统一的标签分类展示（样式/位置/
     // 图表/显示），这个组件只用到 style 和 display 两个区块，
@@ -64,15 +61,6 @@ export function getQuoteSettings() {
                     <button class="segment-option${state.fontStyle === "italic"  ? " active" : ""}" data-value="italic"  style="font-style:italic;font-family:Georgia,serif;">Italic</button>
                     <button class="segment-option${state.fontStyle === "cursive" ? " active" : ""}" data-value="cursive" style="font-family:cursive;">Cursive</button>
                 </div>
-            </div>
-            <h3>Color</h3>
-            <div class="setting-row">
-                <span>Content</span>
-                <input type="color" class="quote-text-color-picker" value="${textColor}">
-            </div>
-            <div class="setting-row">
-                <span>Author</span>
-                <input type="color" class="quote-author-color-picker" value="${authorColor}">
             </div>
         `,
 
