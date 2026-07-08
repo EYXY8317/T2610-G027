@@ -122,7 +122,7 @@ function rerender(dates, state) {
     }
 
     content.innerHTML = renderWidget(dates, state, "full");
-    autoExpandWidget(widget.id, { silent: true });
+    autoExpandWidget(widget.id);
 
     if (contentOverflow(widget) > 1) {
         content.innerHTML = renderWidget(dates, state, "trigger");

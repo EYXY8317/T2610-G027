@@ -27,12 +27,7 @@ function showNoSpaceWarning() {
 // Returns whether the widget now fits its content without clipping
 // (true if nothing overflowed to begin with, or growing succeeded;
 // false if there wasn't room and the height change was reverted).
-// silent: true 时不弹出"空间不够"的提示——用于调用方自己有兜底方案
-// （比如换成弹窗展示）、不需要再额外打扰用户的场景。
-// silent: true suppresses the "not enough space" toast — for callers
-// that have their own graceful fallback (e.g. showing a popup instead)
-// and don't need to additionally interrupt the user.
-export function autoExpandWidget(widgetId, { silent = false } = {}) {
+export function autoExpandWidget(widgetId) {
     const widget = document.getElementById(widgetId);
     if (!widget) return false;
 
@@ -54,7 +49,7 @@ export function autoExpandWidget(widgetId, { silent = false } = {}) {
     // If growing would push the widget past the dashboard's visible
     // height, bail out entirely without making any change.
     if (widget.offsetTop + newHeight > dashH) {
-        if (!silent) showNoSpaceWarning();
+        showNoSpaceWarning();
         return false;
     }
 
@@ -68,7 +63,7 @@ export function autoExpandWidget(widgetId, { silent = false } = {}) {
     // effectively undoing this auto-expand.
     if (isOverlapping(widget)) {
         widget.style.height = prevHeight;
-        if (!silent) showNoSpaceWarning();
+        showNoSpaceWarning();
         return false;
     }
 
