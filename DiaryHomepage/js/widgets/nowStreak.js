@@ -1,4 +1,12 @@
 import { userScopedKey } from "../currentUser.js";
+import { autoExpandWidget } from "../dashboard/expandWidget.js";
+import { contentOverflow } from "../dashboard/resizeManager.js";
+import {
+    renderStreakHeatmap,
+    renderStreakHeatmapTrigger,
+    openStreakHeatmapPopup
+}
+from "./streakHeatmap.js";
 
 // "Now Streak" 组件：显示"连续写日记的天数"，可以切换成数字显示，
 // 或者像 GitHub 贡献图那样的小方格热力图显示。
@@ -47,29 +55,10 @@ function calculateStreak(dates) {
     return streak;
 }
 
-// 画热力图：一共 15 周（15 列），每列 7 天（7 行），从今天往前数，
-// 每写过日记的那一天格子就点亮（加上 active 样式）。
-// Draws the heatmap: 15 weeks (columns) total, 7 days each (rows),
-// counting backward from today — each day with a journal entry gets its
-// cell lit up (the "active" class).
-function renderHeatmap(dates) {
-    const weeks = 15;
-    const cells = [];
-    const today = new Date();
-    for (let w = weeks - 1; w >= 0; w--) {
-        const col = [];
-        for (let d = 0; d < 7; d++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - (w * 7 + (6 - d)));
-            const key = date.toISOString().slice(0, 10);
-            col.push(`<div class="streak-cell${dates.has(key) ? " active" : ""}" title="${key}"></div>`);
-        }
-        cells.push(`<div class="streak-col">${col.join("")}</div>`);
-    }
-    return `<div class="streak-heatmap">${cells.join("")}</div>`;
-}
-
-function renderWidget(dates, state) {
+// heatmapView: "full" | "trigger" — "full" inlines the complete grid;
+// "trigger" instead shows a button that opens it in a popup, used when
+// the widget card isn't tall enough to fit the full grid without clipping.
+function renderWidget(dates, state, heatmapView = "full") {
     const streak    = calculateStreak(dates);
     const todayDone = dates.has(todayKey());
 
@@ -78,7 +67,7 @@ function renderWidget(dates, state) {
             <div class="streak-body">
                 <div class="streak-label">Journal Streak</div>
                 <div class="streak-number">${streak}<span class="streak-unit">days</span></div>
-                ${renderHeatmap(dates)}
+                ${heatmapView === "full" ? renderStreakHeatmap(dates) : renderStreakHeatmapTrigger()}
                 ${todayDone ? `<div class="streak-today-done">✓ Written today</div>` : ""}
             </div>`;
     }
@@ -106,10 +95,33 @@ async function fetchJournalDates() {
     }
 }
 
+// 数字模式直接渲染就好；热力图模式则先按"完整格子"渲染，尝试
+// 自动长高来装下它，如果长高之后仍然装不下（比如仪表盘空间不够、
+// 会跟别的组件重叠），就换成一个"查看热力图"按钮，点击后弹窗
+// 展示完整格子——而不是让格子被组件边界硬生生裁切掉一部分。
+// Number mode just renders directly; heatmap mode first renders the
+// full grid and tries auto-expanding to fit it, but if it still doesn't
+// fit after that (not enough dashboard space, would overlap another
+// widget, etc.), swaps in a "View Heatmap" button that opens the full
+// grid in a popup instead of leaving it clipped by the widget's edge.
 function rerender(dates, state) {
-    const content = document.querySelector("#now-streak-widget .widget-content");
+    const widget  = document.getElementById("now-streak-widget");
+    const content = widget?.querySelector(".widget-content");
     if (!content) return;
-    content.innerHTML = renderWidget(dates, state);
+
+    if (state.displayMode !== "heatmap") {
+        content.innerHTML = renderWidget(dates, state);
+        return;
+    }
+
+    content.innerHTML = renderWidget(dates, state, "full");
+    autoExpandWidget(widget.id);
+
+    if (contentOverflow(widget) > 1) {
+        content.innerHTML = renderWidget(dates, state, "trigger");
+        content.querySelector(".streak-heatmap-btn")
+            ?.addEventListener("click", () => openStreakHeatmapPopup("Journal Streak", dates));
+    }
 }
 
 export function createNowStreakWidget() {
@@ -145,6 +157,5 @@ export function getNowStreakState() {
 
 export function updateNowStreakState(partial) {
     const next = saveState(partial);
-    fetchJournalDates().then(dates => rerender(dates, next));
-    return next;
+    return fetchJournalDates().then(dates => { rerender(dates, next); return next; });
 }
