@@ -593,13 +593,13 @@ def today_page():
         diary_streak += 1
         _streak_day -= timedelta(days=1)
 
-    # Today's calendar tasks: exact date match OR daily repeat, not trashed
+    # Today's calendar tasks: exact date match, not trashed
     _priority_order = {"red": 0, "orange": 1, "blue": 2, "gray": 3}
     today_tasks = [
         t for t in all_tasks
         if t.get("username") == user
         and t.get("status") != "trash"
-        and (t.get("date") == today_str or t.get("repeat") == "daily")
+        and t.get("date") == today_str
     ]
     # 排序规则是一个"元组"，Python 会按顺序依次比较元组里的每一项：
     # 1) 已完成的任务（1）排在未完成的（0）后面；
