@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="{{ user.theme if user and user.theme else 'mocha' }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,13 +18,13 @@
     <script src="/calendar_static/themecolor.js"></script>
     <script>
     (function(){
-        var t = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+        var t = document.documentElement.dataset.theme;
         setTheme(t);
     })();
     </script>
     <link rel="stylesheet" href="/shared_static/page-transitions.css">
 </head>
-<body class="{{ user.theme if user and user.theme else 'mocha' }}">
+<body class="{{ user.theme if user and user.theme else 'mocha' }}" data-category-totals='{{ category_totals | tojson }}'>
 
 <!-- ===== NAVBAR ===== -->
 <!-- ===== 导航栏 ===== -->
@@ -154,7 +154,7 @@
                         {% for tx in today_txns[:3] %}
                         {% set icon = cat_icons.get(tx.category, {'emoji': '💳', 'bg': '#f3f4f6'}) %}
                         <div class="tp-txn-item">
-                            <div class="tp-txn-icon" style="background:{{ icon.bg }}">{{ icon.emoji }}</div>
+                            <div class="tp-txn-icon" data-bg="{{ icon.bg }}">{{ icon.emoji }}</div>
                             <div class="tp-txn-info">
                                 <div class="tp-txn-name">{{ tx.item or tx.category }}</div>
                                 <div class="tp-txn-meta">{{ tx.account }}</div>
@@ -229,7 +229,7 @@
                         </div>
                         <div class="tp-goal-amounts">RM {{ "%.0f"|format(g.saved) }} / RM {{ "%.0f"|format(g.target) }}</div>
                         <div class="tp-goal-bar-bg">
-                            <div class="tp-goal-bar-fill" style="width:{{ g.percent }}%"></div>
+                            <div class="tp-goal-bar-fill" data-percent="{{ g.percent }}"></div>
                         </div>
                     </div>
                     {% endfor %}
@@ -319,6 +319,14 @@
         now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
     document.getElementById('tp-day').textContent = days[now.getDay()];
 
+    // Apply dynamic colors/widths that used to be inline Jinja in style="" attrs
+    document.querySelectorAll('.tp-txn-icon[data-bg]').forEach(function (el) {
+        el.style.background = el.dataset.bg;
+    });
+    document.querySelectorAll('.tp-goal-bar-fill[data-percent]').forEach(function (el) {
+        el.style.width = el.dataset.percent + '%';
+    });
+
     // Donut chart
     // 环形图 —— 这里没有用像 summary.html 那样的 Chart.js 库，
     // 而是直接用浏览器原生的 Canvas 2D 绘图 API（ctx.arc/ctx.fill 等）
@@ -327,8 +335,8 @@
     // library), this one hand-draws each slice directly with the
     // browser's native Canvas 2D drawing API (ctx.arc/ctx.fill/etc).
 
-    const totals  = {{ category_totals | tojson }};
-    const theme   = {{ (user.theme if user and user.theme else 'mocha') | tojson }};
+    const totals  = JSON.parse(document.body.dataset.categoryTotals);
+    const theme   = document.documentElement.dataset.theme;
     const canvas  = document.getElementById('tp-donut');
     const ctx     = canvas.getContext('2d');
     const entries = Object.entries(totals);
